@@ -1713,7 +1713,7 @@ void spoton_misc::purgeSignatureRelationships(const QSqlDatabase &db,
       query.prepare("DELETE FROM relationships_with_signatures WHERE "
 		    "public_key_hash NOT IN "
 		    "(SELECT public_key_hash FROM friends_public_keys WHERE "
-		    "key_type <> ?)");
+		    "key_type_hash <> ?)");
       query.bindValue
 	(0, crypt->keyedHash(list.at(i) + "-signature", &ok).toBase64());
 
@@ -1727,7 +1727,7 @@ void spoton_misc::purgeSignatureRelationships(const QSqlDatabase &db,
 
       query.prepare
 	("DELETE FROM friends_public_keys WHERE "
-	 "key_type = ? AND public_key_hash NOT IN "
+	 "key_type_hash = ? AND public_key_hash NOT IN "
 	 "(SELECT signature_public_key_hash FROM "
 	 "relationships_with_signatures)");
 
