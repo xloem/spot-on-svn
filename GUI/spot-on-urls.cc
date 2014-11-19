@@ -337,6 +337,9 @@ bool spoton::deleteAllUrls(void)
 	    else
 	      c2 = QChar(j + 97 - 10);
 
+	    if(m_urlDatabase.driverName() != "QPSQL")
+	      query.exec("PRAGMA secure_delete = ON");
+
 	    if(!query.exec(QString("DELETE FROM "
 				   "spot_on_keywords_%1%2").
 			   arg(c1).arg(c2)))
@@ -369,6 +372,8 @@ bool spoton::deleteAllUrls(void)
     if(db.open())
       {
 	QSqlQuery query(db);
+
+	query.exec("PRAGMA secure_delete = ON");
 
 	if(!query.exec("DELETE FROM import_key_information"))
 	  deleted = false;
@@ -607,6 +612,7 @@ void spoton::slotImportUrls(void)
 
 		QSqlQuery deleteQuery(db);
 
+		deleteQuery.exec("PRAGMA secure_delete = ON");
 		deleteQuery.prepare("DELETE FROM urls WHERE url = ?");
 		deleteQuery.bindValue(0, query.value(3));
 		deleteQuery.exec();
