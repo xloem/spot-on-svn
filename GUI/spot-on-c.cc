@@ -340,6 +340,7 @@ void spoton::slotDeleteEtpAllMagnets(void)
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.exec("DELETE FROM magnets");
       }
 
@@ -379,6 +380,7 @@ void spoton::slotDeleteEtpMagnet(void)
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.prepare("DELETE FROM magnets WHERE OID = ?");
 	query.bindValue(0, oid);
 	query.exec();
@@ -1036,6 +1038,7 @@ void spoton::slotTransmit(void)
 		break;
 	      }
 
+	    query.exec("PRAGMA secure_delete = ON");
 	    query.prepare("DELETE FROM magnets WHERE "
 			  "magnet_hash = ? and one_time_magnet = 1");
 	    query.bindValue(0, crypt->keyedHash(magnets.at(i), &ok).
@@ -1541,6 +1544,7 @@ void spoton::slotDeleteAllTransmitted(void)
 
 	if(!isKernelActive())
 	  {
+	    query.exec("PRAGMA secure_delete = ON");
 	    query.exec("DELETE FROM transmitted");
 	    query.exec("DELETE FROM transmitted_magnets");
 	    query.exec("DELETE FROM transmitted_scheduled_pulses");
@@ -1588,6 +1592,7 @@ void spoton::slotDeleteTransmitted(void)
 
 	if(!isKernelActive())
 	  {
+	    query.exec("PRAGMA secure_delete = ON");
 	    query.prepare("DELETE FROM transmitted WHERE "
 			  "OID = ?");
 	    query.bindValue(0, oid);
@@ -1798,6 +1803,7 @@ void spoton::slotDeleteNova(void)
 	QSqlQuery query(db);
 	bool ok = true;
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.prepare("DELETE FROM received_novas WHERE "
 		      "nova_hash = ?");
 	query.bindValue
@@ -1931,6 +1937,7 @@ void spoton::slotDeleteAllReceived(void)
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.exec("DELETE FROM received");
       }
 
@@ -1969,6 +1976,7 @@ void spoton::slotDeleteReceived(void)
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.prepare("DELETE FROM received WHERE "
 		      "OID = ?");
 	query.bindValue(0, oid);
@@ -3853,6 +3861,7 @@ void spoton::slotRemoveUrlParticipants(void)
 
 	    if(!data.isNull() && data.isValid())
 	      {
+		query.exec("PRAGMA secure_delete = ON");
 		query.prepare("DELETE FROM friends_public_keys WHERE "
 			      "OID = ?");
 		query.bindValue(0, data.toString());

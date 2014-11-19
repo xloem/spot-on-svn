@@ -4399,6 +4399,7 @@ void spoton::slotDeleteListener(void)
 	if(!isKernelActive())
 	  {
 	    deleteListener = true;
+	    query.exec("PRAGMA secure_delete = ON");
 	    query.prepare("DELETE FROM listeners WHERE "
 			  "OID = ?");
 	  }
@@ -4464,8 +4465,11 @@ void spoton::slotDeleteNeighbor(void)
 	QSqlQuery query(db);
 
 	if(!isKernelActive())
-	  query.prepare("DELETE FROM neighbors WHERE "
-			"OID = ?");
+	  {
+	    query.exec("PRAGMA secure_delete = ON");
+	    query.prepare("DELETE FROM neighbors WHERE "
+			  "OID = ?");
+	  }
 	else
 	  query.prepare("UPDATE neighbors SET status_control = 'deleted' "
 			"WHERE OID = ? AND status_control <> 'deleted'");
@@ -4569,6 +4573,7 @@ void spoton::updateListenersTable(const QSqlDatabase &db)
 	** information.
 	*/
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.exec("DELETE FROM listeners WHERE "
 		   "status_control = 'deleted'");
 	query.exec("DELETE FROM listeners_accounts WHERE "
@@ -4597,6 +4602,7 @@ void spoton::updateNeighborsTable(const QSqlDatabase &db)
 
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.exec("DELETE FROM neighbors WHERE "
 		   "status <> 'connected' AND "
 		   "status_control <> 'blocked' AND "
@@ -4614,6 +4620,7 @@ void spoton::updateNeighborsTable(const QSqlDatabase &db)
 	** and update some of their information.
 	*/
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.exec("DELETE FROM neighbors WHERE "
 		   "status_control = 'deleted'");
 	query.exec("UPDATE neighbors SET "
@@ -6191,6 +6198,7 @@ void spoton::slotDeleteAllListeners(void)
 
 	if(!isKernelActive())
 	  {
+	    query.exec("PRAGMA secure_delete = ON");
 	    query.exec("DELETE FROM listeners");
 	    query.exec("DELETE FROM listeners_accounts");
 	    query.exec
@@ -6226,7 +6234,10 @@ void spoton::slotDeleteAllNeighbors(void)
 	QSqlQuery query(db);
 
 	if(!isKernelActive())
-	  query.exec("DELETE FROM neighbors");
+	  {
+	    query.exec("PRAGMA secure_delete = ON");
+	    query.exec("DELETE FROM neighbors");
+	  }
 	else
 	  query.exec("UPDATE neighbors SET "
 		     "status_control = 'deleted' WHERE "
@@ -7853,6 +7864,8 @@ void spoton::removeFavorite(const bool removeAll)
       {
 	QByteArray data;
 	QSqlQuery query(db);
+
+	query.exec("PRAGMA secure_delete = ON");
 
 	if(removeAll)
 	  query.prepare("DELETE FROM buzz_channels");

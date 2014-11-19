@@ -2878,6 +2878,7 @@ void spoton_crypt::purgeDatabases(void)
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.exec("DELETE FROM idiotes");
       }
 
@@ -3504,6 +3505,7 @@ void spoton_crypt::reencodePrivatePublicKeys
 	      QSqlQuery updateQuery(db);
 	      bool ok = true;
 
+	      updateQuery.exec("PRAGMA secure_delete = ON");
 	      id = oldCrypt->decryptedAfterAuthenticated
 		(id, &ok);
 

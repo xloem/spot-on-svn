@@ -462,6 +462,7 @@ void spoton::slotDeleteInstitution(void)
 	QSqlQuery query(db);
 	bool ok = true;
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.prepare("DELETE FROM institutions WHERE hash = ?");
 
 	if(m_crypts.value("email", 0))
@@ -1119,6 +1120,7 @@ void spoton::slotDeleteAEToken(void)
 	QSqlQuery query(db);
 	bool ok = true;
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.prepare("DELETE FROM listeners_adaptive_echo_tokens WHERE "
 		      "token_hash = ?");
 	query.bindValue
@@ -1834,6 +1836,7 @@ void spoton::applyGoldbugToAttachments(const QString &folderOid,
 		    {
 		      QSqlQuery deleteQuery(db);
 
+		      deleteQuery.exec("PRAGMA secure_delete = ON");
 		      deleteQuery.prepare("DELETE FROM folders_attachment "
 					  "WHERE OID = ?");
 		      deleteQuery.bindValue(0, query.value(2));

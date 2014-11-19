@@ -403,6 +403,7 @@ void spoton_mailer::slotRetrieveMailTimeout(void)
 			
 			QSqlQuery deleteQuery(db);
 
+			deleteQuery.exec("PRAGMA secure_delete = ON");
 			deleteQuery.prepare("DELETE FROM post_office "
 					    "WHERE recipient_hash = ? AND "
 					    "OID = ?");
@@ -472,6 +473,7 @@ void spoton_mailer::slotReap(void)
 		{
 		  QSqlQuery deleteQuery(db);
 
+		  deleteQuery.exec("PRAGMA secure_delete = ON");
 		  deleteQuery.prepare("DELETE FROM post_office "
 				      "WHERE OID = ?");
 		  deleteQuery.bindValue(0, query.value(1));

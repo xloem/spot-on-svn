@@ -1104,7 +1104,10 @@ void spoton_misc::moveSentMailToSentFolder(const QList<qint64> &oids,
 	  query.prepare("UPDATE folders SET status = ? WHERE "
 			"OID = ?");
 	else
-	  query.prepare("DELETE FROM folders WHERE OID = ?");
+	  {
+	    query.exec("PRAGMA secure_delete = ON");
+	    query.prepare("DELETE FROM folders WHERE OID = ?");
+	  }
 
 	for(int i = 0; i < oids.size(); i++)
 	  {
@@ -1126,6 +1129,7 @@ void spoton_misc::moveSentMailToSentFolder(const QList<qint64> &oids,
 		  {
 		    QSqlQuery query(db);
 
+		    query.exec("PRAGMA secure_delete = ON");
 		    query.prepare
 		      ("DELETE FROM folders_attachment WHERE "
 		       "folders_oid = ?");
@@ -1155,6 +1159,7 @@ void spoton_misc::cleanupDatabases(spoton_crypt *crypt)
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.exec("UPDATE friends_public_keys SET status = 'offline' "
 		   "WHERE status <> 'offline'");
 
@@ -1181,6 +1186,7 @@ void spoton_misc::cleanupDatabases(spoton_crypt *crypt)
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.exec("DELETE FROM kernel_gui_server");
 	query.exec("DELETE FROM kernel_statistics");
       }
@@ -1199,6 +1205,7 @@ void spoton_misc::cleanupDatabases(spoton_crypt *crypt)
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.exec("DELETE FROM listeners WHERE "
 		   "status_control = 'deleted'");
 	query.exec("DELETE FROM listeners_accounts WHERE "
@@ -1228,6 +1235,7 @@ void spoton_misc::cleanupDatabases(spoton_crypt *crypt)
 	QSettings settings;
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.exec("DELETE FROM neighbors WHERE "
 		   "status_control = 'deleted'");
 
@@ -1263,6 +1271,7 @@ void spoton_misc::cleanupDatabases(spoton_crypt *crypt)
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.exec("DELETE FROM transmitted WHERE "
 		   "status_control = 'deleted'");
 	query.exec("DELETE FROM transmitted_magnets WHERE "
@@ -1700,6 +1709,7 @@ void spoton_misc::purgeSignatureRelationships(const QSqlDatabase &db,
       ** in the friends_public_keys table.
       */
 
+      query.exec("PRAGMA secure_delete = ON");
       query.prepare("DELETE FROM relationships_with_signatures WHERE "
 		    "public_key_hash NOT IN "
 		    "(SELECT public_key_hash FROM friends_public_keys WHERE "
@@ -2155,6 +2165,7 @@ bool spoton_misc::authenticateAccount(QByteArray &name,
 		QSqlQuery query(db);
 		bool ok = true;
 
+		query.exec("PRAGMA secure_delete = ON");
 		query.prepare("DELETE FROM listeners_accounts "
 			      "WHERE account_name_hash = ? AND "
 			      "listener_oid = ? AND one_time_account = 1");

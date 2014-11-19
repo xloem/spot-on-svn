@@ -825,6 +825,7 @@ spoton_neighbor::~spoton_neighbor()
 
 	    QSqlQuery query(db);
 
+	    query.exec("PRAGMA secure_delete = ON");
 	    query.prepare("DELETE FROM friends_public_keys WHERE "
 			  "neighbor_oid = ?");
 	    query.bindValue(0, m_id);
@@ -848,6 +849,7 @@ spoton_neighbor::~spoton_neighbor()
 	  {
 	    QSqlQuery query(db);
 
+	    query.exec("PRAGMA secure_delete = ON");
 	    query.prepare("DELETE FROM neighbors WHERE "
 			  "OID = ? AND status_control = 'deleted'");
 	    query.bindValue(0, m_id);

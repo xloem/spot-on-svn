@@ -781,6 +781,7 @@ void spoton::slotRemoveParticipants(void)
 
 	    if(!data.isNull() && data.isValid())
 	      {
+		query.exec("PRAGMA secure_delete = ON");
 		query.prepare("DELETE FROM friends_public_keys WHERE "
 			      "OID = ?");
 		query.bindValue(0, data.toString());
@@ -2667,6 +2668,7 @@ void spoton::slotDeleteAllBlockedNeighbors(void)
 		hash.insert(ip, query.value(1).toLongLong());
 	    }
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.prepare("DELETE FROM neighbors WHERE OID = ?");
 
 	for(int i = 0; i < hash.keys().size(); i++)
@@ -2943,6 +2945,7 @@ void spoton::slotDeleteAllUuids(void)
 		hash.insert(uuid, query.value(1).toLongLong());
 	    }
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.prepare("DELETE FROM neighbors WHERE OID = ?");
 
 	for(int i = 0; i < hash.keys().size(); i++)
@@ -3466,6 +3469,7 @@ void spoton::slotDeleteMail(int index)
 
 	    if(m_ui.folder->currentIndex() == 2) // Trash
 	      {
+		query.exec("PRAGMA secure_delete = ON");
 		query.prepare("DELETE FROM folders WHERE OID = ?");
 		query.bindValue(0, oid);
 	      }
@@ -3502,6 +3506,7 @@ void spoton::slotDeleteMail(int index)
 		      {
 			QSqlQuery query(db);
 
+			query.exec("PRAGMA secure_delete = ON");
 			query.prepare("DELETE FROM folders WHERE OID = ?");
 			query.bindValue(0, oid);
 			query.exec();
@@ -3515,6 +3520,7 @@ void spoton::slotDeleteMail(int index)
 		  {
 		    QSqlQuery query(db);
 
+		    query.exec("PRAGMA secure_delete = ON");
 		    query.prepare("DELETE FROM folders_attachment "
 				  "WHERE folders_oid = ?");
 		    query.bindValue(0, oid);
@@ -3650,6 +3656,7 @@ void spoton::slotEmptyTrash(void)
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.exec("DELETE FROM folders WHERE folder_index = 2");
 	query.exec("DELETE FROM folders_attachment WHERE folders_oid "
 		   "NOT IN (SELECT OID FROM folders)");
@@ -4812,6 +4819,7 @@ void spoton::slotRemoveEmailParticipants(void)
 
 	    if(!data.isNull() && data.isValid())
 	      {
+		query.exec("PRAGMA secure_delete = ON");
 		query.prepare("DELETE FROM friends_public_keys WHERE "
 			      "OID = ?");
 		query.bindValue(0, data.toString());
@@ -5002,6 +5010,7 @@ void spoton::slotDeleteAccepedIP(void)
 	QSqlQuery query(db);
 	bool ok = true;
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.prepare("DELETE FROM listeners_allowed_ips WHERE "
 		      "ip_address_hash = ? AND listener_oid = ?");
 	query.bindValue
@@ -5266,6 +5275,7 @@ void spoton::slotDeleteAccount(void)
 	QSqlQuery query(db);
 	bool ok = true;
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.prepare("DELETE FROM listeners_accounts WHERE "
 		      "account_name_hash = ? AND listener_oid = ?");
 	query.bindValue

@@ -187,6 +187,7 @@ spoton_gui_server::~spoton_gui_server()
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.exec("DELETE FROM kernel_gui_server");
       }
 

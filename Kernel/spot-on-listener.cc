@@ -337,6 +337,7 @@ spoton_listener::~spoton_listener()
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.prepare("DELETE FROM listeners WHERE OID = ? AND "
 		      "status_control = 'deleted'");
 	query.bindValue(0, m_id);
@@ -400,6 +401,7 @@ void spoton_listener::slotTimeout(void)
 	*/
 
 	query.setForwardOnly(true);
+	query.exec("PRAGMA secure_delete = ON");
 	query.prepare
 	  ("DELETE FROM listeners_accounts_consumed_authentications "
 	   "WHERE "

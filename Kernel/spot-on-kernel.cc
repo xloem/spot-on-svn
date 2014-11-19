@@ -3066,6 +3066,7 @@ void spoton_kernel::cleanupListenersDatabase(const QSqlDatabase &db)
 
   QSqlQuery query(db);
 
+  query.exec("PRAGMA secure_delete = ON");
   query.exec("DELETE FROM listeners WHERE "
 	     "status_control = 'deleted'");
   query.exec("DELETE FROM listeners_accounts WHERE "
@@ -3086,6 +3087,7 @@ void spoton_kernel::cleanupNeighborsDatabase(const QSqlDatabase &db)
 
   QSqlQuery query(db);
 
+  query.exec("PRAGMA secure_delete = ON");
   query.exec("DELETE FROM neighbors WHERE "
 	     "status_control = 'deleted'");
 }
@@ -3097,6 +3099,7 @@ void spoton_kernel::cleanupStarbeamsDatabase(const QSqlDatabase &db)
 
   QSqlQuery query(db);
 
+  query.exec("PRAGMA secure_delete = ON");
   query.exec("DELETE FROM transmitted WHERE "
 	     "status = 'deleted'");
   query.exec("DELETE FROM transmitted_magnets WHERE "
