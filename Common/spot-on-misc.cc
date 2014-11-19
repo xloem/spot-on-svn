@@ -1904,7 +1904,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
 
   if(!ok)
     integer = 5;
-  else if(integer < 5)
+  else if(integer < 5 || integer > 60)
     integer = 5;
 
   settings.insert("gui/emailRetrievalInterval", integer);
@@ -1921,7 +1921,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
 
       if(!ok)
 	rational = 3.50;
-      else if(rational < 0.50)
+      else if(rational < 0.50 || rational > 10.00)
 	rational = 3.50;
 
       settings.insert(list.at(i), rational);
