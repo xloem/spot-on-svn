@@ -2413,6 +2413,9 @@ void spoton::slotUpdateSpinBoxChanged(double value)
   QDoubleSpinBox *doubleSpinBox = qobject_cast<QDoubleSpinBox *> (sender());
   QSettings settings;
 
+  if(value < 0.50)
+    value = 3.50;
+
   if(doubleSpinBox == m_ui.chatUpdateInterval)
     {
       m_participantsUpdateTimer.setInterval(static_cast<int> (1000 * value));

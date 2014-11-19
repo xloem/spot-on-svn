@@ -1326,8 +1326,6 @@ spoton::spoton(void):QMainWindow()
   m_ui.shareBuzzMagnet->setMenu(menu);
   m_generalTimer.start(3500);
   m_chatInactivityTimer.start(120000);
-  m_emailRetrievalTimer.setInterval
-    (m_settings.value("gui/emailRetrievalInterval", 5 * 60 * 1000).toInt());
   m_ui.ipv4Listener->setChecked(true);
   m_ui.listenerIP->setInputMask("000.000.000.000; ");
   m_ui.addInstitutionLineEdit->setEnabled(false);
@@ -1375,6 +1373,8 @@ spoton::spoton(void):QMainWindow()
 
   m_ui.chatUpdateInterval->setValue
     (m_settings.value("gui/participantsUpdateTimer", 3.50).toDouble());
+  m_emailRetrievalTimer.setInterval
+    (m_settings.value("gui/emailRetrievalInterval", 5 * 60 * 1000).toInt());
   m_ui.kernelUpdateInterval->setValue
     (m_settings.value("gui/kernelUpdateTimer", 3.50).toDouble());
   m_ui.listenersUpdateInterval->setValue

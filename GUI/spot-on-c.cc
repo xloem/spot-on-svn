@@ -543,6 +543,9 @@ void spoton::slotAutoRetrieveEmail(bool state)
 
 void spoton::slotMailRetrievalIntervalChanged(int value)
 {
+  if(value < 5)
+    value = 5;
+
   m_settings["gui/emailRetrievalInterval"] = value;
 
   QSettings settings;

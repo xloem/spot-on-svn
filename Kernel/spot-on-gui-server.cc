@@ -717,7 +717,7 @@ void spoton_gui_server::slotFileChanged(const QString &path)
   Q_UNUSED(path);
 
   if(!m_generalTimer.isActive())
-    m_generalTimer.start();
+    m_generalTimer.start(2500);
 }
 
 void spoton_gui_server::slotAuthenticationRequested

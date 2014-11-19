@@ -1737,7 +1737,9 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
   */
 
   QString str("");
+  QStringList list;
   bool ok = true;
+  double rational = 0.0;
   int integer = 0;
 
   integer = qAbs(settings.value("gui/congestionCost", 10000).toInt(&ok));
@@ -1893,6 +1895,37 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
 
   settings.insert
     ("kernel/server_account_verification_window_msecs", integer);
+
+  /*
+  ** Correct timer intervals.
+  */
+
+  integer = settings.value("gui/emailRetrievalInterval", 5).toInt(&ok);
+
+  if(!ok)
+    integer = 5;
+  else if(integer < 5)
+    integer = 5;
+
+  settings.insert("gui/emailRetrievalInterval", integer);
+  list.clear();
+  list << "gui/kernelUpdateTimer"
+       << "gui/listenersUpdateTimer"
+       << "gui/neighborsUpdateTimer"
+       << "gui/participantsUpdateTimer"
+       << "gui/starbeamUpdateTimer";
+
+  for(int i = 0; i < list.size(); i++)
+    {
+      rational = settings.value(list.at(i), 3.50).toDouble(&ok);
+
+      if(!ok)
+	rational = 3.50;
+      else if(rational < 0.50)
+	rational = 3.50;
+
+      settings.insert(list.at(i), rational);
+    }
 }
 
 QSqlDatabase spoton_misc::database(QString &connectionName)
