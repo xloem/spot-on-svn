@@ -15,6 +15,9 @@
      with version 0.09.09's item #23.
 8.   OS/2 corrections.
 9.   Ability to set the SSL Control String on listeners and neighbors.
+10.  Correct flawed timer intervals in
+     spoton_misc::correctSettingsContainer().
+11.  Corrected errant timer in spot-on-gui-server.cc.
 
 0.16a (11/08/2014)
 
