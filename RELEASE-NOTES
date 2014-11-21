@@ -25,6 +25,7 @@
 15.  Compress file attachments. Compression occurs before encryption.
 16.  Corrected saving of e-mail attachments that were enveloped by
      GoldBugs.
+17.  Corrected the Reset widget's state in the file encryption tool.
 
 0.16a (11/08/2014)
 
