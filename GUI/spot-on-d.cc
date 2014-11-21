@@ -1788,7 +1788,10 @@ void spoton::applyGoldbugToAttachments(const QString &folderOid,
 	      attachment = crypt1->decrypted(attachment, &ok2);
 
 	      if(ok2)
-		attachmentName = crypt1->decrypted(attachmentName, &ok2);
+		{
+		  attachment = qUncompress(attachment);
+		  attachmentName = crypt1->decrypted(attachmentName, &ok2);
+		}
 
 	      if(ok2)
 		{

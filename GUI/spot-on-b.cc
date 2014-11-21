@@ -2982,6 +2982,9 @@ void spoton::slotRefreshMail(void)
 
 void spoton::populateMail(void)
 {
+  if(!m_crypts.value("email", 0))
+    return;
+
   m_ui.reply->setEnabled(m_ui.folder->currentIndex() == 0);
   m_ui.resend->setEnabled(m_ui.folder->currentIndex() == 1);
 
@@ -2991,9 +2994,6 @@ void spoton::populateMail(void)
     m_ui.mail->horizontalHeaderItem(1)->setText(tr("To"));
   else
     m_ui.mail->horizontalHeaderItem(1)->setText(tr("From/To"));
-
-  if(!m_crypts.value("email", 0))
-    return;
 
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
@@ -4287,8 +4287,17 @@ int spoton::applyGoldbugToLetter(const QByteArray &goldbug,
 	    item = m_ui.mail->item(row, 4); // Attachment(s)
 
 	    if(item)
-	      if(attachmentsCount > 0)
-		item->setIcon(QIcon(":/generic/attach.png"));
+	      {
+		if(attachmentsCount > 0)
+		  {
+		    item->setData(Qt::UserRole, 1);
+		    item->setIcon(QIcon(":/generic/attach.png"));
+		  }
+		else
+		  item->setData(Qt::UserRole, 0);
+
+		item->setText("");
+	      }
 
 	    item = m_ui.mail->item(row, 5); // Goldbug
 

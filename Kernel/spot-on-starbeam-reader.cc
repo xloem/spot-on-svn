@@ -376,7 +376,7 @@ void spoton_starbeam_reader::pulsate(const QString &fileName,
 		{
 		  QByteArray data(buffer.mid(0, static_cast<int> (rc)));
 		  QByteArray messageCode;
-		  int size = data.length();
+		  int size = 0;
 		  spoton_crypt crypt(elements.value("ct").constData(),
 				     QString(""),
 				     QByteArray(),
@@ -384,6 +384,9 @@ void spoton_starbeam_reader::pulsate(const QString &fileName,
 				     0,
 				     0,
 				     QString(""));
+
+		  data = qCompress(data, 9);
+		  size = data.length();
 
 		  if(nova.isEmpty())
 		    data = crypt.encrypted

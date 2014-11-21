@@ -2633,7 +2633,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 		items << name
 		      << subject
 		      << message
-		      << attachment
+		      << qCompress(attachment, 9)
 		      << attachmentName;
 
 	      if(ok)
@@ -2874,7 +2874,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 		items << name
 		      << subject
 		      << message
-		      << attachment
+		      << qCompress(attachment, 9)
 		      << attachmentName;
 
 	      if(ok)

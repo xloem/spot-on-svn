@@ -5215,11 +5215,18 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
 
 		  if(variant.isValid())
 		    {
+		      QByteArray data;
+
+		      if(!goldbugUsed)
+			data = qUncompress(attachment);
+		      else
+			data = attachment;
+
 		      query.prepare("INSERT INTO folders_attachment "
 				    "(data, folders_oid, name) "
 				    "VALUES (?, ?, ?)");
 		      query.bindValue
-			(0, s_crypt->encryptedThenHashed(attachment,
+			(0, s_crypt->encryptedThenHashed(data,
 							 &ok).toBase64());
 		      query.bindValue(1, id);
 
