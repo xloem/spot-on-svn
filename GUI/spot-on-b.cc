@@ -3139,7 +3139,10 @@ void spoton::populateMail(void)
 			      }
 			  }
 			else
-			  item = new QTableWidgetItem("#####");
+			  {
+			    item = new QTableWidgetItem("#####");
+			    item->setData(Qt::UserRole, 0);
+			  }
 		      }
 		    else if(i == 5) // goldbug
 		      item = new QTableWidgetItem(goldbug);
