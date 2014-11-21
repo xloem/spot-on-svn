@@ -21,6 +21,10 @@
 12.  Enable secure deletion on SQLite databases.
 13.  Corrected spoton_misc::purgeSignatureRelationships(). Residue
      entries will be removed.
+14.  Compress StarBeam data. Compression occurs before encryption.
+15.  Compress file attachments. Compression occurs before encryption.
+16.  Corrected saving of e-mail attachments that were enveloped by
+     GoldBugs.
 
 0.16a (11/08/2014)
 
