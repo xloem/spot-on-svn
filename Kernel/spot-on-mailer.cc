@@ -186,7 +186,8 @@ void spoton_mailer::slotTimeout(void)
 		      {
 			attachment = s_crypt->
 			  decryptedAfterAuthenticated
-			  (QByteArray::fromBase64(query.value(0).toByteArray()),
+			  (QByteArray::fromBase64(query.value(0).
+						  toByteArray()),
 			   &ok);
 
 			if(ok)
@@ -244,6 +245,7 @@ void spoton_mailer::slotTimeout(void)
 void spoton_mailer::slotRetrieveMail
 (const QByteArray &data,
  const QByteArray &publicKeyHash,
+ const QByteArray &timestamp,
  const QByteArray &signature,
  const QPairByteArrayByteArray &adaptiveEchoPair)
 {
@@ -290,7 +292,46 @@ void spoton_mailer::slotRetrieveMail
   hash = spoton_crypt::sha512Hash(publicKey, &ok);
 
   if(!ok)
-    return;
+    {
+      spoton_misc::logError
+	("spoton_mailer(): slotRetrieveMail(): "
+	 "spoton_crypt::sha512Hash() failure.");
+      return;
+    }
+
+  QDateTime dateTime
+    (QDateTime::fromString(timestamp.constData(), "MMddyyyyhhmmss"));
+
+  if(!dateTime.isValid())
+    {
+      spoton_misc::logError
+	("spoton_mailer(): slotRetrieveMail(): "
+	 "invalid date-time object.");
+      return;
+    }
+
+  QDateTime now(QDateTime::currentDateTimeUtc());
+
+  dateTime.setTimeSpec(Qt::UTC);
+  now.setTimeSpec(Qt::UTC);
+
+  int secsTo = qAbs(now.secsTo(dateTime));
+
+  if(!(secsTo <= 90))
+    {
+      spoton_misc::logError
+	(QString("spoton_mailer(): slotRetrieveMail(): "
+		 "large time delta (%1).").arg(secsTo));
+      return;
+    }
+  else if(spoton_kernel::duplicateEmailRequests(data))
+    {
+      spoton_misc::logError
+	("spoton_mailer::slotRetrieveMail(): duplicate requests.");
+      return;
+    }
+
+  spoton_kernel::emailRequestCacheAdd(data);
 
   QList<QByteArray> list;
 
@@ -363,6 +404,7 @@ void spoton_mailer::slotRetrieveMailTimeout(void)
 			
 			QSqlQuery deleteQuery(db);
 
+			deleteQuery.exec("PRAGMA secure_delete = ON");
 			deleteQuery.prepare("DELETE FROM post_office "
 					    "WHERE recipient_hash = ? AND "
 					    "OID = ?");
@@ -432,6 +474,7 @@ void spoton_mailer::slotReap(void)
 		{
 		  QSqlQuery deleteQuery(db);
 
+		  deleteQuery.exec("PRAGMA secure_delete = ON");
 		  deleteQuery.prepare("DELETE FROM post_office "
 				      "WHERE OID = ?");
 		  deleteQuery.bindValue(0, query.value(1));

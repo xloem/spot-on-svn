@@ -65,6 +65,12 @@ void spoton_gui_server_tcp_server::incomingConnection(int socketDescriptor)
 	{
 	  try
 	    {
+	      QString sslCS
+		(spoton_kernel::
+		 setting("gui/sslControlString",
+			 "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH").
+		 toString());
+
 	      socket->setSocketDescriptor(socketDescriptor);
 	      socket->setSocketOption
 		(QAbstractSocket::LowDelayOption,
@@ -94,7 +100,7 @@ void spoton_gui_server_tcp_server::incomingConnection(int socketDescriptor)
 		(QSsl::SslOptionDisableLegacyRenegotiation, true);
 #endif
 	      spoton_crypt::setSslCiphers
-		(socket->supportedCiphers(), configuration);
+		(socket->supportedCiphers(), sslCS, configuration);
 	      socket->setSslConfiguration(configuration);
 	      socket->startServerEncryption();
 	      m_queue.enqueue(socket);
@@ -181,6 +187,7 @@ spoton_gui_server::~spoton_gui_server()
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.exec("DELETE FROM kernel_gui_server");
       }
 
@@ -711,7 +718,7 @@ void spoton_gui_server::slotFileChanged(const QString &path)
   Q_UNUSED(path);
 
   if(!m_generalTimer.isActive())
-    m_generalTimer.start();
+    m_generalTimer.start(2500);
 }
 
 void spoton_gui_server::slotAuthenticationRequested

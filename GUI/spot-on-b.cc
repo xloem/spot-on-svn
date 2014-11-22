@@ -781,6 +781,7 @@ void spoton::slotRemoveParticipants(void)
 
 	    if(!data.isNull() && data.isValid())
 	      {
+		query.exec("PRAGMA secure_delete = ON");
 		query.prepare("DELETE FROM friends_public_keys WHERE "
 			      "OID = ?");
 		query.bindValue(0, data.toString());
@@ -2565,7 +2566,7 @@ void spoton::slotSendMail(void)
 
 	    if(ok)
 	      if(query.exec())
-		if(!attachment.isEmpty())
+		if(!attachment.isEmpty() && !fileName.isEmpty())
 		  {
 		    QVariant variant(query.lastInsertId());
 		    qint64 id = query.lastInsertId().toLongLong();
@@ -2667,6 +2668,7 @@ void spoton::slotDeleteAllBlockedNeighbors(void)
 		hash.insert(ip, query.value(1).toLongLong());
 	    }
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.prepare("DELETE FROM neighbors WHERE OID = ?");
 
 	for(int i = 0; i < hash.keys().size(); i++)
@@ -2943,6 +2945,7 @@ void spoton::slotDeleteAllUuids(void)
 		hash.insert(uuid, query.value(1).toLongLong());
 	    }
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.prepare("DELETE FROM neighbors WHERE OID = ?");
 
 	for(int i = 0; i < hash.keys().size(); i++)
@@ -2979,6 +2982,9 @@ void spoton::slotRefreshMail(void)
 
 void spoton::populateMail(void)
 {
+  if(!m_crypts.value("email", 0))
+    return;
+
   m_ui.reply->setEnabled(m_ui.folder->currentIndex() == 0);
   m_ui.resend->setEnabled(m_ui.folder->currentIndex() == 1);
 
@@ -2988,9 +2994,6 @@ void spoton::populateMail(void)
     m_ui.mail->horizontalHeaderItem(1)->setText(tr("To"));
   else
     m_ui.mail->horizontalHeaderItem(1)->setText(tr("From/To"));
-
-  if(!m_crypts.value("email", 0))
-    return;
 
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
@@ -3136,7 +3139,10 @@ void spoton::populateMail(void)
 			      }
 			  }
 			else
-			  item = new QTableWidgetItem("#####");
+			  {
+			    item = new QTableWidgetItem("#####");
+			    item->setData(Qt::UserRole, 0);
+			  }
 		      }
 		    else if(i == 5) // goldbug
 		      item = new QTableWidgetItem(goldbug);
@@ -3466,6 +3472,7 @@ void spoton::slotDeleteMail(int index)
 
 	    if(m_ui.folder->currentIndex() == 2) // Trash
 	      {
+		query.exec("PRAGMA secure_delete = ON");
 		query.prepare("DELETE FROM folders WHERE OID = ?");
 		query.bindValue(0, oid);
 	      }
@@ -3502,6 +3509,7 @@ void spoton::slotDeleteMail(int index)
 		      {
 			QSqlQuery query(db);
 
+			query.exec("PRAGMA secure_delete = ON");
 			query.prepare("DELETE FROM folders WHERE OID = ?");
 			query.bindValue(0, oid);
 			query.exec();
@@ -3515,6 +3523,7 @@ void spoton::slotDeleteMail(int index)
 		  {
 		    QSqlQuery query(db);
 
+		    query.exec("PRAGMA secure_delete = ON");
 		    query.prepare("DELETE FROM folders_attachment "
 				  "WHERE folders_oid = ?");
 		    query.bindValue(0, oid);
@@ -3650,6 +3659,7 @@ void spoton::slotEmptyTrash(void)
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.exec("DELETE FROM folders WHERE folder_index = 2");
 	query.exec("DELETE FROM folders_attachment WHERE folders_oid "
 		   "NOT IN (SELECT OID FROM folders)");
@@ -4280,8 +4290,17 @@ int spoton::applyGoldbugToLetter(const QByteArray &goldbug,
 	    item = m_ui.mail->item(row, 4); // Attachment(s)
 
 	    if(item)
-	      if(attachmentsCount > 0)
-		item->setIcon(QIcon(":/generic/attach.png"));
+	      {
+		if(attachmentsCount > 0)
+		  {
+		    item->setData(Qt::UserRole, 1);
+		    item->setIcon(QIcon(":/generic/attach.png"));
+		  }
+		else
+		  item->setData(Qt::UserRole, 0);
+
+		item->setText("");
+	      }
 
 	    item = m_ui.mail->item(row, 5); // Goldbug
 
@@ -4715,6 +4734,7 @@ void spoton::initializeKernelSocket(void)
   if(error.isEmpty())
     {
       QSslConfiguration configuration;
+      QString sslCS(m_ui.sslControlString->text().trimmed());
 
       configuration.setPrivateKey(QSslKey(privateKey, QSsl::Rsa));
 #if QT_VERSION >= 0x040800
@@ -4726,6 +4746,7 @@ void spoton::initializeKernelSocket(void)
 	(QSsl::SslOptionDisableLegacyRenegotiation, true);
 #endif
       spoton_crypt::setSslCiphers(QSslSocket::supportedCiphers(),
+				  sslCS,
 				  configuration);
       m_kernelSocket.setSslConfiguration(configuration);
     }
@@ -4810,6 +4831,7 @@ void spoton::slotRemoveEmailParticipants(void)
 
 	    if(!data.isNull() && data.isValid())
 	      {
+		query.exec("PRAGMA secure_delete = ON");
 		query.prepare("DELETE FROM friends_public_keys WHERE "
 			      "OID = ?");
 		query.bindValue(0, data.toString());
@@ -5000,6 +5022,7 @@ void spoton::slotDeleteAccepedIP(void)
 	QSqlQuery query(db);
 	bool ok = true;
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.prepare("DELETE FROM listeners_allowed_ips WHERE "
 		      "ip_address_hash = ? AND listener_oid = ?");
 	query.bindValue
@@ -5264,6 +5287,7 @@ void spoton::slotDeleteAccount(void)
 	QSqlQuery query(db);
 	bool ok = true;
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.prepare("DELETE FROM listeners_accounts WHERE "
 		      "account_name_hash = ? AND listener_oid = ?");
 	query.bindValue

@@ -199,7 +199,7 @@ void spoton_starbeam_writer::processData
 
   if(dataSize != list.value(5).length()) // Data
     return;
-  else if(dataSize > pulseSize)
+  else if(dataSize > (pulseSize + pulseSize / 100 + 12))
     return;
   else if(dataSize > maximumSize || totalSize > maximumSize)
     return;
@@ -228,8 +228,12 @@ void spoton_starbeam_writer::processData
 
       if(file.seek(position))
 	{
-	  if(static_cast<int> (file.write(list.value(5).mid(0, dataSize).
-					  constData(), dataSize)) != dataSize)
+	  QByteArray data(list.value(5));
+
+	  data = qUncompress(data);
+
+	  if(static_cast<int> (file.write(data.constData(),
+					  data.length())) != data.length())
 	    {
 	      ok = false;
 	      spoton_misc::logError
@@ -441,7 +445,9 @@ void spoton_starbeam_writer::slotReadKeys(void)
   QSqlDatabase::removeDatabase(connectionName);
 }
 
-bool spoton_starbeam_writer::append(const QByteArray &data)
+bool spoton_starbeam_writer::append
+(const QByteArray &data,
+ QPair<QByteArray, QByteArray> &discoveredAdaptiveEchoPair)
 {
   if(data.isEmpty())
     return false;
@@ -450,6 +456,9 @@ bool spoton_starbeam_writer::append(const QByteArray &data)
 
   if(!s_crypt)
     return false;
+
+  spoton_kernel::discoverAdaptiveEchoPair
+    (data.trimmed(), discoveredAdaptiveEchoPair);
 
   QReadLocker locker(&m_keyMutex);
 

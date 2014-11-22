@@ -449,6 +449,8 @@ class spoton: public QMainWindow
   void slotSendMessage(void);
   void slotSetAETokenInformation(void);
   void slotSetIcons(void);
+  void slotSetListenerSSLControlString(void);
+  void slotSetNeighborSSLControlString(void);
   void slotSetPassphrase(void);
   void slotSetUrlIniPath(void);
   void slotShareBuzzMagnet(void);

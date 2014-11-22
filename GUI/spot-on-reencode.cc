@@ -104,6 +104,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		{
 		  QSqlQuery deleteQuery(db);
 
+		  deleteQuery.exec("PRAGMA secure_delete = ON");
 		  deleteQuery.prepare("DELETE FROM buzz_channels WHERE "
 				      "data_hash = ?");
 		  deleteQuery.bindValue(0, query.value(1));
@@ -198,6 +199,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		      {
 			QSqlQuery deleteQuery(db);
 
+			deleteQuery.exec("PRAGMA secure_delete = ON");
 			deleteQuery.prepare("DELETE FROM folders WHERE "
 					    "OID = ?");
 			deleteQuery.bindValue
@@ -262,6 +264,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		      {
 			QSqlQuery deleteQuery(db);
 
+			deleteQuery.exec("PRAGMA secure_delete = ON");
 			deleteQuery.prepare
 			  ("DELETE FROM folders_attachment WHERE "
 			   "OID = ?");
@@ -349,6 +352,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		{
 		  QSqlQuery deleteQuery(db);
 
+		  deleteQuery.exec("PRAGMA secure_delete = ON");
 		  deleteQuery.prepare("DELETE FROM institutions WHERE "
 				      "OID = ?");
 		  deleteQuery.bindValue(0, query.value(4));
@@ -420,6 +424,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		{
 		  QSqlQuery deleteQuery(db);
 
+		  deleteQuery.exec("PRAGMA secure_delete = ON");
 		  deleteQuery.prepare("DELETE FROM post_office WHERE "
 				      "OID = ?");
 		  deleteQuery.bindValue(0, query.value(3));
@@ -536,6 +541,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		{
 		  QSqlQuery deleteQuery(db);
 
+		  deleteQuery.exec("PRAGMA secure_delete = ON");
 		  deleteQuery.prepare("DELETE FROM friends_public_keys "
 				      "WHERE public_key_hash = ?");
 		  deleteQuery.bindValue(0, query.value(2));
@@ -741,6 +747,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		{
 		  QSqlQuery deleteQuery(db);
 
+		  deleteQuery.exec("PRAGMA secure_delete = ON");
 		  deleteQuery.prepare("DELETE FROM listeners WHERE "
 				      "hash = ?");
 		  deleteQuery.bindValue(0, query.value(10));
@@ -804,6 +811,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		{
 		  QSqlQuery deleteQuery(db);
 
+		  deleteQuery.exec("PRAGMA secure_delete = ON");
 		  deleteQuery.prepare("DELETE FROM listeners_accounts WHERE "
 				      "account_name_hash = ?");
 		  deleteQuery.bindValue(0, query.value(1));
@@ -862,6 +870,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		{
 		  QSqlQuery deleteQuery(db);
 
+		  deleteQuery.exec("PRAGMA secure_delete = ON");
 		  deleteQuery.prepare
 		    ("DELETE FROM listeners_adaptive_echo_tokens WHERE "
 		     "token_hash = ?");
@@ -905,6 +914,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		{
 		  QSqlQuery deleteQuery(db);
 
+		  deleteQuery.exec("PRAGMA secure_delete = ON");
 		  deleteQuery.prepare("DELETE FROM listeners_allowed_ips "
 				      "WHERE "
 				      "ip_address_hash = ?");
@@ -1283,6 +1293,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		{
 		  QSqlQuery deleteQuery(db);
 
+		  deleteQuery.exec("PRAGMA secure_delete = ON");
 		  deleteQuery.prepare("DELETE FROM neighbors WHERE "
 				      "hash = ?");
 		  deleteQuery.bindValue(0, query.value(4));
@@ -1349,6 +1360,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		{
 		  QSqlQuery deleteQuery(db);
 
+		  deleteQuery.exec("PRAGMA secure_delete = ON");
 		  deleteQuery.prepare("DELETE FROM magnets WHERE "
 				      "magnet_hash = ?");
 		  deleteQuery.bindValue(0, query.value(1));
@@ -1437,6 +1449,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		{
 		  QSqlQuery deleteQuery(db);
 
+		  deleteQuery.exec("PRAGMA secure_delete = ON");
 		  deleteQuery.prepare("DELETE FROM received WHERE "
 				      "file_hash = ?");
 		  deleteQuery.bindValue(0, query.value(1));
@@ -1478,6 +1491,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		{
 		  QSqlQuery deleteQuery(db);
 
+		  deleteQuery.exec("PRAGMA secure_delete = ON");
 		  deleteQuery.prepare("DELETE FROM received_novas WHERE "
 				      "nova_hash = ?");
 		  deleteQuery.bindValue(0, query.value(1));
@@ -1583,6 +1597,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		{
 		  QSqlQuery deleteQuery(db);
 
+		  deleteQuery.exec("PRAGMA secure_delete = ON");
 		  deleteQuery.prepare("DELETE FROM transmitted WHERE "
 				      "mosaic = ?");
 		  deleteQuery.bindValue(0, query.value(2));
@@ -1636,6 +1651,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		{
 		  QSqlQuery deleteQuery(db);
 
+		  deleteQuery.exec("PRAGMA secure_delete = ON");
 		  deleteQuery.prepare
 		    ("DELETE FROM transmitted_magnets WHERE "
 		     "magnet_hash = ?");

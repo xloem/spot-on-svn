@@ -126,6 +126,7 @@ class spoton_neighbor: public QThread
 		  const QString &orientation,
 		  const QString &motd,
 		  const QString &statusControl,
+		  const QString &sslControlString,
 		  QObject *parent);
   spoton_neighbor(const int socketDescriptor,
 		  const QByteArray &certificate,
@@ -142,6 +143,7 @@ class spoton_neighbor: public QThread
 		  const QString &localPort,
 		  const QString &orientation,
 		  const QString &motd,
+		  const QString &sslControlString,
 		  QObject *parent);
   ~spoton_neighbor();
   QAbstractSocket::SocketState state(void) const;
@@ -184,6 +186,7 @@ class spoton_neighbor: public QThread
   QString m_motd;
   QString m_orientation;
   QString m_protocol;
+  QString m_sslControlString;
   QString m_statusControl;
   QString m_transport;
   QTimer m_accountTimer;
@@ -350,6 +353,7 @@ class spoton_neighbor: public QThread
   void resetKeepAlive(void);
   void retrieveMail(const QByteArray &data,
 		    const QByteArray &publicKeyHash,
+		    const QByteArray &timestamp,
 		    const QByteArray &signature,
 		    const QPairByteArrayByteArray &adaptiveEchoPair);
   void scrambleRequest(void);

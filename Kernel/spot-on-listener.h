@@ -179,6 +179,7 @@ class spoton_listener: public QObject
 		  const bool shareAddress,
 		  const QString &orientation,
 		  const QString &motd,
+		  const QString &sslControlString,
 		  QObject *parent);
   ~spoton_listener();
   QHostAddress externalAddress(void) const;
@@ -201,6 +202,7 @@ class spoton_listener: public QObject
   QString m_echoMode;
   QString m_motd;
   QString m_orientation;
+  QString m_sslControlString;
   QString m_transport;
   QTimer m_externalAddressDiscovererTimer;
   QTimer m_timer;

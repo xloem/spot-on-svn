@@ -158,6 +158,7 @@ spoton_listener::spoton_listener(const QString &ipAddress,
 				 const bool shareAddress,
 				 const QString &orientation,
 				 const QString &motd,
+				 const QString &sslControlString,
 				 QObject *parent):QObject(parent)
 {
   m_sctpServer = 0;
@@ -217,6 +218,11 @@ spoton_listener::spoton_listener(const QString &ipAddress,
   m_privateKey = privateKey;
   m_publicKey = publicKey;
   m_shareAddress = shareAddress;
+  m_sslControlString = sslControlString.trimmed();
+
+  if(m_sslControlString.isEmpty())
+    m_sslControlString = "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH";
+
   m_transport = transport;
   m_useAccounts = useAccounts;
 
@@ -331,6 +337,7 @@ spoton_listener::~spoton_listener()
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.prepare("DELETE FROM listeners WHERE OID = ? AND "
 		      "status_control = 'deleted'");
 	query.bindValue(0, m_id);
@@ -394,6 +401,7 @@ void spoton_listener::slotTimeout(void)
 	*/
 
 	query.setForwardOnly(true);
+	query.exec("PRAGMA secure_delete = ON");
 	query.prepare
 	  ("DELETE FROM listeners_accounts_consumed_authentications "
 	   "WHERE "
@@ -406,7 +414,7 @@ void spoton_listener::slotTimeout(void)
 	query.exec();
 	query.prepare("SELECT status_control, maximum_clients, "
 		      "echo_mode, use_accounts, maximum_buffer_size, "
-		      "maximum_content_length, motd "
+		      "maximum_content_length, motd, ssl_control_string "
 		      "FROM listeners WHERE OID = ?");
 	query.bindValue(0, m_id);
 
@@ -431,6 +439,11 @@ void spoton_listener::slotTimeout(void)
 			 query.value(5).toLongLong(),
 			 spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
 		m_motd = query.value(6).toString();
+		m_sslControlString = query.value(7).toString().trimmed();
+
+		if(m_sslControlString.isEmpty())
+		  m_sslControlString =
+		    "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH";
 
 		if(s_crypt)
 		  {
@@ -684,6 +697,7 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
 	     QString::number(m_port),
 	     m_orientation,
 	     m_motd,
+	     m_sslControlString,
 	     this);
 	}
       catch(std::bad_alloc &exception)

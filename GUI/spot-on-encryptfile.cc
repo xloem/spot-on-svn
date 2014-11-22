@@ -233,7 +233,7 @@ void spoton_encryptfile::slotConvert(void)
 
   if(password.length() < 16)
     {
-      error = tr("Please provide a password that contains at least "
+      error = tr("Please provide a secret that contains at least "
 		 "sixteen characters.");
       goto done_label;
     }
@@ -269,6 +269,7 @@ void spoton_encryptfile::slotConvert(void)
   list << derivedKeys.second;
   ui.cancel->setVisible(true);
   ui.convert->setEnabled(false);
+  ui.reset->setEnabled(false);
   ui.progressBar->setValue(0);
   ui.progressBar->setVisible(true);
 
@@ -666,6 +667,7 @@ void spoton_encryptfile::slotCompleted(const QString &error)
   statusBar()->clearMessage();
   ui.cancel->setVisible(false);
   ui.convert->setEnabled(true);
+  ui.reset->setEnabled(true);
   ui.progressBar->setVisible(false);
 
   if(error.length() == 1)

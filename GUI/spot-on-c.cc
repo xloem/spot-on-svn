@@ -340,6 +340,7 @@ void spoton::slotDeleteEtpAllMagnets(void)
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.exec("DELETE FROM magnets");
       }
 
@@ -379,6 +380,7 @@ void spoton::slotDeleteEtpMagnet(void)
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.prepare("DELETE FROM magnets WHERE OID = ?");
 	query.bindValue(0, oid);
 	query.exec();
@@ -543,6 +545,9 @@ void spoton::slotAutoRetrieveEmail(bool state)
 
 void spoton::slotMailRetrievalIntervalChanged(int value)
 {
+  if(value < 5)
+    value = 5;
+
   m_settings["gui/emailRetrievalInterval"] = value;
 
   QSettings settings;
@@ -1033,6 +1038,7 @@ void spoton::slotTransmit(void)
 		break;
 	      }
 
+	    query.exec("PRAGMA secure_delete = ON");
 	    query.prepare("DELETE FROM magnets WHERE "
 			  "magnet_hash = ? and one_time_magnet = 1");
 	    query.bindValue(0, crypt->keyedHash(magnets.at(i), &ok).
@@ -1538,6 +1544,7 @@ void spoton::slotDeleteAllTransmitted(void)
 
 	if(!isKernelActive())
 	  {
+	    query.exec("PRAGMA secure_delete = ON");
 	    query.exec("DELETE FROM transmitted");
 	    query.exec("DELETE FROM transmitted_magnets");
 	    query.exec("DELETE FROM transmitted_scheduled_pulses");
@@ -1585,6 +1592,7 @@ void spoton::slotDeleteTransmitted(void)
 
 	if(!isKernelActive())
 	  {
+	    query.exec("PRAGMA secure_delete = ON");
 	    query.prepare("DELETE FROM transmitted WHERE "
 			  "OID = ?");
 	    query.bindValue(0, oid);
@@ -1795,6 +1803,7 @@ void spoton::slotDeleteNova(void)
 	QSqlQuery query(db);
 	bool ok = true;
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.prepare("DELETE FROM received_novas WHERE "
 		      "nova_hash = ?");
 	query.bindValue
@@ -1928,6 +1937,7 @@ void spoton::slotDeleteAllReceived(void)
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.exec("DELETE FROM received");
       }
 
@@ -1966,6 +1976,7 @@ void spoton::slotDeleteReceived(void)
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.prepare("DELETE FROM received WHERE "
 		      "OID = ?");
 	query.bindValue(0, oid);
@@ -2567,6 +2578,9 @@ void spoton::prepareContextMenuMirrors(void)
       action = menu->addAction(tr("&Copy Adaptive Echo Magnet"),
 			       this, SLOT(slotCopyAEMagnet(void)));
       action->setProperty("from", "listeners");
+      menu->addSeparator();
+      menu->addAction(tr("Set &SSL Control String"),
+		      this, SLOT(slotSetListenerSSLControlString(void)));
       m_ui.listenersActionMenu->setMenu(menu);
     }
 
@@ -2661,6 +2675,9 @@ void spoton::prepareContextMenuMirrors(void)
 		      this, SLOT(slotSetAETokenInformation(void)));
       menu->addAction(tr("&Reset Adaptive Echo Token Information"),
 		      this, SLOT(slotResetAETokenInformation(void)));
+      menu->addSeparator();
+      menu->addAction(tr("Set &SSL Control String"),
+		      this, SLOT(slotSetNeighborSSLControlString(void)));
       m_ui.neighborsActionMenu->setMenu(menu);
     }
 
@@ -3844,6 +3861,7 @@ void spoton::slotRemoveUrlParticipants(void)
 
 	    if(!data.isNull() && data.isValid())
 	      {
+		query.exec("PRAGMA secure_delete = ON");
 		query.prepare("DELETE FROM friends_public_keys WHERE "
 			      "OID = ?");
 		query.bindValue(0, data.toString());

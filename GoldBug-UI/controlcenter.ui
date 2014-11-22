@@ -4873,6 +4873,27 @@ color: rgb(255, 255, 255);</string>
                </layout>
               </item>
               <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_69">
+                <item>
+                 <widget class="QLabel" name="label_91">
+                  <property name="text">
+                   <string>&amp;SSL Control String</string>
+                  </property>
+                  <property name="buddy">
+                   <cstring>neighborsSslControlString</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="neighborsSslControlString">
+                  <property name="text">
+                   <string>HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
                <widget class="QComboBox" name="neighborsEchoMode">
                 <property name="sizeAdjustPolicy">
                  <enum>QComboBox::AdjustToContents</enum>
@@ -5391,6 +5412,11 @@ color: rgb(255, 255, 255);</string>
                  </column>
                  <column>
                   <property name="text">
+                   <string>SSL Control String</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
                    <string>OID</string>
                   </property>
                  </column>
@@ -5519,6 +5545,27 @@ QPushButton:pressed {
                         <string>4096</string>
                        </property>
                       </item>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_70">
+                    <item>
+                     <widget class="QLabel" name="label_93">
+                      <property name="text">
+                       <string>&amp;SSL Control String</string>
+                      </property>
+                      <property name="buddy">
+                       <cstring>listenersSslControlString</cstring>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLineEdit" name="listenersSslControlString">
+                      <property name="text">
+                       <string>HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH</string>
+                      </property>
                      </widget>
                     </item>
                    </layout>
@@ -9194,6 +9241,11 @@ QPushButton:pressed {
                </column>
                <column>
                 <property name="text">
+                 <string>SSL Control String</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
                  <string>OID</string>
                 </property>
                </column>
@@ -9276,7 +9328,7 @@ QPushButton:pressed {
                <item>
                 <widget class="QLineEdit" name="sslControlString">
                  <property name="text">
-                  <string>HIGH:!aNULL:!eNULL:!3DES:!EXPORT:@STRENGTH</string>
+                  <string>HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH</string>
                  </property>
                 </widget>
                </item>
@@ -10597,7 +10649,7 @@ QPushButton:pressed {
                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;A minimalistic &lt;br/&gt;Desktop Messenger GUI&lt;br/&gt;for the messaging library of&lt;br/&gt;http://spot-on.sf.net&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
               <property name="text">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#666666;&quot;&gt;GB v. 1.7&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#666666;&quot;&gt;GB v. 1.6b&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -10630,7 +10682,7 @@ QPushButton:pressed {
             <property name="text">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;http://sourceforge.net/p/spot-on/code/HEAD/tree/branches/Documentation/RELEASE-NOTES&quot;&gt;
 &lt;span style=&quot; text-decoration: none; color:#666666;&quot;&gt;
-spot-on-kernel&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; color:#666666;&quot;&gt; 0.17&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+spot-on-kernel&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; color:#666666;&quot;&gt; 0.16b&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -11052,6 +11104,7 @@ spot-on-kernel&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; color:#666666;&quot;&
   <tabstop>requireSsl</tabstop>
   <tabstop>addException</tabstop>
   <tabstop>neighborKeySize</tabstop>
+  <tabstop>neighborsSslControlString</tabstop>
   <tabstop>neighborsEchoMode</tabstop>
   <tabstop>publishedKeySize</tabstop>
   <tabstop>proxy</tabstop>
@@ -11069,6 +11122,7 @@ spot-on-kernel&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; color:#666666;&quot;&
   <tabstop>permanentCertificate</tabstop>
   <tabstop>sslListener</tabstop>
   <tabstop>listenerKeySize</tabstop>
+  <tabstop>listenersSslControlString</tabstop>
   <tabstop>listenerShareAddress</tabstop>
   <tabstop>recordIPAddress</tabstop>
   <tabstop>limitConnections</tabstop>

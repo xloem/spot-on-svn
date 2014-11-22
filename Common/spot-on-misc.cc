@@ -294,6 +294,8 @@ void spoton_misc::prepareDatabases(void)
 						      ** the scope id, and
 						      ** the transport.
 						      */
+		   "ssl_control_string TEXT NOT NULL DEFAULT "
+		   "'HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH', "
 		   "ssl_key_size INTEGER NOT NULL DEFAULT 2048, "
 		   "echo_mode TEXT NOT NULL, "
 		   "certificate BLOB NOT NULL, "
@@ -308,6 +310,9 @@ void spoton_misc::prepareDatabases(void)
 		   "motd TEXT NOT NULL DEFAULT 'Welcome to Spot-On.')").
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE).
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH));
+	query.exec("ALTER TABLE listeners ADD COLUMN "
+		   "ssl_control_string TEXT NOT NULL DEFAULT "
+		   "'HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH'");
 	query.exec("CREATE TABLE IF NOT EXISTS listeners_accounts ("
 		   "account_name TEXT NOT NULL, "
 		   "account_name_hash TEXT NOT NULL, " // Keyed hash.
@@ -404,6 +409,8 @@ void spoton_misc::prepareDatabases(void)
 		   "allow_exceptions INTEGER NOT NULL DEFAULT 0, "
 		   "bytes_read INTEGER NOT NULL DEFAULT 0, "
 		   "bytes_written INTEGER NOT NULL DEFAULT 0, "
+		   "ssl_control_string TEXT NOT NULL DEFAULT "
+		   "'HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH', "
 		   "ssl_session_cipher TEXT, "
 		   "ssl_required INTEGER NOT NULL DEFAULT 1, "
 		   "account_name TEXT NOT NULL, "
@@ -428,6 +435,9 @@ void spoton_misc::prepareDatabases(void)
 					   */
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE).
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH));
+	query.exec("ALTER TABLE neighbors ADD COLUMN "
+		   "ssl_control_string TEXT NOT NULL DEFAULT "
+		   "'HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH'");
       }
 
     db.close();
@@ -1094,7 +1104,10 @@ void spoton_misc::moveSentMailToSentFolder(const QList<qint64> &oids,
 	  query.prepare("UPDATE folders SET status = ? WHERE "
 			"OID = ?");
 	else
-	  query.prepare("DELETE FROM folders WHERE OID = ?");
+	  {
+	    query.exec("PRAGMA secure_delete = ON");
+	    query.prepare("DELETE FROM folders WHERE OID = ?");
+	  }
 
 	for(int i = 0; i < oids.size(); i++)
 	  {
@@ -1116,6 +1129,7 @@ void spoton_misc::moveSentMailToSentFolder(const QList<qint64> &oids,
 		  {
 		    QSqlQuery query(db);
 
+		    query.exec("PRAGMA secure_delete = ON");
 		    query.prepare
 		      ("DELETE FROM folders_attachment WHERE "
 		       "folders_oid = ?");
@@ -1145,6 +1159,7 @@ void spoton_misc::cleanupDatabases(spoton_crypt *crypt)
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.exec("UPDATE friends_public_keys SET status = 'offline' "
 		   "WHERE status <> 'offline'");
 
@@ -1171,6 +1186,7 @@ void spoton_misc::cleanupDatabases(spoton_crypt *crypt)
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.exec("DELETE FROM kernel_gui_server");
 	query.exec("DELETE FROM kernel_statistics");
       }
@@ -1189,6 +1205,7 @@ void spoton_misc::cleanupDatabases(spoton_crypt *crypt)
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.exec("DELETE FROM listeners WHERE "
 		   "status_control = 'deleted'");
 	query.exec("DELETE FROM listeners_accounts WHERE "
@@ -1218,6 +1235,7 @@ void spoton_misc::cleanupDatabases(spoton_crypt *crypt)
 	QSettings settings;
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.exec("DELETE FROM neighbors WHERE "
 		   "status_control = 'deleted'");
 
@@ -1253,6 +1271,7 @@ void spoton_misc::cleanupDatabases(spoton_crypt *crypt)
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.exec("DELETE FROM transmitted WHERE "
 		   "status_control = 'deleted'");
 	query.exec("DELETE FROM transmitted_magnets WHERE "
@@ -1690,10 +1709,11 @@ void spoton_misc::purgeSignatureRelationships(const QSqlDatabase &db,
       ** in the friends_public_keys table.
       */
 
+      query.exec("PRAGMA secure_delete = ON");
       query.prepare("DELETE FROM relationships_with_signatures WHERE "
 		    "public_key_hash NOT IN "
 		    "(SELECT public_key_hash FROM friends_public_keys WHERE "
-		    "key_type <> ?)");
+		    "key_type_hash <> ?)");
       query.bindValue
 	(0, crypt->keyedHash(list.at(i) + "-signature", &ok).toBase64());
 
@@ -1707,7 +1727,7 @@ void spoton_misc::purgeSignatureRelationships(const QSqlDatabase &db,
 
       query.prepare
 	("DELETE FROM friends_public_keys WHERE "
-	 "key_type = ? AND public_key_hash NOT IN "
+	 "key_type_hash = ? AND public_key_hash NOT IN "
 	 "(SELECT signature_public_key_hash FROM "
 	 "relationships_with_signatures)");
 
@@ -1727,7 +1747,9 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
   */
 
   QString str("");
+  QStringList list;
   bool ok = true;
+  double rational = 0.0;
   int integer = 0;
 
   integer = qAbs(settings.value("gui/congestionCost", 10000).toInt(&ok));
@@ -1787,7 +1809,6 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
   str = settings.value("gui/kernelCipherType").toString();
 
   if(!(str == "aes256" || str == "camellia256" ||
-       str == "gost28147" ||
        str == "serpent256" || str == "twofish"))
     str = "aes256";
 
@@ -1884,6 +1905,37 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
 
   settings.insert
     ("kernel/server_account_verification_window_msecs", integer);
+
+  /*
+  ** Correct timer intervals.
+  */
+
+  integer = settings.value("gui/emailRetrievalInterval", 5).toInt(&ok);
+
+  if(!ok)
+    integer = 5;
+  else if(integer < 5 || integer > 60)
+    integer = 5;
+
+  settings.insert("gui/emailRetrievalInterval", integer);
+  list.clear();
+  list << "gui/kernelUpdateTimer"
+       << "gui/listenersUpdateTimer"
+       << "gui/neighborsUpdateTimer"
+       << "gui/participantsUpdateTimer"
+       << "gui/starbeamUpdateTimer";
+
+  for(int i = 0; i < list.size(); i++)
+    {
+      rational = settings.value(list.at(i), 3.50).toDouble(&ok);
+
+      if(!ok)
+	rational = 3.50;
+      else if(rational < 0.50 || rational > 10.00)
+	rational = 3.50;
+
+      settings.insert(list.at(i), rational);
+    }
 }
 
 QSqlDatabase spoton_misc::database(QString &connectionName)
@@ -2113,6 +2165,7 @@ bool spoton_misc::authenticateAccount(QByteArray &name,
 		QSqlQuery query(db);
 		bool ok = true;
 
+		query.exec("PRAGMA secure_delete = ON");
 		query.prepare("DELETE FROM listeners_accounts "
 			      "WHERE account_name_hash = ? AND "
 			      "listener_oid = ? AND one_time_account = 1");
@@ -2841,14 +2894,23 @@ QHostAddress spoton_misc::peerAddressAndPort(const int socketDescriptor,
 {
   QHostAddress address;
   socklen_t length = 0;
+#ifdef Q_OS_OS2
+  struct sockaddr peeraddr;
+#else
   struct sockaddr_storage peeraddr;
+#endif
 
   length = sizeof(peeraddr);
+
+  if(port)
+    *port = 0;
 
   if(getpeername(socketDescriptor, (struct sockaddr *) &peeraddr,
 		 &length) == 0)
     {
+#ifndef Q_OS_OS2
       if(peeraddr.ss_family == AF_INET)
+#endif
 	{
 	  spoton_type_punning_sockaddr_t *sockaddr =
 	    (spoton_type_punning_sockaddr_t *) &peeraddr;
@@ -2862,6 +2924,7 @@ QHostAddress spoton_misc::peerAddressAndPort(const int socketDescriptor,
 		*port = ntohs(sockaddr->sockaddr_in.sin_port);
 	    }
 	}
+#ifndef Q_OS_OS2
       else
 	{
 	  spoton_type_punning_sockaddr_t *sockaddr =
@@ -2881,6 +2944,7 @@ QHostAddress spoton_misc::peerAddressAndPort(const int socketDescriptor,
 		*port = ntohs(sockaddr->sockaddr_in6.sin6_port);
 	    }
 	}
+#endif
     }
 
   return address;

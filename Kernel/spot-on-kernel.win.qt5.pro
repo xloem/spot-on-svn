@@ -12,6 +12,7 @@ LANGUAGE	= C++
 QT		+= concurrent core network sql
 QT		-= gui
 CONFIG		+= qt release warn_on
+CONFIG          -= debug
 
 # The function gcry_kdf_derive() is available in version
 # 1.5.0 of the gcrypt library.
@@ -29,6 +30,7 @@ QMAKE_CLEAN     += ..\\..\\release\\Spot-On-Kernel \
                    ..\\..\\..\\libNTRU\\src\\*.o \
 		   ..\\..\\..\\libSpotOn\\libspoton.dll \
 		   ..\\..\\..\\libSpotOn\\*.o ..\\..\\..\\libSpotOn\\test.exe
+                   .qmake.cache
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE += -fwrapv -mtune=generic -pie -O3 \
 			  -Wall -Wcast-align -Wcast-qual \

@@ -56,14 +56,17 @@ void spoton_crypt::generateNTRUKeys(const QString &keySize,
     }
 
   NtruEncKeyPair kp;
+  NtruRandContext rand_ctx_def;
+#ifdef Q_OS_WIN32
+  NtruRandGen rng_def = NTRU_RNG_DEFAULT;
+#else
+  NtruRandGen rng_def = NTRU_RNG_DEVURANDOM;
+#endif
+
+  ntru_rand_init(&rand_ctx_def, &rng_def);
 
   if(ntru_gen_key_pair(&parameters[index], &kp,
-#ifdef Q_OS_WIN32
-		       ntru_rand_default
-#else
-		       ntru_rand_devurandom
-#endif
-		       ) == NTRU_SUCCESS)
+		       &rand_ctx_def) == NTRU_SUCCESS)
     {
       uint8_t *privateKey_array = 0;
       uint8_t *publicKey_array = 0;
@@ -96,6 +99,8 @@ void spoton_crypt::generateNTRUKeys(const QString &keySize,
       delete []privateKey_array;
       delete []publicKey_array;
     }
+
+  ntru_rand_release(&rand_ctx_def);
 #else
   Q_UNUSED(keySize);
   Q_UNUSED(privateKey);
@@ -231,6 +236,12 @@ QByteArray spoton_crypt::publicKeyEncryptNTRU(const QByteArray &data,
       return QByteArray();
     }
 
+  NtruRandContext rand_ctx_def;
+#ifdef Q_OS_WIN32
+  NtruRandGen rng_def = NTRU_RNG_DEFAULT;
+#else
+  NtruRandGen rng_def = NTRU_RNG_DEVURANDOM;
+#endif
   QByteArray encrypted;
   uint8_t *data_array = 0;
   uint8_t *e = 0;
@@ -239,6 +250,7 @@ QByteArray spoton_crypt::publicKeyEncryptNTRU(const QByteArray &data,
   data_array = new (std::nothrow) uint8_t[data.length()];
   publicKey_array = new (std::nothrow)
     uint8_t[publicKey.mid(qstrlen("ntru-public-key-")).length()];
+  ntru_rand_init(&rand_ctx_def, &rng_def);
 
   if(data_array && publicKey_array)
     {
@@ -288,11 +300,7 @@ QByteArray spoton_crypt::publicKeyEncryptNTRU(const QByteArray &data,
       if(ntru_encrypt(data_array,
 		      static_cast<uint16_t> (data.length()),
 		      &pk, &parameters[index],
-#ifdef Q_OS_WIN32
-		      ntru_rand_default,
-#else
-		      ntru_rand_devurandom,
-#endif
+		      &rand_ctx_def,
 		      e) == NTRU_SUCCESS)
 	{
 	  if(ok)
@@ -313,6 +321,7 @@ QByteArray spoton_crypt::publicKeyEncryptNTRU(const QByteArray &data,
   delete []data_array;
   delete []e;
   delete []publicKey_array;
+  ntru_rand_release(&rand_ctx_def);
   return encrypted;
 #else
   Q_UNUSED(data);

@@ -69,6 +69,7 @@ spoton_neighbor::spoton_neighbor
  const QString &localPort,
  const QString &orientation,
  const QString &motd,
+ const QString &sslControlString,
  QObject *parent):QThread(parent)
 {
   m_sctpSocket = 0;
@@ -185,6 +186,11 @@ spoton_neighbor::spoton_neighbor
     m_port = port.toUShort();
 
   m_receivedUuid = "{00000000-0000-0000-0000-000000000000}";
+  m_sslControlString = sslControlString.trimmed();
+
+  if(m_sslControlString.isEmpty())
+    m_sslControlString = "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH";
+
   m_statusControl = "connected";
 
   if(m_transport == "tcp")
@@ -230,7 +236,8 @@ spoton_neighbor::spoton_neighbor
 		    (QSsl::SslOptionDisableLegacyRenegotiation, true);
 #endif
 		  spoton_crypt::setSslCiphers
-		    (m_tcpSocket->supportedCiphers(), configuration);
+		    (m_tcpSocket->supportedCiphers(), m_sslControlString,
+		     configuration);
 		  m_tcpSocket->setSslConfiguration(configuration);
 		}
 	      else
@@ -449,6 +456,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 				 const QString &orientation,
 				 const QString &motd,
 				 const QString &statusControl,
+				 const QString &sslControlString,
 				 QObject *parent):QThread(parent)
 {
   m_accountAuthenticated = false;
@@ -487,6 +495,11 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   m_receivedUuid = "{00000000-0000-0000-0000-000000000000}";
   m_requireSsl = requireSsl;
   m_sctpSocket = 0;
+  m_sslControlString = sslControlString.trimmed();
+
+  if(m_sslControlString.isEmpty())
+    m_sslControlString = "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH";
+
   m_startTime = QDateTime::currentDateTime();
   m_statusControl = statusControl;
   m_tcpSocket = 0;
@@ -587,7 +600,8 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 #endif
 	      configuration.setPeerVerifyMode(QSslSocket::QueryPeer);
 	      spoton_crypt::setSslCiphers
-		(m_tcpSocket->supportedCiphers(), configuration);
+		(m_tcpSocket->supportedCiphers(), m_sslControlString,
+		 configuration);
 	      m_tcpSocket->setSslConfiguration(configuration);
 	    }
 	  else
@@ -811,6 +825,7 @@ spoton_neighbor::~spoton_neighbor()
 
 	    QSqlQuery query(db);
 
+	    query.exec("PRAGMA secure_delete = ON");
 	    query.prepare("DELETE FROM friends_public_keys WHERE "
 			  "neighbor_oid = ?");
 	    query.bindValue(0, m_id);
@@ -834,6 +849,7 @@ spoton_neighbor::~spoton_neighbor()
 	  {
 	    QSqlQuery query(db);
 
+	    query.exec("PRAGMA secure_delete = ON");
 	    query.prepare("DELETE FROM neighbors WHERE "
 			  "OID = ? AND status_control = 'deleted'");
 	    query.bindValue(0, m_id);
@@ -946,7 +962,8 @@ void spoton_neighbor::slotTimeout(void)
 		      "account_name, "
 		      "account_password, "
 		      "ae_token, "
-		      "ae_token_type "
+		      "ae_token_type, "
+		      "ssl_control_string "
 		      "FROM neighbors WHERE OID = ?");
 	query.bindValue(0, m_id);
 
@@ -1052,6 +1069,11 @@ void spoton_neighbor::slotTimeout(void)
 		      qBound(spoton_common::MINIMUM_NEIGHBOR_CONTENT_LENGTH,
 			     query.value(4).toLongLong(),
 			     spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
+		    m_sslControlString = query.value(9).toString();
+
+		    if(m_sslControlString.isEmpty())
+		      m_sslControlString =
+			"HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH";
 		  }
 
 		if(query.value(1).toLongLong())
@@ -1624,8 +1646,18 @@ void spoton_neighbor::processData(void)
 	    messageType.clear();
 
 	  if(messageType.isEmpty() && data.trimmed().split('\n').size() == 3)
-	    if(spoton_kernel::s_kernel->processPotentialStarBeamData(data))
-	      messageType = "0060";
+	    if(spoton_kernel::s_kernel->
+	       processPotentialStarBeamData(data, discoveredAdaptiveEchoPair))
+	      {
+		if(!discoveredAdaptiveEchoPair.first.isEmpty() &&
+		   !discoveredAdaptiveEchoPair.second.isEmpty())
+		  if(!m_learnedAdaptiveEchoPairs.
+		     contains(discoveredAdaptiveEchoPair))
+		    m_learnedAdaptiveEchoPairs.
+		      append(discoveredAdaptiveEchoPair);
+
+		messageType = "0060";
+	      }
 
 	  if(spoton_kernel::setting("gui/scramblerEnabled", false).toBool())
 	    emit scrambleRequest();
@@ -1653,6 +1685,11 @@ void spoton_neighbor::processData(void)
 
 		spoton_kernel::receivedMessage
 		  (originalData, m_id, QPair<QByteArray, QByteArray> ());
+	      else if(messageType == "0060" &&
+		      !discoveredAdaptiveEchoPair.first.isEmpty() &&
+		      !discoveredAdaptiveEchoPair.second.isEmpty())
+		spoton_kernel::receivedMessage
+		  (originalData, m_id, discoveredAdaptiveEchoPair);
 	    }
 	}
     }
@@ -3242,7 +3279,7 @@ void spoton_neighbor::process0002a
 		    {
 		      QList<QByteArray> list(data.split('\n'));
 
-		      if(list.size() == 3)
+		      if(list.size() == 4)
 			{
 			  for(int i = 0; i < list.size(); i++)
 			    list.replace
@@ -3251,16 +3288,18 @@ void spoton_neighbor::process0002a
 			  saveParticipantStatus
 			    (list.value(0)); // Public Key Hash
 			  emit retrieveMail
-			    (list.value(0) + list.value(1), // Data
-			     list.value(0),                 // Public Key Hash
-			     list.value(2),                 // Signature
+			    (list.value(0) + list.value(1) +
+			     list.value(2), // Data
+			     list.value(0), // Public Key Hash
+			     list.value(2), // Timestamp
+			     list.value(3), // Signature
 			     adaptiveEchoPair);
 			}
 		      else
 			spoton_misc::logError
 			  (QString("spoton_neighbor::process0002a(): "
 				   "received irregular data. "
-				   "Expecting 3 "
+				   "Expecting 4 "
 				   "entries, "
 				   "received %1.").arg(list.size()));
 		    }
@@ -3356,7 +3395,7 @@ void spoton_neighbor::process0002b
 		{
 		  QList<QByteArray> list(data.split('\n'));
 
-		  if(list.size() == 5)
+		  if(list.size() == 6)
 		    {
 		      for(int i = 0; i < list.size(); i++)
 			list.replace
@@ -3375,11 +3414,14 @@ void spoton_neighbor::process0002b
 			      saveParticipantStatus
 				(publicKeyHash); // Public Key Hash
 			      emit retrieveMail
-				(list.value(1) +
+				(list.value(0) +
+				 list.value(1) +
 				 list.value(2) +
-				 list.value(3),  // Data
+				 list.value(3) +
+				 list.value(4),  // Data
 				 publicKeyHash,  // Public Key Hash
-				 list.value(4),  // Signature
+				 list.value(4),  // Timestamp
+				 list.value(5),  // Signature
 				 adaptiveEchoPair);
 			    }
 			}
@@ -3392,7 +3434,7 @@ void spoton_neighbor::process0002b
 		    spoton_misc::logError
 		      (QString("spoton_neighbor::process0002b(): "
 			       "received irregular data. "
-			       "Expecting 5 "
+			       "Expecting 6 "
 			       "entries, "
 			       "received %1.").arg(list.size()));
 		}
@@ -5166,28 +5208,39 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
 	if(ok)
 	  if(query.exec())
 	    {
-	      if(!attachment.isEmpty())
+	      if(!attachment.isEmpty() && !attachmentName.isEmpty())
 		{
 		  QVariant variant(query.lastInsertId());
 		  qint64 id = query.lastInsertId().toLongLong();
 
 		  if(variant.isValid())
 		    {
-		      query.prepare("INSERT INTO folders_attachment "
-				    "(data, folders_oid, name) "
-				    "VALUES (?, ?, ?)");
-		      query.bindValue
-			(0, s_crypt->encryptedThenHashed(attachment,
-							 &ok).toBase64());
-		      query.bindValue(1, id);
+		      QByteArray data;
 
-		      if(ok)
-			query.bindValue
-			  (2, s_crypt->encryptedThenHashed(attachmentName,
-							   &ok).toBase64());
+		      if(!goldbugUsed)
+			data = qUncompress(attachment);
+		      else
+			data = attachment;
 
-		      if(ok)
-		        query.exec();
+		      if(!data.isEmpty())
+			{
+			  query.prepare("INSERT INTO folders_attachment "
+					"(data, folders_oid, name) "
+					"VALUES (?, ?, ?)");
+			  query.bindValue
+			    (0, s_crypt->encryptedThenHashed(data,
+							     &ok).toBase64());
+			  query.bindValue(1, id);
+
+			  if(ok)
+			    query.bindValue
+			      (2, s_crypt->
+			       encryptedThenHashed(attachmentName,
+						   &ok).toBase64());
+
+			  if(ok)
+			    query.exec();
+			}
 		    }
 		}
 
@@ -5909,7 +5962,11 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
     (QDateTime::fromString(timestamp.constData(), "MMddyyyyhhmmss"));
 
   if(!dateTime.isValid())
-    return;
+    {
+      spoton_misc::logError
+	("spoton_neighbor(): saveGemini(): invalid date-time object.");
+      return;
+    }
 
   QDateTime now(QDateTime::currentDateTimeUtc());
 

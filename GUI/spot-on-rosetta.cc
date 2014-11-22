@@ -863,6 +863,7 @@ void spoton_rosetta::slotDelete(void)
 	QSqlQuery query(db);
 	bool ok = true;
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.prepare("DELETE FROM friends_public_keys WHERE "
 		      "public_key_hash = ?");
 	query.bindValue(0, spoton_crypt::sha512Hash(data, &ok).toBase64());

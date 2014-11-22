@@ -50,6 +50,10 @@ extern "C"
 }
 #endif
 
+#ifdef Q_OS_OS2
+typedef int socklen_t;
+#endif
+
 /*
 ** Please read http://gcc.gnu.org/onlinedocs/gcc-4.4.1/gcc/Optimize-Options.html#Type_002dpunning.
 */
@@ -58,8 +62,10 @@ typedef union spoton_type_punning_sockaddr
 {
     struct sockaddr sockaddr;
     struct sockaddr_in sockaddr_in;
+#ifndef Q_OS_OS2
     struct sockaddr_in6 sockaddr_in6;
     struct sockaddr_storage sockaddr_storage;
+#endif
 }
 spoton_type_punning_sockaddr_t;
 

@@ -2878,6 +2878,7 @@ void spoton_crypt::purgeDatabases(void)
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA secure_delete = ON");
 	query.exec("DELETE FROM idiotes");
       }
 
@@ -3151,6 +3152,7 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(const QString &scs)
 
       if(protocol == "TlsV1_2")
 	{
+#ifndef Q_OS_OS2
 #ifdef TLS1_2_VERSION
 	  if(!(ctx = SSL_CTX_new(TLSv1_2_method())))
 	    {
@@ -3159,9 +3161,11 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(const QString &scs)
 	      goto done_label;
 	    }
 #endif
+#endif
 	}
       else if(protocol == "TlsV1_1")
 	{
+#ifndef Q_OS_OS2
 #ifdef TLS1_1_VERSION
 	  if(!(ctx = SSL_CTX_new(TLSv1_1_method())))
 	    {
@@ -3169,6 +3173,7 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(const QString &scs)
 				    "SSL_CTX_new() failure.");
 	      goto done_label;
 	    }
+#endif
 #endif
 	}
       else if(protocol == "TlsV1_0")
@@ -3254,9 +3259,10 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(const QString &scs)
 }
 
 void spoton_crypt::setSslCiphers(const QList<QSslCipher> &ciphers,
+				 const QString &sslControlString,
 				 QSslConfiguration &configuration)
 {
-  QList<QSslCipher> preferred(defaultSslCiphers());
+  QList<QSslCipher> preferred(defaultSslCiphers(sslControlString));
 
   for(int i = preferred.size() - 1; i >= 0; i--)
     if(!ciphers.contains(preferred.at(i)))
@@ -3499,6 +3505,7 @@ void spoton_crypt::reencodePrivatePublicKeys
 	      QSqlQuery updateQuery(db);
 	      bool ok = true;
 
+	      updateQuery.exec("PRAGMA secure_delete = ON");
 	      id = oldCrypt->decryptedAfterAuthenticated
 		(id, &ok);
 
