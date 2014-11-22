@@ -225,3 +225,4 @@ Remaining Items
        navigate private Spot-On nodes remotely.
 41.    An interface for custom functions. Such an interface could be used
        to transform YouTube data into MP3s.
+42.    The libgcrypt library supports GCRY_KDF_SCRYPT.
