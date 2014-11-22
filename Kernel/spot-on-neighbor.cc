@@ -5208,7 +5208,7 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
 	if(ok)
 	  if(query.exec())
 	    {
-	      if(!attachment.isEmpty())
+	      if(!attachment.isEmpty() && !attachmentName.isEmpty())
 		{
 		  QVariant variant(query.lastInsertId());
 		  qint64 id = query.lastInsertId().toLongLong();
@@ -5222,21 +5222,25 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
 		      else
 			data = attachment;
 
-		      query.prepare("INSERT INTO folders_attachment "
-				    "(data, folders_oid, name) "
-				    "VALUES (?, ?, ?)");
-		      query.bindValue
-			(0, s_crypt->encryptedThenHashed(data,
-							 &ok).toBase64());
-		      query.bindValue(1, id);
+		      if(!data.isEmpty())
+			{
+			  query.prepare("INSERT INTO folders_attachment "
+					"(data, folders_oid, name) "
+					"VALUES (?, ?, ?)");
+			  query.bindValue
+			    (0, s_crypt->encryptedThenHashed(data,
+							     &ok).toBase64());
+			  query.bindValue(1, id);
 
-		      if(ok)
-			query.bindValue
-			  (2, s_crypt->encryptedThenHashed(attachmentName,
-							   &ok).toBase64());
+			  if(ok)
+			    query.bindValue
+			      (2, s_crypt->
+			       encryptedThenHashed(attachmentName,
+						   &ok).toBase64());
 
-		      if(ok)
-		        query.exec();
+			  if(ok)
+			    query.exec();
+			}
 		    }
 		}
 

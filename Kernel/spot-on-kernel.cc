@@ -2630,11 +2630,20 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 	      QList<QByteArray> items;
 
 	      if(ok)
-		items << name
-		      << subject
-		      << message
-		      << qCompress(attachment, 9)
-		      << attachmentName;
+		{
+		  if(attachment.isEmpty() || attachmentName.isEmpty())
+		    items << name
+			  << subject
+			  << message
+			  << QByteArray()
+			  << QByteArray();
+		  else
+		    items << name
+			  << subject
+			  << message
+			  << qCompress(attachment, 9)
+			  << attachmentName;
+		}
 
 	      if(ok)
 		if(!goldbug.isEmpty())
@@ -2871,11 +2880,20 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 	      QList<QByteArray> items;
 
 	      if(ok)
-		items << name
-		      << subject
-		      << message
-		      << qCompress(attachment, 9)
-		      << attachmentName;
+		{
+		  if(attachment.isEmpty() || attachmentName.isEmpty())
+		    items << name
+			  << subject
+			  << message
+			  << QByteArray()
+			  << QByteArray();
+		  else
+		    items << name
+			  << subject
+			  << message
+			  << qCompress(attachment, 9)
+			  << attachmentName;
+		}
 
 	      if(ok)
 		if(!goldbug.isEmpty())

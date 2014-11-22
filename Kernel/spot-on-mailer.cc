@@ -186,7 +186,8 @@ void spoton_mailer::slotTimeout(void)
 		      {
 			attachment = s_crypt->
 			  decryptedAfterAuthenticated
-			  (QByteArray::fromBase64(query.value(0).toByteArray()),
+			  (QByteArray::fromBase64(query.value(0).
+						  toByteArray()),
 			   &ok);
 
 			if(ok)

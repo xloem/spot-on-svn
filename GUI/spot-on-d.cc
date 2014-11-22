@@ -1795,7 +1795,7 @@ void spoton::applyGoldbugToAttachments(const QString &folderOid,
 
 	      if(ok2)
 		{
-		  if(!attachment.isEmpty())
+		  if(!attachment.isEmpty() && !attachmentName.isEmpty())
 		    {
 		      QSqlQuery updateQuery(db);
 

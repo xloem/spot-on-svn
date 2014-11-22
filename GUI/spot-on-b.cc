@@ -2566,7 +2566,7 @@ void spoton::slotSendMail(void)
 
 	    if(ok)
 	      if(query.exec())
-		if(!attachment.isEmpty())
+		if(!attachment.isEmpty() && !fileName.isEmpty())
 		  {
 		    QVariant variant(query.lastInsertId());
 		    qint64 id = query.lastInsertId().toLongLong();
