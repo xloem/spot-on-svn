@@ -337,16 +337,22 @@ void spoton_gui_server::slotReadyRead(void)
 	    {
 	      message.remove(0, qstrlen("call_participant_using_gemini_"));
 
-	      if(!message.isEmpty())
-		emit callParticipantUsingGemini(message.toLongLong());
+	      QList<QByteArray> list(message.split('_'));
+
+	      if(list.size() == 2)
+		emit callParticipantUsingGemini(list.value(0),
+						list.value(1).toLongLong());
 	    }
 	  else if(message.startsWith("call_participant_using_public_key_"))
 	    {
 	      message.remove
 		(0, qstrlen("call_participant_using_public_key_"));
 
-	      if(!message.isEmpty())
-		emit callParticipant(message.toLongLong());
+	      QList<QByteArray> list(message.split('_'));
+
+	      if(list.size() == 2)
+		emit callParticipant(list.value(0),
+				     list.value(1).toLongLong());
 	    }
 	  else if(message.startsWith("detach_listener_neighbors_"))
 	    {
@@ -380,6 +386,8 @@ void spoton_gui_server::slotReadyRead(void)
 			<< "chat-signature"
 			<< "email"
 			<< "email-signature"
+			<< "poptastic"
+			<< "poptastic-signature"
 			<< "url"
 			<< "url-signature";
 
@@ -442,7 +450,23 @@ void spoton_gui_server::slotReadyRead(void)
 		   QByteArray::fromBase64(list.value(1)),
 		   QByteArray::fromBase64(list.value(2)),
 		   QByteArray::fromBase64(list.value(3)),
-		   QByteArray::fromBase64(list.value(4)));
+		   QByteArray::fromBase64(list.value(4)),
+		   "chat");
+	    }
+	  else if(message.startsWith("poptasticmessage__"))
+	    {
+	      message.remove(0, qstrlen("poptasticmessage__"));
+
+	      QList<QByteArray> list(message.split('_'));
+
+	      if(list.size() == 5)
+		emit messageReceivedFromUI
+		  (list.value(0).toLongLong(),
+		   QByteArray::fromBase64(list.value(1)),
+		   QByteArray::fromBase64(list.value(2)),
+		   QByteArray::fromBase64(list.value(3)),
+		   QByteArray::fromBase64(list.value(4)),
+		   "poptastic");
 	    }
 	  else if(message.startsWith("populate_starbeam_keys"))
 	    emit populateStarBeamKeys();

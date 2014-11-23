@@ -48,7 +48,7 @@ namespace spoton_common
 						 ** will be represented in
 						 ** base sixteen.
 						 */
-  static const int NAME_MAXIMUM_LENGTH = 16;
+  static const int NAME_MAXIMUM_LENGTH = 64;
   static const int PASSPHRASE_MAXIMUM_LENGTH = 128;
   static const int QUESTIONANSWER_MAXIMUM_LENGTH = 512;
   static const qint64 MAXIMUM_NEIGHBOR_BUFFER_SIZE =

@@ -1624,9 +1624,9 @@ void spoton_neighbor::processData(void)
 	  if(messageType == "0000")
 	    process0000(length, data, symmetricKeys);
 	  else if(messageType == "0000a" || messageType == "0000c")
-	    process0000a(length, data, messageType);
+	    process0000a(length, data, messageType, QByteArray("chat"));
 	  else if(messageType == "0000b")
-	    process0000b(length, data, symmetricKeys);
+	    process0000b(length, data, symmetricKeys, QByteArray("chat"));
 	  else if(messageType == "0001a")
 	    process0001a(length, data);
 	  else if(messageType == "0001b")
@@ -1889,7 +1889,7 @@ void spoton_neighbor::savePublicKey(const QByteArray &keyType,
 				    const QByteArray &sSignature,
 				    const qint64 neighborOid)
 {
-  if(keyType == "chat")
+  if(keyType == "chat" || keyType == "poptastic")
     {
       if(!spoton_kernel::setting("gui/acceptChatKeys", false).toBool())
 	return;
@@ -2006,8 +2006,11 @@ void spoton_neighbor::setId(const qint64 id)
 
 void spoton_neighbor::slotSendMessage
 (const QByteArray &data,
- const spoton_send::spoton_send_method sendMethod)
+ const spoton_send::spoton_send_method sendMethod,
+ const QString &keyType)
 {
+  Q_UNUSED(keyType);
+
   if(readyToWrite())
     {
       QByteArray message;
@@ -2342,6 +2345,9 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 
 			  if(spoton_misc::
 			     isAcceptedParticipant(list.value(0), "chat",
+						   s_crypt) ||
+			     spoton_misc::
+			     isAcceptedParticipant(list.value(0), "poptastic",
 						   s_crypt))
 			    {
 			      if(spoton_kernel::setting("gui/chatAccept"
@@ -2413,7 +2419,8 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 }
 
 void spoton_neighbor::process0000a(int length, const QByteArray &dataIn,
-				   const QString &messageType)
+				   const QString &messageType,
+				   const QByteArray &keyType)
 {
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
@@ -2513,7 +2520,12 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn,
 			      (i, QByteArray::fromBase64(list.at(i)));
 
 			  if(spoton_misc::
-			     isAcceptedParticipant(list.value(0), "chat",
+			     isAcceptedParticipant(list.value(0),
+						   "chat",
+						   s_crypt) ||
+			     spoton_misc::
+			     isAcceptedParticipant(list.value(0),
+						   "poptastic",
 						   s_crypt))
 			    {
 			      if(spoton_kernel::setting("gui/chatAccept"
@@ -2545,7 +2557,7 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn,
 
 			      saveGemini(list.value(0), list.value(1),
 					 list.value(2), list.value(3),
-					 messageType);
+					 messageType, keyType);
 			    }
 			}
 		      else
@@ -2575,7 +2587,8 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn,
 }
 
 void spoton_neighbor::process0000b(int length, const QByteArray &dataIn,
-				   const QList<QByteArray> &symmetricKeys)
+				   const QList<QByteArray> &symmetricKeys,
+				   const QByteArray &keyType)
 {
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
@@ -2633,9 +2646,12 @@ void spoton_neighbor::process0000b(int length, const QByteArray &dataIn,
 		list.replace
 		  (i, QByteArray::fromBase64(list.at(i)));
 
-	      if(spoton_misc::
-		 isAcceptedParticipant(list.value(1), "chat",
-				       s_crypt))
+	      if(spoton_misc::isAcceptedParticipant(list.value(1),
+						    "chat",
+						    s_crypt) ||
+		 spoton_misc::isAcceptedParticipant(list.value(1),
+						    "poptastic",
+						    s_crypt))
 		{
 		  if(spoton_kernel::setting("gui/chatAccept"
 					    "SignedMessagesOnly",
@@ -2668,7 +2684,7 @@ void spoton_neighbor::process0000b(int length, const QByteArray &dataIn,
 
 		  saveGemini(list.value(1), list.value(2),
 			     list.value(3), list.value(4),
-			     "0000b");
+			     "0000b", keyType);
 		}
 	    }
 	  else
@@ -3746,7 +3762,12 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 			      (i, QByteArray::fromBase64(list.at(i)));
 
 			  if(spoton_misc::
-			     isAcceptedParticipant(list.value(0), "chat",
+			     isAcceptedParticipant(list.value(0),
+						   "chat",
+						   s_crypt) ||
+			     spoton_misc::
+			     isAcceptedParticipant(list.value(0),
+						   "poptastic",
 						   s_crypt))
 			    {
 			      if(spoton_kernel::setting("gui/chatAccept"
@@ -5765,8 +5786,11 @@ QString spoton_neighbor::findMessageType
   */
 
   if(s_crypt)
-    if(interfaces > 0 && list.size() == 3 &&
-       spoton_misc::participantCount("chat", s_crypt) > 0)
+    if(interfaces > 0 &&
+       list.size() == 3 && (spoton_misc::
+			    participantCount("chat", s_crypt) > 0 ||
+			    spoton_misc::
+			    participantCount("poptastic", s_crypt) > 0))
       {
 	QPair<QByteArray, QByteArray> gemini;
 
@@ -5818,7 +5842,8 @@ QString spoton_neighbor::findMessageType
   if(s_crypt)
     if(interfaces > 0 && list.size() == 4)
       if(!spoton_misc::allParticipantsHaveGeminis())
-	if(spoton_misc::participantCount("chat", s_crypt) > 0)
+	if(spoton_misc::participantCount("chat", s_crypt) > 0 ||
+	   spoton_misc::participantCount("poptastic", s_crypt) > 0)
 	  {
 	    QByteArray data;
 	    bool ok = true;
@@ -5898,9 +5923,10 @@ QString spoton_neighbor::findMessageType
 }
 
 void spoton_neighbor::slotCallParticipant(const QByteArray &data,
-					  const QString &messageType)
+					  const QString &messageType,
+					  const QByteArray &keyType)
 {
-  if(readyToWrite())
+  if(keyType == "chat" && readyToWrite())
     {
       QByteArray message;
       QPair<QByteArray, QByteArray> ae
@@ -5956,7 +5982,8 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 				 const QByteArray &gemini,
 				 const QByteArray &geminiHashKey,
 				 const QByteArray &timestamp,
-				 const QString &messageType)
+				 const QString &messageType,
+				 const QByteArray &keyType)
 {
   QDateTime dateTime
     (QDateTime::fromString(timestamp.constData(), "MMddyyyyhhmmss"));
@@ -6167,7 +6194,7 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 	      */
 
 	      if(respond)
-		emit callParticipant(publicKeyHash, bytes1, bytes2);
+		emit callParticipant(publicKeyHash, bytes1, bytes2, keyType);
 	    }
       }
 

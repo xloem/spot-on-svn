@@ -748,7 +748,7 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
   if(ok)
     query.bindValue(3, crypt->keyedHash(keyType, &ok).toBase64());
 
-  if(keyType == "chat" || keyType == "email" ||
+  if(keyType == "chat" || keyType == "email" || keyType == "poptastic" ||
      keyType == "rosetta" || keyType == "url")
     {
       if(name.isEmpty())
@@ -1031,10 +1031,15 @@ QPair<QByteArray, QByteArray> spoton_misc::findGeminiInCosmos
 			  "FROM friends_public_keys WHERE "
 			  "gemini IS NOT NULL AND "
 			  "gemini_hash_key IS NOT NULL AND "
-			  "key_type_hash = ? AND "
+			  "key_type_hash IN (?, ?) AND "
 			  "neighbor_oid = -1");
 	    query.bindValue(0, crypt->keyedHash(QByteArray("chat"), &ok).
 			    toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(1, crypt->keyedHash(QByteArray("poptastic"), &ok).
+		 toBase64());
 
 	    if(ok && query.exec())
 	      while(query.next())
@@ -1696,6 +1701,7 @@ void spoton_misc::purgeSignatureRelationships(const QSqlDatabase &db,
 
   list << "chat"
        << "email"
+       << "poptastic"
        << "rosetta"
        << "url";
 

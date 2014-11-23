@@ -6518,6 +6518,9 @@ void spoton::slotPopulateParticipants(void)
 
 			  if(i == 1) // OID
 			    oid = item->text();
+
+			  item->setData
+			    (Qt::ItemDataRole(Qt::UserRole + 1), keyType);
 			}
 
 		      item->setFlags
@@ -7100,9 +7103,7 @@ void spoton::slotDisconnectListenerNeighbors(void)
 
 void spoton::slotCallParticipant(void)
 {
-  if(!m_crypts.value("chat", 0))
-    return;
-  else if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
+  if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
     return;
   else if(!m_kernelSocket.isEncrypted())
     return;
@@ -7113,6 +7114,7 @@ void spoton::slotCallParticipant(void)
     return;
 
   QString oid("");
+  QString keyType("");
   QString type(action->property("type").toString());
   int row = -1;
 
@@ -7122,7 +7124,11 @@ void spoton::slotCallParticipant(void)
 	(row, 1); // OID
 
       if(item)
-	oid = item->text();
+	{
+	  keyType = item->data
+	    (Qt::ItemDataRole(Qt::UserRole + 1)).toString();
+	  oid = item->text();
+	}
     }
 
   if(oid.isEmpty())
@@ -7145,6 +7151,8 @@ void spoton::slotCallParticipant(void)
   else
     message.append("call_participant_using_public_key_");
 
+  message.append(keyType);
+  message.append("_");
   message.append(oid);
   message.append("\n");
 

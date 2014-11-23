@@ -166,9 +166,12 @@ class spoton_kernel: public QObject
 			      const QByteArray &hashType);
   void slotCallParticipant(const QByteArray &publicKeyHash,
 			   const QByteArray &gemini,
-			   const QByteArray &geminiHashKey);
-  void slotCallParticipant(const qint64 oid);
-  void slotCallParticipantUsingGemini(const qint64 oid);
+			   const QByteArray &geminiHashKey,
+			   const QByteArray &keyType);
+  void slotCallParticipant(const QByteArray &keyType,
+			   const qint64 oid);
+  void slotCallParticipantUsingGemini(const QByteArray &keyType,
+				      const qint64 oid);
   void slotDetachNeighbors(const qint64 listenerOid);
   void slotDisconnectNeighbors(const qint64 listenerOid);
   void slotImpersonateTimeout(void);
@@ -177,7 +180,8 @@ class spoton_kernel: public QObject
 				 const QByteArray &name,
 				 const QByteArray &message,
 				 const QByteArray &sequenceNumber,
-				 const QByteArray &utcDate);
+				 const QByteArray &utcDate,
+				 const QString &keyType);
   void slotNewNeighbor(QPointer<spoton_neighbor> neighbor);
   void slotPollDatabase(void);
   void slotProcessReceivedMessages(void);
@@ -208,7 +212,8 @@ class spoton_kernel: public QObject
 
  signals:
   void callParticipant(const QByteArray &data,
-		       const QString &messageType);
+		       const QString &messageType,
+		       const QByteArray &keyType);
   void publicizeListenerPlaintext(const QByteArray &data,
 				  const qint64 id);
   void publicizeListenerPlaintext(const QHostAddress &address,
@@ -218,7 +223,8 @@ class spoton_kernel: public QObject
   void retrieveMail(const QByteArrayList &list, const QString &messageType);
   void sendBuzz(const QByteArray &buzz);
   void sendMessage(const QByteArray &message,
-		   const spoton_send::spoton_send_method sendMethod);
+		   const spoton_send::spoton_send_method sendMethod,
+		   const QString &keyType);
   void sendMail(const QPairByteArrayInt64List &mail,
 		const QString &messageType);
   void sendStatus(const QByteArrayList &status);

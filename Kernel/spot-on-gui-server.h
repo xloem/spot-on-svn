@@ -120,15 +120,18 @@ class spoton_gui_server: public spoton_gui_server_tcp_server
 			  const QString &messageType,
 			  const QByteArray &hashKey,
 			  const QByteArray &hashType);
-  void callParticipant(const qint64 oid);
-  void callParticipantUsingGemini(const qint64 oid);
+  void callParticipant(const QByteArray &keyType,
+		       const qint64 oid);
+  void callParticipantUsingGemini(const QByteArray &keyType,
+				  const qint64 oid);
   void detachNeighbors(const qint64 oid);
   void disconnectNeighbors(const qint64 oid);
   void messageReceivedFromUI(const qint64 oid,
 			     const QByteArray &name,
 			     const QByteArray &message,
 			     const QByteArray &sequenceNumber,
-			     const QByteArray &utcDate);
+			     const QByteArray &utcDate,
+			     const QString &keyType);
   void populateStarBeamKeys(void);
   void publicKeyReceivedFromUI(const qint64 oid,
 			       const QByteArray &keyType,

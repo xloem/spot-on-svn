@@ -95,19 +95,32 @@ void spoton::slotSendMessage(void)
     {
       QModelIndex index(list.takeFirst());
       QString publicKeyHash(publicKeyHashes.takeFirst().data().toString());
+      QString keyType
+	(index.data(Qt::ItemDataRole(Qt::UserRole + 1)).toString());
       QVariant data(index.data());
 
       if(!data.isNull() && data.isValid())
 	{
 	  QByteArray message;
-	  QByteArray name(m_settings.value("gui/nodeName", "unknown").
-			  toByteArray());
+	  QByteArray name;
+
+	  if(keyType == "chat")
+	    name = m_settings.value("gui/nodeName", "unknown").
+	      toByteArray();
+	  else
+	    name = m_settings.value
+	      ("gui/poptasticName", "unknown@unknown.org").toByteArray();
 
 	  if(name.isEmpty())
 	    name = "unknown";
 
 	  m_chatSequenceNumbers[data.toString()] += 1;
-	  message.append("message_");
+
+	  if(keyType == "chat")
+	    message.append("message_");
+	  else
+	    message.append("poptasticmessage_");
+
 	  message.append(QString("%1_").arg(data.toString()));
 	  message.append(name.toBase64());
 	  message.append("_");
@@ -1095,7 +1108,12 @@ void spoton::slotChatSendMethodChanged(int index)
 
 void spoton::slotShareChatPublicKeyWithParticipant(void)
 {
-  sharePublicKeyWithParticipant("chat");
+  QTableWidgetItem *item = m_ui.participants->item
+    (m_ui.participants->currentRow(), 1); // OID
+
+  if(item)
+    sharePublicKeyWithParticipant
+      (item->data(Qt::ItemDataRole(Qt::UserRole + 1)).toString());
 }
 
 void spoton::slotSharePoptasticPublicKeyWithParticipant(void)

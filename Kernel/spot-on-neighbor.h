@@ -218,9 +218,11 @@ class spoton_neighbor: public QThread
   void process0000(int length, const QByteArray &data,
 		   const QList<QByteArray> &symmetricKeys);
   void process0000a(int length, const QByteArray &data,
-		    const QString &messageType);
+		    const QString &messageType,
+		    const QByteArray &keyType);
   void process0000b(int length, const QByteArray &data,
-		    const QList<QByteArray> &symmetricKeys);
+		    const QList<QByteArray> &symmetricKeys,
+		    const QByteArray &keyType);
   void process0001a(int length, const QByteArray &data);
   void process0001b(int length, const QByteArray &data,
 		    const QList<QByteArray> &symmetricKeys);
@@ -251,7 +253,8 @@ class spoton_neighbor: public QThread
 		  const QByteArray &gemini,
 		  const QByteArray &geminiHashKey,
 		  const QByteArray &timestamp,
-		  const QString &messageType);
+		  const QString &messageType,
+		  const QByteArray &keyType);
   void saveParticipantStatus(const QByteArray &publicKeyHash);
   void saveParticipantStatus(const QByteArray &name,
 			     const QByteArray &publicKeyHash);
@@ -286,7 +289,8 @@ class spoton_neighbor: public QThread
 				const QByteArray &password);
   void slotAuthenticationTimerTimeout(void);
   void slotCallParticipant(const QByteArray &data,
-			   const QString &messageType);
+			   const QString &messageType,
+			   const QByteArray &keyType);
   void slotConnected(void);
   void slotDisconnected(void);
   void slotDiscoverExternalAddress(void);
@@ -321,7 +325,8 @@ class spoton_neighbor: public QThread
     (const QByteArray &data,
      const QPairByteArrayByteArray &adaptiveEchoPair);
   void slotSendMessage(const QByteArray &data,
-		       const spoton_send::spoton_send_method sendMethod);
+		       const spoton_send::spoton_send_method sendMethod,
+		       const QString &keyType);
   void slotSendStatus(const QByteArrayList &list);
   void slotSendUuid(void);
   void slotSslErrors(const QList<QSslError> &errors);
@@ -341,7 +346,8 @@ class spoton_neighbor: public QThread
   void authenticationRequested(const QString &peerInformation);
   void callParticipant(const QByteArray &publicKeyHash,
 		       const QByteArray &gemini,
-		       const QByteArray &geminiHashKey);
+		       const QByteArray &geminiHashKey,
+		       const QByteArray &keyType);
   void disconnected(void);
   void newData(void);
   void newEMailArrived(void);
