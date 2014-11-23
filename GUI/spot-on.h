@@ -290,6 +290,7 @@ class spoton: public QMainWindow
   void slotCopyInstitution(void);
   void slotCopyMyChatPublicKey(void);
   void slotCopyMyEmailPublicKey(void);
+  void slotCopyMyPoptasticPublicKey(void);
   void slotCopyMyRosettaPublicKey(void);
   void slotCopyMyURLPublicKey(void);
   void slotCopyOrPaste(void);

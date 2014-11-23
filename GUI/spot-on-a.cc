@@ -6446,6 +6446,10 @@ void spoton::slotPopulateParticipants(void)
 			    name = "unknown";
 
 			  item = new QTableWidgetItem(name);
+
+			  if(keyType == "poptastic")
+			    item->setBackground
+			      (QBrush(QColor(137, 207, 240)));
 			}
 		      else if(i == 4) // Status
 			{

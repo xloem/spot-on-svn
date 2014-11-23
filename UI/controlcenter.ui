@@ -457,7 +457,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>1031</width>
-                <height>454</height>
+                <height>483</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -526,6 +526,76 @@
                    </item>
                    <item>
                     <spacer name="horizontalSpacer_43">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_98">
+                   <property name="spacing">
+                    <number>5</number>
+                   </property>
+                   <item>
+                    <widget class="QLabel" name="label_99">
+                     <property name="styleSheet">
+                      <string notr="true">QLabel {background-color : rgb(137, 207, 240)}
+</string>
+                     </property>
+                     <property name="text">
+                      <string>Refresh &amp;poptastic messages every</string>
+                     </property>
+                     <property name="buddy">
+                      <cstring>poptasticRefresh</cstring>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QDoubleSpinBox" name="poptasticRefresh">
+                     <property name="suffix">
+                      <string> seconds.</string>
+                     </property>
+                     <property name="minimum">
+                      <double>2.500000000000000</double>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_121">
+                     <property name="text">
+                      <string>&amp;Repaint every</string>
+                     </property>
+                     <property name="buddy">
+                      <cstring>chatUpdateInterval</cstring>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QDoubleSpinBox" name="chatUpdateInterval">
+                     <property name="suffix">
+                      <string> seconds.</string>
+                     </property>
+                     <property name="minimum">
+                      <double>0.500000000000000</double>
+                     </property>
+                     <property name="maximum">
+                      <double>10.000000000000000</double>
+                     </property>
+                     <property name="value">
+                      <double>3.500000000000000</double>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_68">
                      <property name="orientation">
                       <enum>Qt::Horizontal</enum>
                      </property>
@@ -782,32 +852,6 @@
                         <widget class="QCheckBox" name="hideOfflineParticipants">
                          <property name="text">
                           <string>&amp;Hide offline participants.</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QLabel" name="label_121">
-                         <property name="text">
-                          <string>&amp;Repaint every</string>
-                         </property>
-                         <property name="buddy">
-                          <cstring>chatUpdateInterval</cstring>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QDoubleSpinBox" name="chatUpdateInterval">
-                         <property name="suffix">
-                          <string> s.</string>
-                         </property>
-                         <property name="minimum">
-                          <double>0.500000000000000</double>
-                         </property>
-                         <property name="maximum">
-                          <double>10.000000000000000</double>
-                         </property>
-                         <property name="value">
-                          <double>3.500000000000000</double>
                          </property>
                         </widget>
                        </item>
@@ -2067,7 +2111,7 @@
              <x>0</x>
              <y>0</y>
              <width>912</width>
-             <height>414</height>
+             <height>467</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -4317,8 +4361,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>154</width>
-             <height>305</height>
+             <width>776</width>
+             <height>485</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -4371,7 +4415,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>741</width>
+                 <width>748</width>
                  <height>627</height>
                 </rect>
                </property>
@@ -5160,8 +5204,8 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-606</y>
-             <width>829</width>
+             <y>0</y>
+             <width>861</width>
              <height>1073</height>
             </rect>
            </property>
@@ -7884,8 +7928,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>280</width>
-             <height>189</height>
+             <width>776</width>
+             <height>485</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -8419,6 +8463,8 @@
   <tabstop>displayPopups</tabstop>
   <tabstop>impersonate</tabstop>
   <tabstop>chatSignMessages</tabstop>
+  <tabstop>poptasticRefresh</tabstop>
+  <tabstop>chatUpdateInterval</tabstop>
   <tabstop>enableChatEmoticons</tabstop>
   <tabstop>clearMessages</tabstop>
   <tabstop>messages</tabstop>
@@ -8428,7 +8474,6 @@
   <tabstop>chatActionMenu</tabstop>
   <tabstop>participants</tabstop>
   <tabstop>hideOfflineParticipants</tabstop>
-  <tabstop>chatUpdateInterval</tabstop>
   <tabstop>chatSendMethod</tabstop>
   <tabstop>message</tabstop>
   <tabstop>sendMessage</tabstop>

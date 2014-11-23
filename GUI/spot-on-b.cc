@@ -2759,6 +2759,14 @@ void spoton::slotCopyMyEmailPublicKey(void)
     clipboard->setText(copyMyEmailPublicKey());
 }
 
+void spoton::slotCopyMyPoptasticPublicKey(void)
+{
+  QClipboard *clipboard = QApplication::clipboard();
+
+  if(clipboard)
+    clipboard->setText(copyMyPoptasticPublicKey());
+}
+
 void spoton::slotCopyMyRosettaPublicKey(void)
 {
   QClipboard *clipboard = QApplication::clipboard();
