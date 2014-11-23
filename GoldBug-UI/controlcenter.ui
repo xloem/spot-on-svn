@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>650</width>
-    <height>874</height>
+    <height>906</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -7028,6 +7028,11 @@ QPushButton:pressed {
                  <item>
                   <property name="text">
                    <string>E-Mail</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Poptastic</string>
                   </property>
                  </item>
                  <item>

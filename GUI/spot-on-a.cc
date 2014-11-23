@@ -4834,6 +4834,8 @@ void spoton::slotSetPassphrase(void)
 		   << "chat-signature"
 		   << "email"
 		   << "email-signature"
+		   << "poptastic"
+		   << "poptastic-signature"
 		   << "rosetta"
 		   << "rosetta-signature"
 	           << "url"
@@ -4913,6 +4915,8 @@ void spoton::slotSetPassphrase(void)
 		   << "chat-signature"
 		   << "email"
 		   << "email-signature"
+		   << "poptastic"
+		   << "poptastic-signature"
 		   << "rosetta"
 		   << "rosetta-signature"
 		   << "url"
@@ -5064,6 +5068,8 @@ void spoton::slotSetPassphrase(void)
 	       << "chat-signature"
 	       << "email"
 	       << "email-signature"
+	       << "poptastic"
+	       << "poptastic-signature"
 	       << "rosetta"
 	       << "rosetta-signature"
 	       << "url"
@@ -5296,6 +5302,8 @@ void spoton::slotValidatePassphrase(void)
 		 << "chat-signature"
 		 << "email"
 		 << "email-signature"
+		 << "poptastic"
+		 << "poptastic-signature"
 		 << "rosetta"
 		 << "rosetta-signature"
 		 << "url"
@@ -6364,7 +6372,7 @@ void spoton::slotPopulateParticipants(void)
 		      "gemini_hash_key, "
 		      "key_type "
 		      "FROM friends_public_keys "
-		      "WHERE key_type_hash IN (?, ?, ?)");
+		      "WHERE key_type_hash IN (?, ?, ?, ?)");
 	query.bindValue
 	  (0, crypt->keyedHash(QByteArray("chat"), &ok).toBase64());
 
@@ -6374,7 +6382,11 @@ void spoton::slotPopulateParticipants(void)
 
 	if(ok)
 	  query.bindValue
-	    (2, crypt->keyedHash(QByteArray("url"), &ok).toBase64());
+	    (2, crypt->keyedHash(QByteArray("poptastic"), &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (3, crypt->keyedHash(QByteArray("url"), &ok).toBase64());
 
 	if(ok && query.exec())
 	  while(query.next())
@@ -6399,7 +6411,7 @@ void spoton::slotPopulateParticipants(void)
 		{
 		  QTableWidgetItem *item = 0;
 
-		  if(keyType == "chat")
+		  if(keyType == "chat" || keyType == "poptastic")
 		    {
 		      if(i == 0)
 			{
@@ -6665,7 +6677,7 @@ void spoton::slotPopulateParticipants(void)
 		    }
 		}
 
-	      if(keyType == "chat")
+	      if(keyType == "chat" || keyType == "poptastic")
 		emit statusChanged(icon, name, oid);
 
 	      if(hashes.contains(query.value(3).toString()))

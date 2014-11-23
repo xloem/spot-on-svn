@@ -167,6 +167,7 @@ class spoton: public QMainWindow
   spoton_starbeamanalyzer *m_starbeamAnalyzer;
   QByteArray copyMyChatPublicKey(void) const;
   QByteArray copyMyEmailPublicKey(void) const;
+  QByteArray copyMyPoptasticPublicKey(void) const;
   QByteArray copyMyRosettaPublicKey(void) const;
   QByteArray copyMyUrlPublicKey(void) const;
   QPixmap pixmapForCountry(const QString &country) const;
@@ -292,6 +293,7 @@ class spoton: public QMainWindow
   void slotCopyMyRosettaPublicKey(void);
   void slotCopyMyURLPublicKey(void);
   void slotCopyOrPaste(void);
+  void slotCopyPoptasticBundle(void);
   void slotCopyTransmittedMagnet(void);
   void slotCopyUrlFriendshipBundle(void);
   void slotCostChanged(int value);
@@ -458,6 +460,8 @@ class spoton: public QMainWindow
   void slotShareChatPublicKeyWithParticipant(void);
   void slotShareEmailPublicKey(void);
   void slotShareEmailPublicKeyWithParticipant(void);
+  void slotSharePoptasticPublicKey(void);
+  void slotSharePoptasticPublicKeyWithParticipant(void);
   void slotShareUrlPublicKeyWithParticipant(void);
   void slotShareURLPublicKey(void);
   void slotShowContextMenu(const QPoint &point);

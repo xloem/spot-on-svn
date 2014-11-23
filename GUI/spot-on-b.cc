@@ -1078,6 +1078,11 @@ void spoton::slotShareChatPublicKeyWithParticipant(void)
   sharePublicKeyWithParticipant("chat");
 }
 
+void spoton::slotSharePoptasticPublicKeyWithParticipant(void)
+{
+  sharePublicKeyWithParticipant("poptastic");
+}
+
 void spoton::slotShareEmailPublicKeyWithParticipant(void)
 {
   sharePublicKeyWithParticipant("email");
@@ -1175,6 +1180,42 @@ QByteArray spoton::copyMyChatPublicKey(void) const
 
   if(ok)
     return "K" + QByteArray("chat").toBase64() + "@" +
+      name.toBase64() + "@" +
+      mPublicKey.toBase64() + "@" + mSignature.toBase64() + "@" +
+      sPublicKey.toBase64() + "@" + sSignature.toBase64();
+  else
+    return QByteArray();
+}
+
+QByteArray spoton::copyMyPoptasticPublicKey(void) const
+{
+  if(!m_crypts.value("poptastic", 0) ||
+     !m_crypts.value("poptastic-signature", 0))
+    return QByteArray();
+
+  QByteArray name;
+  QByteArray mPublicKey;
+  QByteArray mSignature;
+  QByteArray sPublicKey;
+  QByteArray sSignature;
+  bool ok = true;
+
+  name = m_settings.value("gui/nodeName", "unknown").toByteArray();
+  mPublicKey = m_crypts.value("poptastic")->publicKey(&ok);
+
+  if(ok)
+    mSignature = m_crypts.value("poptastic")->digitalSignature
+      (mPublicKey, &ok);
+
+  if(ok)
+    sPublicKey = m_crypts.value("poptastic-signature")->publicKey(&ok);
+
+  if(ok)
+    sSignature = m_crypts.value("poptastic-signature")->
+      digitalSignature(sPublicKey, &ok);
+
+  if(ok)
+    return "K" + QByteArray("poptastic").toBase64() + "@" +
       name.toBase64() + "@" +
       mPublicKey.toBase64() + "@" + mSignature.toBase64() + "@" +
       sPublicKey.toBase64() + "@" + sSignature.toBase64();
@@ -1610,6 +1651,7 @@ void spoton::addFriendsKey(const QByteArray &key)
     {
       if(!m_crypts.value("chat", 0) ||
 	 !m_crypts.value("email", 0) ||
+	 !m_crypts.value("poptastic", 0) ||
 	 !m_crypts.value("rosetta", 0) ||
 	 !m_crypts.value("url", 0))
 	{
@@ -1654,13 +1696,14 @@ void spoton::addFriendsKey(const QByteArray &key)
       keyType = QByteArray::fromBase64(keyType);
 
       if(!(keyType == "chat" || keyType == "email" ||
+	   keyType == "poptastic" ||
 	   keyType == "rosetta" || keyType == "url"))
 	{
 	  QMessageBox::critical
 	    (this, tr("%1: Error").
 	     arg(SPOTON_APPLICATION_NAME),
-	     tr("Invalid key type. Expecting 'chat', 'email', 'rosetta', "
-		"or 'url'."));
+	     tr("Invalid key type. Expecting 'chat', 'email', 'poptastic', "
+		"'rosetta', or 'url'."));
 	  return;
 	}
 
@@ -1830,6 +1873,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 
       if(!m_crypts.value("chat", 0) ||
 	 !m_crypts.value("email", 0) ||
+	 !m_crypts.value("poptastic", 0) ||
 	 !m_crypts.value("rosetta", 0) ||
 	 !m_crypts.value("url", 0))
 	{
@@ -1887,23 +1931,29 @@ void spoton::addFriendsKey(const QByteArray &key)
 
 	  if(!ok)
 	    {
-	      keyInformation = m_crypts.value("rosetta")->
+	      keyInformation = m_crypts.value("poptastic")->
 		publicKeyDecrypt(list.value(0), &ok);
 
 	      if(!ok)
 		{
-		  keyInformation = m_crypts.value("url")->
+		  keyInformation = m_crypts.value("rosetta")->
 		    publicKeyDecrypt(list.value(0), &ok);
 
 		  if(!ok)
 		    {
-		      QMessageBox::critical
-			(this, tr("%1: Error").
-			 arg(SPOTON_APPLICATION_NAME),
-			 tr("Asymmetric decryption failure. "
-			    "Are you attempting "
-			    "to add a Repleo that you gathered?"));
-		      return;
+		      keyInformation = m_crypts.value("url")->
+			publicKeyDecrypt(list.value(0), &ok);
+
+		      if(!ok)
+			{
+			  QMessageBox::critical
+			    (this, tr("%1: Error").
+			     arg(SPOTON_APPLICATION_NAME),
+			     tr("Asymmetric decryption failure. "
+				"Are you attempting "
+				"to add a Repleo that you gathered?"));
+			  return;
+			}
 		    }
 		}
 	    }
@@ -1982,14 +2032,15 @@ void spoton::addFriendsKey(const QByteArray &key)
 
       if(!(list.value(0) == "chat" ||
 	   list.value(0) == "email" ||
+	   list.value(0) == "poptastic" || 
 	   list.value(0) == "rosetta" ||
 	   list.value(0) == "url"))
 	{
 	  QMessageBox::critical
 	    (this, tr("%1: Error").
 	     arg(SPOTON_APPLICATION_NAME),
-	     tr("Invalid key type. Expecting 'chat', 'email', 'rosetta', "
-		"or 'url'."));
+	     tr("Invalid key type. Expecting 'chat', 'email', 'poptastic', "
+		"'rosetta', or 'url'."));
 	  return;
 	}
 
@@ -2010,6 +2061,14 @@ void spoton::addFriendsKey(const QByteArray &key)
 
 	  if(ok)
 	    mySPublicKey = m_crypts.value("email-signature")->
+	      publicKey(&ok);
+	}
+      else if(list.value(0) == "poptastic")
+	{
+	  myPublicKey = m_crypts.value("poptastic")->publicKey(&ok);
+
+	  if(ok)
+	    mySPublicKey = m_crypts.value("poptastic-signature")->
 	      publicKey(&ok);
 	}
       else if(list.value(0) == "rosetta")
@@ -2053,7 +2112,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 	  QMessageBox::critical
 	    (this, tr("%1: Error").
 	     arg(SPOTON_APPLICATION_NAME),
-	     tr("Invalid 'chat', 'email', 'rosetta', or 'url' "
+	     tr("Invalid 'chat', 'email', 'rosetta', 'poptastic', or 'url' "
 		"public key signature."));
 	  return;
 	}
@@ -2066,7 +2125,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 	  QMessageBox::critical
 	    (this, tr("%1: Error").
 	     arg(SPOTON_APPLICATION_NAME),
-	     tr("Invalid 'chat', 'email', 'rosetta', or 'url' "
+	     tr("Invalid 'chat', 'email', 'rosetta', 'poptastic', or 'url' "
 		"signature public key signature."));
 	  return;
 	}

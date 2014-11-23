@@ -2737,3 +2737,11 @@ void spoton::slotSetNeighborSSLControlString(void)
 
   QSqlDatabase::removeDatabase(connectionName);
 }
+
+void spoton::slotSharePoptasticPublicKey(void)
+{
+}
+
+void spoton::slotCopyPoptasticBundle(void)
+{
+}

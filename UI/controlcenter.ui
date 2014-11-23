@@ -5160,8 +5160,8 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
-             <width>861</width>
+             <y>-624</y>
+             <width>829</width>
              <height>1091</height>
             </rect>
            </property>
@@ -6257,6 +6257,11 @@
                      <item>
                       <property name="text">
                        <string>E-Mail</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Poptastic</string>
                       </property>
                      </item>
                      <item>

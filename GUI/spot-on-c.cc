@@ -2240,7 +2240,7 @@ void spoton::sharePublicKeyWithParticipant(const QString &keyType)
   QTableWidget *table = 0;
   int row = -1;
 
-  if(keyType == "chat")
+  if(keyType == "chat" || keyType == "poptastic")
     table = m_ui.participants;
   else if(keyType == "email")
     table = m_ui.emailParticipants;
@@ -2286,7 +2286,7 @@ void spoton::sharePublicKeyWithParticipant(const QString &keyType)
       QByteArray message;
       QByteArray name;
 
-      if(keyType == "chat")
+      if(keyType == "chat" || keyType == "poptastic")
 	name = m_settings.value("gui/nodeName", "unknown").
 	  toByteArray();
       else if(keyType == "email")
@@ -2333,6 +2333,8 @@ void spoton::slotRegenerateKey(void)
     keyType = "chat";
   else if(m_ui.keys->currentText() == tr("E-Mail"))
     keyType = "email";
+  else if(m_ui.keys->currentText() == tr("Poptastic"))
+    keyType = "poptastic";
   else if(m_ui.keys->currentText() == tr("Rosetta"))
     keyType = "rosetta";
   else if(m_ui.keys->currentText() == tr("URL"))
@@ -2918,6 +2920,8 @@ void spoton::updatePublicKeysLabel(void)
        << "chat-signature"
        << "email"
        << "email-signature"
+       << "poptastic"
+       << "poptastic-signature"
        << "rosetta"
        << "rosetta-signature"
        << "url"
@@ -3893,12 +3897,13 @@ void spoton::slotRenameParticipant(void)
 
   QString type(action->property("type").toString());
 
-  if(!(type == "chat" || type == "email" || type == "url"))
+  if(!(type == "chat" || type == "email" ||
+       type == "poptastic" || type == "url"))
     return;
 
   QModelIndexList list;
 
-  if(type == "chat")
+  if(type == "chat" || type == "poptastic")
     list = m_ui.participants->selectionModel()->
       selectedRows(1); // OID
   else if(type == "email")
@@ -3955,7 +3960,7 @@ void spoton::slotRenameParticipant(void)
   QSqlDatabase::removeDatabase(connectionName);
 
   if(ok)
-    if(type == "chat")
+    if(type == "chat" || type == "poptastic")
       {
 	QTableWidgetItem *item = m_ui.participants->item
 	  (list.value(0).row(), 3); // public_key_hash
