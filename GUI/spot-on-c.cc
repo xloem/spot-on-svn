@@ -2286,11 +2286,14 @@ void spoton::sharePublicKeyWithParticipant(const QString &keyType)
       QByteArray message;
       QByteArray name;
 
-      if(keyType == "chat" || keyType == "poptastic")
+      if(keyType == "chat")
 	name = m_settings.value("gui/nodeName", "unknown").
 	  toByteArray();
       else if(keyType == "email")
 	name = m_settings.value("gui/emailName", "unknown").
+	  toByteArray();
+      else if(keyType == "poptastic")
+	name = m_settings.value("gui/poptasticName", "unknown@unknown.org").
 	  toByteArray();
       else if(keyType == "url")
 	name = name = m_settings.value("gui/urlName", "unknown").

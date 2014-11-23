@@ -438,6 +438,7 @@ class spoton: public QMainWindow
   void slotSaveKernelPath(void);
   void slotSaveMOTD(void);
   void slotSaveNodeName(void);
+  void slotSavePoptasticName(void);
   void slotSaveSslControlString(void);
   void slotSaveUrlCredentials(void);
   void slotSaveUrlName(void);

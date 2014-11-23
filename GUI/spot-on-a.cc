@@ -521,6 +521,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotSaveNodeName(void)));
+  connect(m_ui.saveNodeName,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotSavePoptasticName(void)));
   connect(m_ui.saveUrlName,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -553,6 +557,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(returnPressed(void)),
 	  this,
 	  SLOT(slotSaveNodeName(void)));
+  connect(m_ui.poptasticName,
+	  SIGNAL(returnPressed(void)),
+	  this,
+	  SLOT(slotSavePoptasticName(void)));
   connect(m_ui.emailName,
 	  SIGNAL(returnPressed(void)),
 	  this,
@@ -1553,6 +1561,10 @@ spoton::spoton(void):QMainWindow()
   m_ui.nodeName->setMaxLength(spoton_common::NAME_MAXIMUM_LENGTH);
   m_ui.nodeName->setText
     (QString::fromUtf8(m_settings.value("gui/nodeName", "unknown").
+		       toByteArray()).trimmed());
+  m_ui.poptasticName->setText
+    (QString::fromUtf8(m_settings.value("gui/poptasticName",
+					"unknown@unknown.org").
 		       toByteArray()).trimmed());
   m_ui.urlName->setMaxLength(spoton_common::NAME_MAXIMUM_LENGTH);
   m_ui.urlName->setText
@@ -5135,6 +5147,7 @@ void spoton::slotSetPassphrase(void)
       m_settings["gui/kernelHashType"] =
 	m_ui.kernelHashType->currentText();
       m_settings["gui/nodeName"] = str3.toUtf8();
+      m_settings["gui/poptasticName"] = str3.toUtf8();
       m_settings["gui/rosettaName"] = str3.toUtf8();
       m_settings["gui/salt"] = salt;
       m_settings["gui/saltLength"] = m_ui.saltLength->value();
@@ -5154,6 +5167,8 @@ void spoton::slotSetPassphrase(void)
       settings.setValue("gui/kernelHashType",
 			m_settings["gui/kernelHashType"]);
       settings.setValue("gui/nodeName", m_settings["gui/nodeName"]);
+      settings.setValue
+	("gui/poptasticName", m_settings["gui/poptasticName"]);
       settings.setValue("gui/rosettaName", m_settings["gui/rosettaName"]);
       settings.setValue("gui/salt", m_settings["gui/salt"]);
       settings.setValue("gui/saltLength", m_settings["gui/saltLength"]);
@@ -5164,6 +5179,7 @@ void spoton::slotSetPassphrase(void)
       m_ui.buzzName->setText(m_ui.username->text());
       m_ui.emailName->setText(m_ui.username->text());
       m_ui.nodeName->setText(m_ui.username->text());
+      m_ui.poptasticName->setText(m_ui.username->text());
       m_ui.urlName->setText(m_ui.username->text());
 
       if(!m_settings.value("gui/spot_on_neighbors_txt_processed",
@@ -7331,10 +7347,15 @@ void spoton::slotCopyAllMyPublicKeys(void)
   QClipboard *clipboard = QApplication::clipboard();
 
   if(clipboard)
-    clipboard->setText(copyMyChatPublicKey() + "@" +
-		       copyMyEmailPublicKey() + "@" +
-		       copyMyRosettaPublicKey() + "@" +
-		       copyMyUrlPublicKey());
+    {
+      QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+      clipboard->setText(copyMyChatPublicKey() + "@" +
+			 copyMyEmailPublicKey() + "@" +
+			 copyMyPoptasticPublicKey() + "@" +
+			 copyMyRosettaPublicKey() + "@" +
+			 copyMyUrlPublicKey());
+      QApplication::restoreOverrideCursor();
+    }
 }
 
 void spoton::slotSaveSslControlString(void)

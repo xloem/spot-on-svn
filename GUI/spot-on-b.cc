@@ -879,6 +879,26 @@ void spoton::slotSaveNodeName(void)
   m_ui.nodeName->selectAll();
 }
 
+void spoton::slotSavePoptasticName(void)
+{
+  QString str(m_ui.poptasticName->text().trimmed());
+
+  if(str.isEmpty())
+    {
+      str = "unknown@unknown.org";
+      m_ui.poptasticName->setText(str);
+    }
+  else
+    m_ui.poptasticName->setText(str);
+
+  m_settings["gui/poptasticName"] = str.toUtf8();
+
+  QSettings settings;
+
+  settings.setValue("gui/poptasticName", str.toUtf8());
+  m_ui.poptasticName->selectAll();
+}
+
 void spoton::highlightPaths(void)
 {
   QColor color;
@@ -1200,7 +1220,8 @@ QByteArray spoton::copyMyPoptasticPublicKey(void) const
   QByteArray sSignature;
   bool ok = true;
 
-  name = m_settings.value("gui/nodeName", "unknown").toByteArray();
+  name = m_settings.value("gui/poptasticName", "unknown@unknown.org").
+    toByteArray();
   mPublicKey = m_crypts.value("poptastic")->publicKey(&ok);
 
   if(ok)
