@@ -5160,9 +5160,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-624</y>
+             <y>-606</y>
              <width>829</width>
-             <height>1091</height>
+             <height>1073</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -6094,7 +6094,7 @@
                  <item>
                   <widget class="QLabel" name="publicKeysInformation">
                    <property name="text">
-                    <string>Chat Key: 0, Chat Signature Key: 0, E-Mail Key: 0, E-Mail Signature Key: 0, Rosetta Key: 0, Rosetta Signature Key: 0, URL Key: 0, URL Signature Key: 0.</string>
+                    <string>Information goes here.</string>
                    </property>
                    <property name="wordWrap">
                     <bool>true</bool>
@@ -6404,7 +6404,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>575</width>
+             <width>758</width>
              <height>559</height>
             </rect>
            </property>
@@ -7402,8 +7402,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>265</width>
-             <height>412</height>
+             <width>776</width>
+             <height>485</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">

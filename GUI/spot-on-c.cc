@@ -2618,6 +2618,11 @@ void spoton::prepareContextMenuMirrors(void)
 				toString())),
 		      tr("Share &E-Mail Public Key"),
 		      this, SLOT(slotShareEmailPublicKey(void)));
+      menu->addAction(QIcon(QString(":/%1/share.png").
+			    arg(m_settings.value("gui/iconSet", "nouve").
+				toString())),
+		      tr("Share &Poptastic Public Key"),
+		      this, SLOT(slotSharePoptasticPublicKey(void)));
       menu->addAction(QIcon(QString(":%1//share.png").
 			    arg(m_settings.value("gui/iconSet", "nouve").
 				toString())),
@@ -2911,9 +2916,11 @@ void spoton::updatePublicKeysLabel(void)
     (tr("<b>Chat Key:</b> %1, <b>Chat Signature Key:</b> %2, "
 	"<b>E-Mail Key:</b> %3, "
 	"<b>E-Mail Signature Key:</b> %4, "
-	"<b>Rosetta Key:</b> %5, "
-	"<b>Rosetta Signature Key:</b> %6, "
-	"<b>URL Key:</b> %7, <b>URL Signature Key:</b> %8."));
+	"<b>Poptastic Key:</b> %4, "
+	"<b>Poptastic Signature Key:</b>: %5, "
+	"<b>Rosetta Key:</b> %6, "
+	"<b>Rosetta Signature Key:</b> %7, "
+	"<b>URL Key:</b> %8, <b>URL Signature Key:</b> %9."));
   QStringList list;
 
   list << "chat"
