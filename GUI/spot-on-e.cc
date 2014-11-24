@@ -64,10 +64,10 @@ void spoton::slotConfigurePoptastic(void)
   QString connectionName("");
 
   m_poptasticSettingsUi.setupUi(&dialog);
-  connect(m_poptasticSettingsUi.test,
+  connect(m_poptasticSettingsUi.testpop3,
 	  SIGNAL(clicked(void)),
 	  this,
-	  SLOT(slotTestPoptasticSettings(void)));
+	  SLOT(slotTestPoptasticPop3Settings(void)));
   dialog.setWindowTitle
     (tr("%1: Poptastic Settings").
      arg(SPOTON_APPLICATION_NAME));
@@ -217,7 +217,7 @@ void spoton::slotConfigurePoptastic(void)
     }
 }
 
-void spoton::slotTestPoptasticSettings(void)
+void spoton::slotTestPoptasticPop3Settings(void)
 {
   CURL *curl = 0;
   CURLcode res = CURLE_OK;

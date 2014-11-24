@@ -38,12 +38,14 @@ QMAKE_DISTCLEAN += .qmake.cache .qmake.stash
 QMAKE_EXTRA_TARGETS = libntru libspoton purge
 INCLUDEPATH	+= . ..\\..\\. GUI ..\\..\\libSpotOn\\Include.win32 \
 		   ..\\..\\libGeoIP\\Include.win32 \
-		   ..\\..\\libOpenSSL\\Include.win32
+		   ..\\..\\libOpenSSL\\Include.win32 \\
+                   ..\\..\\libcURL\\Win32.d\\include
 LIBS		+= -L..\\..\\libNTRU \
                    -L..\\..\\libSpotOn -L..\\..\\libSpotOn\\Libraries.win32 \
 		   -L..\\..\\libGeoIP\\Libraries.win32 \
 		   -L..\\..\\libOpenSSL\\Libraries.win32 \
-		   -lGeoIP-1 -leay32 -lgcrypt-20 -lgpg-error-0 \
+                   -L..\\..\\libcURL\\Win32.d\
+		   -lGeoIP-1 -lcurl -leay32 -lgcrypt-20 -lgpg-error-0 \
 		   -lntru -lpthread -lspoton -lssl32 -lws2_32
 PRE_TARGETDEPS = libntru.dll libspoton.dll
 
