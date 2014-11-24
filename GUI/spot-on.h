@@ -97,6 +97,7 @@ extern "C"
 #include "spot-on-rosetta.h"
 #include "spot-on-starbeamanalyzer.h"
 #include "ui_controlcenter.h"
+#include "ui_poptasticsettings.h"
 #include "ui_statusbar.h"
 
 class QProgressDialog;
@@ -153,8 +154,9 @@ class spoton: public QMainWindow
   QTimer m_starbeamUpdateTimer;
   QTimer m_tableTimer;
   QWidget *m_sbWidget;
-  Ui_statusbar m_sb;
+  Ui_poptasticsettings m_poptasticSettingsUi;
   Ui_spoton_mainwindow m_ui;
+  Ui_statusbar m_sb;
   quint64 m_urlCurrentPage;
   quint64 m_urlLimit;
   quint64 m_urlOffset;
@@ -481,6 +483,7 @@ class spoton: public QMainWindow
   void slotStatusChanged(int index);
   void slotSuperEcho(int index);
   void slotTabChanged(int index);
+  void slotTestPoptasticSettings(void);
   void slotTestSslControlString(void);
   void slotTransmit(void);
   void slotTransmittedPaused(bool state);

@@ -25,9 +25,13 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+extern "C"
+{
+#include <curl/curl.h>
+}
+
 #include "spot-on.h"
 #include "spot-on-defines.h"
-#include "ui_poptasticsettings.h"
 
 void spoton::slotConfigurePoptastic(void)
 {
@@ -58,9 +62,12 @@ void spoton::slotConfigurePoptastic(void)
 
   QDialog dialog(this);
   QString connectionName("");
-  Ui_poptasticsettings ui;
 
-  ui.setupUi(&dialog);
+  m_poptasticSettingsUi.setupUi(&dialog);
+  connect(m_poptasticSettingsUi.test,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotTestPoptasticSettings(void)));
   dialog.setWindowTitle
     (tr("%1: Poptastic Settings").
      arg(SPOTON_APPLICATION_NAME));
@@ -72,28 +79,34 @@ void spoton::slotConfigurePoptastic(void)
     {
       int index = -1;
 
-      index = ui.in_protocol_command->findText(hash["in_protocol_command"].
-					       toString());
+      m_poptasticSettingsUi.in_password->setText
+	(hash["in_password"].toString());
+      m_poptasticSettingsUi.in_server_address->setText
+	(hash["in_server_address"].toString());
+      m_poptasticSettingsUi.in_server_port->setValue
+	(hash["in_server_port"].toInt());
+      index = m_poptasticSettingsUi.in_ssltls->findText
+	(hash["in_ssltls"].toString());
 
       if(index >= 0)
-	ui.in_protocol_command->setCurrentIndex(index);
+	m_poptasticSettingsUi.in_ssltls->setCurrentIndex(index);
 
-      ui.in_password->setText(hash["in_password"].toString());
-      ui.in_server_address->setText(hash["in_server_address"].toString());
-      ui.in_server_port->setValue(hash["in_server_port"].toInt());
-      ui.in_ssltls->setChecked(hash["in_ssltls"].toBool());
-      ui.in_username->setText(hash["in_username"].toString());
-      index = ui.out_protocol_command->findText(hash["out_protocol_command"].
-						toString());
+      m_poptasticSettingsUi.in_username->setText
+	(hash["in_username"].toString());
+      m_poptasticSettingsUi.out_password->setText
+	(hash["out_password"].toString());
+      m_poptasticSettingsUi.out_server_address->setText
+	(hash["out_server_address"].toString());
+      m_poptasticSettingsUi.out_server_port->setValue
+	(hash["out_server_port"].toInt());
+      index = m_poptasticSettingsUi.out_ssltls->findText
+	(hash["out_ssltls"].toString());
 
       if(index >= 0)
-	ui.out_protocol_command->setCurrentIndex(index);
+	m_poptasticSettingsUi.out_ssltls->setCurrentIndex(index);
 
-      ui.out_password->setText(hash["out_password"].toString());
-      ui.out_server_address->setText(hash["out_server_address"].toString());
-      ui.out_server_port->setValue(hash["out_server_port"].toInt());
-      ui.out_ssltls->setChecked(hash["out_ssltls"].toBool());
-      ui.out_username->setText(hash["out_username"].toString());
+      m_poptasticSettingsUi.out_username->setText
+	(hash["out_username"].toString());
     }
 
   if(dialog.exec() == QDialog::Accepted)
@@ -111,71 +124,86 @@ void spoton::slotConfigurePoptastic(void)
 
 	    query.prepare
 	      ("INSERT INTO poptastic "
-	       "(in_authentication, in_protocol_command, "
+	       "(in_authentication, "
 	       "in_method, in_password, in_server_address, "
 	       "in_server_port, in_ssltls, in_username, "
-	       "out_authentication, out_protocol_command, "
+	       "out_authentication, "
 	       "out_method, out_password, out_server_address, "
 	       "out_server_port, out_ssltls, out_username) "
-	       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-	    query.bindValue(0, ui.in_authentication->currentText());
-	    query.bindValue(1, ui.in_protocol_command->currentText());
-	    query.bindValue(2, ui.in_method->currentText());
+	       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    query.bindValue
-	      (3, crypt->encryptedThenHashed(ui.in_password->
+	      (0, m_poptasticSettingsUi.in_authentication->currentText());
+	    query.bindValue
+	      (1, m_poptasticSettingsUi.in_method->currentText());
+	    query.bindValue
+	      (2, crypt->encryptedThenHashed(m_poptasticSettingsUi.
+					     in_password->
 					     text().trimmed().
-					     toUtf8(), &ok).toBase64());
+					     toLatin1(), &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(4, crypt->encryptedThenHashed(ui.in_server_address->
+		(3, crypt->
+		 encryptedThenHashed(m_poptasticSettingsUi.in_server_address->
+				     text().trimmed().
+				     toLatin1(), &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(4, crypt->
+		 encryptedThenHashed(QByteArray::
+				     number(m_poptasticSettingsUi.
+					    in_server_port->
+					    value()), &ok).toBase64());
+
+	    query.bindValue
+	      (5, m_poptasticSettingsUi.in_ssltls->currentText());
+
+	    if(ok)
+	      query.bindValue
+		(6, crypt->
+		 encryptedThenHashed(m_poptasticSettingsUi.
+				     in_username->text().
+				     trimmed().toLatin1(), &ok).
+		 toBase64());
+
+	    query.bindValue
+	      (7, m_poptasticSettingsUi.out_authentication->currentText());
+	    query.bindValue
+	      (8, m_poptasticSettingsUi.out_method->currentText());
+
+	    if(ok)
+	      query.bindValue
+		(9, crypt->encryptedThenHashed(m_poptasticSettingsUi.
+					       out_password->
 					       text().trimmed().
 					       toLatin1(), &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(5, crypt->
+		(10, crypt->
+		 encryptedThenHashed(m_poptasticSettingsUi.
+				     out_server_address->
+				     text().trimmed().
+				     toLatin1(), &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(11, crypt->
 		 encryptedThenHashed(QByteArray::
-				     number(ui.in_server_port->
+				     number(m_poptasticSettingsUi.
+					    out_server_port->
 					    value()), &ok).toBase64());
 
-	    query.bindValue(6, ui.in_ssltls->isChecked() ? 1 : 0);
-
-	    if(ok)
-	      query.bindValue
-		(7, crypt->encryptedThenHashed(ui.in_username->text().
-					       trimmed().toUtf8(), &ok).
-		 toBase64());
-
-	    query.bindValue(8, ui.out_authentication->currentText());
-	    query.bindValue(9, ui.out_protocol_command->currentText());
-	    query.bindValue(10, ui.out_method->currentText());
-
-	    if(ok)
-	      query.bindValue
-		(11, crypt->encryptedThenHashed(ui.out_password->
-						text().trimmed().
-						toUtf8(), &ok).toBase64());
-
-	    if(ok)
-	      query.bindValue
-		(12, crypt->encryptedThenHashed(ui.out_server_address->
-						text().trimmed().
-						toLatin1(), &ok).toBase64());
+	    query.bindValue
+	      (12, m_poptasticSettingsUi.out_ssltls->currentText());
 
 	    if(ok)
 	      query.bindValue
 		(13, crypt->
-		 encryptedThenHashed(QByteArray::
-				     number(ui.out_server_port->
-					    value()), &ok).toBase64());
-
-	    query.bindValue(14, ui.out_ssltls->isChecked() ? 1 : 0);
-
-	    if(ok)
-	      query.bindValue
-		(15, crypt->encryptedThenHashed(ui.out_username->text().
-						trimmed().toUtf8(), &ok).
+		 encryptedThenHashed(m_poptasticSettingsUi.
+				     out_username->text().
+				     trimmed().toLatin1(), &ok).
 		 toBase64());
 
 	    if(ok)
@@ -187,4 +215,69 @@ void spoton::slotConfigurePoptastic(void)
 
       QSqlDatabase::removeDatabase(connectionName);
     }
+}
+
+void spoton::slotTestPoptasticSettings(void)
+{
+  CURL *curl = 0;
+  CURLcode res = CURLE_OK;
+  bool ok = false;
+
+  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+  curl_global_init(CURL_GLOBAL_ALL);
+  curl = curl_easy_init();
+
+  if(curl)
+    {
+      curl_easy_setopt
+	(curl, CURLOPT_PASSWORD,
+	 m_poptasticSettingsUi.in_password->text().trimmed().toLatin1().
+	 constData());
+      curl_easy_setopt
+	(curl, CURLOPT_USERNAME,
+	 m_poptasticSettingsUi.in_username->text().trimmed().toLatin1().
+	 constData());
+
+      QString scheme("");
+      int index = m_poptasticSettingsUi.in_ssltls->currentIndex();
+
+      if(index == 1 || index == 2)
+	{
+	  scheme = QString("pop3s://%1:%2/").
+	    arg(m_poptasticSettingsUi.in_server_address->text().trimmed()).
+	    arg(m_poptasticSettingsUi.in_server_port->value());
+	  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
+	  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+
+	  if(index == 2)
+	    curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_ALL);
+	}
+      else
+	scheme = QString("pop3://%1:%2/").
+	  arg(m_poptasticSettingsUi.in_server_address->text().trimmed()).
+	  arg(m_poptasticSettingsUi.in_server_port->value());
+
+      curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "NOOP");
+      curl_easy_setopt(curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");
+      curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
+      curl_easy_setopt(curl, CURLOPT_URL, scheme.toLatin1().constData());
+      res = curl_easy_perform(curl);
+
+      if(res == CURLE_OK)
+	ok = true;
+
+      curl_easy_cleanup(curl);
+    }
+
+  curl_global_cleanup();
+  QApplication::restoreOverrideCursor();
+
+  if(ok)
+    QMessageBox::information(this, tr("%1: Poptastic Connection Test").
+			     arg(SPOTON_APPLICATION_NAME),
+			     tr("Connection established!"));
+  else
+    QMessageBox::critical(this, tr("%1: Poptastic Connection Test").
+			  arg(SPOTON_APPLICATION_NAME),
+			  tr("Failed to connect!"));
 }
