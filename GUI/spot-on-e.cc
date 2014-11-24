@@ -68,6 +68,10 @@ void spoton::slotConfigurePoptastic(void)
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotTestPoptasticPop3Settings(void)));
+  connect(m_poptasticSettingsUi.testsmtp,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotTestPoptasticSmtpSettings(void)));
   dialog.setWindowTitle
     (tr("%1: Poptastic Settings").
      arg(SPOTON_APPLICATION_NAME));
@@ -273,11 +277,76 @@ void spoton::slotTestPoptasticPop3Settings(void)
   QApplication::restoreOverrideCursor();
 
   if(ok)
-    QMessageBox::information(this, tr("%1: Poptastic Connection Test").
+    QMessageBox::information(this, tr("%1: Poptastic POP3 Connection Test").
 			     arg(SPOTON_APPLICATION_NAME),
 			     tr("Connection established!"));
   else
-    QMessageBox::critical(this, tr("%1: Poptastic Connection Test").
+    QMessageBox::critical(this, tr("%1: Poptastic POP3 Connection Test").
+			  arg(SPOTON_APPLICATION_NAME),
+			  tr("Failed to connect!"));
+}
+
+void spoton::slotTestPoptasticSmtpSettings(void)
+{
+  CURL *curl = 0;
+  CURLcode res = CURLE_OK;
+  bool ok = false;
+
+  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+  curl_global_init(CURL_GLOBAL_ALL);
+  curl = curl_easy_init();
+
+  if(curl)
+    {
+      curl_easy_setopt
+	(curl, CURLOPT_PASSWORD,
+	 m_poptasticSettingsUi.out_password->text().trimmed().toLatin1().
+	 constData());
+      curl_easy_setopt
+	(curl, CURLOPT_USERNAME,
+	 m_poptasticSettingsUi.out_username->text().trimmed().toLatin1().
+	 constData());
+
+      QString scheme("");
+      int index = m_poptasticSettingsUi.out_ssltls->currentIndex();
+
+      if(index == 1 || index == 2)
+	{
+	  scheme = QString("smtps://%1:%2/").
+	    arg(m_poptasticSettingsUi.out_server_address->text().trimmed()).
+	    arg(m_poptasticSettingsUi.out_server_port->value());
+	  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
+	  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+
+	  if(index == 2)
+	    curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_ALL);
+	}
+      else
+	scheme = QString("smtp://%1:%2/").
+	  arg(m_poptasticSettingsUi.out_server_address->text().trimmed()).
+	  arg(m_poptasticSettingsUi.out_server_port->value());
+
+      curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "NOOP");
+      curl_easy_setopt(curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");
+      curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
+      curl_easy_setopt(curl, CURLOPT_URL, scheme.toLatin1().constData());
+      res = curl_easy_perform(curl);
+
+      if(res == CURLE_OK)
+	ok = true;
+
+      curl_easy_cleanup(curl);
+    }
+
+  curl_global_cleanup();
+  QApplication::restoreOverrideCursor();
+
+  if(ok)
+    QMessageBox::information(this, tr("%1: Poptastic SMTP Connection Test").
+			     arg(SPOTON_APPLICATION_NAME),
+			     tr("Connection established!"));
+  else
+    QMessageBox::critical(this, tr("%1: Poptastic SMTP Connection Test").
 			  arg(SPOTON_APPLICATION_NAME),
 			  tr("Failed to connect!"));
 }
