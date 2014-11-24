@@ -32,13 +32,13 @@
      <item row="5" column="0">
       <widget class="QLabel" name="label_6">
        <property name="text">
-        <string>&amp;Extension</string>
+        <string>&amp;Protocol Command</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
        </property>
        <property name="buddy">
-        <cstring>in_extension</cstring>
+        <cstring>in_protocol_command</cstring>
        </property>
       </widget>
      </item>
@@ -141,13 +141,13 @@
       </widget>
      </item>
      <item row="5" column="3">
-      <widget class="QComboBox" name="out_extension">
+      <widget class="QComboBox" name="out_protocol_command">
        <property name="sizeAdjustPolicy">
         <enum>QComboBox::AdjustToContents</enum>
        </property>
        <item>
         <property name="text">
-         <string>None</string>
+         <string>STARTTLS</string>
         </property>
        </item>
       </widget>
@@ -194,21 +194,16 @@
       <widget class="QLineEdit" name="out_server_address"/>
      </item>
      <item row="5" column="1">
-      <widget class="QComboBox" name="in_extension">
+      <widget class="QComboBox" name="in_protocol_command">
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <property name="sizeAdjustPolicy">
         <enum>QComboBox::AdjustToContents</enum>
        </property>
        <item>
         <property name="text">
-         <string>STARTTLS</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>TLS/SSL</string>
+         <string>STLS</string>
         </property>
        </item>
       </widget>
@@ -228,18 +223,24 @@
      </item>
      <item row="4" column="3">
       <widget class="QSpinBox" name="out_server_port">
+       <property name="minimum">
+        <number>1</number>
+       </property>
        <property name="maximum">
-        <number>999</number>
+        <number>65535</number>
        </property>
        <property name="value">
-        <number>587</number>
+        <number>465</number>
        </property>
       </widget>
      </item>
      <item row="4" column="1">
       <widget class="QSpinBox" name="in_server_port">
+       <property name="minimum">
+        <number>1</number>
+       </property>
        <property name="maximum">
-        <number>999</number>
+        <number>65535</number>
        </property>
        <property name="value">
         <number>995</number>
@@ -319,8 +320,8 @@
   <tabstop>out_server_address</tabstop>
   <tabstop>in_server_port</tabstop>
   <tabstop>out_server_port</tabstop>
-  <tabstop>in_extension</tabstop>
-  <tabstop>out_extension</tabstop>
+  <tabstop>in_protocol_command</tabstop>
+  <tabstop>out_protocol_command</tabstop>
   <tabstop>in_authentication</tabstop>
   <tabstop>out_authentication</tabstop>
   <tabstop>in_username</tabstop>

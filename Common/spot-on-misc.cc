@@ -451,16 +451,16 @@ void spoton_misc::prepareDatabases(void)
 
 	query.exec("CREATE TABLE IF NOT EXISTS poptastic ("
 		   "in_authentication TEXT NOT NULL, "
-		   "in_extension TEXT NOT NULL, "
 		   "in_method TEXT NOT NULL, "
 		   "in_password TEXT NOT NULL, "
+		   "in_protocol_command TEXT NOT NULL, "
 		   "in_server_address TEXT NOT NULL, "
 		   "in_server_port TEXT NOT NULL, "
 		   "in_username TEXT NOT NULL, "
 		   "out_authentication TEXT NOT NULL, "
-		   "out_extension TEXT NOT NULL, "
 		   "out_method TEXT NOT NULL, "
 		   "out_password TEXT NOT NULL, "
+		   "out_protocol_command TEXT NOT NULL, "
 		   "out_server_address TEXT NOT NULL, "
 		   "out_server_port TEXT NOT NULL, "
 		   "out_username TEXT NOT NULL)");

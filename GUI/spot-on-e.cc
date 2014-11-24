@@ -69,19 +69,21 @@ void spoton::slotConfigurePoptastic(void)
   dialog.setAttribute(Qt::WA_MacMetalStyle, false);
 #endif
 
-  index = ui.in_extension->findText(hash["in_extension"].toString());
+  index = ui.in_protocol_command->findText(hash["in_protocol_command"].
+					   toString());
 
   if(index >= 0)
-    ui.in_extension->setCurrentIndex(index);
+    ui.in_protocol_command->setCurrentIndex(index);
 
   ui.in_password->setText(hash["in_password"].toString());
   ui.in_server_address->setText(hash["in_server_address"].toString());
   ui.in_server_port->setValue(hash["in_server_port"].toInt());
   ui.in_username->setText(hash["in_username"].toString());
-  index = ui.out_extension->findText(hash["out_extension"].toString());
+  index = ui.out_protocol_command->findText(hash["out_protocol_command"].
+					    toString());
 
   if(index >= 0)
-    ui.out_extension->setCurrentIndex(index);
+    ui.out_protocol_command->setCurrentIndex(index);
 
   ui.out_password->setText(hash["out_password"].toString());
   ui.out_server_address->setText(hash["out_server_address"].toString());
@@ -103,15 +105,15 @@ void spoton::slotConfigurePoptastic(void)
 
 	    query.prepare
 	      ("INSERT INTO poptastic "
-	       "(in_authentication, in_extension, "
+	       "(in_authentication, in_protocol_command, "
 	       "in_method, in_password, in_server_address, "
 	       "in_server_port, in_username, "
-	       "out_authentication, out_extension, "
+	       "out_authentication, out_protocol_command, "
 	       "out_method, out_password, out_server_address, "
 	       "out_server_port, out_username) "
 	       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    query.bindValue(0, ui.in_authentication->currentText());
-	    query.bindValue(1, ui.in_extension->currentText());
+	    query.bindValue(1, ui.in_protocol_command->currentText());
 	    query.bindValue(2, ui.in_method->currentText());
 	    query.bindValue
 	      (3, crypt->encryptedThenHashed(ui.in_password->
@@ -138,7 +140,7 @@ void spoton::slotConfigurePoptastic(void)
 		 toBase64());
 
 	    query.bindValue(7, ui.out_authentication->currentText());
-	    query.bindValue(8, ui.out_extension->currentText());
+	    query.bindValue(8, ui.out_protocol_command->currentText());
 	    query.bindValue(9, ui.out_method->currentText());
 
 	    if(ok)
