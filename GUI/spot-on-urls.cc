@@ -957,10 +957,10 @@ void spoton::slotPostgreSQLConnect(void)
   QDialog dialog(this);
   Ui_postgresqlconnect ui;
 
+  ui.setupUi(&dialog);
   dialog.setWindowTitle
     (tr("%1: PostgreSQL Connect").
      arg(SPOTON_APPLICATION_NAME));
-  ui.setupUi(&dialog);
 #ifdef Q_OS_MAC
   dialog.setAttribute(Qt::WA_MacMetalStyle, false);
 #endif

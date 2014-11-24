@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../Icons/icons.qrc">
+    <normaloff>:/Logo/spoton-button-32.png</normaloff>:/Logo/spoton-button-32.png</iconset>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout_5">
    <property name="spacing">
     <number>5</number>
@@ -34,7 +38,7 @@
         <set>Qt::AlignCenter</set>
        </property>
        <property name="buddy">
-        <cstring>comboBox_4</cstring>
+        <cstring>in_extension</cstring>
        </property>
       </widget>
      </item>
@@ -47,18 +51,18 @@
         <set>Qt::AlignCenter</set>
        </property>
        <property name="buddy">
-        <cstring>comboBox_6</cstring>
+        <cstring>in_authentication</cstring>
        </property>
       </widget>
      </item>
      <item row="8" column="1">
-      <widget class="QLineEdit" name="lineEdit_4"/>
+      <widget class="QLineEdit" name="in_password"/>
      </item>
      <item row="2" column="1">
-      <widget class="QLineEdit" name="lineEdit"/>
+      <widget class="QLineEdit" name="in_server_address"/>
      </item>
      <item row="7" column="1">
-      <widget class="QLineEdit" name="lineEdit_3"/>
+      <widget class="QLineEdit" name="in_username"/>
      </item>
      <item row="7" column="0">
       <widget class="QLabel" name="label_8">
@@ -69,7 +73,7 @@
         <set>Qt::AlignCenter</set>
        </property>
        <property name="buddy">
-        <cstring>lineEdit_3</cstring>
+        <cstring>in_username</cstring>
        </property>
       </widget>
      </item>
@@ -82,15 +86,15 @@
         <set>Qt::AlignCenter</set>
        </property>
        <property name="buddy">
-        <cstring>lineEdit_4</cstring>
+        <cstring>in_password</cstring>
        </property>
       </widget>
      </item>
      <item row="7" column="3">
-      <widget class="QLineEdit" name="lineEdit_6"/>
+      <widget class="QLineEdit" name="out_username"/>
      </item>
      <item row="8" column="3">
-      <widget class="QLineEdit" name="lineEdit_5"/>
+      <widget class="QLineEdit" name="out_password"/>
      </item>
      <item row="0" column="1">
       <widget class="QLabel" name="label">
@@ -103,7 +107,10 @@
       </widget>
      </item>
      <item row="6" column="1">
-      <widget class="QComboBox" name="comboBox_6">
+      <widget class="QComboBox" name="in_authentication">
+       <property name="sizeAdjustPolicy">
+        <enum>QComboBox::AdjustToContents</enum>
+       </property>
        <item>
         <property name="text">
          <string>Password</string>
@@ -112,7 +119,10 @@
       </widget>
      </item>
      <item row="6" column="3">
-      <widget class="QComboBox" name="comboBox_7">
+      <widget class="QComboBox" name="out_authentication">
+       <property name="sizeAdjustPolicy">
+        <enum>QComboBox::AdjustToContents</enum>
+       </property>
        <item>
         <property name="text">
          <string>Password</string>
@@ -131,7 +141,16 @@
       </widget>
      </item>
      <item row="5" column="3">
-      <widget class="QComboBox" name="comboBox_5"/>
+      <widget class="QComboBox" name="out_extension">
+       <property name="sizeAdjustPolicy">
+        <enum>QComboBox::AdjustToContents</enum>
+       </property>
+       <item>
+        <property name="text">
+         <string>None</string>
+        </property>
+       </item>
+      </widget>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_4">
@@ -142,12 +161,15 @@
         <set>Qt::AlignCenter</set>
        </property>
        <property name="buddy">
-        <cstring>lineEdit</cstring>
+        <cstring>in_server_address</cstring>
        </property>
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QComboBox" name="comboBox">
+      <widget class="QComboBox" name="in_method">
+       <property name="sizeAdjustPolicy">
+        <enum>QComboBox::AdjustToContents</enum>
+       </property>
        <item>
         <property name="text">
          <string>POP3</string>
@@ -164,17 +186,20 @@
         <set>Qt::AlignCenter</set>
        </property>
        <property name="buddy">
-        <cstring>spinBox_4</cstring>
+        <cstring>in_server_port</cstring>
        </property>
       </widget>
      </item>
      <item row="2" column="3">
-      <widget class="QLineEdit" name="lineEdit_2"/>
+      <widget class="QLineEdit" name="out_server_address"/>
      </item>
      <item row="5" column="1">
-      <widget class="QComboBox" name="comboBox_4">
+      <widget class="QComboBox" name="in_extension">
        <property name="currentIndex">
         <number>1</number>
+       </property>
+       <property name="sizeAdjustPolicy">
+        <enum>QComboBox::AdjustToContents</enum>
        </property>
        <item>
         <property name="text">
@@ -197,19 +222,12 @@
         <set>Qt::AlignCenter</set>
        </property>
        <property name="buddy">
-        <cstring>comboBox</cstring>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="3">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>SMTP</string>
+        <cstring>in_method</cstring>
        </property>
       </widget>
      </item>
      <item row="4" column="3">
-      <widget class="QSpinBox" name="spinBox_3">
+      <widget class="QSpinBox" name="out_server_port">
        <property name="maximum">
         <number>999</number>
        </property>
@@ -219,13 +237,25 @@
       </widget>
      </item>
      <item row="4" column="1">
-      <widget class="QSpinBox" name="spinBox_4">
+      <widget class="QSpinBox" name="in_server_port">
        <property name="maximum">
         <number>999</number>
        </property>
        <property name="value">
         <number>995</number>
        </property>
+      </widget>
+     </item>
+     <item row="1" column="3">
+      <widget class="QComboBox" name="out_method">
+       <property name="sizeAdjustPolicy">
+        <enum>QComboBox::AdjustToContents</enum>
+       </property>
+       <item>
+        <property name="text">
+         <string>SMTP</string>
+        </property>
+       </item>
       </widget>
      </item>
     </layout>
@@ -249,7 +279,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="test">
        <property name="text">
         <string>Test</string>
        </property>
@@ -283,23 +313,26 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>comboBox</tabstop>
-  <tabstop>lineEdit</tabstop>
-  <tabstop>lineEdit_2</tabstop>
-  <tabstop>spinBox_4</tabstop>
-  <tabstop>spinBox_3</tabstop>
-  <tabstop>comboBox_4</tabstop>
-  <tabstop>comboBox_5</tabstop>
-  <tabstop>comboBox_6</tabstop>
-  <tabstop>comboBox_7</tabstop>
-  <tabstop>lineEdit_3</tabstop>
-  <tabstop>lineEdit_6</tabstop>
-  <tabstop>lineEdit_4</tabstop>
-  <tabstop>lineEdit_5</tabstop>
-  <tabstop>pushButton</tabstop>
+  <tabstop>in_method</tabstop>
+  <tabstop>out_method</tabstop>
+  <tabstop>in_server_address</tabstop>
+  <tabstop>out_server_address</tabstop>
+  <tabstop>in_server_port</tabstop>
+  <tabstop>out_server_port</tabstop>
+  <tabstop>in_extension</tabstop>
+  <tabstop>out_extension</tabstop>
+  <tabstop>in_authentication</tabstop>
+  <tabstop>out_authentication</tabstop>
+  <tabstop>in_username</tabstop>
+  <tabstop>out_username</tabstop>
+  <tabstop>in_password</tabstop>
+  <tabstop>out_password</tabstop>
+  <tabstop>test</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../Icons/icons.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

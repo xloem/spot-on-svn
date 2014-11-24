@@ -65,7 +65,11 @@
         <number>5</number>
        </property>
        <item>
-        <widget class="QComboBox" name="token_h_type"/>
+        <widget class="QComboBox" name="token_h_type">
+         <property name="sizeAdjustPolicy">
+          <enum>QComboBox::AdjustToContents</enum>
+         </property>
+        </widget>
        </item>
        <item>
         <spacer name="horizontalSpacer_2">
@@ -88,7 +92,11 @@
         <number>5</number>
        </property>
        <item>
-        <widget class="QComboBox" name="token_e_type"/>
+        <widget class="QComboBox" name="token_e_type">
+         <property name="sizeAdjustPolicy">
+          <enum>QComboBox::AdjustToContents</enum>
+         </property>
+        </widget>
        </item>
        <item>
         <spacer name="horizontalSpacer">

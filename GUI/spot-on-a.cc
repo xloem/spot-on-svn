@@ -7634,10 +7634,10 @@ void spoton::authenticate(spoton_crypt *crypt, const QString &oid,
   QDialog dialog(this);
   Ui_passwordprompt ui;
 
+  ui.setupUi(&dialog);
   dialog.setWindowTitle
     (tr("%1: Please Authenticate").
      arg(SPOTON_APPLICATION_NAME));
-  ui.setupUi(&dialog);
 #ifdef Q_OS_MAC
   dialog.setAttribute(Qt::WA_MacMetalStyle, false);
 #endif

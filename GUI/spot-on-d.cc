@@ -2184,10 +2184,10 @@ void spoton::slotAssignNewIPToNeighbor(void)
   QDialog dialog(this);
   Ui_ipinformation ui;
 
+  ui.setupUi(&dialog);
   dialog.setWindowTitle
     (tr("%1: Neighbor Remote IP Information").
      arg(SPOTON_APPLICATION_NAME));
-  ui.setupUi(&dialog);
 
   if(protocol == "IPv4")
     {
