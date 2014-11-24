@@ -34,6 +34,7 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QSqlRecord>
 #include <QString>
 
 #include <limits>
@@ -2874,10 +2875,9 @@ bool spoton_misc::isIpBlocked(const QHostAddress &address,
   qint64 count = -1;
 
   {
-    QSqlDatabase db = spoton_misc::database(connectionName);
+    QSqlDatabase db = database(connectionName);
 
-    db.setDatabaseName
-      (spoton_misc::homePath() + QDir::separator() + "neighbors.db");
+    db.setDatabaseName(homePath() + QDir::separator() + "neighbors.db");
 
     if(db.open())
       {
@@ -2995,10 +2995,10 @@ bool spoton_misc::saveGemini(const QPair<QByteArray, QByteArray> &gemini,
   bool ok = true;
 
   {
-    QSqlDatabase db = spoton_misc::database(connectionName);
+    QSqlDatabase db = database(connectionName);
 
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "friends_public_keys.db");
+    db.setDatabaseName
+      (homePath() + QDir::separator() + "friends_public_keys.db");
 
     if((ok = db.open()))
       {
@@ -3043,4 +3043,64 @@ bool spoton_misc::saveGemini(const QPair<QByteArray, QByteArray> &gemini,
 
   QSqlDatabase::removeDatabase(connectionName);
   return ok;
+}
+
+QHash<QString, QVariant> spoton_misc::poptasticSettings(spoton_crypt *crypt,
+							bool *ok)
+{
+  if(!crypt)
+    return QHash<QString, QVariant> ();
+
+  QHash<QString, QVariant> hash;
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = database(connectionName);
+
+    db.setDatabaseName(homePath() + QDir::separator() + "poptastic.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+
+	if(query.exec("SELECT * FROM poptastic") && query.next())
+	  {
+	    QSqlRecord record(query.record());
+
+	    for(int i = 0; i < record.count(); i++)
+	      {
+		if(record.fieldName(i).endsWith("_password") ||
+		   record.fieldName(i).endsWith("_server_address") ||
+		   record.fieldName(i).endsWith("_server_port") ||
+		   record.fieldName(i).endsWith("_username"))
+		  {
+		    QByteArray bytes
+		      (QByteArray::fromBase64(record.value(i).
+					      toByteArray()));
+		    bool ok = true;
+
+		    bytes = crypt->decryptedAfterAuthenticated(bytes, &ok);
+
+		    if(ok)
+		      hash.insert(record.fieldName(i), bytes);
+		    else
+		      break;
+		  }
+		else
+		  hash.insert(record.fieldName(i), record.value(i));
+	      }
+
+	    if(hash.size() != record.count())
+	      if(ok)
+		*ok = false;
+	  }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+  return hash;
 }

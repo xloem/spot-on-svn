@@ -42,9 +42,24 @@ void spoton::slotConfigurePoptastic(void)
       return;
     }
 
+  QHash<QString, QVariant> hash;
+  bool ok = true;
+
+  hash = spoton_misc::poptasticSettings(crypt, &ok);
+
+  if(hash.isEmpty() || !ok)
+    {
+      QMessageBox::critical(this, tr("%1: Error").
+			    arg(SPOTON_APPLICATION_NAME),
+			    tr("A failure occurred with "
+			       "spoton_misc::poptasticSettings()."));
+      return;
+    }
+
   QDialog dialog(this);
   QString connectionName("");
   Ui_poptasticsettings ui;
+  int index = -1;
 
   ui.setupUi(&dialog);
   dialog.setWindowTitle
@@ -53,6 +68,25 @@ void spoton::slotConfigurePoptastic(void)
 #ifdef Q_OS_MAC
   dialog.setAttribute(Qt::WA_MacMetalStyle, false);
 #endif
+
+  index = ui.in_extension->findText(hash["in_extension"].toString());
+
+  if(index >= 0)
+    ui.in_extension->setCurrentIndex(index);
+
+  ui.in_password->setText(hash["in_password"].toString());
+  ui.in_server_address->setText(hash["in_server_address"].toString());
+  ui.in_server_port->setValue(hash["in_server_port"].toInt());
+  ui.in_username->setText(hash["in_username"].toString());
+  index = ui.out_extension->findText(hash["out_extension"].toString());
+
+  if(index >= 0)
+    ui.out_extension->setCurrentIndex(index);
+
+  ui.out_password->setText(hash["out_password"].toString());
+  ui.out_server_address->setText(hash["out_server_address"].toString());
+  ui.out_server_port->setValue(hash["out_server_port"].toInt());
+  ui.out_username->setText(hash["out_username"].toString());
 
   if(dialog.exec() == QDialog::Accepted)
     {
