@@ -53,6 +53,7 @@ FORMS           = GoldBug-UI/adaptiveechoprompt.ui \
 		  GoldBug-UI/ipinformation.ui \
                   GoldBug-UI/logviewer.ui \
                   GoldBug-UI/passwordprompt.ui \
+		  GoldBug-UI/poptasticsettings.ui \
 		  GoldBug-UI/postgresqlconnect.ui \
 		  GoldBug-UI/rosetta.ui \
                   GoldBug-UI/starbeamanalyzer.ui \
@@ -77,11 +78,12 @@ SOURCES		= Common/spot-on-crypt.cc \
 		  Common/spot-on-misc.cc \
 		  GUI/spot-on-a.cc \
 		  GUI/spot-on-b.cc \
-		  GUI/spot-on-c.cc \
-		  GUI/spot-on-d.cc \
 		  GUI/spot-on-buzzpage.cc \
+		  GUI/spot-on-c.cc \
 		  GUI/spot-on-chatwindow.cc \
+		  GUI/spot-on-d.cc \
 		  GUI/spot-on-derivative.cc \
+		  GUI/spot-on-e.cc \
 		  GUI/spot-on-encryptfile.cc \
 		  GUI/spot-on-logviewer.cc \
 		  GUI/spot-on-reencode.cc \

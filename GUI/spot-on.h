@@ -278,6 +278,7 @@ class spoton: public QMainWindow
   void slotCloseBuzzTab(int index);
   void slotCommonBuzzChannelsActivated(int index);
   void slotComputeFileHash(void);
+  void slotConfigurePoptastic(void);
   void slotConnectAllNeighbors(void);
   void slotConnectNeighbor(void);
   void slotCopyAEMagnet(void);

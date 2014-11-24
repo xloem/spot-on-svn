@@ -60,6 +60,7 @@ FORMS           = UI/adaptiveechoprompt.ui \
 		  UI/ipinformation.ui \
                   UI/logviewer.ui \
                   UI/passwordprompt.ui \
+		  UI/poptasticsettings.ui \
 		  UI/postgresqlconnect.ui \
 		  UI/rosetta.ui \
                   UI/starbeamanalyzer.ui \
@@ -84,11 +85,12 @@ SOURCES		= Common/spot-on-crypt.cc \
 		  Common/spot-on-misc.cc \
 		  GUI/spot-on-a.cc \
 		  GUI/spot-on-b.cc \
-		  GUI/spot-on-c.cc \
-		  GUI/spot-on-d.cc \
 		  GUI/spot-on-buzzpage.cc \
+		  GUI/spot-on-c.cc \
 		  GUI/spot-on-chatwindow.cc \
+		  GUI/spot-on-d.cc \
 		  GUI/spot-on-derivative.cc \
+		  GUI/spot-on-e.cc \
 		  GUI/spot-on-encryptfile.cc \
 		  GUI/spot-on-logviewer.cc \
 		  GUI/spot-on-reencode.cc \
