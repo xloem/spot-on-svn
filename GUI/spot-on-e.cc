@@ -47,7 +47,7 @@ void spoton::slotConfigurePoptastic(void)
 
   hash = spoton_misc::poptasticSettings(crypt, &ok);
 
-  if(hash.isEmpty() || !ok)
+  if(!ok)
     {
       QMessageBox::critical(this, tr("%1: Error").
 			    arg(SPOTON_APPLICATION_NAME),
@@ -59,7 +59,6 @@ void spoton::slotConfigurePoptastic(void)
   QDialog dialog(this);
   QString connectionName("");
   Ui_poptasticsettings ui;
-  int index = -1;
 
   ui.setupUi(&dialog);
   dialog.setWindowTitle
@@ -69,26 +68,33 @@ void spoton::slotConfigurePoptastic(void)
   dialog.setAttribute(Qt::WA_MacMetalStyle, false);
 #endif
 
-  index = ui.in_protocol_command->findText(hash["in_protocol_command"].
-					   toString());
+  if(!hash.isEmpty())
+    {
+      int index = -1;
 
-  if(index >= 0)
-    ui.in_protocol_command->setCurrentIndex(index);
+      index = ui.in_protocol_command->findText(hash["in_protocol_command"].
+					       toString());
 
-  ui.in_password->setText(hash["in_password"].toString());
-  ui.in_server_address->setText(hash["in_server_address"].toString());
-  ui.in_server_port->setValue(hash["in_server_port"].toInt());
-  ui.in_username->setText(hash["in_username"].toString());
-  index = ui.out_protocol_command->findText(hash["out_protocol_command"].
-					    toString());
+      if(index >= 0)
+	ui.in_protocol_command->setCurrentIndex(index);
 
-  if(index >= 0)
-    ui.out_protocol_command->setCurrentIndex(index);
+      ui.in_password->setText(hash["in_password"].toString());
+      ui.in_server_address->setText(hash["in_server_address"].toString());
+      ui.in_server_port->setValue(hash["in_server_port"].toInt());
+      ui.in_ssltls->setChecked(hash["in_ssltls"].toBool());
+      ui.in_username->setText(hash["in_username"].toString());
+      index = ui.out_protocol_command->findText(hash["out_protocol_command"].
+						toString());
 
-  ui.out_password->setText(hash["out_password"].toString());
-  ui.out_server_address->setText(hash["out_server_address"].toString());
-  ui.out_server_port->setValue(hash["out_server_port"].toInt());
-  ui.out_username->setText(hash["out_username"].toString());
+      if(index >= 0)
+	ui.out_protocol_command->setCurrentIndex(index);
+
+      ui.out_password->setText(hash["out_password"].toString());
+      ui.out_server_address->setText(hash["out_server_address"].toString());
+      ui.out_server_port->setValue(hash["out_server_port"].toInt());
+      ui.out_ssltls->setChecked(hash["out_ssltls"].toBool());
+      ui.out_username->setText(hash["out_username"].toString());
+    }
 
   if(dialog.exec() == QDialog::Accepted)
     {
@@ -107,11 +113,11 @@ void spoton::slotConfigurePoptastic(void)
 	      ("INSERT INTO poptastic "
 	       "(in_authentication, in_protocol_command, "
 	       "in_method, in_password, in_server_address, "
-	       "in_server_port, in_username, "
+	       "in_server_port, in_ssltls, in_username, "
 	       "out_authentication, out_protocol_command, "
 	       "out_method, out_password, out_server_address, "
-	       "out_server_port, out_username) "
-	       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	       "out_server_port, out_ssltls, out_username) "
+	       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    query.bindValue(0, ui.in_authentication->currentText());
 	    query.bindValue(1, ui.in_protocol_command->currentText());
 	    query.bindValue(2, ui.in_method->currentText());
@@ -133,38 +139,42 @@ void spoton::slotConfigurePoptastic(void)
 				     number(ui.in_server_port->
 					    value()), &ok).toBase64());
 
+	    query.bindValue(6, ui.in_ssltls->isChecked() ? 1 : 0);
+
 	    if(ok)
 	      query.bindValue
-		(6, crypt->encryptedThenHashed(ui.in_username->text().
+		(7, crypt->encryptedThenHashed(ui.in_username->text().
 					       trimmed().toUtf8(), &ok).
 		 toBase64());
 
-	    query.bindValue(7, ui.out_authentication->currentText());
-	    query.bindValue(8, ui.out_protocol_command->currentText());
-	    query.bindValue(9, ui.out_method->currentText());
+	    query.bindValue(8, ui.out_authentication->currentText());
+	    query.bindValue(9, ui.out_protocol_command->currentText());
+	    query.bindValue(10, ui.out_method->currentText());
 
 	    if(ok)
 	      query.bindValue
-		(10, crypt->encryptedThenHashed(ui.out_password->
+		(11, crypt->encryptedThenHashed(ui.out_password->
 						text().trimmed().
 						toUtf8(), &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(11, crypt->encryptedThenHashed(ui.out_server_address->
+		(12, crypt->encryptedThenHashed(ui.out_server_address->
 						text().trimmed().
 						toLatin1(), &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(12, crypt->
+		(13, crypt->
 		 encryptedThenHashed(QByteArray::
 				     number(ui.out_server_port->
 					    value()), &ok).toBase64());
 
+	    query.bindValue(14, ui.out_ssltls->isChecked() ? 1 : 0);
+
 	    if(ok)
 	      query.bindValue
-		(13, crypt->encryptedThenHashed(ui.out_username->text().
+		(15, crypt->encryptedThenHashed(ui.out_username->text().
 						trimmed().toUtf8(), &ok).
 		 toBase64());
 
