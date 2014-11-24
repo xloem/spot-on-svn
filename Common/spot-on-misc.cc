@@ -310,9 +310,6 @@ void spoton_misc::prepareDatabases(void)
 		   "motd TEXT NOT NULL DEFAULT 'Welcome to Spot-On.')").
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE).
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH));
-	query.exec("ALTER TABLE listeners ADD COLUMN "
-		   "ssl_control_string TEXT NOT NULL DEFAULT "
-		   "'HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH'");
 	query.exec("CREATE TABLE IF NOT EXISTS listeners_accounts ("
 		   "account_name TEXT NOT NULL, "
 		   "account_name_hash TEXT NOT NULL, " // Keyed hash.
@@ -435,9 +432,43 @@ void spoton_misc::prepareDatabases(void)
 					   */
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE).
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH));
-	query.exec("ALTER TABLE neighbors ADD COLUMN "
-		   "ssl_control_string TEXT NOT NULL DEFAULT "
-		   "'HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH'");
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+
+  {
+    QSqlDatabase db = database(connectionName);
+
+    db.setDatabaseName(homePath() + QDir::separator() + "poptastic.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.exec("CREATE TABLE IF NOT EXISTS poptastic ("
+		   "in_authentication TEXT NOT NULL, "
+		   "in_extension TEXT NOT NULL, "
+		   "in_method TEXT NOT NULL, "
+		   "in_password TEXT NOT NULL, "
+		   "in_server_address TEXT NOT NULL, "
+		   "in_server_port TEXT NOT NULL, "
+		   "in_username TEXT NOT NULL, "
+		   "out_authentication TEXT NOT NULL, "
+		   "out_extension TEXT NOT NULL, "
+		   "out_method TEXT NOT NULL, "
+		   "out_password TEXT NOT NULL, "
+		   "out_server_address TEXT NOT NULL, "
+		   "out_server_port TEXT NOT NULL, "
+		   "out_username TEXT NOT NULL)");
+	query.exec("CREATE TRIGGER IF NOT EXISTS "
+		   "poptastic_trigger "
+		   "BEFORE INSERT ON poptastic "
+		   "BEGIN "
+		   "DELETE FROM poptastic; "
+		   "END");
       }
 
     db.close();
