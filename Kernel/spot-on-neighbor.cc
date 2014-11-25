@@ -2033,7 +2033,7 @@ void spoton_neighbor::slotSendMessage
 	  spoton_kernel::messagingCacheAdd(message);
 	}
     }
-  else
+  else if(keyType == "poptastic")
     spoton_kernel::postPoptasticMessage(message);
 }
 
