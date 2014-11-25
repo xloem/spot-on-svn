@@ -2300,7 +2300,12 @@ void spoton::sharePublicKeyWithParticipant(const QString &keyType)
 	  toByteArray();
 
       if(name.isEmpty())
-	name = "unknown";
+	{
+	  if(keyType == "poptastic")
+	    name = "unknown@unknown.org";
+	  else
+	    name = "unknown";
+	}
 
       message.append("befriendparticipant_");
       message.append(oid);

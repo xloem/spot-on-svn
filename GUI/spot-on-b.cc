@@ -112,7 +112,12 @@ void spoton::slotSendMessage(void)
 	      ("gui/poptasticName", "unknown@unknown.org").toByteArray();
 
 	  if(name.isEmpty())
-	    name = "unknown";
+	    {
+	      if(keyType == "chat")
+		name = "unknown";
+	      else
+		name = "unknown@unknown.org";
+	    }
 
 	  m_chatSequenceNumbers[data.toString()] += 1;
 
@@ -2313,14 +2318,8 @@ void spoton::slotCopyFriendshipBundle(void)
   if(!clipboard)
     return;
 
-  if(!m_crypts.value("chat", 0) ||
-     !m_crypts.value("chat-signature", 0))
-    {
-      clipboard->clear();
-      return;
-    }
-
   QString oid("");
+  QString keyType("");
   int row = -1;
 
   if((row = m_ui.participants->currentRow()) >= 0)
@@ -2329,10 +2328,21 @@ void spoton::slotCopyFriendshipBundle(void)
 	(row, 1); // OID
 
       if(item)
-	oid = item->text();
+	{
+	  keyType = item->data(Qt::ItemDataRole(Qt::UserRole + 1)).
+	    toString();
+	  oid = item->text();
+	}
     }
 
   if(oid.isEmpty())
+    {
+      clipboard->clear();
+      return;
+    }
+
+  if(!m_crypts.value(keyType, 0) ||
+     !m_crypts.value(QString("%1-signature").arg(keyType), 0))
     {
       clipboard->clear();
       return;
@@ -2370,7 +2380,7 @@ void spoton::slotCopyFriendshipBundle(void)
 				     neighborOid,
 				     cipherType,
 				     oid,
-				     m_crypts.value("chat", 0),
+				     m_crypts.value(keyType, 0),
 				     &ok);
 
   if(!ok || publicKey.isEmpty() || symmetricKey.isEmpty())
@@ -2391,7 +2401,8 @@ void spoton::slotCopyFriendshipBundle(void)
       return;
     }
 
-  QByteArray mySPublicKey(m_crypts.value("chat-signature")->publicKey(&ok));
+  QByteArray mySPublicKey
+    (m_crypts.value(QString("%1-signature").arg(keyType))->publicKey(&ok));
 
   if(!ok)
     {
@@ -2400,7 +2411,8 @@ void spoton::slotCopyFriendshipBundle(void)
     }
 
   QByteArray mySSignature
-    (m_crypts.value("chat-signature")->digitalSignature(mySPublicKey, &ok));
+    (m_crypts.value(QString("%1-signature").arg(keyType))->
+     digitalSignature(mySPublicKey, &ok));
 
   if(!ok)
     {
@@ -2408,7 +2420,7 @@ void spoton::slotCopyFriendshipBundle(void)
       return;
     }
 
-  QByteArray myPublicKey(m_crypts.value("chat")->publicKey(&ok));
+  QByteArray myPublicKey(m_crypts.value(keyType)->publicKey(&ok));
 
   if(!ok)
     {
@@ -2416,7 +2428,7 @@ void spoton::slotCopyFriendshipBundle(void)
       return;
     }
 
-  QByteArray mySignature(m_crypts.value("chat")->
+  QByteArray mySignature(m_crypts.value(keyType)->
 			 digitalSignature(myPublicKey, &ok));
 
   if(!ok)
@@ -2425,11 +2437,21 @@ void spoton::slotCopyFriendshipBundle(void)
       return;
     }
 
-  QByteArray myName
-    (m_settings.value("gui/nodeName", "unknown").toByteArray());
+  QByteArray myName;
+
+  if(keyType == "chat")
+    myName = m_settings.value("gui/nodeName", "unknown").toByteArray();
+  else
+    myName = m_settings.value("gui/poptasticName", "unknown@unknown.org").
+      toByteArray();
 
   if(myName.isEmpty())
-    myName = "unknown";
+    {
+      if(keyType == "chat")
+	myName = "unknown";
+      else
+	myName = "unknown@unknown.org";
+    }
 
   QByteArray data;
   spoton_crypt crypt(cipherType,
@@ -2440,7 +2462,7 @@ void spoton::slotCopyFriendshipBundle(void)
 		     0,
 		     QString(""));
 
-  data = crypt.encrypted(QByteArray("chat").toBase64() + "@" +
+  data = crypt.encrypted(keyType.toLatin1().toBase64() + "@" +
 			 myName.toBase64() + "@" +
 			 myPublicKey.toBase64() + "@" +
 			 mySignature.toBase64() + "@" +

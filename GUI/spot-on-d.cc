@@ -2791,7 +2791,7 @@ void spoton::slotSharePoptasticPublicKey(void)
 		      toByteArray());
 
       if(name.isEmpty())
-	name = "unknown";
+	name = "unknown@unknown.org";
 
       message.append("sharepublickey_");
       message.append(oid);
@@ -2817,8 +2817,4 @@ void spoton::slotSharePoptasticPublicKey(void)
 	   arg(m_kernelSocket.peerAddress().toString()).
 	   arg(m_kernelSocket.peerPort()));
     }
-}
-
-void spoton::slotCopyPoptasticBundle(void)
-{
 }

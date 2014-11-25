@@ -6469,7 +6469,12 @@ void spoton::slotPopulateParticipants(void)
 						   toByteArray()).trimmed();
 
 			  if(name.isEmpty())
-			    name = "unknown";
+			    {
+			      if(keyType == "chat")
+				name = "unknown";
+			      else
+				name = "unknown@unknown.org";
+			    }
 
 			  item = new QTableWidgetItem(name);
 
