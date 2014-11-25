@@ -33,6 +33,17 @@ extern "C"
 #include "spot-on.h"
 #include "spot-on-defines.h"
 
+static QStringList curl_protocols(void)
+{
+  QStringList list;
+  curl_version_info_data *data = curl_version_info(CURLVERSION_NOW);
+
+  for(int i = 0; data->protocols[i] != 0; i++)
+    list << QString(data->protocols[i]).toLower();
+
+  return list;
+}
+
 void spoton::slotConfigurePoptastic(void)
 {
   spoton_crypt *crypt = m_crypts.value("chat", 0);
@@ -62,6 +73,7 @@ void spoton::slotConfigurePoptastic(void)
 
   QDialog dialog(this);
   QString connectionName("");
+  QStringList protocols(curl_protocols());
 
   m_poptasticSettingsUi.setupUi(&dialog);
   connect(m_poptasticSettingsUi.testpop3,
@@ -78,6 +90,34 @@ void spoton::slotConfigurePoptastic(void)
 #ifdef Q_OS_MAC
   dialog.setAttribute(Qt::WA_MacMetalStyle, false);
 #endif
+
+  if(!protocols.contains("pop3s"))
+    {
+      m_poptasticSettingsUi.in_ssltls->clear();
+      m_poptasticSettingsUi.in_ssltls->addItem(tr("None"));
+    }
+
+  if(!protocols.contains("smtps"))
+    {
+      m_poptasticSettingsUi.out_ssltls->clear();
+      m_poptasticSettingsUi.out_ssltls->addItem(tr("None"));
+    }
+
+  if(!(protocols.contains("pop3") ||
+       protocols.contains("pop3s")))
+    {
+      m_poptasticSettingsUi.testpop3->setEnabled(false);
+      m_poptasticSettingsUi.testpop3->setToolTip
+	(tr("Your version of libcURL does not support POP3."));
+    }
+
+  if(!(protocols.contains("smtp") ||
+       protocols.contains("smtps")))
+    {
+      m_poptasticSettingsUi.testsmtp->setEnabled(false);
+      m_poptasticSettingsUi.testsmtp->setToolTip
+	(tr("Your version of libcURL does not support SMTP."));
+    }
 
   if(!hash.isEmpty())
     {
@@ -228,7 +268,6 @@ void spoton::slotTestPoptasticPop3Settings(void)
   bool ok = false;
 
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-  curl_global_init(CURL_GLOBAL_ALL);
   curl = curl_easy_init();
 
   if(curl)
@@ -262,8 +301,8 @@ void spoton::slotTestPoptasticPop3Settings(void)
 	  arg(m_poptasticSettingsUi.in_server_port->value());
 
       curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "NOOP");
-      curl_easy_setopt(curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");
       curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
+      curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, 5000);
       curl_easy_setopt(curl, CURLOPT_URL, scheme.toLatin1().constData());
       res = curl_easy_perform(curl);
 
@@ -273,17 +312,16 @@ void spoton::slotTestPoptasticPop3Settings(void)
       curl_easy_cleanup(curl);
     }
 
-  curl_global_cleanup();
   QApplication::restoreOverrideCursor();
 
   if(ok)
     QMessageBox::information(this, tr("%1: Poptastic POP3 Connection Test").
 			     arg(SPOTON_APPLICATION_NAME),
-			     tr("Connection established!"));
+			     tr("Test successful!"));
   else
     QMessageBox::critical(this, tr("%1: Poptastic POP3 Connection Test").
 			  arg(SPOTON_APPLICATION_NAME),
-			  tr("Failed to connect!"));
+			  tr("Failure!"));
 }
 
 void spoton::slotTestPoptasticSmtpSettings(void)
@@ -293,7 +331,6 @@ void spoton::slotTestPoptasticSmtpSettings(void)
   bool ok = false;
 
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-  curl_global_init(CURL_GLOBAL_ALL);
   curl = curl_easy_init();
 
   if(curl)
@@ -327,8 +364,9 @@ void spoton::slotTestPoptasticSmtpSettings(void)
 	  arg(m_poptasticSettingsUi.out_server_port->value());
 
       curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "NOOP");
-      curl_easy_setopt(curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");
       curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
+      curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, 5000);
+      curl_easy_setopt(curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");
       curl_easy_setopt(curl, CURLOPT_URL, scheme.toLatin1().constData());
       res = curl_easy_perform(curl);
 
@@ -338,15 +376,14 @@ void spoton::slotTestPoptasticSmtpSettings(void)
       curl_easy_cleanup(curl);
     }
 
-  curl_global_cleanup();
   QApplication::restoreOverrideCursor();
 
   if(ok)
     QMessageBox::information(this, tr("%1: Poptastic SMTP Connection Test").
 			     arg(SPOTON_APPLICATION_NAME),
-			     tr("Connection established!"));
+			     tr("Test successful!"));
   else
     QMessageBox::critical(this, tr("%1: Poptastic SMTP Connection Test").
 			  arg(SPOTON_APPLICATION_NAME),
-			  tr("Failed to connect!"));
+			  tr("Failure!"));
 }

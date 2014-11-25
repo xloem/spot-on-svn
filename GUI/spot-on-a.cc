@@ -29,6 +29,11 @@
 extern void _Exit(int status);
 #endif
 
+extern "C"
+{
+#include <curl/curl.h>
+}
+
 #include <QProgressDialog>
 
 #include "spot-on.h"
@@ -66,6 +71,7 @@ static void sig_handler(int signum)
 
 int main(int argc, char *argv[])
 {
+  curl_global_init(CURL_GLOBAL_ALL);
   libspoton_enable_sqlite_cache();
   spoton_misc::prepareSignalHandler(sig_handler);
 
@@ -153,6 +159,8 @@ int main(int argc, char *argv[])
       qDebug() << "Critical memory failure. Exiting.";
       return EXIT_FAILURE;
     }
+
+  curl_global_cleanup();
 }
 
 spoton::spoton(void):QMainWindow()
