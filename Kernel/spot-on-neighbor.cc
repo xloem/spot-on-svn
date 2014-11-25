@@ -2009,18 +2009,18 @@ void spoton_neighbor::slotSendMessage
  const spoton_send::spoton_send_method sendMethod,
  const QString &keyType)
 {
-  Q_UNUSED(keyType);
+  QByteArray message;
+  QPair<QByteArray, QByteArray> ae;
 
-  if(readyToWrite())
-    {
-      QByteArray message;
-      QPair<QByteArray, QByteArray> ae
-	(spoton_misc::decryptedAdaptiveEchoPair(m_adaptiveEchoPair,
+  if(keyType == "chat")
+    ae = spoton_misc::decryptedAdaptiveEchoPair(m_adaptiveEchoPair,
 						spoton_kernel::s_crypts.
-						value("chat")));
+						value("chat"));
 
-      message = spoton_send::message0000(data, sendMethod, ae);
+  message = spoton_send::message0000(data, sendMethod, ae);
 
+  if(keyType == "chat" && readyToWrite())
+    {
       if(write(message.constData(), message.length()) != message.length())
 	spoton_misc::logError
 	  (QString("spoton_neighbor::slotSendMessage(): write() error "
@@ -2033,6 +2033,8 @@ void spoton_neighbor::slotSendMessage
 	  spoton_kernel::messagingCacheAdd(message);
 	}
     }
+  else
+    spoton_kernel::postPoptasticMessage(message);
 }
 
 void spoton_neighbor::write
@@ -5926,43 +5928,44 @@ void spoton_neighbor::slotCallParticipant(const QByteArray &data,
 					  const QString &messageType,
 					  const QByteArray &keyType)
 {
+  QByteArray message;
+  QPair<QByteArray, QByteArray> ae;
+
+  if(keyType == "chat")
+    ae = spoton_misc::decryptedAdaptiveEchoPair(m_adaptiveEchoPair,
+						spoton_kernel::s_crypts.
+						value("chat"));
+
+  if(spoton_kernel::setting("gui/chatSendMethod", "Artificial_GET").
+     toString() == "Artificial_GET")
+    {
+      if(messageType == "0000a" || messageType == "0000c")
+	message = spoton_send::message0000a(data,
+					    spoton_send::
+					    ARTIFICIAL_GET,
+					    ae);
+      else
+	message = spoton_send::message0000b(data,
+					    spoton_send::
+					    ARTIFICIAL_GET,
+					    ae);
+    }
+  else
+    {
+      if(messageType == "0000a" || messageType == "0000c")
+	message = spoton_send::message0000a(data,
+					    spoton_send::
+					    NORMAL_POST,
+					    ae);
+      else
+	message = spoton_send::message0000b(data,
+					    spoton_send::
+					    NORMAL_POST,
+					    ae);
+    }
+
   if(keyType == "chat" && readyToWrite())
     {
-      QByteArray message;
-      QPair<QByteArray, QByteArray> ae
-	(spoton_misc::decryptedAdaptiveEchoPair(m_adaptiveEchoPair,
-						spoton_kernel::s_crypts.
-						value("chat")));
-
-      if(spoton_kernel::setting("gui/chatSendMethod",
-				"Artificial_GET").
-	 toString() == "Artificial_GET")
-	{
-	  if(messageType == "0000a" || messageType == "0000c")
-	    message = spoton_send::message0000a(data,
-						spoton_send::
-						ARTIFICIAL_GET,
-						ae);
-	  else
-	    message = spoton_send::message0000b(data,
-						spoton_send::
-						ARTIFICIAL_GET,
-						ae);
-	}
-      else
-	{
-	  if(messageType == "0000a" || messageType == "0000c")
-	    message = spoton_send::message0000a(data,
-						spoton_send::
-						NORMAL_POST,
-						ae);
-	  else
-	    message = spoton_send::message0000b(data,
-						spoton_send::
-						NORMAL_POST,
-						ae);
-	}
-
       if(write(message.constData(),
 	       message.length()) != message.length())
 	spoton_misc::logError
@@ -5976,6 +5979,8 @@ void spoton_neighbor::slotCallParticipant(const QByteArray &data,
 	  spoton_kernel::messagingCacheAdd(message);
 	}
     }
+  else if(keyType == "poptastic")
+    spoton_kernel::postPoptasticMessage(message);
 }
 
 void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,

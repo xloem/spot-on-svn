@@ -34,6 +34,7 @@
 #include <QHash>
 #include <QHostAddress>
 #include <QPointer>
+#include <QQueue>
 #include <QReadWriteLock>
 #include <QSqlDatabase>
 #include <QTimer>
@@ -85,6 +86,7 @@ class spoton_kernel: public QObject
   static void messagingCacheAdd(const QByteArray &data,
 				const bool do_not_hash = false,
 				const int add_msecs = 0);
+  static void postPoptasticMessage(const QByteArray &data);
   static void receivedMessage
     (const QByteArray &data, const qint64 id,
      const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
@@ -126,6 +128,7 @@ class spoton_kernel: public QObject
   static QHash<QString, QVariant> s_settings;
   static QList<QList<QByteArray> > s_institutionKeys;
   static QList<QList<QVariant> > s_messagesToProcess;
+  static QQueue<QByteArray> s_poptasticCache;
   static QReadWriteLock s_adaptiveEchoPairsMutex;
   static QReadWriteLock s_buzzKeysMutex;
   static QReadWriteLock s_emailRequestCacheMutex;
@@ -133,6 +136,7 @@ class spoton_kernel: public QObject
   static QReadWriteLock s_institutionKeysMutex;
   static QReadWriteLock s_messagesToProcessMutex;
   static QReadWriteLock s_messagingCacheMutex;
+  static QReadWriteLock s_poptasticCacheMutex;
   static QReadWriteLock s_settingsMutex;
   bool initializeSecurityContainers(const QString &passphrase,
 				    const QString &answer);

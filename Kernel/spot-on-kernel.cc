@@ -95,12 +95,13 @@ QHash<QByteArray, uint> spoton_kernel::s_geminisCache;
 QHash<QByteArray, uint> spoton_kernel::s_messagingCache;
 QHash<QString, QVariant> spoton_kernel::s_settings;
 QHash<QString, spoton_crypt *> spoton_kernel::s_crypts;
-QMultiHash<qint64, QPointer<spoton_neighbor> >
-spoton_kernel::s_connectionCounts;
+QMultiHash<qint64,
+	   QPointer<spoton_neighbor> > spoton_kernel::s_connectionCounts;
 QList<QList<QByteArray> > spoton_kernel::s_institutionKeys;
 QList<QList<QVariant> > spoton_kernel::s_messagesToProcess;
 QList<QPair<QByteArray, QByteArray> > spoton_kernel::s_adaptiveEchoPairs;
 QPointer<spoton_kernel> spoton_kernel::s_kernel = 0;
+QQueue<QByteArray> spoton_kernel::s_poptasticCache;
 QReadWriteLock spoton_kernel::s_adaptiveEchoPairsMutex;
 QReadWriteLock spoton_kernel::s_buzzKeysMutex;
 QReadWriteLock spoton_kernel::s_emailRequestCacheMutex;
@@ -108,6 +109,7 @@ QReadWriteLock spoton_kernel::s_geminisCacheMutex;
 QReadWriteLock spoton_kernel::s_institutionKeysMutex;
 QReadWriteLock spoton_kernel::s_messagesToProcessMutex;
 QReadWriteLock spoton_kernel::s_messagingCacheMutex;
+QReadWriteLock spoton_kernel::s_poptasticCacheMutex;
 QReadWriteLock spoton_kernel::s_settingsMutex;
 
 static void sig_handler(int signum)
@@ -4668,4 +4670,11 @@ void spoton_kernel::slotCallParticipant(const QByteArray &publicKeyHash,
 
   if(ok)
     emit callParticipant(data, "0000c", keyType);
+}
+
+void spoton_kernel::postPoptasticMessage(const QByteArray &message)
+{
+  QReadLocker locker(&s_poptasticCacheMutex);
+
+  s_poptasticCache.append(message);
 }
