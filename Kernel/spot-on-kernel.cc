@@ -101,7 +101,7 @@ QList<QList<QByteArray> > spoton_kernel::s_institutionKeys;
 QList<QList<QVariant> > spoton_kernel::s_messagesToProcess;
 QList<QPair<QByteArray, QByteArray> > spoton_kernel::s_adaptiveEchoPairs;
 QPointer<spoton_kernel> spoton_kernel::s_kernel = 0;
-QQueue<QByteArray> spoton_kernel::s_poptasticCache;
+QQueue<QPair<QString, QByteArray> > spoton_kernel::s_poptasticCache;
 QReadWriteLock spoton_kernel::s_adaptiveEchoPairsMutex;
 QReadWriteLock spoton_kernel::s_buzzKeysMutex;
 QReadWriteLock spoton_kernel::s_emailRequestCacheMutex;
@@ -1542,12 +1542,14 @@ void spoton_kernel::slotMessageReceivedFromUI
   QByteArray symmetricKey;
   QPair<QByteArray, QByteArray> gemini;
   QString neighborOid("");
+  QString receiverName("");
 
   spoton_misc::retrieveSymmetricData(gemini,
 				     publicKey,
 				     symmetricKey,
 				     hashKey,
 				     neighborOid,
+				     receiverName,
 				     cipherType,
 				     QString::number(oid),
 				     s_crypt1,
@@ -1639,9 +1641,11 @@ void spoton_kernel::slotMessageReceivedFromUI
 	{
 	  if(setting("gui/chatSendMethod",
 		     "Artificial_GET").toString() == "Artificial_GET")
-	    emit sendMessage(data, spoton_send::ARTIFICIAL_GET, keyType);
+	    emit sendMessage
+	      (data, spoton_send::ARTIFICIAL_GET, keyType, receiverName);
 	  else
-	    emit sendMessage(data, spoton_send::NORMAL_POST, keyType);
+	    emit sendMessage
+	      (data, spoton_send::NORMAL_POST, keyType, receiverName);
 	}
     }
 }
@@ -1879,11 +1883,13 @@ void spoton_kernel::connectSignalsToNeighbor
   connect(this,
 	  SIGNAL(callParticipant(const QByteArray &,
 				 const QString &,
-				 const QByteArray &)),
+				 const QByteArray &,
+				 const QString &)),
 	  neighbor,
 	  SLOT(slotCallParticipant(const QByteArray &,
 				   const QString &,
-				   const QByteArray &)),
+				   const QByteArray &,
+				   const QString &)),
 	  Qt::UniqueConnection);
   connect(this,
 	  SIGNAL(publicizeListenerPlaintext(const QByteArray &,
@@ -1925,10 +1931,12 @@ void spoton_kernel::connectSignalsToNeighbor
   connect(this,
 	  SIGNAL(sendMessage(const QByteArray &,
 			     const spoton_send::spoton_send_method,
+			     const QString &,
 			     const QString &)),
 	  neighbor,
 	  SLOT(slotSendMessage(const QByteArray &,
 			       const spoton_send::spoton_send_method,
+			       const QString &,
 			       const QString &)),
 	  Qt::UniqueConnection);
   connect(this,
@@ -2234,9 +2242,11 @@ void spoton_kernel::slotScramble(void)
     {
       if(setting("gui/chatSendMethod",
 		 "Artificial_GET").toString() == "Artificial_GET")
-	emit sendMessage(data, spoton_send::ARTIFICIAL_GET, "chat");
+	emit sendMessage
+	  (data, spoton_send::ARTIFICIAL_GET, "chat", QString(""));
       else
-	emit sendMessage(data, spoton_send::NORMAL_POST, "chat");
+	emit sendMessage
+	  (data, spoton_send::NORMAL_POST, "chat", QString(""));
     }
 }
 
@@ -3552,7 +3562,7 @@ void spoton_kernel::slotCallParticipant(const QByteArray &keyType,
 
   QByteArray publicKey;
   QByteArray myPublicKeyHash;
-  bool ok = true;
+  bool ok = false;
 
   publicKey = s_crypt1->publicKey(&ok);
 
@@ -3566,6 +3576,7 @@ void spoton_kernel::slotCallParticipant(const QByteArray &keyType,
 
   QByteArray data;
   QString connectionName("");
+  QString receiverName("");
 
   {
     QSqlDatabase db = spoton_misc::database(connectionName);
@@ -3579,7 +3590,7 @@ void spoton_kernel::slotCallParticipant(const QByteArray &keyType,
 
 	query.setForwardOnly(true);
 	query.prepare("SELECT gemini, public_key, "
-		      "gemini_hash_key "
+		      "gemini_hash_key, name "
 		      "FROM friends_public_keys WHERE "
 		      "key_type_hash = ? AND neighbor_oid = -1 AND "
 		      "OID = ?");
@@ -3612,6 +3623,8 @@ void spoton_kernel::slotCallParticipant(const QByteArray &keyType,
 					    value(2).
 					    toByteArray()),
 		     &ok);
+
+	      receiverName = query.value(3).toString();
 
 	      QByteArray hashKey;
 	      QByteArray keyInformation;
@@ -3707,7 +3720,7 @@ void spoton_kernel::slotCallParticipant(const QByteArray &keyType,
   QSqlDatabase::removeDatabase(connectionName);
 
   if(ok)
-    emit callParticipant(data, "0000a", keyType);
+    emit callParticipant(data, "0000a", keyType, receiverName);
 }
 
 void spoton_kernel::slotCallParticipantUsingGemini(const QByteArray &keyType,
@@ -3726,7 +3739,7 @@ void spoton_kernel::slotCallParticipantUsingGemini(const QByteArray &keyType,
 
   QByteArray publicKey;
   QByteArray myPublicKeyHash;
-  bool ok = true;
+  bool ok = false;
 
   publicKey = s_crypt1->publicKey(&ok);
 
@@ -3742,6 +3755,7 @@ void spoton_kernel::slotCallParticipantUsingGemini(const QByteArray &keyType,
   QByteArray hashKey;
   QByteArray symmetricKey;
   QString connectionName("");
+  QString receiverName("");
 
   {
     QSqlDatabase db = spoton_misc::database(connectionName);
@@ -3755,7 +3769,7 @@ void spoton_kernel::slotCallParticipantUsingGemini(const QByteArray &keyType,
 
 	query.setForwardOnly(true);
 	query.prepare("SELECT gemini, public_key, "
-		      "gemini_hash_key "
+		      "gemini_hash_key, name "
 		      "FROM friends_public_keys WHERE "
 		      "key_type_hash = ? AND neighbor_oid = -1 AND "
 		      "OID = ?");
@@ -3788,6 +3802,8 @@ void spoton_kernel::slotCallParticipantUsingGemini(const QByteArray &keyType,
 					    value(2).
 					    toByteArray()),
 		     &ok);
+
+	      receiverName = query.value(3).toString();
 
 	      QByteArray symmetricKeyAlgorithm("aes256");
 	      size_t symmetricKeyLength = 0;
@@ -3879,7 +3895,7 @@ void spoton_kernel::slotCallParticipantUsingGemini(const QByteArray &keyType,
       gemini.second = hashKey;
 
       if(spoton_misc::saveGemini(gemini, QString::number(oid), s_crypt1))
-	emit callParticipant(data, "0000b", keyType);
+	emit callParticipant(data, "0000b", keyType, receiverName);
     }
 }
 
@@ -4530,7 +4546,7 @@ void spoton_kernel::slotCallParticipant(const QByteArray &publicKeyHash,
 
   QByteArray publicKey;
   QByteArray myPublicKeyHash;
-  bool ok = true;
+  bool ok = false;
 
   publicKey = s_crypt1->publicKey(&ok);
 
@@ -4544,6 +4560,7 @@ void spoton_kernel::slotCallParticipant(const QByteArray &publicKeyHash,
 
   QByteArray data;
   QString connectionName("");
+  QString receiverName("");
 
   {
     QSqlDatabase db = spoton_misc::database(connectionName);
@@ -4556,7 +4573,7 @@ void spoton_kernel::slotCallParticipant(const QByteArray &publicKeyHash,
 	QSqlQuery query(db);
 
 	query.setForwardOnly(true);
-	query.prepare("SELECT public_key "
+	query.prepare("SELECT public_key, name "
 		      "FROM friends_public_keys WHERE "
 		      "key_type_hash = ? AND neighbor_oid = -1 AND "
 		      "public_key_hash = ?");
@@ -4574,6 +4591,7 @@ void spoton_kernel::slotCallParticipant(const QByteArray &publicKeyHash,
 	      publicKey = s_crypt1->decryptedAfterAuthenticated
 		(QByteArray::fromBase64(query.value(0).toByteArray()),
 		 &ok);
+	      receiverName = query.value(1).toString();
 
 	      QByteArray hashKey;
 	      QByteArray keyInformation;
@@ -4669,12 +4687,14 @@ void spoton_kernel::slotCallParticipant(const QByteArray &publicKeyHash,
   QSqlDatabase::removeDatabase(connectionName);
 
   if(ok)
-    emit callParticipant(data, "0000c", keyType);
+    emit callParticipant(data, "0000c", keyType, receiverName);
 }
 
-void spoton_kernel::postPoptasticMessage(const QByteArray &message)
+void spoton_kernel::postPoptasticMessage(const QString &receiverName,
+					 const QByteArray &message)
 {
+  QPair<QString, QByteArray> pair(receiverName, message);
   QReadLocker locker(&s_poptasticCacheMutex);
 
-  s_poptasticCache.append(message);
+  s_poptasticCache.append(pair);
 }

@@ -152,6 +152,7 @@ class spoton_misc
 				    QByteArray &symmetricKey,
 				    QByteArray &hashKey,
 				    QString &neighborOid,
+				    QString &receiverName,
 				    const QByteArray &cipherType,
 				    const QString &oid,
 				    spoton_crypt *crypt,

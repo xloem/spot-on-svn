@@ -2365,6 +2365,7 @@ void spoton::slotCopyFriendshipBundle(void)
   QByteArray publicKey;
   QByteArray symmetricKey;
   QPair<QByteArray, QByteArray> gemini;
+  QString receiverName("");
   bool ok = true;
 
   if(cipherType.isEmpty())
@@ -2378,6 +2379,7 @@ void spoton::slotCopyFriendshipBundle(void)
 				     symmetricKey,
 				     hashKey,
 				     neighborOid,
+				     receiverName,
 				     cipherType,
 				     oid,
 				     m_crypts.value(keyType, 0),

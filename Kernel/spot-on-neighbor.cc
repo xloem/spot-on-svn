@@ -2007,7 +2007,8 @@ void spoton_neighbor::setId(const qint64 id)
 void spoton_neighbor::slotSendMessage
 (const QByteArray &data,
  const spoton_send::spoton_send_method sendMethod,
- const QString &keyType)
+ const QString &keyType,
+ const QString &receiverName)
 {
   QByteArray message;
   QPair<QByteArray, QByteArray> ae;
@@ -2034,7 +2035,7 @@ void spoton_neighbor::slotSendMessage
 	}
     }
   else if(keyType == "poptastic")
-    spoton_kernel::postPoptasticMessage(message);
+    spoton_kernel::postPoptasticMessage(receiverName, message);
 }
 
 void spoton_neighbor::write
@@ -5926,7 +5927,8 @@ QString spoton_neighbor::findMessageType
 
 void spoton_neighbor::slotCallParticipant(const QByteArray &data,
 					  const QString &messageType,
-					  const QByteArray &keyType)
+					  const QByteArray &keyType,
+					  const QString &receiverName)
 {
   QByteArray message;
   QPair<QByteArray, QByteArray> ae;
@@ -5980,7 +5982,7 @@ void spoton_neighbor::slotCallParticipant(const QByteArray &data,
 	}
     }
   else if(keyType == "poptastic")
-    spoton_kernel::postPoptasticMessage(message);
+    spoton_kernel::postPoptasticMessage(receiverName, message);
 }
 
 void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,

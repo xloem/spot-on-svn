@@ -86,7 +86,8 @@ class spoton_kernel: public QObject
   static void messagingCacheAdd(const QByteArray &data,
 				const bool do_not_hash = false,
 				const int add_msecs = 0);
-  static void postPoptasticMessage(const QByteArray &data);
+  static void postPoptasticMessage(const QString &receiverName,
+				   const QByteArray &message);
   static void receivedMessage
     (const QByteArray &data, const qint64 id,
      const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
@@ -128,7 +129,7 @@ class spoton_kernel: public QObject
   static QHash<QString, QVariant> s_settings;
   static QList<QList<QByteArray> > s_institutionKeys;
   static QList<QList<QVariant> > s_messagesToProcess;
-  static QQueue<QByteArray> s_poptasticCache;
+  static QQueue<QPair<QString, QByteArray> > s_poptasticCache;
   static QReadWriteLock s_adaptiveEchoPairsMutex;
   static QReadWriteLock s_buzzKeysMutex;
   static QReadWriteLock s_emailRequestCacheMutex;
@@ -217,7 +218,8 @@ class spoton_kernel: public QObject
  signals:
   void callParticipant(const QByteArray &data,
 		       const QString &messageType,
-		       const QByteArray &keyType);
+		       const QByteArray &keyType,
+		       const QString &name);
   void publicizeListenerPlaintext(const QByteArray &data,
 				  const qint64 id);
   void publicizeListenerPlaintext(const QHostAddress &address,
@@ -228,7 +230,7 @@ class spoton_kernel: public QObject
   void sendBuzz(const QByteArray &buzz);
   void sendMessage(const QByteArray &message,
 		   const spoton_send::spoton_send_method sendMethod,
-		   const QString &keyType);
+		   const QString &keyType, const QString &receiverName);
   void sendMail(const QPairByteArrayInt64List &mail,
 		const QString &messageType);
   void sendStatus(const QByteArrayList &status);

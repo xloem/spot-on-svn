@@ -840,6 +840,7 @@ void spoton_misc::retrieveSymmetricData
  QByteArray &symmetricKey,
  QByteArray &hashKey,
  QString &neighborOid,
+ QString &receiverName,
  const QByteArray &cipherType,
  const QString &oid,
  spoton_crypt *crypt,
@@ -867,7 +868,7 @@ void spoton_misc::retrieveSymmetricData
 
 	query.setForwardOnly(true);
 	query.prepare("SELECT gemini, neighbor_oid, public_key, "
-		      "gemini_hash_key "
+		      "gemini_hash_key, name "
 		      "FROM friends_public_keys WHERE "
 		      "OID = ?");
 	query.bindValue(0, oid);
@@ -918,6 +919,7 @@ void spoton_misc::retrieveSymmetricData
 						toByteArray()),
 			 ok);
 
+		    receiverName = query.value(4).toString();
 		    symmetricKey.resize
 		      (static_cast<int> (symmetricKeyLength));
 		    symmetricKey = spoton_crypt::strongRandomBytes
