@@ -164,6 +164,7 @@ class spoton_kernel: public QObject
   void prepareListeners(void);
   void prepareNeighbors(void);
   void prepareStarbeamReaders(void);
+  void prepareStatus(const QString &keyType);
   void purgeMessagingCache(void);
   void updateStatistics(const QDateTime &uptime,
 			const int listeners,

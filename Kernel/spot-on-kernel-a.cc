@@ -2011,12 +2011,19 @@ void spoton_kernel::slotStatusTimerExpired(void)
   if(status == "offline")
     return;
 
-  spoton_crypt *s_crypt1 = s_crypts.value("chat", 0);
+  prepareStatus("chat");
+  prepareStatus("poptastic");
+}
+
+void spoton_kernel::prepareStatus(const QString &keyType)
+{
+  spoton_crypt *s_crypt1 = s_crypts.value(keyType, 0);
 
   if(!s_crypt1)
     return;
 
-  spoton_crypt *s_crypt2 = s_crypts.value("chat-signature", 0);
+  spoton_crypt *s_crypt2 = s_crypts.value
+    (QString("%1-signature").arg(keyType), 0);
 
   if(!s_crypt2)
     return;
@@ -2035,7 +2042,11 @@ void spoton_kernel::slotStatusTimerExpired(void)
   if(!ok)
     return;
 
+  QByteArray status(setting("gui/my_status", "Online").
+		    toByteArray().toLower());
   QList<QByteArray> list;
+  QString connectionName("");
+  QString receiverName("");
 
   {
     QSqlDatabase db = spoton_misc::database(connectionName);
@@ -2050,10 +2061,10 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
 	query.setForwardOnly(true);
 	query.prepare("SELECT gemini, public_key, "
-		      "gemini_hash_key "
+		      "gemini_hash_key, name "
 		      "FROM friends_public_keys WHERE "
 		      "key_type_hash = ? AND neighbor_oid = -1");
-	query.bindValue(0, s_crypt1->keyedHash(QByteArray("chat"),
+	query.bindValue(0, s_crypt1->keyedHash(keyType.toLatin1(),
 					       &ok).toBase64());
 
 	if(ok && query.exec())
@@ -2088,6 +2099,8 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
 	      if(!ok)
 		continue;
+
+	      receiverName = query.value(3).toString();
 
 	      QByteArray cipherType
 		(setting("gui/kernelCipherType", "aes256").
@@ -2212,7 +2225,19 @@ void spoton_kernel::slotStatusTimerExpired(void)
   QSqlDatabase::removeDatabase(connectionName);
 
   if(!list.isEmpty())
-    emit sendStatus(list);
+    {
+      if(keyType == "chat")
+	emit sendStatus(list);
+      else
+	while(!list.isEmpty())
+	  {
+	    QByteArray message;
+
+	    message = spoton_send::message0013
+	      (list.takeFirst(), QPair<QByteArray, QByteArray> ());
+	    postPoptasticMessage(receiverName, message);
+	  }
+    }
 }
 
 void spoton_kernel::slotScramble(void)
