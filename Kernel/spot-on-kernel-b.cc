@@ -89,17 +89,20 @@ void spoton_kernel::postPoptastic(void)
 	return;
 
       CURL *curl = 0;
-      struct curl_slist *recipients = 0;
-      struct curl_upload_status upload_ctx;
-
-      upload_ctx.lines_read = 0;
       curl = curl_easy_init();
 
       if(curl)
 	{
-	  QPair<QString, QByteArray> pair(m_poptasticCache.dequeue());
+	  QPair<QString, QByteArray> pair;
+	  QWriteLocker locker(&m_poptasticCacheMutex);
 
+	  pair = m_poptasticCache.dequeue();
 	  locker.unlock();
+
+	  struct curl_slist *recipients = 0;
+	  struct curl_upload_status upload_ctx;
+
+	  upload_ctx.lines_read = 0;
 	  curl_easy_setopt
 	    (curl, CURLOPT_USERNAME,
 	     hash["out_username"].toByteArray().trimmed().constData());
@@ -165,7 +168,6 @@ void spoton_kernel::postPoptastic(void)
 	  curl_payload_text[8] = "\r\n";
 	  curl_payload_text[9] = "\r\n";
 	  curl_payload_text[10] = 0;
-
 	  recipients = curl_slist_append
 	    (recipients, pair.first.toLatin1().constData());
 	  curl_easy_setopt(curl, CURLOPT_MAIL_RCPT, recipients);
