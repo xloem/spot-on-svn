@@ -40,7 +40,8 @@ QMAKE_LFLAGS_RPATH =
 INCLUDEPATH	+= . ../. ../../../.
 LIBS		+= -L../../../libNTRU -L../../../libSpotOn \
 		   -L/usr/local/lib -lGeoIP \
-		   -lcrypto -lgcrypt -lgpg-error -lntru -lspoton -lssl
+		   -lcrypto -lcurl -lgcrypt -lgpg-error \
+		   -lntru -lspoton -lssl
 PRE_TARGETDEPS = libntru.so libspoton.so
 OBJECTS_DIR = temp/obj
 UI_DIR = temp/ui

@@ -218,11 +218,9 @@ class spoton_neighbor: public QThread
   void process0000(int length, const QByteArray &data,
 		   const QList<QByteArray> &symmetricKeys);
   void process0000a(int length, const QByteArray &data,
-		    const QString &messageType,
-		    const QByteArray &keyType);
+		    const QString &messageType);
   void process0000b(int length, const QByteArray &data,
-		    const QList<QByteArray> &symmetricKeys,
-		    const QByteArray &keyType);
+		    const QList<QByteArray> &symmetricKeys);
   void process0001a(int length, const QByteArray &data);
   void process0001b(int length, const QByteArray &data,
 		    const QList<QByteArray> &symmetricKeys);
@@ -253,8 +251,7 @@ class spoton_neighbor: public QThread
 		  const QByteArray &gemini,
 		  const QByteArray &geminiHashKey,
 		  const QByteArray &timestamp,
-		  const QString &messageType,
-		  const QByteArray &keyType);
+		  const QString &messageType);
   void saveParticipantStatus(const QByteArray &publicKeyHash);
   void saveParticipantStatus(const QByteArray &name,
 			     const QByteArray &publicKeyHash);
@@ -289,9 +286,7 @@ class spoton_neighbor: public QThread
 				const QByteArray &password);
   void slotAuthenticationTimerTimeout(void);
   void slotCallParticipant(const QByteArray &data,
-			   const QString &messageType,
-			   const QByteArray &keyType,
-			   const QString &receiverName);
+			   const QString &messageType);
   void slotConnected(void);
   void slotDisconnected(void);
   void slotDiscoverExternalAddress(void);
@@ -326,9 +321,7 @@ class spoton_neighbor: public QThread
     (const QByteArray &data,
      const QPairByteArrayByteArray &adaptiveEchoPair);
   void slotSendMessage(const QByteArray &data,
-		       const spoton_send::spoton_send_method sendMethod,
-		       const QString &keyType,
-		       const QString &receiverName);
+		       const spoton_send::spoton_send_method sendMethod);
   void slotSendStatus(const QByteArrayList &list);
   void slotSendUuid(void);
   void slotSslErrors(const QList<QSslError> &errors);
@@ -348,8 +341,7 @@ class spoton_neighbor: public QThread
   void authenticationRequested(const QString &peerInformation);
   void callParticipant(const QByteArray &publicKeyHash,
 		       const QByteArray &gemini,
-		       const QByteArray &geminiHashKey,
-		       const QByteArray &keyType);
+		       const QByteArray &geminiHashKey);
   void disconnected(void);
   void newData(void);
   void newEMailArrived(void);

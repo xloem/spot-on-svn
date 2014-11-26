@@ -453,9 +453,9 @@ void spoton_gui_server::slotReadyRead(void)
 		   QByteArray::fromBase64(list.value(4)),
 		   "chat");
 	    }
-	  else if(message.startsWith("poptasticmessage__"))
+	  else if(message.startsWith("poptasticmessage_"))
 	    {
-	      message.remove(0, qstrlen("poptasticmessage__"));
+	      message.remove(0, qstrlen("poptasticmessage_"));
 
 	      QList<QByteArray> list(message.split('_'));
 

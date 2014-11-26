@@ -152,15 +152,15 @@ int main(int argc, char *argv[])
   try
     {
       spoton::s_gui = new spoton();
+      curl_global_cleanup();
       return qapplication.exec();
     }
   catch(std::bad_alloc &exception)
     {
       qDebug() << "Critical memory failure. Exiting.";
+      curl_global_cleanup();
       return EXIT_FAILURE;
     }
-
-  curl_global_cleanup();
 }
 
 spoton::spoton(void):QMainWindow()
@@ -195,12 +195,14 @@ spoton::spoton(void):QMainWindow()
     (QString("Compiled on %1, %2.\n"
 	     "%3.\n"
 	     "Qt %4, %5-bit.\n"
-	     "libgcrypt %6.").
+	     "libcurl %6.\n"
+	     "libgcrypt %7.").
      arg(__DATE__).
      arg(__TIME__).
      arg(sslSupported ?
 	 SSLeay_version(SSLEAY_VERSION) : "OpenSSL is not supported").
      arg(QT_VERSION_STR).arg(sizeof(void *) * 8).
+     arg(curl_version()).
      arg(GCRYPT_VERSION));
   m_ui.statisticsBox->setVisible(false);
   m_ui.urlSettings->setVisible(false);

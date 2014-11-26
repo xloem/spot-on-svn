@@ -2076,7 +2076,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 
       if(!(list.value(0) == "chat" ||
 	   list.value(0) == "email" ||
-	   list.value(0) == "poptastic" || 
+	   list.value(0) == "poptastic" ||
 	   list.value(0) == "rosetta" ||
 	   list.value(0) == "url"))
 	{
