@@ -75,6 +75,8 @@ void spoton_kernel::postPoptastic(void)
 
   if(!m_poptasticCache.isEmpty())
     {
+      locker.unlock();
+
       spoton_crypt *s_crypt = s_crypts.value("chat", 0);
 
       if(!s_crypt)
@@ -175,6 +177,7 @@ void spoton_kernel::postPoptastic(void)
 	  curl_easy_setopt(curl, CURLOPT_READDATA, &upload_ctx);
 	  curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, 5000);
 	  curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
+	  curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
 	  curl_easy_perform(curl);
 	  curl_slist_free_all(recipients);
 	  curl_easy_cleanup(curl);
