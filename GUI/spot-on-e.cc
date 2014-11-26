@@ -259,6 +259,15 @@ void spoton::slotConfigurePoptastic(void)
 
       QSqlDatabase::removeDatabase(connectionName);
     }
+
+  m_poptasticSettingsUi.in_password->clear();
+  m_poptasticSettingsUi.in_server_address->clear();
+  m_poptasticSettingsUi.in_server_port->setValue(1);
+  m_poptasticSettingsUi.in_username->clear();
+  m_poptasticSettingsUi.out_password->clear();
+  m_poptasticSettingsUi.out_server_address->clear();
+  m_poptasticSettingsUi.out_server_port->setValue(1);
+  m_poptasticSettingsUi.out_username->clear();
 }
 
 void spoton::slotTestPoptasticPop3Settings(void)
