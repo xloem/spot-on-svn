@@ -1048,7 +1048,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>887</width>
+             <width>879</width>
              <height>575</height>
             </rect>
            </property>
@@ -2137,8 +2137,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>760</width>
-             <height>397</height>
+             <width>776</width>
+             <height>487</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2797,7 +2797,7 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>241</width>
+                     <width>233</width>
                      <height>1393</height>
                     </rect>
                    </property>
@@ -3938,7 +3938,7 @@
                       <item>
                        <widget class="QCheckBox" name="requireSsl">
                         <property name="toolTip">
-                         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Require secured connections.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         <string>Require secure connections.</string>
                         </property>
                         <property name="text">
                          <string>&amp;Require SSL</string>
@@ -4388,8 +4388,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>178</width>
-             <height>299</height>
+             <width>776</width>
+             <height>487</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -4442,8 +4442,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>619</width>
-                 <height>588</height>
+                 <width>751</width>
+                 <height>558</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_65">
@@ -5232,7 +5232,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>699</width>
+             <width>761</width>
              <height>1047</height>
             </rect>
            </property>
@@ -5760,7 +5760,7 @@
                    <item>
                     <widget class="QComboBox" name="superEcho">
                      <property name="toolTip">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Courier New,courier';&quot;&gt;If enabled, messages that are deciphered correctly will be echoed. Please note that this option will advertise your presence. This option does not supersede a half-echo agreement.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If enabled, messages that are deciphered correctly will be echoed. Please note that this option will advertise your presence. This option does not supersede a half-echo agreement.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                      <property name="currentIndex">
                       <number>1</number>
@@ -6475,7 +6475,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>481</width>
+             <width>761</width>
              <height>546</height>
             </rect>
            </property>
@@ -7473,8 +7473,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>232</width>
-             <height>402</height>
+             <width>776</width>
+             <height>487</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -7955,8 +7955,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>266</width>
-             <height>182</height>
+             <width>761</width>
+             <height>505</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
