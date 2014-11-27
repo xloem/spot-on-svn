@@ -3864,7 +3864,7 @@ void spoton_kernel::slotCallParticipantUsingGemini(const QByteArray &keyType,
 					       &ok).toBase64());
 
 	if(ok)
-	  query.bindValue(0, s_crypt1->keyedHash(QByteArray("poptastic"),
+	  query.bindValue(1, s_crypt1->keyedHash(QByteArray("poptastic"),
 						 &ok).toBase64());
 
 	query.bindValue(2, oid);
