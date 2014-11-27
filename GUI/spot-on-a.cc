@@ -3723,7 +3723,7 @@ void spoton::slotPopulateNeighbors(void)
 		  arg(QString::
 		      number(static_cast<double> (query.value(19).
 						  toLongLong()) /
-			     60.0, 'f', 1)).
+			     60.00, 'f', 1)).
 		  arg(query.value(21).toLongLong() ? "Yes" : "No").
 		  arg(query.value(22).toULongLong()).
 		  arg(query.value(23).toULongLong()).

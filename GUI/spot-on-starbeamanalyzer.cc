@@ -287,7 +287,7 @@ void spoton_starbeamanalyzer::analyze(const QString &fileName,
 	      double p = 100 * (static_cast<double> (problems) /
 				static_cast<double> (nPulses));
 
-	      if(p >= 75)
+	      if(p >= 75.00)
 		{
 		  excessive = true;
 		  break;
@@ -330,7 +330,7 @@ void spoton_starbeamanalyzer::analyze(const QString &fileName,
 	    double p = 100 * (static_cast<double> (problems) /
 			      static_cast<double> (nPulses));
 
-	    if(p >= 75)
+	    if(p >= 75.00)
 	      {
 		excessive = true;
 		break;

@@ -4098,7 +4098,7 @@ void spoton_kernel::updateStatistics(const QDateTime &uptime,
 	query.bindValue
 	  (0,
 	   QString::
-	   number(100.0 * static_cast<double> (v1) /
+	   number(100.00 * static_cast<double> (v1) /
 		  static_cast<double> (v2), 'f', 2).
 	   append("%"));
 	query.exec();

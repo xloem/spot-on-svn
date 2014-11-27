@@ -1808,7 +1808,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
   QString str("");
   QStringList list;
   bool ok = true;
-  double rational = 0.0;
+  double rational = 0.00;
   int integer = 0;
 
   integer = qAbs(settings.value("gui/congestionCost", 10000).toInt(&ok));
@@ -1977,7 +1977,8 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
     integer = 5;
 
   settings.insert("gui/emailRetrievalInterval", integer);
-  rational = settings.value("gui/poptasticRefreshInternal", 5).toDouble(&ok);
+  rational = settings.value("gui/poptasticRefreshInternal", 5.00).
+    toDouble(&ok);
 
   if(!ok)
     rational = 5.00;
