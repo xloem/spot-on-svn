@@ -4060,6 +4060,7 @@ void spoton::slotPopulateNeighbors(void)
 void spoton::slotActivateKernel(void)
 {
   QString program(m_ui.kernelPath->text());
+  bool status = false;
 
 #ifdef Q_OS_MAC
   if(QFileInfo(program).isBundle())
@@ -4069,17 +4070,21 @@ void spoton::slotActivateKernel(void)
       list << "-a" << program << "-g"
 	   << "--args" << "--vacuum";
 
-      QProcess::startDetached("open", list);
+      status = QProcess::startDetached("open", list);
     }
   else
-    QProcess::startDetached(program,
-			    QStringList("--vacuum"));
+    status = QProcess::startDetached(program,
+				     QStringList("--vacuum"));
 #elif defined(Q_OS_WIN32)
-  QProcess::startDetached(QString("\"%1\"").arg(program),
-			  QStringList("--vacuum"));
+  status = QProcess::startDetached(QString("\"%1\"").arg(program),
+				   QStringList("--vacuum"));
 #else
-  QProcess::startDetached(program, QStringList("--vacuum"));
+  status = QProcess::startDetached(program, QStringList("--vacuum"));
 #endif
+
+  if(status)
+    if(m_settings.value("gui/buzzAutoJoin", true).toBool())
+      joinDefaultBuzzChannel();
 }
 
 void spoton::slotDeactivateKernel(void)
@@ -4883,7 +4888,6 @@ void spoton::slotSetPassphrase(void)
 
 		  spoton_crypt::reencodePrivatePublicKeys
 		    (crypt, m_crypts.value("chat", 0), list.at(i), error2);
-
 		  m_sb.status->clear();
 
 		  if(!error2.isEmpty())
@@ -5231,12 +5235,7 @@ void spoton::slotSetPassphrase(void)
 	    mb.setText(tr("Would you like the kernel to be activated?"));
 
 	    if(mb.exec() == QMessageBox::Yes)
-	      {
-		slotActivateKernel();
-
-		if(m_settings.value("gui/buzzAutoJoin", true).toBool())
-		  joinDefaultBuzzChannel();
-	      }
+	      slotActivateKernel();
 	  }
 
 #if SPOTON_GOLDBUG == 1
@@ -5405,9 +5404,6 @@ void spoton::slotValidatePassphrase(void)
 				  true);
 		m_settings["gui/spot_on_neighbors_txt_processed"] = true;
 	      }
-
-	    if(m_settings.value("gui/buzzAutoJoin", true).toBool())
-	      joinDefaultBuzzChannel();
 	  }
       }
 

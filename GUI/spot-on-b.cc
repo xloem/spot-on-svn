@@ -5243,7 +5243,7 @@ void spoton::slotTestSslControlString(void)
 
 void spoton::slotChatInactivityTimeout(void)
 {
-  if(m_ui.status->currentIndex() != 2) // Offline
+  if(m_ui.status->currentIndex() == 3) // Online
     m_ui.status->setCurrentIndex(0); // Away
 }
 
