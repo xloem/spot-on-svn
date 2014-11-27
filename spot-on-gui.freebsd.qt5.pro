@@ -37,7 +37,8 @@ QMAKE_CXXFLAGS_RELEASE += -fPIE -fstack-protector-all -fwrapv \
 QMAKE_EXTRA_TARGETS = libntru libspoton purge
 INCLUDEPATH	+= . ../../. GUI
 LIBS		+= -L../../libNTRU -L../../libSpotOn \
-		   -lGeoIP -lcrypto -lgcrypt -lgpg-error -lntru -lspoton -lssl
+		   -lGeoIP -lcrypto -lcurl -lgcrypt \
+		   -lgpg-error -lntru -lspoton -lssl
 PRE_TARGETDEPS = libntru.so libspoton.so
 OBJECTS_DIR = temp/obj
 UI_DIR = temp/ui

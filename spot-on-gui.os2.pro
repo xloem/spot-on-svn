@@ -30,8 +30,8 @@ INCLUDEPATH	+= . ../../. GUI ../../libSpotOn/Include.win32 \
 		   u:/usr/local473/include
 LIBS		+= -L../../libSpotOn -L../../libSpotOn/Libraries.win32 \
 		   -Lu:/usr/local473/lib \
-		   -lcrypto -lgcrypt -lgpg-error -lmmap -lpthread -lspoton \
-		   -lssl -lssp_s
+		   -lcrypto -lcurl -lgcrypt \
+		   -lgpg-error -lmmap -lpthread -lspoton -lssl -lssp_s
 PRE_TARGETDEPS = libspotn.dll
 
 FORMS           = UI/adaptiveechoprompt.ui \

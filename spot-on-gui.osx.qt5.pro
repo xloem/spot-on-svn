@@ -43,7 +43,7 @@ ICON		= Icons/Logo/spoton-logo-transparent.icns
 LIBS		+= -L../../libGeoIP/Libraries.osx64 -lGeoIP \
                    -L../../libNTRU -lntru \
                    -L../../libSpotOn -lspoton \
-                   -L/usr/local/lib -lcrypto -lgcrypt -lgpg-error \
+                   -L/usr/local/lib -lcrypto -lcurl -lgcrypt -lgpg-error \
                    -lssl \
                    -framework AppKit -framework Cocoa
 PRE_TARGETDEPS = libntru.dylib libspoton.dylib
