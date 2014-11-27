@@ -1211,6 +1211,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(valueChanged(double)),
 	  this,
 	  SLOT(slotUpdateSpinBoxChanged(double)));
+  connect(m_ui.poptasticRefresh,
+	  SIGNAL(valueChanged(double)),
+	  this,
+	  SLOT(slotPoptasticRefreshChanged(double)));
   connect(m_ui.discover,
 	  SIGNAL(clicked(void)),
 	  this,

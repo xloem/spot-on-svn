@@ -1977,6 +1977,14 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
     integer = 5;
 
   settings.insert("gui/emailRetrievalInterval", integer);
+  rational = settings.value("gui/poptasticRefreshInternal", 5).toDouble(&ok);
+
+  if(!ok)
+    rational = 5.00;
+  else if(rational < 5.00)
+    rational = 5.00;
+
+  settings.insert("gui/poptasticRefreshInternal", rational);
   list.clear();
   list << "gui/kernelUpdateTimer"
        << "gui/listenersUpdateTimer"

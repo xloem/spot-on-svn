@@ -402,3 +402,14 @@ void spoton::slotTestPoptasticSmtpSettings(void)
 			  arg(SPOTON_APPLICATION_NAME),
 			  tr("Failure!"));
 }
+
+void spoton::slotPoptasticRefreshChanged(double value)
+{
+  QSettings settings;
+
+  if(value < 5.00)
+    value = 5.00;
+
+  m_settings["gui/poptasticRefreshInternal"] = value;
+  settings.setValue("gui/poptasticRefreshInterval", value);
+}
