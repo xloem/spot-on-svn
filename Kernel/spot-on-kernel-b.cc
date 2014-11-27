@@ -39,7 +39,7 @@ struct curl_upload_status
 static size_t curl_payload_source
 (void *ptr, size_t size, size_t nmemb, void *userp)
 {
-  if(nmemb == 0 || !ptr || size == 0 || (size * nmemb) < 1 || !userp)
+  if(nmemb == 0 || !ptr || size == 0 || (nmemb * size) < 1 || !userp)
     return 0;
 
   struct curl_upload_status *upload_ctx =
@@ -177,7 +177,6 @@ void spoton_kernel::postPoptastic(void)
 	  curl_easy_setopt(curl, CURLOPT_READDATA, &upload_ctx);
 	  curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, 5000);
 	  curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
-	  curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
 	  curl_easy_perform(curl);
 	  curl_slist_free_all(recipients);
 	  curl_easy_cleanup(curl);
