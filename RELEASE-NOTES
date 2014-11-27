@@ -2,6 +2,7 @@
 
 1.   Increased name maximums.
 2.   Poptastic.
+3.   The name field in friends_public_keys.db is now encrypted.
 
 0.16b (11/21/2014)
 
