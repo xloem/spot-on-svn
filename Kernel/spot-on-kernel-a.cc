@@ -328,6 +328,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   m_guiServer = 0;
   m_mailer = 0;
   m_starbeamWriter = 0;
+  m_lastPoptasticStatus = QDateTime::currentDateTime();
   m_uptime = QDateTime::currentDateTime();
   s_institutionLastModificationTime = QDateTime();
   qsrand(QTime(0, 0, 0).secsTo(QTime::currentTime()));
@@ -1971,6 +1972,11 @@ void spoton_kernel::connectSignalsToNeighbor
 
 void spoton_kernel::slotStatusTimerExpired(void)
 {
+  spoton_crypt *s_crypt = s_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    return;
+
   QString connectionName("");
 
   {
@@ -1983,18 +1989,39 @@ void spoton_kernel::slotStatusTimerExpired(void)
       {
 	QSqlQuery query(db);
 
-	query.exec("PRAGMA synchronous = OFF");
-	query.prepare("UPDATE friends_public_keys SET "
-		      "status = 'offline' WHERE "
-		      "neighbor_oid = -1 AND "
-		      "status <> 'offline' AND "
-		      "strftime('%s', ?) - "
-		      "strftime('%s', last_status_update) > ?");
-	query.bindValue
-	  (0, QDateTime::currentDateTime().toString(Qt::ISODate));
-	query.bindValue
-	  (1, 2.5 * qCeil(m_statusTimer.interval() / 1000.0));
-	query.exec();
+	for(int i = 1; i <= 2; i++)
+	  {
+	    bool ok = true;
+
+	    query.exec("PRAGMA synchronous = OFF");
+	    query.prepare("UPDATE friends_public_keys SET "
+			  "status = 'offline' WHERE "
+			  "key_type_hash = ? AND "
+			  "neighbor_oid = -1 AND "
+			  "status <> 'offline' AND "
+			  "strftime('%s', ?) - "
+			  "strftime('%s', last_status_update) > ?");
+
+	    if(i == 1)
+	      query.bindValue
+		(0, s_crypt->keyedHash(QByteArray("chat"), &ok).toBase64());
+	    else
+	      query.bindValue
+		(0, s_crypt->keyedHash(QByteArray("poptastic"), &ok).
+		 toBase64());
+
+	    query.bindValue
+	      (1, QDateTime::currentDateTime().toString(Qt::ISODate));
+
+	    if(i == 1)
+	      query.bindValue
+		(2, 2.5 * qCeil(m_statusTimer.interval() / 1000.0));
+	    else
+	      query.bindValue(2, 120);
+
+	    if(ok)
+	      query.exec();
+	  }
       }
 
     db.close();
@@ -2012,7 +2039,12 @@ void spoton_kernel::slotStatusTimerExpired(void)
     return;
 
   prepareStatus("chat");
-  prepareStatus("poptastic");
+
+  if(m_lastPoptasticStatus.secsTo(QDateTime::currentDateTime()) >= 120)
+    {
+      m_lastPoptasticStatus = QDateTime::currentDateTime();
+      prepareStatus("poptastic");
+    }
 }
 
 void spoton_kernel::prepareStatus(const QString &keyType)

@@ -108,6 +108,7 @@ class spoton_kernel: public QObject
   void writeMessage0060(const QByteArray &data, bool *ok);
 
  private:
+  QDateTime m_lastPoptasticStatus;
   QDateTime m_uptime;
   QFileSystemWatcher m_settingsWatcher;
   QFuture<void> m_future;
