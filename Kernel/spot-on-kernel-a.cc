@@ -2107,7 +2107,6 @@ void spoton_kernel::prepareStatus(const QString &keyType)
 	      if(!ok)
 		continue;
 
-	      receiverName = query.value(3).toString();
 	      QByteArray cipherType
 		(setting("gui/kernelCipherType", "aes256").
 		 toString().toLatin1());

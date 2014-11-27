@@ -62,11 +62,19 @@ static size_t curl_payload_source
   return 0;
 }
 
+void spoton_kernel::slotPoptasticPop(void)
+{
+}
+
 void spoton_kernel::slotPoptasticPost(void)
 {
   if(m_poptasticPostFuture.isFinished())
     m_statisticsFuture =
       QtConcurrent::run(this, &spoton_kernel::postPoptastic);
+}
+
+void spoton_kernel::popPoptastic(void)
+{
 }
 
 void spoton_kernel::postPoptastic(void)
@@ -177,6 +185,7 @@ void spoton_kernel::postPoptastic(void)
 	  curl_easy_setopt(curl, CURLOPT_READDATA, &upload_ctx);
 	  curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, 5000);
 	  curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
+	  curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
 	  curl_easy_perform(curl);
 	  curl_slist_free_all(recipients);
 	  curl_easy_cleanup(curl);

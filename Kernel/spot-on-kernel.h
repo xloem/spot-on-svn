@@ -158,6 +158,7 @@ class spoton_kernel: public QObject
   void cleanupNeighborsDatabase(const QSqlDatabase &db);
   void cleanupStarbeamsDatabase(const QSqlDatabase &db);
   void connectSignalsToNeighbor(QPointer<spoton_neighbor> neighbor);
+  void popPoptastic(void);
   void postPoptastic(void);
   void postPoptasticMessage(const QString &receiverName,
 			    const QByteArray &message);
@@ -202,6 +203,7 @@ class spoton_kernel: public QObject
 				 const QString &keyType);
   void slotNewNeighbor(QPointer<spoton_neighbor> neighbor);
   void slotPollDatabase(void);
+  void slotPoptasticPop(void);
   void slotPoptasticPost(void);
   void slotProcessReceivedMessages(void);
   void slotPublicKeyReceivedFromUI(const qint64 oid,
