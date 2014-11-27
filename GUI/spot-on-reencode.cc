@@ -453,14 +453,16 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT gemini, gemini_hash_key, public_key_hash, "
-		      "public_key, key_type FROM "
+	if(query.exec("SELECT gemini, gemini_hash_key, "
+		      "public_key_hash, "
+		      "public_key, key_type, name FROM "
 		      "friends_public_keys"))
 	  while(query.next())
 	    {
 	      QByteArray gemini;
 	      QByteArray geminiHashKey;
 	      QByteArray keyType;
+	      QByteArray name;
 	      QByteArray publicKey;
 	      QSqlQuery updateQuery(db);
 	      bool ok = true;
@@ -470,7 +472,8 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 				  "gemini_hash_key = ?, "
 				  "public_key = ?, "
 				  "key_type = ?, "
-				  "key_type_hash = ? "
+				  "key_type_hash = ?, "
+				  "name = ? "
 				  "WHERE public_key_hash = ?");
 
 	      if(!query.isNull(0))
@@ -492,6 +495,11 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 	      if(ok)
 		keyType = oldCrypt->decryptedAfterAuthenticated
 		  (QByteArray::fromBase64(query.value(4).toByteArray()),
+		   &ok);
+
+	      if(ok)
+		name = oldCrypt->decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.value(5).toByteArray()),
 		   &ok);
 
 	      if(ok)
@@ -532,8 +540,12 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		  (4,
 		   newCrypt->keyedHash(keyType, &ok).toBase64());
 
+	      if(ok)
+		updateQuery.bindValue
+		  (5, newCrypt->encryptedThenHashed(name, &ok).toBase64());
+
 	      updateQuery.bindValue
-		(5, query.value(2));
+		(6, query.value(2));
 
 	      if(ok)
 		updateQuery.exec();

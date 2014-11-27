@@ -3909,6 +3909,11 @@ void spoton::slotShowStatistics(void)
 
 void spoton::slotRenameParticipant(void)
 {
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
+
+  if(!crypt)
+    return;
+
   QAction *action = qobject_cast<QAction *> (sender());
 
   if(!action)
@@ -3963,13 +3968,19 @@ void spoton::slotRenameParticipant(void)
 
 	if(!data.isNull() && data.isValid())
 	  {
+	    bool ok = true;
+
 	    query.prepare("UPDATE friends_public_keys "
 			  "SET name = ?, "
 			  "name_changed_by_user = 1 "
 			  "WHERE OID = ?");
-	    query.bindValue(0, name);
+	    query.bindValue
+	      (0, crypt->encryptedThenHashed(name.toUtf8(), &ok).
+	       toBase64());
 	    query.bindValue(1, data.toString());
-	    ok = query.exec();
+
+	    if(ok)
+	      ok = query.exec();
 	  }
       }
 

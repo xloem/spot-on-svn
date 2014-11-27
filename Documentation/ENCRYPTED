@@ -14,6 +14,7 @@ friends_public_keys.db:
 gemini
 gemini_hash_key
 key_type
+name
 public_key
 
 idiotes.db:
@@ -74,6 +75,17 @@ scope_id
 ssl_session_cipher
 transport
 uuid
+
+poptastic.db:
+
+in_password
+in_server_address
+in_server_port
+in_username
+out_password
+out_server_address
+out_server_port
+out_username
 
 shared.db:
 

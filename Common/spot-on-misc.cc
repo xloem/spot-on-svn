@@ -783,11 +783,20 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
   if(keyType == "chat" || keyType == "email" || keyType == "poptastic" ||
      keyType == "rosetta" || keyType == "url")
     {
-      if(name.isEmpty())
-	query.bindValue(4, "unknown");
-      else
-	query.bindValue
-	  (4, name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH));
+      if(ok)
+	{
+	  if(name.isEmpty())
+	    query.bindValue
+	      (4, crypt->encryptedThenHashed(QByteArray("unknown"),
+					     &ok).toBase64());
+	  else
+	    query.bindValue
+	      (4, crypt->
+	       encryptedThenHashed(name.
+				   mid(0, spoton_common::
+				       NAME_MAXIMUM_LENGTH),
+				   &ok).toBase64());
+	}
     }
   else if(ok) // Signature keys will be labeled as their type.
     query.bindValue(4, crypt->keyedHash(keyType, &ok).toBase64());
@@ -919,7 +928,17 @@ void spoton_misc::retrieveSymmetricData
 						toByteArray()),
 			 ok);
 
-		    receiverName = query.value(4).toString();
+		    if(ok && *ok)
+		      receiverName = crypt->decryptedAfterAuthenticated
+			(QByteArray::fromBase64(query.value(4).
+						toByteArray()),
+			 ok);
+		    else if(!ok)
+		      receiverName = crypt->decryptedAfterAuthenticated
+			(QByteArray::fromBase64(query.value(4).
+						toByteArray()),
+			 ok);
+
 		    symmetricKey.resize
 		      (static_cast<int> (symmetricKeyLength));
 		    symmetricKey = spoton_crypt::strongRandomBytes

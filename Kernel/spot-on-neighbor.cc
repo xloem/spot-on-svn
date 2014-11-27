@@ -4708,6 +4708,7 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
     if(db.open())
       {
 	QSqlQuery query(db);
+	spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
 	query.exec("PRAGMA synchronous = OFF");
 
@@ -4723,8 +4724,10 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
 		  (0, QDateTime::currentDateTime().toString(Qt::ISODate));
 		query.bindValue(1, publicKeyHash.toBase64());
 	      }
-	    else
+	    else if(s_crypt)
 	      {
+		bool ok = true;
+
 		query.prepare("UPDATE friends_public_keys SET "
 			      "last_status_update = ? "
 			      "WHERE neighbor_oid = -1 AND "
@@ -4740,9 +4743,15 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
 			      "public_key_hash = ?");
 		query.bindValue
 		  (0,
-		   name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH));
+		   s_crypt->
+		   encryptedThenHashed(name.
+				       mid(0, spoton_common::
+					   NAME_MAXIMUM_LENGTH), &ok).
+		   toBase64());
 		query.bindValue(1, publicKeyHash.toBase64());
-		query.exec();
+
+		if(ok)
+		  query.exec();
 	      }
 	  }
 	else
@@ -4765,9 +4774,10 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
 		  (1, QDateTime::currentDateTime().toString(Qt::ISODate));
 		query.bindValue(2, publicKeyHash.toBase64());
 	      }
-	    else
+	    else if(s_crypt)
 	      {
 		QDateTime now(QDateTime::currentDateTime());
+		bool ok = true;
 
 		query.prepare("UPDATE friends_public_keys SET "
 			      "name = ?, "
@@ -4778,7 +4788,11 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
 			      "public_key_hash = ?");
 		query.bindValue
 		  (0,
-		   name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH));
+		   s_crypt->
+		   encryptedThenHashed(name.
+				       mid(0, spoton_common::
+					   NAME_MAXIMUM_LENGTH), &ok).
+		   toBase64());
 
 		if(status == "away" || status == "busy" ||
 		   status == "offline" || status == "online")
@@ -4789,7 +4803,10 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
 		query.bindValue
 		  (2, now.toString(Qt::ISODate));
 		query.bindValue(3, publicKeyHash.toBase64());
-		query.exec();
+
+		if(ok)
+		  query.exec();
+
 		query.prepare("UPDATE friends_public_keys SET "
 			      "status = ?, "
 			      "last_status_update = ? "

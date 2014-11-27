@@ -2097,11 +2097,17 @@ void spoton_kernel::prepareStatus(const QString &keyType)
 					    toByteArray()),
 		     &ok);
 
+	      if(ok)
+		receiverName = s_crypt1->decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.
+					  value(3).
+					  toByteArray()),
+		   &ok).constData();
+
 	      if(!ok)
 		continue;
 
 	      receiverName = query.value(3).toString();
-
 	      QByteArray cipherType
 		(setting("gui/kernelCipherType", "aes256").
 		 toString().toLatin1());
@@ -3677,7 +3683,12 @@ void spoton_kernel::slotCallParticipant(const QByteArray &keyType,
 					    toByteArray()),
 		     &ok);
 
-	      receiverName = query.value(3).toString();
+	      if(ok)
+		receiverName = s_crypt1->decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.
+					  value(3).
+					  toByteArray()),
+		   &ok);
 
 	      QByteArray hashKey;
 	      QByteArray keyInformation;
@@ -3884,7 +3895,12 @@ void spoton_kernel::slotCallParticipantUsingGemini(const QByteArray &keyType,
 					    toByteArray()),
 		     &ok);
 
-	      receiverName = query.value(3).toString();
+	      if(ok)
+		receiverName = s_crypt1->decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.
+					  value(3).
+					  toByteArray()),
+		   &ok);
 
 	      QByteArray symmetricKeyAlgorithm("aes256");
 	      size_t symmetricKeyLength = 0;

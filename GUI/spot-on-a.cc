@@ -6440,6 +6440,18 @@ void spoton::slotPopulateParticipants(void)
 		(QByteArray::fromBase64(query.value(8).toByteArray()),
 		 &ok).constData();
 
+	      if(ok)
+		name = QString::fromUtf8
+		  (crypt->
+		   decryptedAfterAuthenticated(QByteArray::
+					       fromBase64(query.
+							  value(0).
+							  toByteArray()),
+					       &ok).constData());
+
+	      if(!ok)
+		name = "";
+
 	      if(!isKernelActive())
 		status = "offline";
 
@@ -6467,9 +6479,6 @@ void spoton::slotPopulateParticipants(void)
 
 		      if(i == 0) // Name
 			{
-			  name = QString::fromUtf8(query.value(i).
-						   toByteArray()).trimmed();
-
 			  if(name.isEmpty())
 			    {
 			      if(keyType == "chat")
@@ -6627,14 +6636,10 @@ void spoton::slotPopulateParticipants(void)
 
 		      if(i == 0)
 			{
-			  QString str
-			    (QString::fromUtf8(query.value(i).
-					       toByteArray()).trimmed());
+			  if(name.isEmpty())
+			    name = "unknown";
 
-			  if(str.isEmpty())
-			    str = "unknown";
-
-			  item = new QTableWidgetItem(str);
+			  item = new QTableWidgetItem(name);
 			}
 		      else if(i == 1 || i == 2 || i == 3)
 			item = new QTableWidgetItem
@@ -6680,14 +6685,10 @@ void spoton::slotPopulateParticipants(void)
 
 		      if(i == 0)
 			{
-			  QString str
-			    (QString::fromUtf8(query.value(i).
-					       toByteArray()).trimmed());
+			  if(name.isEmpty())
+			    name = "unknown";
 
-			  if(str.isEmpty())
-			    str = "unknown";
-
-			  item = new QTableWidgetItem(str);
+			  item = new QTableWidgetItem(name);
 			}
 		      else if(i == 1 || i == 2 || i == 3)
 			item = new QTableWidgetItem

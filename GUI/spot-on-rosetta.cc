@@ -541,20 +541,31 @@ void spoton_rosetta::populateContacts(void)
 	if(ok && query.exec())
 	  while(query.next())
 	    {
+	      QByteArray name;
 	      QByteArray publicKey;
 	      bool ok = true;
 
 	      if(m_eCrypt)
-		publicKey = m_eCrypt->decryptedAfterAuthenticated
-		  (QByteArray::fromBase64(query.value(1).
+		name = m_eCrypt->decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.value(0).
 					  toByteArray()),
 		   &ok);
 	      else
 		ok = false;
 
 	      if(ok)
-		names.insert(query.value(0).toString(),
-			     publicKey);
+		{
+		  if(m_eCrypt)
+		    publicKey = m_eCrypt->decryptedAfterAuthenticated
+		      (QByteArray::fromBase64(query.value(1).
+					      toByteArray()),
+		       &ok);
+		  else
+		    ok = false;
+		}
+
+	      if(ok)
+		names.insert(name, publicKey);
 	    }
 
 	QMapIterator<QString, QByteArray> it(names);
@@ -926,7 +937,9 @@ void spoton_rosetta::slotCopyOrPaste(void)
 
 void spoton_rosetta::slotRename(void)
 {
-  if(ui.contacts->itemData(ui.contacts->currentIndex()).isNull())
+  if(!m_eCrypt)
+    return;
+  else if(ui.contacts->itemData(ui.contacts->currentIndex()).isNull())
     return;
 
   QString name("");
@@ -961,8 +974,11 @@ void spoton_rosetta::slotRename(void)
 		      "SET name = ?, "
 		      "name_changed_by_user = 1 "
 		      "WHERE public_key_hash = ?");
-	query.bindValue(0, name);
-	query.bindValue(1, spoton_crypt::sha512Hash(data, &ok).toBase64());
+	query.bindValue
+	  (0, m_eCrypt->encryptedThenHashed(name.toUtf8(), &ok).toBase64());
+
+	if(ok)
+	  query.bindValue(1, spoton_crypt::sha512Hash(data, &ok).toBase64());
 
 	if(ok)
 	  ok = query.exec();
