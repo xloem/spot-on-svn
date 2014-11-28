@@ -167,6 +167,11 @@ class spoton_kernel: public QObject
   void prepareStarbeamReaders(void);
   void prepareStatus(const QString &keyType);
   void purgeMessagingCache(void);
+  void saveGemini(const QByteArray &publicKeyHash,
+		  const QByteArray &gemini,
+		  const QByteArray &geminiHashKey,
+		  const QByteArray &timestamp,
+		  const QString &messageType);
   void updateStatistics(const QDateTime &uptime,
 			const int listeners,
 			const int neighbors,
@@ -241,6 +246,7 @@ class spoton_kernel: public QObject
 				  const quint16 port,
 				  const QString &transport,
 				  const QString &orientation);
+  void receivedChatMessage(const QByteArray &data);
   void retrieveMail(const QByteArrayList &list, const QString &messageType);
   void sendBuzz(const QByteArray &buzz);
   void sendMessage(const QByteArray &message,
@@ -248,6 +254,8 @@ class spoton_kernel: public QObject
   void sendMail(const QPairByteArrayInt64List &mail,
 		const QString &messageType);
   void sendStatus(const QByteArrayList &status);
+  void statusMessageReceived(const QByteArray &publicKeyHash,
+			     const QString &status);
 };
 
 #endif

@@ -650,6 +650,16 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 			    const QByteArray &,
 			    const QByteArray &,
 			    const qint64)));
+  connect(this,
+	  SIGNAL(receivedChatMessage(const QByteArray &)),
+	  m_guiServer,
+	  SLOT(slotReceivedChatMessage(const QByteArray &)));
+  connect(this,
+	  SIGNAL(statusMessageReceived(const QByteArray &,
+				       const QString &)),
+	  m_guiServer,
+	  SLOT(slotStatusMessageReceived(const QByteArray &,
+					 const QString &)));
   m_settingsWatcher.addPath(settings.fileName());
   connect(&m_settingsWatcher,
 	  SIGNAL(fileChanged(const QString &)),
@@ -2154,8 +2164,15 @@ void spoton_kernel::prepareStatus(const QString &keyType)
 		 toString().toLatin1());
 	      QByteArray hashKey;
 	      QByteArray keyInformation;
-	      QByteArray name(setting("gui/nodeName", "unknown").
-			      toByteArray());
+	      QByteArray name;
+
+	      if(keyType == "chat")
+		name = setting("gui/nodeName", "unknown").
+		  toByteArray();
+	      else
+		name = setting("gui/poptasticName", "unknown@unknown.org").
+		  toByteArray();
+
 	      QByteArray symmetricKey;
 	      QByteArray symmetricKeyAlgorithm(cipherType);
 	      size_t symmetricKeyLength = spoton_crypt::cipherKeyLength

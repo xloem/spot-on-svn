@@ -798,3 +798,94 @@ QList<QByteArray> spoton_receive::process0013
 
   return QList<QByteArray> ();
 }
+
+QString spoton_receive::findMessageType
+(const QByteArray &data,
+ QList<QByteArray> &symmetricKeys,
+ const int interfaces,
+ const QHash<QString, spoton_crypt *> &s_crypts,
+ const QString &keyType)
+{
+  QList<QByteArray> list(data.trimmed().split('\n'));
+  QString type("");
+  spoton_crypt *s_crypt = s_crypts.value(keyType, 0);
+
+  /*
+  ** list[0]: Data
+  ** ...
+  ** list[list.size - 1]: Hash
+  ** symmetricKeys[0]: Encryption Key
+  ** symmetricKeys[1]: Encryption Type
+  ** symmetricKeys[2]: Hash Key
+  ** symmetricKeys[3]: Hash Type
+  */
+
+  if(s_crypt)
+    if(interfaces > 0 &&
+       list.size() == 3 && (spoton_misc::
+			    participantCount("chat", s_crypt) > 0 ||
+			    spoton_misc::
+			    participantCount("poptastic", s_crypt) > 0))
+      {
+	QPair<QByteArray, QByteArray> gemini;
+
+	gemini = spoton_misc::findGeminiInCosmos
+	  (QByteArray::fromBase64(list.value(0)),
+	   QByteArray::fromBase64(list.value(1)),
+	   s_crypt);
+
+	if(!gemini.first.isEmpty())
+	  {
+	    QByteArray data;
+	    bool ok = true;
+	    spoton_crypt crypt("aes256",
+			       "sha512",
+			       QByteArray(),
+			       gemini.first,
+			       0,
+			       0,
+			       QString(""));
+
+	    data = crypt.decrypted
+	      (QByteArray::fromBase64(list.value(0)), &ok);
+
+	    if(ok)
+	      type = QByteArray::fromBase64(data.split('\n').value(0));
+
+	    if(!type.isEmpty())
+	      {
+		symmetricKeys.append(gemini.first);
+		symmetricKeys.append("aes256");
+		symmetricKeys.append(gemini.second);
+		symmetricKeys.append("sha512");
+		goto done_label;
+	      }
+	    else
+	      symmetricKeys.clear();
+	  }
+	else
+	  symmetricKeys.clear();
+      }
+
+  if(s_crypt)
+    if(interfaces > 0 && list.size() == 4)
+      if(!spoton_misc::allParticipantsHaveGeminis())
+	if(spoton_misc::participantCount("chat", s_crypt) > 0 ||
+	   spoton_misc::participantCount("poptastic", s_crypt) > 0)
+	  {
+	    QByteArray data;
+	    bool ok = true;
+
+	    data = s_crypt->publicKeyDecrypt
+	      (QByteArray::fromBase64(list.value(0)), &ok);
+
+	    if(ok)
+	      type = QByteArray::fromBase64(data.split('\n').value(0));
+
+	    if(!type.isEmpty())
+	      goto done_label;
+	  }
+
+ done_label:
+  return type;
+}

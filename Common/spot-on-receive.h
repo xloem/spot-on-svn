@@ -62,6 +62,12 @@ class spoton_receive
      const QHostAddress &address,
      const quint16 port,
      spoton_crypt *s_crypt);
+  static QString findMessageType
+    (const QByteArray &data,
+     QList<QByteArray> &symmetricKeys,
+     const int interfaces,
+     const QHash<QString, spoton_crypt *> &s_crypts,
+     const QString &keyType);
 
  private:
   spoton_receive(void);

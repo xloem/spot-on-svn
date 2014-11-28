@@ -2216,7 +2216,6 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn,
 void spoton_neighbor::process0000b(int length, const QByteArray &dataIn,
 				   const QList<QByteArray> &symmetricKeys)
 {
-  QByteArray mc;
   QList<QByteArray> list
     (spoton_receive::process0000b(length, dataIn, symmetricKeys,
 				  spoton_kernel::setting("gui/chatAccept"
@@ -4013,143 +4012,8 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
 					    const QByteArray &publicKeyHash,
 					    const QByteArray &status)
 {
-  QString connectionName("");
-
-  {
-    QSqlDatabase db = spoton_misc::database(connectionName);
-
-    db.setDatabaseName
-      (spoton_misc::homePath() + QDir::separator() +
-       "friends_public_keys.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-	spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
-
-	query.exec("PRAGMA synchronous = OFF");
-
-	if(status.isEmpty())
-	  {
-	    if(name.isEmpty())
-	      {
-		query.prepare("UPDATE friends_public_keys SET "
-			      "last_status_update = ? "
-			      "WHERE neighbor_oid = -1 AND "
-			      "public_key_hash = ?");
-		query.bindValue
-		  (0, QDateTime::currentDateTime().toString(Qt::ISODate));
-		query.bindValue(1, publicKeyHash.toBase64());
-	      }
-	    else if(s_crypt)
-	      {
-		bool ok = true;
-
-		query.prepare("UPDATE friends_public_keys SET "
-			      "last_status_update = ? "
-			      "WHERE neighbor_oid = -1 AND "
-			      "public_key_hash = ?");
-		query.bindValue
-		  (0, QDateTime::currentDateTime().toString(Qt::ISODate));
-		query.bindValue(1, publicKeyHash.toBase64());
-		query.exec();
-		query.prepare("UPDATE friends_public_keys SET "
-			      "name = ? "
-			      "WHERE name_changed_by_user = 0 AND "
-			      "neighbor_oid = -1 AND "
-			      "public_key_hash = ?");
-		query.bindValue
-		  (0,
-		   s_crypt->
-		   encryptedThenHashed(name.
-				       mid(0, spoton_common::
-					   NAME_MAXIMUM_LENGTH), &ok).
-		   toBase64());
-		query.bindValue(1, publicKeyHash.toBase64());
-
-		if(ok)
-		  query.exec();
-	      }
-	  }
-	else
-	  {
-	    if(name.isEmpty())
-	      {
-		query.prepare("UPDATE friends_public_keys SET "
-			      "status = ?, "
-			      "last_status_update = ? "
-			      "WHERE neighbor_oid = -1 AND "
-			      "public_key_hash = ?");
-
-		if(status == "away" || status == "busy" ||
-		   status == "offline" || status == "online")
-		  query.bindValue(0, status);
-		else
-		  query.bindValue(0, "offline");
-
-		query.bindValue
-		  (1, QDateTime::currentDateTime().toString(Qt::ISODate));
-		query.bindValue(2, publicKeyHash.toBase64());
-	      }
-	    else if(s_crypt)
-	      {
-		QDateTime now(QDateTime::currentDateTime());
-		bool ok = true;
-
-		query.prepare("UPDATE friends_public_keys SET "
-			      "name = ?, "
-			      "status = ?, "
-			      "last_status_update = ? "
-			      "WHERE name_changed_by_user = 0 AND "
-			      "neighbor_oid = -1 AND "
-			      "public_key_hash = ?");
-		query.bindValue
-		  (0,
-		   s_crypt->
-		   encryptedThenHashed(name.
-				       mid(0, spoton_common::
-					   NAME_MAXIMUM_LENGTH), &ok).
-		   toBase64());
-
-		if(status == "away" || status == "busy" ||
-		   status == "offline" || status == "online")
-		  query.bindValue(1, status);
-		else
-		  query.bindValue(1, "offline");
-
-		query.bindValue
-		  (2, now.toString(Qt::ISODate));
-		query.bindValue(3, publicKeyHash.toBase64());
-
-		if(ok)
-		  query.exec();
-
-		query.prepare("UPDATE friends_public_keys SET "
-			      "status = ?, "
-			      "last_status_update = ? "
-			      "WHERE neighbor_oid = -1 AND "
-			      "public_key_hash = ?");
-
-		if(status == "away" || status == "busy" ||
-		   status == "offline" || status == "online")
-		  query.bindValue(0, status);
-		else
-		  query.bindValue(0, "offline");
-
-		query.bindValue
-		  (1, now.toString(Qt::ISODate));
-		query.bindValue(2, publicKeyHash.toBase64());
-		query.exec();
-	      }
-	  }
-
-	query.exec();
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase(connectionName);
+  spoton_misc::saveParticipantStatus
+    (name, publicKeyHash, status, spoton_kernel::s_crypts.value("chat", 0));
 }
 
 void spoton_neighbor::slotError(QAbstractSocket::SocketError error)
@@ -5109,84 +4973,6 @@ QString spoton_neighbor::findMessageType
 	}
     }
 
-  /*
-  ** Do not attempt to locate a gemini if an interface is not
-  ** attached to the kernel.
-  */
-
-  if(s_crypt)
-    if(interfaces > 0 &&
-       list.size() == 3 && (spoton_misc::
-			    participantCount("chat", s_crypt) > 0 ||
-			    spoton_misc::
-			    participantCount("poptastic", s_crypt) > 0))
-      {
-	QPair<QByteArray, QByteArray> gemini;
-
-	gemini = spoton_misc::findGeminiInCosmos
-	  (QByteArray::fromBase64(list.value(0)),
-	   QByteArray::fromBase64(list.value(1)),
-	   s_crypt);
-
-	if(!gemini.first.isEmpty())
-	  {
-	    QByteArray data;
-	    bool ok = true;
-	    spoton_crypt crypt("aes256",
-			       "sha512",
-			       QByteArray(),
-			       gemini.first,
-			       0,
-			       0,
-			       QString(""));
-
-	    data = crypt.decrypted
-	      (QByteArray::fromBase64(list.value(0)), &ok);
-
-	    if(ok)
-	      type = QByteArray::fromBase64(data.split('\n').value(0));
-
-	    if(!type.isEmpty())
-	      {
-		symmetricKeys.append(gemini.first);
-		symmetricKeys.append("aes256");
-		symmetricKeys.append(gemini.second);
-		symmetricKeys.append("sha512");
-		goto done_label;
-	      }
-	    else
-	      symmetricKeys.clear();
-	  }
-	else
-	  symmetricKeys.clear();
-      }
-
-  /*
-  ** Finally, attempt to decipher the message via our private key.
-  ** We would like to determine the message type only if we have at least
-  ** one interface attached to the kernel or if we're processing
-  ** a letter.
-  */
-
-  if(s_crypt)
-    if(interfaces > 0 && list.size() == 4)
-      if(!spoton_misc::allParticipantsHaveGeminis())
-	if(spoton_misc::participantCount("chat", s_crypt) > 0 ||
-	   spoton_misc::participantCount("poptastic", s_crypt) > 0)
-	  {
-	    QByteArray data;
-	    bool ok = true;
-
-	    data = s_crypt->publicKeyDecrypt
-	      (QByteArray::fromBase64(list.value(0)), &ok);
-
-	    if(ok)
-	      type = QByteArray::fromBase64(data.split('\n').value(0));
-
-	    if(!type.isEmpty())
-	      goto done_label;
-	  }
-
   if(list.size() == 3 || list.size() == 7)
     /*
     ** 0001b
@@ -5194,8 +4980,8 @@ QString spoton_neighbor::findMessageType
     */
 
     if(spoton_misc::participantCount("email",
-				     spoton_kernel::s_crypts.
-				     value("email", 0)) > 0)
+				     spoton_kernel::
+				     s_crypts.value("email", 0)) > 0)
       {
 	if(list.size() == 3)
 	  symmetricKeys = spoton_kernel::findInstitutionKey
@@ -5238,8 +5024,12 @@ QString spoton_neighbor::findMessageType
 	    goto done_label;
 	}
 
- done_label:
+  type = spoton_receive::findMessageType(data, symmetricKeys,
+					 interfaces,
+					 spoton_kernel::s_crypts,
+					 "chat");
 
+done_label:
   spoton_kernel::discoverAdaptiveEchoPair
     (data.trimmed(), discoveredAdaptiveEchoPair);
 

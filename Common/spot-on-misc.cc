@@ -3134,3 +3134,146 @@ QHash<QString, QVariant> spoton_misc::poptasticSettings(spoton_crypt *crypt,
   QSqlDatabase::removeDatabase(connectionName);
   return hash;
 }
+
+void spoton_misc::saveParticipantStatus(const QByteArray &name,
+					const QByteArray &publicKeyHash,
+					const QByteArray &status,
+					spoton_crypt *crypt)
+{
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName
+      (spoton_misc::homePath() + QDir::separator() +
+       "friends_public_keys.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.exec("PRAGMA synchronous = OFF");
+
+	if(status.isEmpty())
+	  {
+	    if(name.isEmpty())
+	      {
+		query.prepare("UPDATE friends_public_keys SET "
+			      "last_status_update = ? "
+			      "WHERE neighbor_oid = -1 AND "
+			      "public_key_hash = ?");
+		query.bindValue
+		  (0, QDateTime::currentDateTime().toString(Qt::ISODate));
+		query.bindValue(1, publicKeyHash.toBase64());
+	      }
+	    else if(crypt)
+	      {
+		bool ok = true;
+
+		query.prepare("UPDATE friends_public_keys SET "
+			      "last_status_update = ? "
+			      "WHERE neighbor_oid = -1 AND "
+			      "public_key_hash = ?");
+		query.bindValue
+		  (0, QDateTime::currentDateTime().toString(Qt::ISODate));
+		query.bindValue(1, publicKeyHash.toBase64());
+		query.exec();
+		query.prepare("UPDATE friends_public_keys SET "
+			      "name = ? "
+			      "WHERE name_changed_by_user = 0 AND "
+			      "neighbor_oid = -1 AND "
+			      "public_key_hash = ?");
+		query.bindValue
+		  (0,
+		   crypt->
+		   encryptedThenHashed(name.
+				       mid(0, spoton_common::
+					   NAME_MAXIMUM_LENGTH), &ok).
+		   toBase64());
+		query.bindValue(1, publicKeyHash.toBase64());
+
+		if(ok)
+		  query.exec();
+	      }
+	  }
+	else
+	  {
+	    if(name.isEmpty())
+	      {
+		query.prepare("UPDATE friends_public_keys SET "
+			      "status = ?, "
+			      "last_status_update = ? "
+			      "WHERE neighbor_oid = -1 AND "
+			      "public_key_hash = ?");
+
+		if(status == "away" || status == "busy" ||
+		   status == "offline" || status == "online")
+		  query.bindValue(0, status);
+		else
+		  query.bindValue(0, "offline");
+
+		query.bindValue
+		  (1, QDateTime::currentDateTime().toString(Qt::ISODate));
+		query.bindValue(2, publicKeyHash.toBase64());
+	      }
+	    else if(crypt)
+	      {
+		QDateTime now(QDateTime::currentDateTime());
+		bool ok = true;
+
+		query.prepare("UPDATE friends_public_keys SET "
+			      "name = ?, "
+			      "status = ?, "
+			      "last_status_update = ? "
+			      "WHERE name_changed_by_user = 0 AND "
+			      "neighbor_oid = -1 AND "
+			      "public_key_hash = ?");
+		query.bindValue
+		  (0,
+		   crypt->
+		   encryptedThenHashed(name.
+				       mid(0, spoton_common::
+					   NAME_MAXIMUM_LENGTH), &ok).
+		   toBase64());
+
+		if(status == "away" || status == "busy" ||
+		   status == "offline" || status == "online")
+		  query.bindValue(1, status);
+		else
+		  query.bindValue(1, "offline");
+
+		query.bindValue
+		  (2, now.toString(Qt::ISODate));
+		query.bindValue(3, publicKeyHash.toBase64());
+
+		if(ok)
+		  query.exec();
+
+		query.prepare("UPDATE friends_public_keys SET "
+			      "status = ?, "
+			      "last_status_update = ? "
+			      "WHERE neighbor_oid = -1 AND "
+			      "public_key_hash = ?");
+
+		if(status == "away" || status == "busy" ||
+		   status == "offline" || status == "online")
+		  query.bindValue(0, status);
+		else
+		  query.bindValue(0, "offline");
+
+		query.bindValue
+		  (1, now.toString(Qt::ISODate));
+		query.bindValue(2, publicKeyHash.toBase64());
+		query.exec();
+	      }
+	  }
+
+	query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+}

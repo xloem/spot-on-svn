@@ -27,7 +27,10 @@
 
 #include "Common/spot-on-crypt.h"
 #include "Common/spot-on-misc.h"
+#include "Common/spot-on-receive.h"
 #include "spot-on-kernel.h"
+
+#include <QSqlQuery>
 
 static QByteArray curl_payload_text[11];
 
@@ -278,5 +281,283 @@ void spoton_kernel::popPostPoptastic(void)
 
 void spoton_kernel::slotPoppedMessage(const QByteArray &message)
 {
-  Q_UNUSED(message);
+  if(!message.contains("Content-Length:"))
+    return;
+
+  QByteArray data
+    (message.mid(message.indexOf("Content-Length:"),
+		 message.indexOf(spoton_send::EOM) +
+		 spoton_send::EOM.length()));
+  int length = 0;
+
+  if(data.contains("Content-Length: "))
+    {
+      QByteArray contentLength(data);
+      int indexOf = -1;
+
+      contentLength.remove
+	(0,
+	 contentLength.indexOf("Content-Length: ") +
+	 qstrlen("Content-Length: "));
+      indexOf = contentLength.indexOf("\r\n");
+
+      if(indexOf > -1)
+	/*
+	** toInt() returns zero on failure.
+	*/
+
+	length = contentLength.mid(0, indexOf).toInt();
+    }
+  else
+    {
+      spoton_misc::logError
+	("spoton_kernel::slotPoppedMessage(): "
+	 "data does not contain Content-Length.");
+      return;
+    }
+
+  length -= qstrlen("content=");
+
+  if(length <= 0)
+    return;
+
+  int indexOf = data.lastIndexOf("\r\n");
+
+  if(indexOf > -1)
+    data = data.mid(0, indexOf + 2);
+
+  indexOf = data.indexOf("content=");
+
+  if(indexOf > -1)
+    data.remove(0, indexOf + qstrlen("content="));
+
+  data = data.trimmed();
+
+  if(data.length() + 3 == length)
+    length = data.length();
+  else if(data.length() + 4 == length)
+    length = data.length();
+
+  if(length <= 0)
+    return;
+
+  if(data.length() == length)
+    {
+      QList<QByteArray> symmetricKeys;
+      QString messageType
+	(spoton_receive::findMessageType(data, symmetricKeys,
+					 interfaces(),
+					 s_crypts,
+					 "poptastic"));
+
+      if(messageType == "0000")
+	{
+	  QByteArray mc; // Message Code
+	  QList<QByteArray> list
+	    (spoton_receive::process0000(length, data, symmetricKeys,
+					 setting("gui/chatAccept"
+						 "SignedMessages"
+						 "Only",
+						 true).toBool(),
+					 QHostAddress("127.0.0.1"), 0,
+					 mc, // Message Code
+					 s_crypts.value("poptastic", 0)));
+
+	  if(!list.isEmpty())
+	    {
+	      spoton_misc::saveParticipantStatus
+		(list.value(1), // Name
+		 list.value(0), // Public Key Hash
+		 QByteArray(),
+		 s_crypts.value("chat", 0));
+	      emit receivedChatMessage
+		("message_" +
+		 list.value(0).toBase64() + "_" +
+		 list.value(1).toBase64() + "_" +
+		 list.value(2).toBase64() + "_" +
+		 list.value(3).toBase64() + "_" +
+		 list.value(4).toBase64() + "_" +
+		 mc.toBase64().append('\n'));
+	    }
+	}
+      else if(messageType == "0000a")
+	{
+	  QList<QByteArray> list
+	    (spoton_receive::process0000a(length, data,
+					  setting("gui/chatAccept"
+						  "SignedMessages"
+						  "Only",
+						  true).toBool(),
+					  QHostAddress("127.0.0.1"), 0,
+					  s_crypts.value("poptastic", 0)));
+
+	  if(!list.isEmpty())
+	    saveGemini(list.value(0), list.value(1),
+		       list.value(2), list.value(3),
+		       "0000a");
+	}
+      else if(messageType == "0000b")
+	{
+	  QList<QByteArray> list
+	    (spoton_receive::process0000b(length, data, symmetricKeys,
+					  setting("gui/chatAccept"
+						  "SignedMessages"
+						  "Only",
+						  true).toBool(),
+					  QHostAddress("127.0.0.1"), 0,
+					  s_crypts.value("poptastic", 0)));
+
+	  if(!list.isEmpty())
+	    saveGemini(list.value(1), list.value(2),
+		       list.value(3), list.value(4),
+		       "0000b");
+	}
+      else if(messageType == "0013")
+	{
+	  QList<QByteArray> list
+	    (spoton_receive::process0013(length, data, symmetricKeys,
+					 setting("gui/chatAccept"
+						 "SignedMessages"
+						 "Only",
+						 true).toBool(),
+					 QHostAddress("127.0.0.1"), 0,
+					 s_crypts.value("poptastic", 0)));
+
+	  if(!list.isEmpty())
+	    spoton_misc::saveParticipantStatus
+	      (list.value(1),  // Name
+	       list.value(0),  // Public Key Hash
+	       list.value(2),
+	       s_crypts.value("chat")); // Status
+	}
+    }
+}
+
+void spoton_kernel::saveGemini(const QByteArray &publicKeyHash,
+			       const QByteArray &gemini,
+			       const QByteArray &geminiHashKey,
+			       const QByteArray &timestamp,
+			       const QString &messageType)
+{
+  QDateTime dateTime
+    (QDateTime::fromString(timestamp.constData(), "MMddyyyyhhmmss"));
+
+  if(!dateTime.isValid())
+    {
+      spoton_misc::logError
+	("spoton_kernel(): saveGemini(): invalid date-time object.");
+      return;
+    }
+
+  QDateTime now(QDateTime::currentDateTimeUtc());
+
+  dateTime.setTimeSpec(Qt::UTC);
+  now.setTimeSpec(Qt::UTC);
+
+  int secsTo = qAbs(now.secsTo(dateTime));
+
+  if(!(secsTo <= 90))
+    {
+      spoton_misc::logError
+	(QString("spoton_kernel::saveGemini(): "
+		 "large time delta (%1).").arg(secsTo));
+      return;
+    }
+  else if(duplicateGeminis(publicKeyHash +
+			   gemini +
+			   geminiHashKey))
+    {
+      spoton_misc::logError
+	("spoton_kernel::saveGemini(): duplicate keys.");
+      return;
+    }
+
+  geminisCacheAdd(publicKeyHash + gemini + geminiHashKey);
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName
+      (spoton_misc::homePath() + QDir::separator() +
+       "friends_public_keys.db");
+
+    if(db.open())
+      {
+	QByteArray bytes1;
+	QByteArray bytes2;
+	QPair<QByteArray, QByteArray> geminis;
+	QSqlQuery query(db);
+	bool ok = true;
+
+	geminis.first = gemini;
+	geminis.second = geminiHashKey;
+	query.prepare("UPDATE friends_public_keys SET "
+		      "gemini = ?, gemini_hash_key = ?, "
+		      "last_status_update = ? "
+		      "WHERE neighbor_oid = -1 AND "
+		      "public_key_hash = ?");
+
+	if(geminis.first.isEmpty() || geminis.second.isEmpty())
+	  {
+	    query.bindValue(0, QVariant(QVariant::String));
+	    query.bindValue(1, QVariant(QVariant::String));
+	  }
+	else
+	  {
+	    spoton_crypt *s_crypt = s_crypts.value("chat", 0);
+
+	    if(s_crypt)
+	      {
+		query.bindValue
+		  (0, s_crypt->encryptedThenHashed(geminis.first, &ok).
+		   toBase64());
+
+		if(ok)
+		  query.bindValue
+		    (1, s_crypt->encryptedThenHashed(geminis.second,
+						     &ok).toBase64());
+	      }
+	    else
+	      {
+		query.bindValue(0, QVariant(QVariant::String));
+		query.bindValue(1, QVariant(QVariant::String));
+	      }
+	  }
+
+	query.bindValue
+	  (2, QDateTime::currentDateTime().toString(Qt::ISODate));
+	query.bindValue(3, publicKeyHash.toBase64());
+
+	if(ok)
+	  if(query.exec())
+	    {
+	      if(geminis.first.isEmpty() ||
+		 geminis.second.isEmpty())
+		emit statusMessageReceived
+		  (publicKeyHash,
+		   tr("The participant %1...%2 terminated the call.").
+		   arg(publicKeyHash.toBase64().mid(0, 16).constData()).
+		   arg(publicKeyHash.toBase64().right(16).constData()));
+	      else if(messageType == "0000a")
+		emit statusMessageReceived
+		  (publicKeyHash,
+		   tr("The participant %1...%2 initiated a call.").
+		   arg(publicKeyHash.toBase64().mid(0, 16).constData()).
+		   arg(publicKeyHash.toBase64().right(16).constData()));
+	      else if(messageType == "0000b")
+		emit statusMessageReceived
+		  (publicKeyHash,
+		   tr("The participant %1...%2 initiated a call "
+		      "within a call.").
+		   arg(publicKeyHash.toBase64().mid(0, 16).constData()).
+		   arg(publicKeyHash.toBase64().right(16).constData()));
+	    }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
 }
