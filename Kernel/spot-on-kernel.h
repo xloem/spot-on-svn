@@ -206,6 +206,7 @@ class spoton_kernel: public QObject
 				 const QString &keyType);
   void slotNewNeighbor(QPointer<spoton_neighbor> neighbor);
   void slotPollDatabase(void);
+  void slotPoppedMessage(const QByteArray &message);
   void slotPoptasticPop(void);
   void slotPoptasticPost(void);
   void slotProcessReceivedMessages(void);
@@ -237,6 +238,7 @@ class spoton_kernel: public QObject
  signals:
   void callParticipant(const QByteArray &data,
 		       const QString &messageType);
+  void poppedMessage(const QByteArray &message);
   void publicizeListenerPlaintext(const QByteArray &data,
 				  const qint64 id);
   void publicizeListenerPlaintext(const QHostAddress &address,

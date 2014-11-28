@@ -45,7 +45,7 @@ struct curl_upload_status
 static size_t curl_payload_source
 (void *ptr, size_t size, size_t nmemb, void *userp)
 {
-  if(nmemb == 0 || !ptr || size == 0 || (nmemb * size) < 1 || !userp)
+  if(nmemb <= 0 || !ptr || size <= 0 || (nmemb * size) < 1 || !userp)
     return 0;
 
   struct curl_upload_status *upload_ctx =
@@ -60,7 +60,9 @@ static size_t curl_payload_source
     {
       size_t length = strlen(data);
 
-      memcpy(ptr, data, length);
+      if(length > 0)
+	memcpy(ptr, data, length);
+
       upload_ctx->lines_read++;
       return length;
     }
@@ -71,7 +73,7 @@ static size_t curl_payload_source
 static size_t curl_write_memory_callback(void *contents, size_t size,
 					 size_t nmemb, void *userp)
 {
-  if(!contents || nmemb == 0 || size == 0 || !userp)
+  if(!contents || nmemb <= 0 || size <= 0 || !userp)
     return 0;
 
   struct curl_memory *memory = (struct curl_memory *) userp;
@@ -109,7 +111,7 @@ void spoton_kernel::slotPoptasticPost(void)
 
 void spoton_kernel::popPoptastic(void)
 {
-  spoton_crypt *s_crypt = s_crypts.value("chat", 0);
+  spoton_crypt *s_crypt = s_crypts.value("poptastic", 0);
 
   if(!s_crypt)
     return;
@@ -165,7 +167,10 @@ void spoton_kernel::popPoptastic(void)
       curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *) &chunk);
       curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, 15000);
       curl_easy_setopt(curl, CURLOPT_URL, url.toLatin1().constData());
-      curl_easy_perform(curl);
+
+      if(curl_easy_perform(curl) == CURLE_OK)
+	emit poppedMessage(QByteArray(chunk.memory, chunk.size));
+
       free(chunk.memory);
       curl_easy_cleanup(curl);
     }
@@ -285,4 +290,9 @@ void spoton_kernel::postPoptastic(void)
 	  curl_easy_cleanup(curl);
 	}
     }
+}
+
+void spoton_kernel::slotPoppedMessage(const QByteArray &message)
+{
+  Q_UNUSED(message);
 }

@@ -482,6 +482,10 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	deleteLater();
       }
 
+  connect(this,
+	  SIGNAL(poppedMessage(const QByteArray &)),
+	  this,
+	  SLOT(slotPoppedMessage(const QByteArray &)));
   connect(&m_controlDatabaseTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -693,7 +697,7 @@ spoton_kernel::~spoton_kernel()
   QWriteLocker locker3(&m_poptasticCacheMutex);
 
   m_poptasticCache.clear();
-  m_poptasticCacheMutex.unlock();
+  locker3.unlock();
   m_future.waitForFinished();
   m_poptasticPopFuture.waitForFinished();
   m_poptasticPostFuture.waitForFinished();
