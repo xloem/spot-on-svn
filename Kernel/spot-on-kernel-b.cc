@@ -31,6 +31,12 @@
 
 static QByteArray curl_payload_text[11];
 
+struct curl_memory
+{
+  char *memory;
+  size_t size;
+};
+
 struct curl_upload_status
 {
   int lines_read;
@@ -62,19 +68,109 @@ static size_t curl_payload_source
   return 0;
 }
 
+static size_t curl_write_memory_callback(void *contents, size_t size,
+					 size_t nmemb, void *userp)
+{
+  if(!contents || nmemb == 0 || size == 0 || !userp)
+    return 0;
+
+  struct curl_memory *memory = (struct curl_memory *) userp;
+
+  if(!memory)
+    return 0;
+
+  size_t realsize = nmemb * size;
+
+  memory->memory = (char *)
+    realloc(memory->memory, memory->size + realsize + 1);
+
+  if(!memory->memory)
+    return 0;
+
+  memcpy(&(memory->memory[memory->size]), contents, realsize);
+  memory->size += realsize;
+  memory->memory[memory->size] = 0;
+  return realsize;
+}
+
 void spoton_kernel::slotPoptasticPop(void)
 {
+  if(m_poptasticPopFuture.isFinished())
+    m_poptasticPopFuture =
+      QtConcurrent::run(this, &spoton_kernel::popPoptastic);
 }
 
 void spoton_kernel::slotPoptasticPost(void)
 {
   if(m_poptasticPostFuture.isFinished())
-    m_statisticsFuture =
+    m_poptasticPostFuture =
       QtConcurrent::run(this, &spoton_kernel::postPoptastic);
 }
 
 void spoton_kernel::popPoptastic(void)
 {
+  spoton_crypt *s_crypt = s_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    return;
+
+  QHash<QString, QVariant> hash;
+  bool ok = true;
+
+  hash = spoton_misc::poptasticSettings(s_crypt, &ok);
+
+  if(!ok)
+    return;
+
+  struct curl_memory chunk;
+ 
+  chunk.memory = (char *) malloc(1);
+
+  if(!chunk.memory)
+    return;
+
+  CURL *curl = curl_easy_init();
+
+  if(curl)
+    {
+      chunk.size = 0;
+      curl_easy_setopt
+	(curl, CURLOPT_PASSWORD,
+	 hash["in_password"].toByteArray().constData());
+      curl_easy_setopt
+	(curl, CURLOPT_USERNAME,
+	 hash["in_username"].toByteArray().constData());
+
+      QString ssltls(hash["in_ssltls"].toString().toUpper().trimmed());
+      QString url("");
+
+      if(ssltls == tr("SSL") || ssltls == tr("TLS"))
+	{
+	  url = QString("pop3s://%1:%2/1").
+	    arg(hash["in_server_address"].toString().trimmed()).
+	    arg(hash["in_server_port"].toString().trimmed());
+	  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
+	  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+
+	  if(ssltls == tr("TLS"))
+	    curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_ALL);
+	}
+      else
+	url = QString("pop3://%1:%2/1").
+	  arg(hash["in_server_address"].toString().trimmed()).
+	  arg(hash["in_server_port"].toString().trimmed());
+
+      curl_easy_setopt
+	(curl, CURLOPT_WRITEFUNCTION, curl_write_memory_callback);
+      curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *) &chunk);
+      curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, 15000);
+      curl_easy_setopt(curl, CURLOPT_URL, url.toLatin1().constData());
+      curl_easy_perform(curl);
+      free(chunk.memory);
+      curl_easy_cleanup(curl);
+    }
+  else
+    free(chunk.memory);
 }
 
 void spoton_kernel::postPoptastic(void)
@@ -98,8 +194,7 @@ void spoton_kernel::postPoptastic(void)
       if(!ok)
 	return;
 
-      CURL *curl = 0;
-      curl = curl_easy_init();
+      CURL *curl = curl_easy_init();
 
       if(curl)
 	{
@@ -114,11 +209,11 @@ void spoton_kernel::postPoptastic(void)
 
 	  upload_ctx.lines_read = 0;
 	  curl_easy_setopt
-	    (curl, CURLOPT_USERNAME,
-	     hash["out_username"].toByteArray().trimmed().constData());
-	  curl_easy_setopt
 	    (curl, CURLOPT_PASSWORD,
 	     hash["out_password"].toByteArray().trimmed().constData());
+	  curl_easy_setopt
+	    (curl, CURLOPT_USERNAME,
+	     hash["out_username"].toByteArray().trimmed().constData());
 
 	  QString from(setting("gui/poptasticName", "unknown@unknown.org").
 		       toString());
@@ -183,9 +278,8 @@ void spoton_kernel::postPoptastic(void)
 	  curl_easy_setopt(curl, CURLOPT_MAIL_RCPT, recipients);
 	  curl_easy_setopt(curl, CURLOPT_READFUNCTION, curl_payload_source);
 	  curl_easy_setopt(curl, CURLOPT_READDATA, &upload_ctx);
-	  curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, 5000);
+	  curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, 15000);
 	  curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
-	  curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
 	  curl_easy_perform(curl);
 	  curl_slist_free_all(recipients);
 	  curl_easy_cleanup(curl);

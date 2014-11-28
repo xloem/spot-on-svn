@@ -195,7 +195,7 @@ spoton::spoton(void):QMainWindow()
     (QString("Compiled on %1, %2.\n"
 	     "%3.\n"
 	     "Qt %4, %5-bit.\n"
-	     "libcurl %6.\n"
+	     "%6.\n"
 	     "libgcrypt %7.").
      arg(__DATE__).
      arg(__TIME__).
@@ -1408,6 +1408,8 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/listenersUpdateTimer", 3.50).toDouble());
   m_ui.neighborsUpdateInterval->setValue
     (m_settings.value("gui/neighborsUpdateTimer", 3.50).toDouble());
+  m_ui.poptasticRefresh->setValue
+    (m_settings.value("gui/poptasticRefreshInterval", 5.00).toDouble());
   m_ui.starbeamUpdateInterval->setValue
     (m_settings.value("gui/starbeamUpdateTimer", 3.50).toDouble());
   m_kernelUpdateTimer.start

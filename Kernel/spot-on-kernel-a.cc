@@ -494,7 +494,11 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotMessagingCachePurge(void)));
-  connect(&m_poptasticTimer,
+  connect(&m_poptasticPopTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotPoptasticPop(void)));
+  connect(&m_poptasticPostTimer,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotPoptasticPost(void)));
@@ -521,7 +525,10 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   m_controlDatabaseTimer.start(2500);
   m_impersonateTimer.setInterval(2500);
   m_messagingCachePurgeTimer.setInterval(15000);
-  m_poptasticTimer.start(2500);
+  m_poptasticPopTimer.start
+    (static_cast<int> (1000 * setting("gui/poptasticRefreshInterval",
+				      5.00).toDouble()));
+  m_poptasticPostTimer.start(2500);
   m_processReceivedMessagesTimer.start(100);
   m_publishAllListenersPlaintextTimer.setInterval(10 * 60 * 1000);
   m_settingsTimer.setInterval(1500);
@@ -665,7 +672,8 @@ spoton_kernel::~spoton_kernel()
   m_controlDatabaseTimer.stop();
   m_impersonateTimer.stop();
   m_messagingCachePurgeTimer.stop();
-  m_poptasticTimer.stop();
+  m_poptasticPopTimer.stop();
+  m_poptasticPostTimer.stop();
   m_processReceivedMessagesTimer.stop();
   m_publishAllListenersPlaintextTimer.stop();
   m_scramblerTimer.stop();
@@ -687,6 +695,7 @@ spoton_kernel::~spoton_kernel()
   m_poptasticCache.clear();
   m_poptasticCacheMutex.unlock();
   m_future.waitForFinished();
+  m_poptasticPopFuture.waitForFinished();
   m_poptasticPostFuture.waitForFinished();
   m_statisticsFuture.waitForFinished();
   cleanup();
@@ -1825,6 +1834,10 @@ void spoton_kernel::slotUpdateSettings(void)
     }
   else
     m_impersonateTimer.stop();
+
+  m_poptasticPopTimer.setInterval
+    (static_cast<int> (1000 * setting("gui/poptasticRefreshInterval",
+				      5.00).toDouble()));
 
   if(setting("gui/publishPeriodically", false).toBool())
     {

@@ -410,6 +410,6 @@ void spoton::slotPoptasticRefreshChanged(double value)
   if(value < 5.00)
     value = 5.00;
 
-  m_settings["gui/poptasticRefreshInternal"] = value;
+  m_settings["gui/poptasticRefreshInterval"] = value;
   settings.setValue("gui/poptasticRefreshInterval", value);
 }

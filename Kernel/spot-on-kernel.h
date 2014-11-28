@@ -112,6 +112,7 @@ class spoton_kernel: public QObject
   QDateTime m_uptime;
   QFileSystemWatcher m_settingsWatcher;
   QFuture<void> m_future;
+  QFuture<void> m_poptasticPopFuture;
   QFuture<void> m_poptasticPostFuture;
   QFuture<void> m_statisticsFuture;
   QHash<qint64, QPointer<spoton_listener> > m_listeners;
@@ -122,7 +123,8 @@ class spoton_kernel: public QObject
   QTimer m_controlDatabaseTimer;
   QTimer m_impersonateTimer;
   QTimer m_messagingCachePurgeTimer;
-  QTimer m_poptasticTimer;
+  QTimer m_poptasticPopTimer;
+  QTimer m_poptasticPostTimer;
   QTimer m_processReceivedMessagesTimer;
   QTimer m_publishAllListenersPlaintextTimer;
   QTimer m_scramblerTimer;
