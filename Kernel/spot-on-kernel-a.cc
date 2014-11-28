@@ -498,14 +498,10 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotMessagingCachePurge(void)));
-  connect(&m_poptasticPopTimer,
+  connect(&m_poptasticPopPostTimer,
 	  SIGNAL(timeout(void)),
 	  this,
-	  SLOT(slotPoptasticPop(void)));
-  connect(&m_poptasticPostTimer,
-	  SIGNAL(timeout(void)),
-	  this,
-	  SLOT(slotPoptasticPost(void)));
+	  SLOT(slotPoptasticPopPost(void)));
   connect(&m_processReceivedMessagesTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -529,10 +525,9 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   m_controlDatabaseTimer.start(2500);
   m_impersonateTimer.setInterval(2500);
   m_messagingCachePurgeTimer.setInterval(15000);
-  m_poptasticPopTimer.start
+  m_poptasticPopPostTimer.start
     (static_cast<int> (1000 * setting("gui/poptasticRefreshInterval",
 				      5.00).toDouble()));
-  m_poptasticPostTimer.start(2500);
   m_processReceivedMessagesTimer.start(100);
   m_publishAllListenersPlaintextTimer.setInterval(10 * 60 * 1000);
   m_settingsTimer.setInterval(1500);
@@ -676,8 +671,7 @@ spoton_kernel::~spoton_kernel()
   m_controlDatabaseTimer.stop();
   m_impersonateTimer.stop();
   m_messagingCachePurgeTimer.stop();
-  m_poptasticPopTimer.stop();
-  m_poptasticPostTimer.stop();
+  m_poptasticPopPostTimer.stop();
   m_processReceivedMessagesTimer.stop();
   m_publishAllListenersPlaintextTimer.stop();
   m_scramblerTimer.stop();
@@ -699,8 +693,7 @@ spoton_kernel::~spoton_kernel()
   m_poptasticCache.clear();
   locker3.unlock();
   m_future.waitForFinished();
-  m_poptasticPopFuture.waitForFinished();
-  m_poptasticPostFuture.waitForFinished();
+  m_poptasticPopPostFuture.waitForFinished();
   m_statisticsFuture.waitForFinished();
   cleanup();
   spoton_misc::cleanupDatabases(s_crypts.value("chat", 0));
@@ -1839,7 +1832,7 @@ void spoton_kernel::slotUpdateSettings(void)
   else
     m_impersonateTimer.stop();
 
-  m_poptasticPopTimer.setInterval
+  m_poptasticPopPostTimer.setInterval
     (static_cast<int> (1000 * setting("gui/poptasticRefreshInterval",
 				      5.00).toDouble()));
 
@@ -4855,8 +4848,8 @@ void spoton_kernel::slotCallParticipant(const QByteArray &publicKeyHash,
 void spoton_kernel::postPoptasticMessage(const QString &receiverName,
 					 const QByteArray &message)
 {
-  QPair<QString, QByteArray> pair(receiverName, message);
   QWriteLocker locker(&m_poptasticCacheMutex);
 
-  m_poptasticCache.enqueue(pair);
+  m_poptasticCache.enqueue
+    (QPair<QString, QByteArray> (receiverName, message));
 }

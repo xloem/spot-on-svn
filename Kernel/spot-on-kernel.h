@@ -112,8 +112,7 @@ class spoton_kernel: public QObject
   QDateTime m_uptime;
   QFileSystemWatcher m_settingsWatcher;
   QFuture<void> m_future;
-  QFuture<void> m_poptasticPopFuture;
-  QFuture<void> m_poptasticPostFuture;
+  QFuture<void> m_poptasticPopPostFuture;
   QFuture<void> m_statisticsFuture;
   QHash<qint64, QPointer<spoton_listener> > m_listeners;
   QHash<qint64, QPointer<spoton_neighbor> > m_neighbors;
@@ -123,8 +122,7 @@ class spoton_kernel: public QObject
   QTimer m_controlDatabaseTimer;
   QTimer m_impersonateTimer;
   QTimer m_messagingCachePurgeTimer;
-  QTimer m_poptasticPopTimer;
-  QTimer m_poptasticPostTimer;
+  QTimer m_poptasticPopPostTimer;
   QTimer m_processReceivedMessagesTimer;
   QTimer m_publishAllListenersPlaintextTimer;
   QTimer m_scramblerTimer;
@@ -161,8 +159,7 @@ class spoton_kernel: public QObject
   void cleanupNeighborsDatabase(const QSqlDatabase &db);
   void cleanupStarbeamsDatabase(const QSqlDatabase &db);
   void connectSignalsToNeighbor(QPointer<spoton_neighbor> neighbor);
-  void popPoptastic(void);
-  void postPoptastic(void);
+  void popPostPoptastic(void);
   void postPoptasticMessage(const QString &receiverName,
 			    const QByteArray &message);
   void prepareListeners(void);
@@ -207,8 +204,7 @@ class spoton_kernel: public QObject
   void slotNewNeighbor(QPointer<spoton_neighbor> neighbor);
   void slotPollDatabase(void);
   void slotPoppedMessage(const QByteArray &message);
-  void slotPoptasticPop(void);
-  void slotPoptasticPost(void);
+  void slotPoptasticPopPost(void);
   void slotProcessReceivedMessages(void);
   void slotPublicKeyReceivedFromUI(const qint64 oid,
 				   const QByteArray &keyType,

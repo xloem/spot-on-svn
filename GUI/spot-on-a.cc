@@ -7153,6 +7153,8 @@ void spoton::slotCallParticipant(void)
 
   if(oid.isEmpty())
     return;
+  else if(keyType == "poptastic" && type == "calling_two_way")
+    return; // Not allowed!
 
   if(type == "calling")
     slotGenerateGeminiInChat();

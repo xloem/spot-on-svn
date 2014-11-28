@@ -95,21 +95,14 @@ static size_t curl_write_memory_callback(void *contents, size_t size,
   return realsize;
 }
 
-void spoton_kernel::slotPoptasticPop(void)
+void spoton_kernel::slotPoptasticPopPost(void)
 {
-  if(m_poptasticPopFuture.isFinished())
-    m_poptasticPopFuture =
-      QtConcurrent::run(this, &spoton_kernel::popPoptastic);
+  if(m_poptasticPopPostFuture.isFinished())
+    m_poptasticPopPostFuture =
+      QtConcurrent::run(this, &spoton_kernel::popPostPoptastic);
 }
 
-void spoton_kernel::slotPoptasticPost(void)
-{
-  if(m_poptasticPostFuture.isFinished())
-    m_poptasticPostFuture =
-      QtConcurrent::run(this, &spoton_kernel::postPoptastic);
-}
-
-void spoton_kernel::popPoptastic(void)
+void spoton_kernel::popPostPoptastic(void)
 {
   spoton_crypt *s_crypt = s_crypts.value("poptastic", 0);
 
@@ -123,6 +116,10 @@ void spoton_kernel::popPoptastic(void)
 
   if(!ok)
     return;
+
+  /*
+  ** First, we pop!
+  */
 
   struct curl_memory chunk;
  
@@ -176,30 +173,17 @@ void spoton_kernel::popPoptastic(void)
     }
   else
     free(chunk.memory);
-}
 
-void spoton_kernel::postPoptastic(void)
-{
+  /*
+  ** Now, we post!
+  */
+
   QReadLocker locker(&m_poptasticCacheMutex);
 
   if(!m_poptasticCache.isEmpty())
     {
       locker.unlock();
-
-      spoton_crypt *s_crypt = s_crypts.value("chat", 0);
-
-      if(!s_crypt)
-	return;
-
-      QHash<QString, QVariant> hash;
-      bool ok = true;
-
-      hash = spoton_misc::poptasticSettings(s_crypt, &ok);
-
-      if(!ok)
-	return;
-
-      CURL *curl = curl_easy_init();
+      curl = curl_easy_init();
 
       if(curl)
 	{
