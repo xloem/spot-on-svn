@@ -41,6 +41,7 @@ class spoton_chatwindow: public QMainWindow
  public:
   spoton_chatwindow(const QIcon &icon,
 		    const QString &id,
+		    const QString &keyType,
 		    const QString &participant,
 		    QSslSocket *kernelSocket,
 		    QWidget *parent);
@@ -53,6 +54,7 @@ class spoton_chatwindow: public QMainWindow
  private:
   QPointer<QSslSocket> m_kernelSocket;
   QString m_id;
+  QString m_keyType;
   Ui_chatwindow ui;
 #ifdef Q_OS_MAC
 #if QT_VERSION >= 0x050000 && QT_VERSION < 0x050300

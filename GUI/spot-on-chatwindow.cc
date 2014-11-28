@@ -42,11 +42,17 @@
 
 spoton_chatwindow::spoton_chatwindow(const QIcon &icon,
 				     const QString &id,
+				     const QString &keyType,
 				     const QString &participant,
 				     QSslSocket *kernelSocket,
 				     QWidget *parent):QMainWindow(parent)
 {
   m_id = id;
+  m_keyType = keyType;
+
+  if(m_keyType.isEmpty())
+    m_keyType = "chat";
+
   m_kernelSocket = kernelSocket;
   ui.setupUi(this);
 #ifdef Q_OS_MAC
@@ -158,8 +164,13 @@ void spoton_chatwindow::slotSendMessage(void)
       goto done_label;
     }
 
-  name = spoton::s_gui->m_settings.
-    value("gui/nodeName", "unknown").toByteArray();
+  if(m_keyType == "chat")
+    name = spoton::s_gui->m_settings.
+      value("gui/nodeName", "unknown").toByteArray();
+  else
+    name = spoton::s_gui->m_settings.
+      value("gui/poptasticName", "unknown@unknown.org").toByteArray();
+
   message.append
     (QString("[%1:%2<font color=grey>:%3</font>] ").
      arg(now.toString("hh")).
@@ -182,10 +193,20 @@ void spoton_chatwindow::slotSendMessage(void)
   message.clear();
 
   if(name.isEmpty())
-    name = "unknown";
+    {
+      if(m_keyType == "chat")
+	name = "unknown";
+      else
+	name = "unknown@unknown.org";
+    }
 
   spoton::s_gui->m_chatSequenceNumbers[m_id] += 1;
-  message.append("message_");
+
+  if(m_keyType == "chat")
+    message.append("message_");
+  else
+    message.append("poptasticmessage_");
+
   message.append(QString("%1_").arg(m_id));
   message.append(name.toBase64());
   message.append("_");

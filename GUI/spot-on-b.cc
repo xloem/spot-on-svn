@@ -5608,6 +5608,7 @@ void spoton::slotParticipantDoubleClicked(QTableWidgetItem *item)
     return;
 
   QIcon icon;
+  QString keyType("");
   QString oid("");
   QString participant("");
   QString publicKeyHash("");
@@ -5625,6 +5626,7 @@ void spoton::slotParticipantDoubleClicked(QTableWidgetItem *item)
   if(!item)
     return;
 
+  keyType = item->data(Qt::ItemDataRole(Qt::UserRole + 1)).toString();
   oid = item->text();
   item = m_ui.participants->item(row, 3); // public_key_hash
 
@@ -5635,7 +5637,8 @@ void spoton::slotParticipantDoubleClicked(QTableWidgetItem *item)
 
   if(m_chatWindows.contains(publicKeyHash))
     {
-      QPointer<spoton_chatwindow> chat = m_chatWindows.value(publicKeyHash);
+      QPointer<spoton_chatwindow> chat = m_chatWindows.value
+	(publicKeyHash);
 
       if(chat)
 	{
@@ -5647,7 +5650,7 @@ void spoton::slotParticipantDoubleClicked(QTableWidgetItem *item)
     }
 
   QPointer<spoton_chatwindow> chat = new spoton_chatwindow
-    (icon, oid, participant, &m_kernelSocket, 0);
+    (icon, oid, keyType, participant, &m_kernelSocket, 0);
 
   connect(chat,
 	  SIGNAL(destroyed(void)),
