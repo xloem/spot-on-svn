@@ -338,9 +338,6 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
   else if(data.length() + 4 == length)
     length = data.length();
 
-  if(length <= 0)
-    return;
-
   if(data.length() == length)
     {
       QList<QByteArray> symmetricKeys;
