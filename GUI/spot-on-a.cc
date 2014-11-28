@@ -6772,7 +6772,6 @@ void spoton::slotPopulateParticipants(void)
 	m_ui.participants->setSelectionMode
 	  (QAbstractItemView::ExtendedSelection);
 	m_ui.participants->setSortingEnabled(true);
-	m_ui.participants->resizeColumnsToContents();
 	m_ui.participants->horizontalHeader()->setStretchLastSection(true);
 	m_ui.participants->horizontalScrollBar()->setValue(hval);
 	m_ui.participants->verticalScrollBar()->setValue(vval);
