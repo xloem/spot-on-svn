@@ -2037,7 +2037,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 	      query.bindValue
 		(2, 2.5 * qCeil(m_statusTimer.interval() / 1000.0));
 	    else
-	      query.bindValue(2, 120);
+	      query.bindValue(2, 30);
 
 	    if(ok)
 	      query.exec();
@@ -2060,7 +2060,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
   prepareStatus("chat");
 
-  if(m_lastPoptasticStatus.secsTo(QDateTime::currentDateTime()) >= 120)
+  if(m_lastPoptasticStatus.secsTo(QDateTime::currentDateTime()) >= 30)
     {
       m_lastPoptasticStatus = QDateTime::currentDateTime();
       prepareStatus("poptastic");

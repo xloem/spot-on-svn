@@ -183,19 +183,21 @@ void spoton_kernel::popPostPoptastic(void)
 
   QReadLocker locker(&m_poptasticCacheMutex);
 
-  if(!m_poptasticCache.isEmpty())
+  bool isEmpty = m_poptasticCache.isEmpty();
+
+  locker.unlock();
+
+  while(!isEmpty)
     {
-      locker.unlock();
+      QPair<QString, QByteArray> pair;
+      QWriteLocker locker1(&m_poptasticCacheMutex);
+
+      pair = m_poptasticCache.dequeue();
+      locker1.unlock();
       curl = curl_easy_init();
 
       if(curl)
 	{
-	  QPair<QString, QByteArray> pair;
-	  QWriteLocker locker(&m_poptasticCacheMutex);
-
-	  pair = m_poptasticCache.dequeue();
-	  locker.unlock();
-
 	  struct curl_slist *recipients = 0;
 	  struct curl_upload_status upload_ctx;
 
@@ -276,6 +278,11 @@ void spoton_kernel::popPostPoptastic(void)
 	  curl_slist_free_all(recipients);
 	  curl_easy_cleanup(curl);
 	}
+
+      QReadLocker locker2(&m_poptasticCacheMutex);
+
+      isEmpty = m_poptasticCache.isEmpty();
+      locker2.unlock();
     }
 }
 
@@ -283,158 +290,114 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
 {
   QByteArray data
     (message.
-     mid(message.indexOf("Content-Length:"),
-	 message.indexOf(spoton_send::EOM) + spoton_send::EOM.length()));
-  int length = 0;
+     mid(message.indexOf("content=") + qstrlen("content="),
+	 message.indexOf(spoton_send::EOM) + spoton_send::EOM.length()).
+     trimmed());
 
-  if(data.contains("Content-Length: "))
-    {
-      QByteArray contentLength(data);
-      int indexOf = -1;
-
-      contentLength.remove
-	(0,
-	 contentLength.indexOf("Content-Length: ") +
-	 qstrlen("Content-Length: "));
-      indexOf = contentLength.indexOf("\r\n");
-
-      if(indexOf > -1)
-	/*
-	** toInt() returns zero on failure.
-	*/
-
-	length = contentLength.mid(0, indexOf).toInt();
-    }
-  else
+  if(data.isEmpty())
+    return;
+  else if(data.length() > spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE)
     {
       spoton_misc::logError
-	("spoton_kernel::slotPoppedMessage(): "
-	 "data does not contain Content-Length.");
+	(QString("spoton_kernel::slotPoppedMessage(): "
+		 "too much data (%1 bytes). "
+		 "Ignoring.").
+	 arg(data.length()));
       return;
     }
-
-  length -= qstrlen("content=");
-
-  if(length <= 0)
-    return;
-
-  int indexOf = data.lastIndexOf("\r\n");
-
-  if(indexOf > -1)
-    data = data.mid(0, indexOf + 2);
-
-  indexOf = data.indexOf("content=");
-
-  if(indexOf > -1)
-    data.remove(0, indexOf + qstrlen("content="));
-
-  data = data.trimmed();
-
-  if(data.length() + 3 == length)
-    length = data.length();
-  else if(data.length() + 4 == length)
-    length = data.length();
 
   /*
   ** The following logic must agree with the logic in
   ** spot-on-neighbor.cc.
   */
 
-  if(data.length() == length)
+  QList<QByteArray> symmetricKeys;
+  QString messageType
+    (spoton_receive::findMessageType(data, symmetricKeys,
+				     interfaces(),
+				     s_crypts,
+				     "poptastic"));
+
+  if(messageType == "0000")
     {
-      QList<QByteArray> symmetricKeys;
-      QString messageType
-	(spoton_receive::findMessageType(data, symmetricKeys,
-					 interfaces(),
-					 s_crypts,
-					 "poptastic"));
+      QByteArray mc; // Message Code
+      QList<QByteArray> list
+	(spoton_receive::process0000(data.length(), data, symmetricKeys,
+				     setting("gui/chatAccept"
+					     "SignedMessages"
+					     "Only",
+					     true).toBool(),
+				     QHostAddress("127.0.0.1"), 0,
+				     mc, // Message Code
+				     s_crypts.value("poptastic", 0)));
 
-      if(messageType == "0000")
+      if(!list.isEmpty())
 	{
-	  QByteArray mc; // Message Code
-	  QList<QByteArray> list
-	    (spoton_receive::process0000(length, data, symmetricKeys,
-					 setting("gui/chatAccept"
-						 "SignedMessages"
-						 "Only",
-						 true).toBool(),
-					 QHostAddress("127.0.0.1"), 0,
-					 mc, // Message Code
-					 s_crypts.value("poptastic", 0)));
-
-	  if(!list.isEmpty())
-	    {
-	      spoton_misc::saveParticipantStatus
-		(list.value(1), // Name
-		 list.value(0), // Public Key Hash
-		 QByteArray(),
-		 s_crypts.value("chat", 0));
-	      emit receivedChatMessage
-		("message_" +
-		 list.value(0).toBase64() + "_" +
-		 list.value(1).toBase64() + "_" +
-		 list.value(2).toBase64() + "_" +
-		 list.value(3).toBase64() + "_" +
-		 list.value(4).toBase64() + "_" +
-		 mc.toBase64().append('\n'));
-	    }
-	}
-      else if(messageType == "0000a")
-	{
-	  QList<QByteArray> list
-	    (spoton_receive::process0000a(length, data,
-					  setting("gui/chatAccept"
-						  "SignedMessages"
-						  "Only",
-						  true).toBool(),
-					  QHostAddress("127.0.0.1"), 0,
-					  s_crypts.value("poptastic", 0)));
-
-	  if(!list.isEmpty())
-	    saveGemini(list.value(0), list.value(1),
-		       list.value(2), list.value(3),
-		       "0000a");
-	}
-      else if(messageType == "0000b")
-	{
-	  QList<QByteArray> list
-	    (spoton_receive::process0000b(length, data, symmetricKeys,
-					  setting("gui/chatAccept"
-						  "SignedMessages"
-						  "Only",
-						  true).toBool(),
-					  QHostAddress("127.0.0.1"), 0,
-					  s_crypts.value("poptastic", 0)));
-
-	  if(!list.isEmpty())
-	    saveGemini(list.value(1), list.value(2),
-		       list.value(3), list.value(4),
-		       "0000b");
-	}
-      else if(messageType == "0013")
-	{
-	  QList<QByteArray> list
-	    (spoton_receive::process0013(length, data, symmetricKeys,
-					 setting("gui/chatAccept"
-						 "SignedMessages"
-						 "Only",
-						 true).toBool(),
-					 QHostAddress("127.0.0.1"), 0,
-					 s_crypts.value("poptastic", 0)));
-
-	  if(!list.isEmpty())
-	    spoton_misc::saveParticipantStatus
-	      (list.value(1),  // Name
-	       list.value(0),  // Public Key Hash
-	       list.value(2),
-	       s_crypts.value("chat")); // Status
+	  spoton_misc::saveParticipantStatus
+	    (list.value(1), // Name
+	     list.value(0), // Public Key Hash
+	     QByteArray(),
+	     s_crypts.value("chat", 0));
+	  emit receivedChatMessage
+	    ("message_" +
+	     list.value(0).toBase64() + "_" +
+	     list.value(1).toBase64() + "_" +
+	     list.value(2).toBase64() + "_" +
+	     list.value(3).toBase64() + "_" +
+	     list.value(4).toBase64() + "_" +
+	     mc.toBase64().append('\n'));
 	}
     }
-  else
-    spoton_misc::logError
-      (QString("spoton_kernel::slotPoppedMessage(): "
-	       "content-length mismatch (advertised: %1, received: %2).").
-       arg(length).arg(data.length()));
+  else if(messageType == "0000a")
+    {
+      QList<QByteArray> list
+	(spoton_receive::process0000a(data.length(), data,
+				      setting("gui/chatAccept"
+					      "SignedMessages"
+					      "Only",
+					      true).toBool(),
+				      QHostAddress("127.0.0.1"), 0,
+				      s_crypts.value("poptastic", 0)));
+
+      if(!list.isEmpty())
+	saveGemini(list.value(0), list.value(1),
+		   list.value(2), list.value(3),
+		   "0000a");
+    }
+  else if(messageType == "0000b")
+    {
+      QList<QByteArray> list
+	(spoton_receive::process0000b(data.length(), data, symmetricKeys,
+				      setting("gui/chatAccept"
+					      "SignedMessages"
+					      "Only",
+					      true).toBool(),
+				      QHostAddress("127.0.0.1"), 0,
+				      s_crypts.value("poptastic", 0)));
+
+      if(!list.isEmpty())
+	saveGemini(list.value(1), list.value(2),
+		   list.value(3), list.value(4),
+		   "0000b");
+    }
+  else if(messageType == "0013")
+    {
+      QList<QByteArray> list
+	(spoton_receive::process0013(data.length(), data, symmetricKeys,
+				     setting("gui/chatAccept"
+					     "SignedMessages"
+					     "Only",
+					     true).toBool(),
+				     QHostAddress("127.0.0.1"), 0,
+				     s_crypts.value("poptastic", 0)));
+
+      if(!list.isEmpty())
+	spoton_misc::saveParticipantStatus
+	  (list.value(1),  // Name
+	   list.value(0),  // Public Key Hash
+	   list.value(2),
+	   s_crypts.value("chat")); // Status
+    }
 }
 
 void spoton_kernel::saveGemini(const QByteArray &publicKeyHash,
