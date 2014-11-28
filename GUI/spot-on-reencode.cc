@@ -1319,6 +1319,76 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
   QSqlDatabase::removeDatabase(connectionName);
   sb.status->setText
+    (QObject::tr("Re-encoding poptastic.db."));
+  sb.status->repaint();
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "poptastic.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+
+	if(query.exec("SELECT in_password, in_server_address, "
+		      "in_server_port, in_username, "
+		      "out_password, out_server_address, "
+		      "out_server_port, out_username FROM "
+		      "poptastic"))
+	  while(query.next())
+	    {
+	      QByteArray bytes;
+	      QSqlQuery updateQuery(db);
+	      bool ok = true;
+
+	      updateQuery.prepare("UPDATE poptastic "
+				  "SET in_password = ?, "
+				  "in_server_address = ?, "
+				  "in_server_port = ?, "
+				  "in_username = ?, "
+				  "out_password = ?, "
+				  "out_server_address = ?, "
+				  "out_server_port = ?, "
+				  "out_username = ?");
+
+	      for(int i = 0; i < 8; i++)
+		{
+		  bytes = oldCrypt->decryptedAfterAuthenticated
+		    (QByteArray::
+		     fromBase64(query.
+				value(i).
+				toByteArray()),
+		     &ok);
+
+		  if(ok)
+		    updateQuery.bindValue
+		      (i, newCrypt->encryptedThenHashed(bytes, &ok).
+		       toBase64());
+		  else
+		    break;
+		}
+
+	      if(ok)
+		updateQuery.exec();
+	      else
+		{
+		  QSqlQuery deleteQuery(db);
+
+		  deleteQuery.exec("PRAGMA secure_delete = ON");
+		  deleteQuery.exec("DELETE FROM poptastic");
+		}
+	    }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+  sb.status->setText
     (QObject::tr("Re-encoding starbeam.db."));
   sb.status->repaint();
 

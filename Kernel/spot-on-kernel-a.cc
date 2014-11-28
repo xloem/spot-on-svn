@@ -1685,7 +1685,7 @@ void spoton_kernel::slotMessageReceivedFromUI
 	  else
 	    {
 	      emit sendMessage(data, spoton_send::NORMAL_POST);
-	      
+
 	      if(keyType == "poptastic")
 		{
 		  QByteArray message;

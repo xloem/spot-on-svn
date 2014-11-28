@@ -54,7 +54,7 @@ static size_t curl_payload_source
   struct curl_upload_status *upload_ctx =
     (struct curl_upload_status *) userp;
 
-  if(!upload_ctx || upload_ctx->lines_read > 11)
+  if(!upload_ctx || upload_ctx->lines_read >= 11)
     return 0;
 
   const char *data = curl_payload_text[upload_ctx->lines_read].constData();
@@ -125,7 +125,7 @@ void spoton_kernel::popPostPoptastic(void)
   */
 
   struct curl_memory chunk;
- 
+
   chunk.memory = (char *) malloc(1);
 
   if(!chunk.memory)
@@ -281,13 +281,10 @@ void spoton_kernel::popPostPoptastic(void)
 
 void spoton_kernel::slotPoppedMessage(const QByteArray &message)
 {
-  if(!message.contains("Content-Length:"))
-    return;
-
   QByteArray data
-    (message.mid(message.indexOf("Content-Length:"),
-		 message.indexOf(spoton_send::EOM) +
-		 spoton_send::EOM.length()));
+    (message.
+     mid(message.indexOf("Content-Length:"),
+	 message.indexOf(spoton_send::EOM) + spoton_send::EOM.length()));
   int length = 0;
 
   if(data.contains("Content-Length: "))
@@ -337,6 +334,11 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
     length = data.length();
   else if(data.length() + 4 == length)
     length = data.length();
+
+  /*
+  ** The following logic must agree with the logic in
+  ** spot-on-neighbor.cc.
+  */
 
   if(data.length() == length)
     {
@@ -428,6 +430,11 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
 	       s_crypts.value("chat")); // Status
 	}
     }
+  else
+    spoton_misc::logError
+      (QString("spoton_kernel::slotPoppedMessage(): "
+	       "content-length mismatch (advertised: %1, received: %2).").
+       arg(length).arg(data.length()));
 }
 
 void spoton_kernel::saveGemini(const QByteArray &publicKeyHash,
@@ -436,6 +443,11 @@ void spoton_kernel::saveGemini(const QByteArray &publicKeyHash,
 			       const QByteArray &timestamp,
 			       const QString &messageType)
 {
+  /*
+  ** Some of the following is similar to logic in
+  ** spot-on-neighbor.cc.
+  */
+
   QDateTime dateTime
     (QDateTime::fromString(timestamp.constData(), "MMddyyyyhhmmss"));
 
@@ -482,8 +494,6 @@ void spoton_kernel::saveGemini(const QByteArray &publicKeyHash,
 
     if(db.open())
       {
-	QByteArray bytes1;
-	QByteArray bytes2;
 	QPair<QByteArray, QByteArray> geminis;
 	QSqlQuery query(db);
 	bool ok = true;
