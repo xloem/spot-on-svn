@@ -155,6 +155,9 @@ void spoton::slotSendMessage(void)
 	       arg(m_kernelSocket.peerPort()));
 	  else
 	    {
+	      if(m_ui.poptasticStatus->currentIndex() != 2) // Offline
+		m_ui.poptasticStatus->setCurrentIndex(3); // Online
+
 	      if(m_ui.status->currentIndex() != 2) // Offline
 		m_ui.status->setCurrentIndex(3); // Online
 
@@ -1143,19 +1146,24 @@ void spoton::slotViewLog(void)
 
 void spoton::slotStatusChanged(int index)
 {
+  QString str("gui/my_poptasticStatus");
+
+  if(m_ui.status == sender())
+    str = "gui/my_status";
+
   if(index == 0)
-    m_settings["gui/my_status"] = "Away";
+    m_settings[str] = "Away";
   else if(index == 1)
-    m_settings["gui/my_status"] = "Busy";
+    m_settings[str] = "Busy";
   else if(index == 2)
-    m_settings["gui/my_status"] = "Offline";
+    m_settings[str] = "Offline";
   else
-    m_settings["gui/my_status"] = "Online";
+    m_settings[str] = "Online";
 
   QSettings settings;
 
   settings.setValue
-    ("gui/my_status", m_settings.value("gui/my_status"));
+    (str, m_settings.value(str));
 }
 
 void spoton::slotKernelCipherTypeChanged(int index)
@@ -4036,8 +4044,12 @@ void spoton::slotSetIcons(void)
   list << "away.png" << "busy.png" << "offline.png" << "online.png";
 
   for(int i = 0; i < list.size(); i++)
-    m_ui.status->setItemIcon
-      (i, QIcon(QString(":/%1/%2").arg(iconSet).arg(list.at(i))));
+    {
+      m_ui.poptasticStatus->setItemIcon
+	(i, QIcon(QString(":/%1/%2").arg(iconSet).arg(list.at(i))));
+      m_ui.status->setItemIcon
+	(i, QIcon(QString(":/%1/%2").arg(iconSet).arg(list.at(i))));
+    }
 
   // Email
 
@@ -5243,6 +5255,9 @@ void spoton::slotTestSslControlString(void)
 
 void spoton::slotChatInactivityTimeout(void)
 {
+  if(m_ui.poptasticStatus->currentIndex() == 3) // Online
+    m_ui.poptasticStatus->setCurrentIndex(0); // Away
+
   if(m_ui.status->currentIndex() == 3) // Online
     m_ui.status->setCurrentIndex(0); // Away
 }
@@ -5694,6 +5709,9 @@ void spoton::slotChatWindowDestroyed(void)
 
 void spoton::slotChatWindowMessageSent(void)
 {
+  if(m_ui.poptasticStatus->currentIndex() != 2) // Offline
+    m_ui.poptasticStatus->setCurrentIndex(3); // Online
+
   if(m_ui.status->currentIndex() != 2) // Offline
     m_ui.status->setCurrentIndex(3); // Online
 

@@ -623,6 +623,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(currentIndexChanged(int)),
 	  this,
 	  SLOT(slotStatusChanged(int)));
+  connect(m_ui.poptasticStatus,
+	  SIGNAL(currentIndexChanged(int)),
+	  this,
+	  SLOT(slotStatusChanged(int)));
   connect(m_ui.kernelCipherType,
 	  SIGNAL(currentIndexChanged(int)),
 	  this,
@@ -1550,6 +1554,17 @@ spoton::spoton(void):QMainWindow()
     m_ui.status->setCurrentIndex(2);
   else
     m_ui.status->setCurrentIndex(3);
+
+  status = m_settings.value("gui/my_poptasticStatus", "Online").toByteArray();
+
+  if(status == "Away")
+    m_ui.poptasticStatus->setCurrentIndex(0);
+  else if(status == "Busy")
+    m_ui.poptasticStatus->setCurrentIndex(1);
+  else if(status == "Offline")
+    m_ui.poptasticStatus->setCurrentIndex(2);
+  else
+    m_ui.poptasticStatus->setCurrentIndex(3);
 
 #ifdef SPOTON_LINKED_WITH_LIBGEOIP
   if(!m_ui.geoipPath4->text().isEmpty())
