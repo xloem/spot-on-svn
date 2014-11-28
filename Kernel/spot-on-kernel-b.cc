@@ -146,7 +146,7 @@ void spoton_kernel::popPostPoptastic(void)
       QString ssltls(hash["in_ssltls"].toString().toUpper().trimmed());
       QString url("");
 
-      if(ssltls == tr("SSL") || ssltls == tr("TLS"))
+      if(ssltls == "SSL" || ssltls == "TLS")
 	{
 	  url = QString("pop3s://%1:%2/1").
 	    arg(hash["in_server_address"].toString().trimmed()).
@@ -154,7 +154,7 @@ void spoton_kernel::popPostPoptastic(void)
 	  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
 	  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
 
-	  if(ssltls == tr("TLS"))
+	  if(ssltls == "TLS")
 	    curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_ALL);
 	}
       else
@@ -214,9 +214,9 @@ void spoton_kernel::popPostPoptastic(void)
 	  QString ssltls(hash["out_ssltls"].toString().toUpper().trimmed());
 	  QString url("");
 
-	  if(ssltls == tr("SSL") || ssltls == tr("TLS"))
+	  if(ssltls == "SSL" || ssltls == "TLS")
 	    {
-	      if(ssltls == tr("SSL"))
+	      if(ssltls == "SSL")
 		url = QString("smtps://%1:%2/").
 		  arg(hash["out_server_address"].toString().trimmed()).
 		  arg(hash["out_server_port"].toString().trimmed());
@@ -228,7 +228,7 @@ void spoton_kernel::popPostPoptastic(void)
 	      curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
 	      curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
 
-	      if(ssltls == tr("TLS"))
+	      if(ssltls == "TLS")
 		curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_ALL);
 	    }
 	  else

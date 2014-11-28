@@ -1870,11 +1870,7 @@ spoton::spoton(void):QMainWindow()
       m_ui.kernelBox->setEnabled(false);
 
       for(int i = 0; i < m_ui.tab->count(); i++)
-#if SPOTON_GOLDBUG == 0
-	if(m_ui.tab->tabToolTip(i) == tr("Settings"))
-#else
 	if(i == 7) // Settings.
-#endif
 	  {
 	    m_ui.tab->blockSignals(true);
 	    m_ui.tab->setCurrentIndex(i);
@@ -7891,7 +7887,7 @@ void spoton::slotPopulateBuzzFavorites(void)
   else
     {
       m_ui.favorites->clear();
-      m_ui.favorites->addItem(tr("Empty"));
+      m_ui.favorites->addItem("Empty");
 
       while(!m_ui.shareBuzzMagnet->menu()->actions().isEmpty())
 	{
@@ -8005,7 +8001,7 @@ void spoton::removeFavorite(const bool removeAll)
 
 void spoton::magnetize(void)
 {
-  if(m_ui.favorites->currentText() == tr("Empty"))
+  if(m_ui.favorites->currentText() == "Empty")
     return;
 
   QByteArray data;

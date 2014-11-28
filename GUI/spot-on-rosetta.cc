@@ -589,7 +589,7 @@ void spoton_rosetta::populateContacts(void)
   QSqlDatabase::removeDatabase(connectionName);
 
   if(ui.contacts->count() == 0)
-    ui.contacts->addItem(tr("Empty"));
+    ui.contacts->addItem("Empty");
 }
 
 void spoton_rosetta::slotConvert(void)

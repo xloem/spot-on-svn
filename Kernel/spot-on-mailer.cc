@@ -113,13 +113,11 @@ void spoton_mailer::slotTimeout(void)
 	      QString status("");
 	      bool ok = true;
 
-	      status = QString::fromUtf8
-		(s_crypt->
-		 decryptedAfterAuthenticated
-		 (QByteArray::fromBase64(query.value(3).toByteArray()),
-		  &ok).constData());
+	      status = s_crypt->decryptedAfterAuthenticated
+		(QByteArray::fromBase64(query.value(3).toByteArray()), &ok).
+		constData();
 
-	      if(status != tr("Queued"))
+	      if(status.toLower() != "queued")
 		continue;
 
 	      QByteArray attachment;

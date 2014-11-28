@@ -94,13 +94,13 @@ void spoton::slotConfigurePoptastic(void)
   if(!protocols.contains("pop3s"))
     {
       m_poptasticSettingsUi.in_ssltls->clear();
-      m_poptasticSettingsUi.in_ssltls->addItem(tr("None"));
+      m_poptasticSettingsUi.in_ssltls->addItem("None");
     }
 
   if(!protocols.contains("smtps"))
     {
       m_poptasticSettingsUi.out_ssltls->clear();
-      m_poptasticSettingsUi.out_ssltls->addItem(tr("None"));
+      m_poptasticSettingsUi.out_ssltls->addItem("None");
     }
 
   if(!(protocols.contains("pop3") ||

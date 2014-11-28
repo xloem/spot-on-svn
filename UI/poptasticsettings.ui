@@ -95,17 +95,17 @@
        </property>
        <item>
         <property name="text">
-         <string>None</string>
+         <string notr="true">None</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>SSL</string>
+         <string notr="true">SSL</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>TLS</string>
+         <string notr="true">TLS</string>
         </property>
        </item>
       </widget>
@@ -210,17 +210,17 @@
        </property>
        <item>
         <property name="text">
-         <string>None</string>
+         <string notr="true">None</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>SSL</string>
+         <string notr="true">SSL</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>TLS</string>
+         <string notr="true">TLS</string>
         </property>
        </item>
       </widget>

@@ -2683,7 +2683,7 @@ void spoton::slotSendMail(void)
 	    if(ok)
 	      query.bindValue
 		(8, crypt->
-		 encryptedThenHashed(tr("Queued").toUtf8(), &ok).toBase64());
+		 encryptedThenHashed(QByteArray("Queued"), &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
@@ -3516,15 +3516,15 @@ void spoton::slotMailSelected(QTableWidgetItem *item)
       text.append(message);
       text.append("</span>");
 
-      if(status != tr("Read"))
+      if(status != "Read")
 	{
 	  QTableWidgetItem *item = 0;
 
 	  if((item = m_ui.mail->
 	      item(row, m_ui.mail->columnCount() - 1))) // OID
-	    if(updateMailStatus(item->text(), tr("Read")))
+	    if(updateMailStatus(item->text(), "Read"))
 	      if((item = m_ui.mail->item(row, 2))) // Status
-		item->setText(tr("Read"));
+		item->setText("Read");
 	}
     }
   else if(m_ui.folder->currentIndex() == 1) // Sent
@@ -3558,15 +3558,15 @@ void spoton::slotMailSelected(QTableWidgetItem *item)
       text.append("<hr>");
       text.append(message);
 
-      if(status != tr("Deleted"))
+      if(status != "Deleted")
 	{
 	  QTableWidgetItem *item = 0;
 
 	  if((item = m_ui.mail->
 	      item(row, m_ui.mail->columnCount() - 1))) // OID
-	    if(updateMailStatus(item->text(), tr("Deleted")))
+	    if(updateMailStatus(item->text(), "Deleted"))
 	      if((item = m_ui.mail->item(row, 2))) // Status
-		item->setText(tr("Deleted"));
+		item->setText("Deleted");
 	}
     }
 
@@ -3624,7 +3624,7 @@ void spoton::slotDeleteMail(int index)
 		if(m_crypts.value("email", 0))
 		  query.bindValue
 		    (0, m_crypts.value("email")->
-		     encryptedThenHashed(tr("Deleted").toUtf8(), &ok).
+		     encryptedThenHashed(QByteArray("Deleted"), &ok).
 		     toBase64());
 		else
 		  ok = false;

@@ -4407,7 +4407,7 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
 	if(ok)
 	  query.bindValue
 	    (8, s_crypt->
-	     encryptedThenHashed(tr("Unread").toUtf8(), &ok).toBase64());
+	     encryptedThenHashed(QByteArray("Unread"), &ok).toBase64());
 
 	if(ok)
 	  query.bindValue

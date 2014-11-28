@@ -1174,8 +1174,8 @@ void spoton_misc::moveSentMailToSentFolder(const QList<qint64> &oids,
 	    if(keep)
 	      {
 		query.bindValue
-		  (0, crypt->encryptedThenHashed(QObject::tr("Sent").
-						 toUtf8(), &ok).toBase64());
+		  (0, crypt->encryptedThenHashed(QByteArray("Sent"),
+						 &ok).toBase64());
 		query.bindValue(1, oids.at(i));
 	      }
 	    else

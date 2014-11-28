@@ -2337,15 +2337,15 @@ void spoton::slotRegenerateKey(void)
 {
   QString keyType("chat");
 
-  if(m_ui.keys->currentText() == tr("Chat"))
+  if(m_ui.keys->currentText() == "Chat")
     keyType = "chat";
-  else if(m_ui.keys->currentText() == tr("E-Mail"))
+  else if(m_ui.keys->currentText() == "E-Mail")
     keyType = "email";
-  else if(m_ui.keys->currentText() == tr("Poptastic"))
+  else if(m_ui.keys->currentText() == "Poptastic")
     keyType = "poptastic";
-  else if(m_ui.keys->currentText() == tr("Rosetta"))
+  else if(m_ui.keys->currentText() == "Rosetta")
     keyType = "rosetta";
-  else if(m_ui.keys->currentText() == tr("URL"))
+  else if(m_ui.keys->currentText() == "URL")
     keyType = "url";
 
   spoton_crypt *crypt1 = m_crypts.value(keyType, 0);
@@ -2425,7 +2425,7 @@ void spoton::slotRegenerateKey(void)
 
   if(error.isEmpty())
     {
-      if(m_ui.keys->currentText() == tr("Rosetta"))
+      if(m_ui.keys->currentText() == "Rosetta")
 	m_rosetta.setCryptObjects(m_crypts.value("rosetta", 0),
 				  m_crypts.value("rosetta-signature", 0));
       else

@@ -1999,7 +1999,7 @@ void spoton::slotResendMail(void)
 	    if(m_crypts.value("email", 0))
 	      query.bindValue
 		(0, m_crypts.value("email")->
-		 encryptedThenHashed(tr("Queued").toUtf8(), &ok).
+		 encryptedThenHashed(QByteArray("Queued"), &ok).
 		 toBase64());
 	    else
 	      ok = false;
