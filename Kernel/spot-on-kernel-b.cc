@@ -117,7 +117,7 @@ void spoton_kernel::popPostPoptastic(void)
 
   hash = spoton_misc::poptasticSettings(s_crypt, &ok);
 
-  if(!ok)
+  if(hash.isEmpty() || !ok)
     return;
 
   /*
