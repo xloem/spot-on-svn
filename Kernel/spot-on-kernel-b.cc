@@ -166,7 +166,7 @@ void spoton_kernel::popPostPoptastic(void)
       curl_easy_setopt
 	(curl, CURLOPT_WRITEFUNCTION, curl_write_memory_callback);
       curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *) &chunk);
-      curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, 15000);
+      curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
       curl_easy_setopt(curl, CURLOPT_URL, url.toLatin1().constData());
 
       if(curl_easy_perform(curl) == CURLE_OK)
@@ -274,7 +274,7 @@ void spoton_kernel::popPostPoptastic(void)
 	  curl_easy_setopt(curl, CURLOPT_MAIL_RCPT, recipients);
 	  curl_easy_setopt(curl, CURLOPT_READFUNCTION, curl_payload_source);
 	  curl_easy_setopt(curl, CURLOPT_READDATA, &upload_ctx);
-	  curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, 15000);
+	  curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
 	  curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
 	  curl_easy_perform(curl);
 	  curl_slist_free_all(recipients);

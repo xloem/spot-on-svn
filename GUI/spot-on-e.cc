@@ -311,7 +311,7 @@ void spoton::slotTestPoptasticPop3Settings(void)
 
       curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "NOOP");
       curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
-      curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, 5000);
+      curl_easy_setopt(curl, CURLOPT_TIMEOUT, 5L);
       curl_easy_setopt(curl, CURLOPT_URL, url.toLatin1().constData());
       res = curl_easy_perform(curl);
 
@@ -380,7 +380,7 @@ void spoton::slotTestPoptasticSmtpSettings(void)
 
       curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "NOOP");
       curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
-      curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, 5000);
+      curl_easy_setopt(curl, CURLOPT_TIMEOUT, 5L);
       curl_easy_setopt(curl, CURLOPT_URL, url.toLatin1().constData());
       res = curl_easy_perform(curl);
 
