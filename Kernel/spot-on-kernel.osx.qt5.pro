@@ -41,14 +41,15 @@ QMAKE_LFLAGS_RELEASE =
 QMAKE_LFLAGS_RPATH =
 INCLUDEPATH	+= . ../. ../../../. ../../../libGeoIP/Include.osx64 \
 		   ../../../libSCTP/Include.osx64 \
-                   /usr/local/include
+                   /usr/local/include /usr/local/opt
 ICON		=
 LIBS		+= -L../../../libGeoIP/Libraries.osx64 -lGeoIP \
                    -L../../../libNTRU -lntru \
 		   -L../../../libSCTP/Libraries.osx64 -lusrsctp \
                    -L../../../libSpotOn -lspoton \
-                   -L/usr/local/lib -lcrypto -lcurl -lgcrypt -lgpg-error \
-                   -lssl \
+                   -L/usr/local/lib -L/usr/local/opt/curl/lib \
+                   -L/usr/local/opt/openssl/lib \
+                   -lcrypto -lcurl -lgcrypt -lgpg-error -lssl \
                    -framework Cocoa
 PRE_TARGETDEPS = libntru.dylib libspoton.dylib
 OBJECTS_DIR = temp/obj
