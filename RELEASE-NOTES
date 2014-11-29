@@ -10,6 +10,7 @@
 6.   If enabled, join a default Buzz channel when the user activates
      the kernel.
 7.   Removed translations that may interfere with functionality.
+8.   Use default optimization in the user interface project files.
 
 0.16b (11/21/2014)
 
