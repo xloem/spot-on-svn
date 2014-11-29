@@ -913,6 +913,7 @@ void spoton::slotSavePoptasticName(void)
     m_ui.poptasticName->setText(str);
 
   m_settings["gui/poptasticName"] = str.toUtf8();
+  m_ui.poptasticName->setToolTip(str);
 
   QSettings settings;
 

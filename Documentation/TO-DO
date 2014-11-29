@@ -118,6 +118,7 @@ Completed Items
 84.    Accounts and allowed IP addresses suffer selection issues.
 85.    NTRU support.
 86.    Support ECC, or not. Signatures supported.
+87.    IMAP and POP3.
 
 Ignored Items
 
@@ -208,7 +209,7 @@ Remaining Items
 31.    Artificial pauses. Suppose an inbound packet requires t0 time to
        process. Pause the current thread for T - t0 seconds, where T is some
        reasonable time.
-32.    IMAP and POP3.
+32.    The libgcrypt library supports GCRY_KDF_SCRYPT.
 33.    Weather feeds.
 34.    Create a user's configuration database. Store key types too.
 35.    Hybrid group communications based on deterministic key pairs.
@@ -225,4 +226,3 @@ Remaining Items
        navigate private Spot-On nodes remotely.
 41.    An interface for custom functions. Such an interface could be used
        to transform YouTube data into MP3s.
-42.    The libgcrypt library supports GCRY_KDF_SCRYPT.

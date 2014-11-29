@@ -25,9 +25,8 @@ QMAKE_CLEAN     += Spot-On ../../libNTRU/*.dylib ../../libNTRU/src/*.o \
                    ../../libSpotOn/*.dylib ../../libSpotOn/*.o \
 		   ../../libSpotOn/test
 QMAKE_DISTCLEAN += -r temp
-QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE += -fPIE -fstack-protector-all -fwrapv \
-			  -mtune=generic -pie -O3 \
+			  -mtune=generic -pie \
 			  -Wall -Wcast-align -Wcast-qual \
                           -Werror -Wextra \
 			  -Woverloaded-virtual -Wpointer-arith \

@@ -27,8 +27,7 @@ QMAKE_CLEAN     += GoldBug ..\\..\\libNTRU.dll ..\\..\\libNTRU\\src\\*.o \
                    ..\\..\\libSpotOn\\libspoton.dll \
 		   ..\\..\\libSpotOn\\*.o \
 		   ..\\..\\libSpotOn\\test.exe
-QMAKE_CXXFLAGS_RELEASE -= -O2
-QMAKE_CXXFLAGS_RELEASE += -fwrapv -mtune=generic -pie -O3 \
+QMAKE_CXXFLAGS_RELEASE += -fwrapv -mtune=generic -pie \
 			  -Wall -Wcast-align -Wcast-qual \
 			  -Wextra \
 			  -Woverloaded-virtual -Wpointer-arith \

@@ -1595,10 +1595,12 @@ spoton::spoton(void):QMainWindow()
   m_ui.nodeName->setText
     (QString::fromUtf8(m_settings.value("gui/nodeName", "unknown").
 		       toByteArray()).trimmed());
+  m_ui.poptasticName->setMaxLength(spoton_common::NAME_MAXIMUM_LENGTH);
   m_ui.poptasticName->setText
     (QString::fromUtf8(m_settings.value("gui/poptasticName",
 					"unknown@unknown.org").
 		       toByteArray()).trimmed());
+  m_ui.poptasticName->setToolTip(m_ui.poptasticName->text());
   m_ui.urlName->setMaxLength(spoton_common::NAME_MAXIMUM_LENGTH);
   m_ui.urlName->setText
     (QString::fromUtf8(m_settings.value("gui/urlName", "unknown").

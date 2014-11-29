@@ -19,8 +19,7 @@ DEFINES		+= SPOTON_LINKED_WITH_LIBPTHREAD
 QMAKE_CLEAN     += Spot-On ../../libSpotOn/libspotn.dll \
 		   ../../libSpotOn/*.o \
 		   ../../libSpotOn/test.exe
-QMAKE_CXXFLAGS_RELEASE -= -O2
-QMAKE_CXXFLAGS_RELEASE += -fwrapv -mtune=generic -pie -O3 \
+QMAKE_CXXFLAGS_RELEASE += -fwrapv -mtune=generic -pie \
 			  -Wall -Wcast-align -Wcast-qual \
 			  -Wextra \
 			  -Woverloaded-virtual -Wpointer-arith \

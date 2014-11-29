@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>590</width>
-    <height>340</height>
+    <width>700</width>
+    <height>310</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <iconset resource="../Icons/icons.qrc">
     <normaloff>:/Logo/spoton-button-32.png</normaloff>:/Logo/spoton-button-32.png</iconset>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_5">
+  <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
     <number>5</number>
    </property>
@@ -25,348 +25,374 @@
     <number>5</number>
    </property>
    <item>
-    <layout class="QGridLayout" name="gridLayout_2">
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
      <property name="spacing">
       <number>5</number>
      </property>
-     <item row="1" column="1">
-      <widget class="QComboBox" name="in_method">
-       <property name="sizeAdjustPolicy">
-        <enum>QComboBox::AdjustToContents</enum>
+     <item>
+      <widget class="QLabel" name="label_6">
+       <property name="maximumSize">
+        <size>
+         <width>256</width>
+         <height>256</height>
+        </size>
        </property>
-       <item>
-        <property name="text">
-         <string>POP3</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="6" column="3">
-      <widget class="QComboBox" name="out_authentication">
-       <property name="sizeAdjustPolicy">
-        <enum>QComboBox::AdjustToContents</enum>
-       </property>
-       <item>
-        <property name="text">
-         <string>Password</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="6" column="1">
-      <widget class="QComboBox" name="in_authentication">
-       <property name="sizeAdjustPolicy">
-        <enum>QComboBox::AdjustToContents</enum>
-       </property>
-       <item>
-        <property name="text">
-         <string>Password</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="8" column="1">
-      <widget class="QLineEdit" name="in_password">
-       <property name="echoMode">
-        <enum>QLineEdit::Password</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="0">
-      <widget class="QLabel" name="label_7">
        <property name="text">
-        <string>&amp;Authentification</string>
+        <string/>
        </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
+       <property name="pixmap">
+        <pixmap resource="../Icons/icons.qrc">:/Logo/poptastic.png</pixmap>
        </property>
-       <property name="buddy">
-        <cstring>in_authentication</cstring>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
-      <widget class="QComboBox" name="in_ssltls">
-       <property name="currentIndex">
-        <number>2</number>
-       </property>
-       <property name="sizeAdjustPolicy">
-        <enum>QComboBox::AdjustToContents</enum>
-       </property>
-       <item>
-        <property name="text">
-         <string notr="true">None</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">SSL</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">TLS</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QLineEdit" name="in_server_address"/>
-     </item>
-     <item row="7" column="1">
-      <widget class="QLineEdit" name="in_username"/>
-     </item>
-     <item row="4" column="1">
-      <widget class="QSpinBox" name="in_server_port">
-       <property name="minimum">
-        <number>1</number>
-       </property>
-       <property name="maximum">
-        <number>65535</number>
-       </property>
-       <property name="value">
-        <number>995</number>
+       <property name="scaledContents">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="8" column="0">
-      <widget class="QLabel" name="label_9">
-       <property name="text">
-        <string>&amp;Password</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <property name="buddy">
-        <cstring>in_password</cstring>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="3">
-      <widget class="QComboBox" name="out_method">
-       <property name="sizeAdjustPolicy">
-        <enum>QComboBox::AdjustToContents</enum>
-       </property>
-       <item>
-        <property name="text">
-         <string>SMTP</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="7" column="3">
-      <widget class="QLineEdit" name="out_username"/>
-     </item>
-     <item row="8" column="3">
-      <widget class="QLineEdit" name="out_password">
-       <property name="echoMode">
-        <enum>QLineEdit::Password</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_10">
-       <property name="text">
-        <string>&amp;Method</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <property name="buddy">
-        <cstring>in_method</cstring>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="3">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Outgoing Server</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="3">
-      <widget class="QLineEdit" name="out_server_address"/>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Incoming Server</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="3">
-      <widget class="QComboBox" name="out_ssltls">
-       <property name="currentIndex">
-        <number>2</number>
-       </property>
-       <property name="sizeAdjustPolicy">
-        <enum>QComboBox::AdjustToContents</enum>
-       </property>
-       <item>
-        <property name="text">
-         <string notr="true">None</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">SSL</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">TLS</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="9" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <layout class="QGridLayout" name="gridLayout_2">
        <property name="spacing">
         <number>5</number>
        </property>
-       <item>
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="in_method">
+         <property name="sizeAdjustPolicy">
+          <enum>QComboBox::AdjustToContents</enum>
          </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
+         <item>
+          <property name="text">
+           <string>POP3</string>
+          </property>
+         </item>
+        </widget>
        </item>
-       <item>
-        <widget class="QPushButton" name="testpop3">
-         <property name="text">
-          <string>Test</string>
+       <item row="6" column="3">
+        <widget class="QComboBox" name="out_authentication">
+         <property name="sizeAdjustPolicy">
+          <enum>QComboBox::AdjustToContents</enum>
+         </property>
+         <item>
+          <property name="text">
+           <string>Password</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QComboBox" name="in_authentication">
+         <property name="sizeAdjustPolicy">
+          <enum>QComboBox::AdjustToContents</enum>
+         </property>
+         <item>
+          <property name="text">
+           <string>Password</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="8" column="1">
+        <widget class="QLineEdit" name="in_password">
+         <property name="echoMode">
+          <enum>QLineEdit::Password</enum>
          </property>
         </widget>
        </item>
-       <item>
-        <spacer name="horizontalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </item>
-     <item row="4" column="3">
-      <widget class="QSpinBox" name="out_server_port">
-       <property name="minimum">
-        <number>1</number>
-       </property>
-       <property name="maximum">
-        <number>65535</number>
-       </property>
-       <property name="value">
-        <number>587</number>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_5">
-       <property name="text">
-        <string>&amp;Port</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <property name="buddy">
-        <cstring>in_server_port</cstring>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="0">
-      <widget class="QLabel" name="label_8">
-       <property name="text">
-        <string>&amp;Username</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <property name="buddy">
-        <cstring>in_username</cstring>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>&amp;Server Address</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <property name="buddy">
-        <cstring>in_server_address</cstring>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>&amp;SSL/TLS</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <property name="buddy">
-        <cstring>in_ssltls</cstring>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="3">
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <property name="spacing">
-        <number>5</number>
-       </property>
-       <item>
-        <spacer name="horizontalSpacer_3">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QPushButton" name="testsmtp">
+       <item row="6" column="0">
+        <widget class="QLabel" name="label_7">
          <property name="text">
-          <string>Test</string>
+          <string>&amp;Authentification</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="buddy">
+          <cstring>in_authentication</cstring>
          </property>
         </widget>
        </item>
-       <item>
-        <spacer name="horizontalSpacer_4">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+       <item row="5" column="1">
+        <widget class="QComboBox" name="in_ssltls">
+         <property name="currentIndex">
+          <number>2</number>
          </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
+         <property name="sizeAdjustPolicy">
+          <enum>QComboBox::AdjustToContents</enum>
          </property>
-        </spacer>
+         <item>
+          <property name="text">
+           <string notr="true">None</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string notr="true">SSL</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string notr="true">TLS</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="in_server_address"/>
+       </item>
+       <item row="7" column="1">
+        <widget class="QLineEdit" name="in_username"/>
+       </item>
+       <item row="4" column="1">
+        <widget class="QSpinBox" name="in_server_port">
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>65535</number>
+         </property>
+         <property name="value">
+          <number>995</number>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="0">
+        <widget class="QLabel" name="label_9">
+         <property name="text">
+          <string>&amp;Password</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="buddy">
+          <cstring>in_password</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="QComboBox" name="out_method">
+         <property name="sizeAdjustPolicy">
+          <enum>QComboBox::AdjustToContents</enum>
+         </property>
+         <item>
+          <property name="text">
+           <string>SMTP</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="7" column="3">
+        <widget class="QLineEdit" name="out_username"/>
+       </item>
+       <item row="8" column="3">
+        <widget class="QLineEdit" name="out_password">
+         <property name="echoMode">
+          <enum>QLineEdit::Password</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_10">
+         <property name="text">
+          <string>&amp;Method</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="buddy">
+          <cstring>in_method</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Outgoing Server</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="3">
+        <widget class="QLineEdit" name="out_server_address"/>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Incoming Server</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="3">
+        <widget class="QComboBox" name="out_ssltls">
+         <property name="currentIndex">
+          <number>2</number>
+         </property>
+         <property name="sizeAdjustPolicy">
+          <enum>QComboBox::AdjustToContents</enum>
+         </property>
+         <item>
+          <property name="text">
+           <string notr="true">None</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string notr="true">SSL</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string notr="true">TLS</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="9" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <property name="spacing">
+          <number>5</number>
+         </property>
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="testpop3">
+           <property name="text">
+            <string>Test</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item row="4" column="3">
+        <widget class="QSpinBox" name="out_server_port">
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>65535</number>
+         </property>
+         <property name="value">
+          <number>587</number>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>&amp;Port</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="buddy">
+          <cstring>in_server_port</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0">
+        <widget class="QLabel" name="label_8">
+         <property name="text">
+          <string>&amp;Username</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="buddy">
+          <cstring>in_username</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>&amp;Server Address</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="buddy">
+          <cstring>in_server_address</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>&amp;SSL/TLS</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="buddy">
+          <cstring>in_ssltls</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="3">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <property name="spacing">
+          <number>5</number>
+         </property>
+         <item>
+          <spacer name="horizontalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="testsmtp">
+           <property name="text">
+            <string>Test</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
        </item>
       </layout>
      </item>
@@ -412,6 +438,8 @@
   <tabstop>out_username</tabstop>
   <tabstop>in_password</tabstop>
   <tabstop>out_password</tabstop>
+  <tabstop>testpop3</tabstop>
+  <tabstop>testsmtp</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>
