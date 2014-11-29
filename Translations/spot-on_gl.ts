@@ -2254,19 +2254,19 @@ SSL Control String: %24</source>
     </message>
     <message>
         <location filename="../GUI/spot-on-e.cc" line="329"/>
-        <location filename="../GUI/spot-on-e.cc" line="399"/>
+        <location filename="../GUI/spot-on-e.cc" line="398"/>
         <source>Test successful!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-e.cc" line="333"/>
-        <location filename="../GUI/spot-on-e.cc" line="403"/>
+        <location filename="../GUI/spot-on-e.cc" line="402"/>
         <source>Failure!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-e.cc" line="397"/>
-        <location filename="../GUI/spot-on-e.cc" line="401"/>
+        <location filename="../GUI/spot-on-e.cc" line="396"/>
+        <location filename="../GUI/spot-on-e.cc" line="400"/>
         <source>%1: Poptastic SMTP Connection Test</source>
         <translation type="unfinished"></translation>
     </message>
