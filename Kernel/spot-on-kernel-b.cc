@@ -120,63 +120,75 @@ void spoton_kernel::popPostPoptastic(void)
   if(hash.isEmpty() || !ok)
     return;
 
-  /*
-  ** First, we pop!
-  */
-
-  struct curl_memory chunk;
-
-  chunk.memory = (char *) malloc(1);
-
-  if(!chunk.memory)
-    return;
-
-  CURL *curl = curl_easy_init();
-
-  if(curl)
+  for(int i = 1; i <= 5; i++)
     {
-      chunk.size = 0;
-      curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
-      curl_easy_setopt
-	(curl, CURLOPT_PASSWORD,
-	 hash["in_password"].toByteArray().constData());
-      curl_easy_setopt
-	(curl, CURLOPT_USERNAME,
-	 hash["in_username"].toByteArray().constData());
+      /*
+      ** First, we pop!
+      */
 
-      QString ssltls(hash["in_ssltls"].toString().toUpper().trimmed());
-      QString url("");
+      struct curl_memory chunk;
 
-      if(ssltls == "SSL" || ssltls == "TLS")
+      chunk.memory = (char *) malloc(1);
+
+      if(!chunk.memory)
+	break;
+
+      CURL *curl = curl_easy_init();
+
+      if(curl)
 	{
-	  url = QString("pop3s://%1:%2/1").
-	    arg(hash["in_server_address"].toString().trimmed()).
-	    arg(hash["in_server_port"].toString().trimmed());
-	  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
-	  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+	  chunk.size = 0;
+	  curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
+	  curl_easy_setopt
+	    (curl, CURLOPT_PASSWORD,
+	     hash["in_password"].toByteArray().constData());
+	  curl_easy_setopt
+	    (curl, CURLOPT_USERNAME,
+	     hash["in_username"].toByteArray().constData());
 
-	  if(ssltls == "TLS")
-	    curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_ALL);
+	  QString ssltls(hash["in_ssltls"].toString().toUpper().trimmed());
+	  QString url("");
+
+	  if(ssltls == "SSL" || ssltls == "TLS")
+	    {
+	      url = QString("pop3s://%1:%2/1").
+		arg(hash["in_server_address"].toString().trimmed()).
+		arg(hash["in_server_port"].toString().trimmed());
+	      curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
+	      curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+
+	      if(ssltls == "TLS")
+		curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_ALL);
+	    }
+	  else
+	    url = QString("pop3://%1:%2/1").
+	      arg(hash["in_server_address"].toString().trimmed()).
+	      arg(hash["in_server_port"].toString().trimmed());
+
+	  curl_easy_setopt
+	    (curl, CURLOPT_WRITEFUNCTION, curl_write_memory_callback);
+	  curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *) &chunk);
+	  curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
+	  curl_easy_setopt(curl, CURLOPT_URL, url.toLatin1().constData());
+
+	  bool isEmpty = true;
+
+	  if(curl_easy_perform(curl) == CURLE_OK)
+	    if(chunk.size > 0)
+	      {
+		isEmpty = false;
+		emit poppedMessage(QByteArray(chunk.memory, chunk.size));
+	      }
+
+	  free(chunk.memory);
+	  curl_easy_cleanup(curl);
+
+	  if(isEmpty)
+	    break;
 	}
       else
-	url = QString("pop3://%1:%2/1").
-	  arg(hash["in_server_address"].toString().trimmed()).
-	  arg(hash["in_server_port"].toString().trimmed());
-
-      curl_easy_setopt
-	(curl, CURLOPT_WRITEFUNCTION, curl_write_memory_callback);
-      curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *) &chunk);
-      curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
-      curl_easy_setopt(curl, CURLOPT_URL, url.toLatin1().constData());
-
-      if(curl_easy_perform(curl) == CURLE_OK)
-	emit poppedMessage(QByteArray(chunk.memory, chunk.size));
-
-      free(chunk.memory);
-      curl_easy_cleanup(curl);
+	free(chunk.memory);
     }
-  else
-    free(chunk.memory);
 
   /*
   ** Now, we post!
@@ -195,7 +207,8 @@ void spoton_kernel::popPostPoptastic(void)
 
       pair = m_poptasticCache.dequeue();
       locker1.unlock();
-      curl = curl_easy_init();
+
+      CURL *curl = curl_easy_init();
 
       if(curl)
 	{
