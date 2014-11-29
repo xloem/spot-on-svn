@@ -72,8 +72,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>774</width>
-             <height>498</height>
+             <width>776</width>
+             <height>487</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_54">
@@ -454,10 +454,10 @@
              <widget class="QWidget" name="scrollAreaWidgetContents_2">
               <property name="geometry">
                <rect>
-                <x>-114</x>
+                <x>0</x>
                 <y>0</y>
-                <width>863</width>
-                <height>530</height>
+                <width>835</width>
+                <height>508</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -545,6 +545,13 @@
                     <number>5</number>
                    </property>
                    <item>
+                    <widget class="QPushButton" name="configurepoptastic">
+                     <property name="text">
+                      <string>Configure Poptastic</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
                     <widget class="QLabel" name="label_99">
                      <property name="styleSheet">
                       <string notr="true">QLabel {background-color : rgb(137, 207, 240)}
@@ -568,13 +575,6 @@
                      </property>
                      <property name="maximum">
                       <double>999999999.000000000000000</double>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="configurepoptastic">
-                     <property name="text">
-                      <string>Configure Poptastic</string>
                      </property>
                     </widget>
                    </item>
@@ -1084,8 +1084,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>951</width>
-             <height>578</height>
+             <width>887</width>
+             <height>575</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -2173,8 +2173,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>843</width>
-             <height>483</height>
+             <width>760</width>
+             <height>397</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2833,8 +2833,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>291</width>
-                     <height>1384</height>
+                     <width>241</width>
+                     <height>1393</height>
                     </rect>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3294,8 +3294,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>961</width>
-             <height>594</height>
+             <width>855</width>
+             <height>595</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -4424,8 +4424,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>774</width>
-             <height>498</height>
+             <width>178</width>
+             <height>299</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -4478,7 +4478,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>749</width>
+                 <width>619</width>
                  <height>588</height>
                 </rect>
                </property>
@@ -5268,8 +5268,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>794</width>
-             <height>1058</height>
+             <width>699</width>
+             <height>1047</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -6511,7 +6511,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>759</width>
+             <width>481</width>
              <height>546</height>
             </rect>
            </property>
@@ -7509,8 +7509,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>774</width>
-             <height>498</height>
+             <width>232</width>
+             <height>402</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -7991,8 +7991,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>759</width>
-             <height>511</height>
+             <width>266</width>
+             <height>182</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -8282,7 +8282,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>22</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -8526,8 +8526,8 @@
   <tabstop>displayPopups</tabstop>
   <tabstop>impersonate</tabstop>
   <tabstop>chatSignMessages</tabstop>
-  <tabstop>poptasticRefresh</tabstop>
   <tabstop>configurepoptastic</tabstop>
+  <tabstop>poptasticRefresh</tabstop>
   <tabstop>chatUpdateInterval</tabstop>
   <tabstop>enableChatEmoticons</tabstop>
   <tabstop>clearMessages</tabstop>

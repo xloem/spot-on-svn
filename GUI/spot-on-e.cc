@@ -76,14 +76,21 @@ void spoton::slotConfigurePoptastic(void)
   QStringList protocols(curl_protocols());
 
   m_poptasticSettingsUi.setupUi(&dialog);
+  connect(m_poptasticSettingsUi.buttonBox->button(QDialogButtonBox::Reset),
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotPoptasticSettingsReset(void)),
+	  Qt::UniqueConnection);
   connect(m_poptasticSettingsUi.testpop3,
 	  SIGNAL(clicked(void)),
 	  this,
-	  SLOT(slotTestPoptasticPop3Settings(void)));
+	  SLOT(slotTestPoptasticPop3Settings(void)),
+	  Qt::UniqueConnection);
   connect(m_poptasticSettingsUi.testsmtp,
 	  SIGNAL(clicked(void)),
 	  this,
-	  SLOT(slotTestPoptasticSmtpSettings(void)));
+	  SLOT(slotTestPoptasticSmtpSettings(void)),
+	  Qt::UniqueConnection);
   dialog.setWindowTitle
     (tr("%1: Poptastic Settings").
      arg(SPOTON_APPLICATION_NAME));
@@ -411,4 +418,18 @@ void spoton::slotPoptasticRefreshChanged(double value)
 
   m_settings["gui/poptasticRefreshInterval"] = value;
   settings.setValue("gui/poptasticRefreshInterval", value);
+}
+
+void spoton::slotPoptasticSettingsReset(void)
+{
+  m_poptasticSettingsUi.in_password->clear();
+  m_poptasticSettingsUi.in_server_address->clear();
+  m_poptasticSettingsUi.in_server_port->setValue(995);
+  m_poptasticSettingsUi.in_ssltls->setCurrentIndex(2);
+  m_poptasticSettingsUi.in_username->clear();
+  m_poptasticSettingsUi.out_password->clear();
+  m_poptasticSettingsUi.out_server_address->clear();
+  m_poptasticSettingsUi.out_server_port->setValue(587);
+  m_poptasticSettingsUi.out_ssltls->setCurrentIndex(2);
+  m_poptasticSettingsUi.out_username->clear();
 }
