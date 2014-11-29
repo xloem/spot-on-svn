@@ -2236,41 +2236,41 @@ SSL Control String: %24</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-e.cc" line="88"/>
+        <location filename="../GUI/spot-on-e.cc" line="95"/>
         <source>%1: Poptastic Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-e.cc" line="111"/>
+        <location filename="../GUI/spot-on-e.cc" line="118"/>
         <source>Your version of libcURL does not support POP3.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-e.cc" line="119"/>
+        <location filename="../GUI/spot-on-e.cc" line="126"/>
         <source>Your version of libcURL does not support SMTP.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-e.cc" line="327"/>
-        <location filename="../GUI/spot-on-e.cc" line="331"/>
+        <location filename="../GUI/spot-on-e.cc" line="334"/>
+        <location filename="../GUI/spot-on-e.cc" line="338"/>
         <source>%1: Poptastic POP3 Connection Test</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-e.cc" line="329"/>
-        <location filename="../GUI/spot-on-e.cc" line="398"/>
+        <location filename="../GUI/spot-on-e.cc" line="336"/>
+        <location filename="../GUI/spot-on-e.cc" line="405"/>
         <source>Test successful!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-e.cc" line="333"/>
-        <location filename="../GUI/spot-on-e.cc" line="402"/>
+        <location filename="../GUI/spot-on-e.cc" line="340"/>
+        <location filename="../GUI/spot-on-e.cc" line="409"/>
         <source>Failure!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-e.cc" line="396"/>
-        <location filename="../GUI/spot-on-e.cc" line="400"/>
+        <location filename="../GUI/spot-on-e.cc" line="403"/>
+        <location filename="../GUI/spot-on-e.cc" line="407"/>
         <source>%1: Poptastic SMTP Connection Test</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3184,7 +3184,7 @@ SSL Control String: %24</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="564"/>
+        <location filename="../UI/controlcenter.ui" line="571"/>
         <location filename="../UI/controlcenter.ui" line="594"/>
         <location filename="../UI/controlcenter.ui" line="2285"/>
         <location filename="../UI/controlcenter.ui" line="3483"/>
@@ -3194,7 +3194,7 @@ SSL Control String: %24</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="554"/>
+        <location filename="../UI/controlcenter.ui" line="561"/>
         <source>Refresh &amp;poptastic messages every</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3204,7 +3204,7 @@ SSL Control String: %24</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="577"/>
+        <location filename="../UI/controlcenter.ui" line="550"/>
         <source>Configure Poptastic</source>
         <translation type="unfinished"></translation>
     </message>
