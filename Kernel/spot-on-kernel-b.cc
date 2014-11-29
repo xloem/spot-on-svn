@@ -136,6 +136,7 @@ void spoton_kernel::popPostPoptastic(void)
   if(curl)
     {
       chunk.size = 0;
+      curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
       curl_easy_setopt
 	(curl, CURLOPT_PASSWORD,
 	 hash["in_password"].toByteArray().constData());
@@ -202,6 +203,7 @@ void spoton_kernel::popPostPoptastic(void)
 	  struct curl_upload_status upload_ctx;
 
 	  upload_ctx.lines_read = 0;
+	  curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
 	  curl_easy_setopt
 	    (curl, CURLOPT_PASSWORD,
 	     hash["out_password"].toByteArray().trimmed().constData());
