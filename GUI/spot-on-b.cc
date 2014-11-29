@@ -3129,7 +3129,10 @@ void spoton::populateMail(void)
   m_ui.resend->setEnabled(m_ui.folder->currentIndex() == 1);
 
   if(m_ui.folder->currentIndex() == 0)
-    m_ui.mail->horizontalHeaderItem(1)->setText(tr("From"));
+    {
+      m_sb.email->setVisible(false);
+      m_ui.mail->horizontalHeaderItem(1)->setText(tr("From"));
+    }
   else if(m_ui.folder->currentIndex() == 1)
     m_ui.mail->horizontalHeaderItem(1)->setText(tr("To"));
   else
