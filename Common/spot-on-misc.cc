@@ -3139,8 +3139,36 @@ QHash<QString, QVariant> spoton_misc::poptasticSettings(spoton_crypt *crypt,
 void spoton_misc::saveParticipantStatus(const QByteArray &name,
 					const QByteArray &publicKeyHash,
 					const QByteArray &status,
+					const QByteArray &timestamp,
+					const int seconds,
 					spoton_crypt *crypt)
 {
+  QDateTime dateTime
+    (QDateTime::fromString(timestamp.constData(), "MMddyyyyhhmmss"));
+
+  if(!dateTime.isValid())
+    {
+      spoton_misc::logError
+	("spoton_misc(): saveParticipantStatus(): "
+	 "invalid date-time object.");
+      return;
+    }
+
+  QDateTime now(QDateTime::currentDateTimeUtc());
+
+  dateTime.setTimeSpec(Qt::UTC);
+  now.setTimeSpec(Qt::UTC);
+
+  int secsTo = qAbs(now.secsTo(dateTime));
+
+  if(!(secsTo <= seconds))
+    {
+      spoton_misc::logError
+	(QString("spoton_misc::saveParticipantStatus(): "
+		 "large time delta (%1).").arg(secsTo));
+      return;
+    }
+
   QString connectionName("");
 
   {

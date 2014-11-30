@@ -257,7 +257,8 @@ class spoton_neighbor: public QThread
 			     const QByteArray &publicKeyHash);
   void saveParticipantStatus(const QByteArray &name,
 			     const QByteArray &publicKeyHash,
-			     const QByteArray &status);
+			     const QByteArray &status,
+			     const QByteArray &timestamp);
   void savePublicKey(const QByteArray &keyType,
 		     const QByteArray &name,
 		     const QByteArray &publicKey,

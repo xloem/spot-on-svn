@@ -172,7 +172,10 @@ void spoton_chatwindow::slotSendMessage(void)
       value("gui/poptasticName", "unknown@unknown.org").toByteArray();
 
   message.append
-    (QString("[%1:%2<font color=grey>:%3</font>] ").
+    (QString("[%1/%2/%3 %4:%5<font color=grey>:%6</font>] ").
+     arg(now.toString("MM")).
+     arg(now.toString("dd")).
+     arg(now.toString("yyyy")).
      arg(now.toString("hh")).
      arg(now.toString("mm")).
      arg(now.toString("ss")));
@@ -217,7 +220,7 @@ void spoton_chatwindow::slotSendMessage(void)
      toBase64());
   message.append("_");
   message.append(QDateTime::currentDateTime().toUTC().
-		 toString("hhmmss").toLatin1().toBase64());
+		 toString("MMddyyyyhhmmss").toLatin1().toBase64());
   message.append('\n');
 
   if(m_kernelSocket->write(message.constData(), message.length()) !=

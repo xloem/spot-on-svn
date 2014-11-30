@@ -366,7 +366,9 @@ EOL
 EOL
 2 - Status (Base-64)
 EOL
-3 - Signature (Base-64)
+3 - UTC Date (Base-64)
+EOL
+4 - Signature (Base-64)
 }
 EOL
 {

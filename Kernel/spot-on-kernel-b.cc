@@ -360,6 +360,9 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
 	    (list.value(1), // Name
 	     list.value(0), // Public Key Hash
 	     QByteArray(),  // Status
+	     QDateTime::currentDateTime().toString("MMddyyyyhhmmss").
+	     toLatin1(),    // Timestamp
+	     60,            // Seconds
 	     s_crypts.value("chat", 0));
 	  emit receivedChatMessage
 	    ("message_" +
@@ -416,6 +419,8 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
 	  (list.value(1),  // Name
 	   list.value(0),  // Public Key Hash
 	   list.value(2),  // Status
+	   list.value(3),  // Timestamp
+	   60,             // Seconds
 	   s_crypts.value("chat"));
     }
 }

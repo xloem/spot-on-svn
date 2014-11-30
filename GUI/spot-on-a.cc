@@ -7153,7 +7153,7 @@ void spoton::slotCallParticipant(void)
   QString type(action->property("type").toString());
   bool temporary = true;
   int row = -1;
-  
+
   if((row = m_ui.participants->currentRow()) >= 0)
     {
       QTableWidgetItem *item = m_ui.participants->item

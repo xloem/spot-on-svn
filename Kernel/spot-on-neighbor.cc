@@ -3129,7 +3129,8 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
     saveParticipantStatus
       (list.value(1),  // Name
        list.value(0),  // Public Key Hash
-       list.value(2)); // Status
+       list.value(2),  // Status
+       list.value(3)); // Timestamp
 }
 
 void spoton_neighbor::process0014(int length, const QByteArray &dataIn)
@@ -4005,15 +4006,19 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &publicKeyHash)
 void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
 					    const QByteArray &publicKeyHash)
 {
-  saveParticipantStatus(name, publicKeyHash, QByteArray());
+  saveParticipantStatus
+    (name, publicKeyHash, QByteArray(),
+     QDateTime::currentDateTime().toString("MMddyyyyhhmmss").toLatin1());
 }
 
 void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
 					    const QByteArray &publicKeyHash,
-					    const QByteArray &status)
+					    const QByteArray &status,
+					    const QByteArray &timestamp)
 {
   spoton_misc::saveParticipantStatus
-    (name, publicKeyHash, status, spoton_kernel::s_crypts.value("chat", 0));
+    (name, publicKeyHash, status, timestamp, 30,
+     spoton_kernel::s_crypts.value("chat", 0));
 }
 
 void spoton_neighbor::slotError(QAbstractSocket::SocketError error)

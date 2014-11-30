@@ -76,7 +76,10 @@ void spoton::slotSendMessage(void)
     }
 
   msg.append
-    (QString("[%1:%2<font color=grey>:%3</font>] ").
+    (QString("[%1/%2/%3 %4:%5<font color=grey>:%6</font>] ").
+     arg(now.toString("MM")).
+     arg(now.toString("dd")).
+     arg(now.toString("yyyy")).
      arg(now.toString("hh")).
      arg(now.toString("mm")).
      arg(now.toString("ss")));
@@ -137,7 +140,7 @@ void spoton::slotSendMessage(void)
 	     toBase64());
 	  message.append("_");
 	  message.append(QDateTime::currentDateTime().toUTC().
-			 toString("hhmmss").toLatin1().toBase64());
+			 toString("MMddyyyyhhmmss").toLatin1().toBase64());
 	  message.append('\n');
 
 	  QPointer<spoton_chatwindow> chat = m_chatWindows.value
@@ -291,7 +294,10 @@ void spoton::slotReceivedKernelMessage(void)
 		  QString msg("");
 
 		  msg.append
-		    (QString("[%1:%2<font color=grey>:%3</font>] ").
+		    (QString("[%1/%2/%3 %4:%5<font color=grey>:%6</font>] ").
+		     arg(now.toString("MM")).
+		     arg(now.toString("dd")).
+		     arg(now.toString("yyyy")).
 		     arg(now.toString("hh")).
 		     arg(now.toString("mm")).
 		     arg(now.toString("ss")));
@@ -373,7 +379,7 @@ void spoton::slotReceivedKernelMessage(void)
 		  QByteArray utcDate(list.value(4));
 		  QDateTime dateTime
 		    (QDateTime::fromString(utcDate.constData(),
-					   "hhmmss"));
+					   "MMddyyyyhhmmss"));
 		  QDateTime now(QDateTime::currentDateTime());
 		  QList<QTableWidgetItem *> items
 		    (m_ui.participants->findItems(hash.toBase64(),
@@ -404,20 +410,27 @@ void spoton::slotReceivedKernelMessage(void)
 		    sequenceNumber = "1";
 
 		  msg.append
-		    (QString("[%1:%2<font color=grey>:%3</font>]:").
+		    (QString("[%1/%2/%3 %4:%5<font color=grey>:%6</font>]:").
+		     arg(now.toString("MM")).
+		     arg(now.toString("dd")).
+		     arg(now.toString("yyyy")).
 		     arg(now.toString("hh")).
 		     arg(now.toString("mm")).
 		     arg(now.toString("ss")));
 
 		  if(dateTime.isValid())
 		    msg.append
-		      (QString("[<font color=green>%1:%2:%3</font>]").
+		      (QString("[%1/%2/%3 "
+			       "<font color=green>%4:%5:%6</font>]").
+		       arg(dateTime.toString("MM")).
+		       arg(dateTime.toString("dd")).
+		       arg(dateTime.toString("yyyy")).
 		       arg(dateTime.toString("hh")).
 		       arg(dateTime.toString("mm")).
 		       arg(dateTime.toString("ss")));
 		  else
 		    msg.append
-		      ("[<font color=red>00:00:00</font>]");
+		      ("[00/00/0000 <font color=red>00:00:00</font>]");
 
 		  bool first = false;
 		  quint64 previousSequenceNumber = 1;

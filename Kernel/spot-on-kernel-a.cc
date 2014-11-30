@@ -2039,7 +2039,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 	      query.bindValue
 		(2, 2.5 * qCeil(m_statusTimer.interval() / 1000.0));
 	    else
-	      query.bindValue(2, 300);
+	      query.bindValue(2, 30);
 
 	    if(ok)
 	      query.exec();
@@ -2064,7 +2064,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
     toByteArray().toLower();
 
   if(status != "offline")
-    if(m_lastPoptasticStatus.secsTo(QDateTime::currentDateTime()) >= 300)
+    if(m_lastPoptasticStatus.secsTo(QDateTime::currentDateTime()) >= 30)
       {
 	m_lastPoptasticStatus = QDateTime::currentDateTime();
 	prepareStatus("poptastic");
@@ -2228,6 +2228,7 @@ void spoton_kernel::prepareStatus(const QString &keyType)
 		    */
 
 		    QByteArray signature;
+		    QDateTime dateTime(QDateTime::currentDateTime());
 		    spoton_crypt crypt(symmetricKeyAlgorithm,
 				       "sha512",
 				       QByteArray(),
@@ -2238,13 +2239,17 @@ void spoton_kernel::prepareStatus(const QString &keyType)
 
 		    if(setting("gui/chatSignMessages", true).toBool())
 		      signature = s_crypt2->digitalSignature
-			(myPublicKeyHash + name + status, &ok);
+			(myPublicKeyHash + name + status +
+			 dateTime.toUTC().toString("MMddyyyyhhmmss").
+			 toLatin1(), &ok);
 
 		    if(ok)
 		      data = crypt.encrypted
 			(myPublicKeyHash.toBase64() + "\n" +
 			 name.toBase64() + "\n" +
 			 status.toBase64() + "\n" +
+			 dateTime.toUTC().toString("MMddyyyyhhmmss").
+			 toLatin1().toBase64() + "\n" +
 			 signature.toBase64(), &ok);
 
 		    if(ok)

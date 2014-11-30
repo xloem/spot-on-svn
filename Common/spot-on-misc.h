@@ -160,6 +160,8 @@ class spoton_misc
   static void saveParticipantStatus(const QByteArray &name,
 				    const QByteArray &publicKeyHash,
 				    const QByteArray &status,
+				    const QByteArray &timestamp,
+				    const int seconds,
 				    spoton_crypt *crypt);
   static void savePublishedNeighbor(const QHostAddress &address,
 				    const quint16 port,

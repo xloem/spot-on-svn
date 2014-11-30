@@ -205,7 +205,10 @@ void spoton_buzzpage::slotSendMessage(void)
     }
 
   message.append
-    (QString("[%1:%2<font color=grey>:%3</font>] ").
+    (QString("[%1/%2/%3 %4:%5<font color=grey>:%6</font>] ").
+     arg(now.toString("MM")).
+     arg(now.toString("dd")).
+     arg(now.toString("yyyy")).
      arg(now.toString("hh")).
      arg(now.toString("mm")).
      arg(now.toString("ss")));
@@ -296,7 +299,10 @@ void spoton_buzzpage::appendMessage(const QList<QByteArray> &list)
     message = "unknown";
 
   msg.append
-    (QString("[%1:%2<font color=grey>:%3</font>] ").
+    (QString("[%1/%2/%3 %4:%5<font color=grey>:%6</font>] ").
+     arg(now.toString("MM")).
+     arg(now.toString("dd")).
+     arg(now.toString("yyyy")).
      arg(now.toString("hh")).
      arg(now.toString("mm")).
      arg(now.toString("ss")));
@@ -403,7 +409,10 @@ void spoton_buzzpage::userStatus(const QList<QByteArray> &list)
       QString msg("");
 
       msg.append
-	(QString("[%1:%2<font color=grey>:%3</font>] ").
+	(QString("[%1/%2/%3 %4:%5<font color=grey>:%6</font>] ").
+	 arg(now.toString("MM")).
+	 arg(now.toString("dd")).
+	 arg(now.toString("yyyy")).
 	 arg(now.toString("hh")).
 	 arg(now.toString("mm")).
 	 arg(now.toString("ss")));
@@ -436,7 +445,10 @@ void spoton_buzzpage::userStatus(const QList<QByteArray> &list)
 		  QString msg("");
 
 		  msg.append
-		    (QString("[%1:%2<font color=grey>:%3</font>] ").
+		    (QString("[%1/%2/%3 %4:%5<font color=grey>:%6</font>] ").
+		     arg(now.toString("MM")).
+		     arg(now.toString("dd")).
+		     arg(now.toString("yyyy")).
 		     arg(now.toString("hh")).
 		     arg(now.toString("mm")).
 		     arg(now.toString("ss")));
@@ -498,7 +510,10 @@ void spoton_buzzpage::slotStatusTimeout(void)
 		  QString msg("");
 
 		  msg.append
-		    (QString("[%1:%2<font color=grey>:%3</font>] ").
+		    (QString("[%1/%2/%3 %4:%5<font color=grey>:%6</font>] ").
+		     arg(now.toString("MM")).
+		     arg(now.toString("dd")).
+		     arg(now.toString("yyyy")).
 		     arg(now.toString("hh")).
 		     arg(now.toString("mm")).
 		     arg(now.toString("ss")));

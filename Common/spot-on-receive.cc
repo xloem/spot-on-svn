@@ -737,7 +737,7 @@ QList<QByteArray> spoton_receive::process0013
 		    {
 		      QList<QByteArray> list(data.split('\n'));
 
-		      if(list.size() == 4)
+		      if(list.size() == 5)
 			{
 			  for(int i = 0; i < list.size(); i++)
 			    list.replace
@@ -756,9 +756,10 @@ QList<QByteArray> spoton_receive::process0013
 				if(!spoton_misc::
 				   isValidSignature(list.value(0) +
 						    list.value(1) +
-						    list.value(2),
-						    list.value(0),
+						    list.value(2) +
 						    list.value(3),
+						    list.value(0),
+						    list.value(4),
 						    s_crypt))
 				  {
 				    spoton_misc::logError
@@ -775,7 +776,7 @@ QList<QByteArray> spoton_receive::process0013
 			spoton_misc::logError
 			  (QString("spoton_receive::process0013(): "
 				   "received irregular data. "
-				   "Expecting 4 "
+				   "Expecting 5 "
 				   "entries, "
 				   "received %1.").arg(list.size()));
 		    }
