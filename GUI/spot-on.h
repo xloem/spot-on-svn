@@ -323,7 +323,6 @@ class spoton: public QMainWindow
   void slotDeleteTransmitted(void);
   void slotDemagnetizeMissingLinks(void);
   void slotDetachListenerNeighbors(void);
-  void slotDisablePop3(bool state);
   void slotDisconnectAllNeighbors(void);
   void slotDisconnectListenerNeighbors(void);
   void slotDisconnectNeighbor(void);
@@ -396,7 +395,6 @@ class spoton: public QMainWindow
   void slotParticipantDoubleClicked(QTableWidgetItem *item);
   void slotPassphraseAuthenticateRadioToggled(bool state);
   void slotPassphraseRadioToggled(bool state);
-  void slotPoptasticRefreshChanged(double value);
   void slotPoptasticSettingsReset(void);
   void slotPopulateBuzzFavorites(void);
   void slotPopulateEtpMagnets(void);

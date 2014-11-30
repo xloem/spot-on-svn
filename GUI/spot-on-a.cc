@@ -1215,10 +1215,6 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(valueChanged(double)),
 	  this,
 	  SLOT(slotUpdateSpinBoxChanged(double)));
-  connect(m_ui.poptasticRefresh,
-	  SIGNAL(valueChanged(double)),
-	  this,
-	  SLOT(slotPoptasticRefreshChanged(double)));
   connect(m_ui.discover,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -1229,8 +1225,6 @@ spoton::spoton(void):QMainWindow()
 	  m_ui.postgresqlConnect, SLOT(setDisabled(bool)));
   connect(m_ui.sqlite, SIGNAL(toggled(bool)),
 	  this, SLOT(slotPostgreSQLDisconnect(bool)));
-  connect(m_ui.disablePop3, SIGNAL(toggled(bool)),
-	  this, SLOT(slotDisablePop3(bool)));
   connect(m_ui.configurepoptastic, SIGNAL(clicked(void)),
 	  this, SLOT(slotConfigurePoptastic(void)));
   connect(&m_chatInactivityTimer,
@@ -1414,8 +1408,6 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/listenersUpdateTimer", 3.50).toDouble());
   m_ui.neighborsUpdateInterval->setValue
     (m_settings.value("gui/neighborsUpdateTimer", 3.50).toDouble());
-  m_ui.poptasticRefresh->setValue
-    (m_settings.value("gui/poptasticRefreshInterval", 5.00).toDouble());
   m_ui.starbeamUpdateInterval->setValue
     (m_settings.value("gui/starbeamUpdateTimer", 3.50).toDouble());
   m_kernelUpdateTimer.start
@@ -1682,8 +1674,6 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/autoAddSharedSBMagnets", false).toBool());
   m_ui.buzzAutoJoin->setChecked
     (m_settings.value("gui/buzzAutoJoin", true).toBool());
-  m_ui.disablePop3->setChecked
-    (m_settings.value("gui/disablePop3", false).toBool());
   m_ui.enableChatEmoticons->setChecked
     (m_settings.value("gui/enableChatEmoticons", false).toBool());
   m_ui.hideOfflineParticipants->setChecked

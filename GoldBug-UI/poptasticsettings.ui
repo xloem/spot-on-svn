@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>750</width>
-    <height>310</height>
+    <height>360</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,6 +24,49 @@
    <property name="margin">
     <number>5</number>
    </property>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <property name="spacing">
+      <number>5</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="label_99">
+       <property name="text">
+        <string>Query and submit messages every</string>
+       </property>
+       <property name="buddy">
+        <cstring>poptasticRefresh</cstring>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDoubleSpinBox" name="poptasticRefresh">
+       <property name="suffix">
+        <string> seconds.</string>
+       </property>
+       <property name="minimum">
+        <double>5.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>999999999.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_5">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <property name="spacing">
@@ -55,9 +98,17 @@
        </property>
        <item row="1" column="1">
         <widget class="QComboBox" name="in_method">
+         <property name="currentIndex">
+          <number>1</number>
+         </property>
          <property name="sizeAdjustPolicy">
           <enum>QComboBox::AdjustToContents</enum>
          </property>
+         <item>
+          <property name="text">
+           <string>Disable</string>
+          </property>
+         </item>
          <item>
           <property name="text">
            <string>POP3</string>
@@ -424,6 +475,7 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>poptasticRefresh</tabstop>
   <tabstop>in_method</tabstop>
   <tabstop>out_method</tabstop>
   <tabstop>in_server_address</tabstop>

@@ -97,6 +97,13 @@ void spoton::slotConfigurePoptastic(void)
 #ifdef Q_OS_MAC
   dialog.setAttribute(Qt::WA_MacMetalStyle, false);
 #endif
+  m_poptasticSettingsUi.poptasticRefresh->setValue
+    (m_settings.value("gui/poptasticRefreshInterval", 5.00).toDouble());
+
+  if(m_settings.value("gui/disablePop3", false).toBool())
+    m_poptasticSettingsUi.in_method->setCurrentIndex(0);
+  else
+    m_poptasticSettingsUi.in_method->setCurrentIndex(1);
 
   if(!protocols.contains("pop3s"))
     {
@@ -162,6 +169,20 @@ void spoton::slotConfigurePoptastic(void)
 
   if(dialog.exec() == QDialog::Accepted)
     {
+      QSettings settings;
+
+      m_settings["gui/poptasticRefreshInterval"] =
+	m_poptasticSettingsUi.poptasticRefresh->value();
+      m_settings["gui/disablePop3"] =
+	m_poptasticSettingsUi.in_method->currentIndex() == 0 ? true : false;
+      settings.setValue("gui/disablePop3",
+			m_poptasticSettingsUi.in_method->
+			currentIndex() == 0 ? true : false);
+      settings.setValue
+	("gui/poptasticRefreshInterval",
+	 m_poptasticSettingsUi.poptasticRefresh->value());
+      
+
       {
 	QSqlDatabase db = spoton_misc::database(connectionName);
 
@@ -409,19 +430,9 @@ void spoton::slotTestPoptasticSmtpSettings(void)
 			  tr("Failure!"));
 }
 
-void spoton::slotPoptasticRefreshChanged(double value)
-{
-  QSettings settings;
-
-  if(value < 5.00)
-    value = 5.00;
-
-  m_settings["gui/poptasticRefreshInterval"] = value;
-  settings.setValue("gui/poptasticRefreshInterval", value);
-}
-
 void spoton::slotPoptasticSettingsReset(void)
 {
+  m_poptasticSettingsUi.in_method->setCurrentIndex(1);
   m_poptasticSettingsUi.in_password->clear();
   m_poptasticSettingsUi.in_server_address->clear();
   m_poptasticSettingsUi.in_server_port->setValue(995);
@@ -432,13 +443,5 @@ void spoton::slotPoptasticSettingsReset(void)
   m_poptasticSettingsUi.out_server_port->setValue(587);
   m_poptasticSettingsUi.out_ssltls->setCurrentIndex(2);
   m_poptasticSettingsUi.out_username->clear();
-}
-
-void spoton::slotDisablePop3(bool state)
-{
-  m_settings["gui/disablePop3"] = state;
-
-  QSettings settings;
-
-  settings.setValue("gui/disablePop3", state);
+  m_poptasticSettingsUi.poptasticRefresh->setValue(5.00);
 }
