@@ -1229,6 +1229,8 @@ spoton::spoton(void):QMainWindow()
 	  m_ui.postgresqlConnect, SLOT(setDisabled(bool)));
   connect(m_ui.sqlite, SIGNAL(toggled(bool)),
 	  this, SLOT(slotPostgreSQLDisconnect(bool)));
+  connect(m_ui.disablePop3, SIGNAL(toggled(bool)),
+	  this, SLOT(slotDisablePop3(bool)));
   connect(m_ui.configurepoptastic, SIGNAL(clicked(void)),
 	  this, SLOT(slotConfigurePoptastic(void)));
   connect(&m_chatInactivityTimer,
@@ -1680,6 +1682,8 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/autoAddSharedSBMagnets", false).toBool());
   m_ui.buzzAutoJoin->setChecked
     (m_settings.value("gui/buzzAutoJoin", true).toBool());
+  m_ui.disablePop3->setChecked
+    (m_settings.value("gui/disablePop3", false).toBool());
   m_ui.enableChatEmoticons->setChecked
     (m_settings.value("gui/enableChatEmoticons", false).toBool());
   m_ui.hideOfflineParticipants->setChecked

@@ -120,75 +120,76 @@ void spoton_kernel::popPostPoptastic(void)
   if(hash.isEmpty() || !ok)
     return;
 
-  for(int i = 1; i <= 5; i++)
-    {
-      /*
-      ** First, we pop!
-      */
+  /*
+  ** First, we pop!
+  */
 
-      struct curl_memory chunk;
+  if(!setting("gui/disablePop3", false).toBool())
+    for(int i = 1; i <= 5; i++)
+      {
+	struct curl_memory chunk;
 
-      chunk.memory = (char *) malloc(1);
+	chunk.memory = (char *) malloc(1);
 
-      if(!chunk.memory)
-	break;
+	if(!chunk.memory)
+	  break;
 
-      CURL *curl = curl_easy_init();
+	CURL *curl = curl_easy_init();
 
-      if(curl)
-	{
-	  chunk.size = 0;
-	  curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
-	  curl_easy_setopt
-	    (curl, CURLOPT_PASSWORD,
-	     hash["in_password"].toByteArray().constData());
-	  curl_easy_setopt
-	    (curl, CURLOPT_USERNAME,
-	     hash["in_username"].toByteArray().constData());
+	if(curl)
+	  {
+	    chunk.size = 0;
+	    curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
+	    curl_easy_setopt
+	      (curl, CURLOPT_PASSWORD,
+	       hash["in_password"].toByteArray().constData());
+	    curl_easy_setopt
+	      (curl, CURLOPT_USERNAME,
+	       hash["in_username"].toByteArray().constData());
 
-	  QString ssltls(hash["in_ssltls"].toString().toUpper().trimmed());
-	  QString url("");
+	    QString ssltls(hash["in_ssltls"].toString().toUpper().trimmed());
+	    QString url("");
 
-	  if(ssltls == "SSL" || ssltls == "TLS")
-	    {
-	      url = QString("pop3s://%1:%2/1").
+	    if(ssltls == "SSL" || ssltls == "TLS")
+	      {
+		url = QString("pop3s://%1:%2/1").
+		  arg(hash["in_server_address"].toString().trimmed()).
+		  arg(hash["in_server_port"].toString().trimmed());
+		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
+		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+
+		if(ssltls == "TLS")
+		  curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_ALL);
+	      }
+	    else
+	      url = QString("pop3://%1:%2/1").
 		arg(hash["in_server_address"].toString().trimmed()).
 		arg(hash["in_server_port"].toString().trimmed());
-	      curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
-	      curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
 
-	      if(ssltls == "TLS")
-		curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_ALL);
-	    }
-	  else
-	    url = QString("pop3://%1:%2/1").
-	      arg(hash["in_server_address"].toString().trimmed()).
-	      arg(hash["in_server_port"].toString().trimmed());
+	    curl_easy_setopt
+	      (curl, CURLOPT_WRITEFUNCTION, curl_write_memory_callback);
+	    curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *) &chunk);
+	    curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
+	    curl_easy_setopt(curl, CURLOPT_URL, url.toLatin1().constData());
 
-	  curl_easy_setopt
-	    (curl, CURLOPT_WRITEFUNCTION, curl_write_memory_callback);
-	  curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *) &chunk);
-	  curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
-	  curl_easy_setopt(curl, CURLOPT_URL, url.toLatin1().constData());
+	    bool isEmpty = true;
 
-	  bool isEmpty = true;
+	    if(curl_easy_perform(curl) == CURLE_OK)
+	      if(chunk.size > 0)
+		{
+		  isEmpty = false;
+		  emit poppedMessage(QByteArray(chunk.memory, chunk.size));
+		}
 
-	  if(curl_easy_perform(curl) == CURLE_OK)
-	    if(chunk.size > 0)
-	      {
-		isEmpty = false;
-		emit poppedMessage(QByteArray(chunk.memory, chunk.size));
-	      }
+	    free(chunk.memory);
+	    curl_easy_cleanup(curl);
 
+	    if(isEmpty)
+	      break;
+	  }
+	else
 	  free(chunk.memory);
-	  curl_easy_cleanup(curl);
-
-	  if(isEmpty)
-	    break;
-	}
-      else
-	free(chunk.memory);
-    }
+      }
 
   /*
   ** Now, we post!
@@ -224,8 +225,8 @@ void spoton_kernel::popPostPoptastic(void)
 	    (curl, CURLOPT_USERNAME,
 	     hash["out_username"].toByteArray().trimmed().constData());
 
-	  QString from(setting("gui/poptasticName", "unknown@unknown.org").
-		       toString());
+	  QString from
+	    (setting("gui/poptasticName", "unknown@unknown.org").toString());
 	  QString ssltls(hash["out_ssltls"].toString().toUpper().trimmed());
 	  QString url("");
 
@@ -335,23 +336,22 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
 
   if(messageType == "0000")
     {
-      QByteArray mc; // Message Code
+      QByteArray messageCode;
       QList<QByteArray> list
-	(spoton_receive::process0000(data.length(), data, symmetricKeys,
-				     setting("gui/chatAccept"
-					     "SignedMessages"
-					     "Only",
-					     true).toBool(),
-				     QHostAddress("127.0.0.1"), 0,
-				     mc, // Message Code
-				     s_crypts.value("poptastic", 0)));
+	(spoton_receive::
+	 process0000(data.length(), data, symmetricKeys,
+		     setting("gui/chatAcceptSignedMessagesOnly", true).
+		     toBool(),
+		     QHostAddress("127.0.0.1"), 0,
+		     messageCode,
+		     s_crypts.value("poptastic", 0)));
 
       if(!list.isEmpty())
 	{
 	  spoton_misc::saveParticipantStatus
 	    (list.value(1), // Name
 	     list.value(0), // Public Key Hash
-	     QByteArray(),
+	     QByteArray(),  // Status
 	     s_crypts.value("chat", 0));
 	  emit receivedChatMessage
 	    ("message_" +
@@ -360,19 +360,18 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
 	     list.value(2).toBase64() + "_" +
 	     list.value(3).toBase64() + "_" +
 	     list.value(4).toBase64() + "_" +
-	     mc.toBase64().append('\n'));
+	     messageCode.toBase64().append('\n'));
 	}
     }
   else if(messageType == "0000a")
     {
       QList<QByteArray> list
-	(spoton_receive::process0000a(data.length(), data,
-				      setting("gui/chatAccept"
-					      "SignedMessages"
-					      "Only",
-					      true).toBool(),
-				      QHostAddress("127.0.0.1"), 0,
-				      s_crypts.value("poptastic", 0)));
+	(spoton_receive::
+	 process0000a(data.length(), data,
+		      setting("gui/chatAcceptSignedMessagesOnly", true).
+		      toBool(),
+		      QHostAddress("127.0.0.1"), 0,
+		      s_crypts.value("poptastic", 0)));
 
       if(!list.isEmpty())
 	saveGemini(list.value(0), list.value(1),
@@ -382,13 +381,12 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
   else if(messageType == "0000b")
     {
       QList<QByteArray> list
-	(spoton_receive::process0000b(data.length(), data, symmetricKeys,
-				      setting("gui/chatAccept"
-					      "SignedMessages"
-					      "Only",
-					      true).toBool(),
-				      QHostAddress("127.0.0.1"), 0,
-				      s_crypts.value("poptastic", 0)));
+	(spoton_receive::
+	 process0000b(data.length(), data, symmetricKeys,
+		      setting("gui/chatAcceptSignedMessagesOnly", true).
+		      toBool(),
+		      QHostAddress("127.0.0.1"), 0,
+		      s_crypts.value("poptastic", 0)));
 
       if(!list.isEmpty())
 	saveGemini(list.value(1), list.value(2),
@@ -398,20 +396,19 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
   else if(messageType == "0013")
     {
       QList<QByteArray> list
-	(spoton_receive::process0013(data.length(), data, symmetricKeys,
-				     setting("gui/chatAccept"
-					     "SignedMessages"
-					     "Only",
-					     true).toBool(),
-				     QHostAddress("127.0.0.1"), 0,
-				     s_crypts.value("poptastic", 0)));
+	(spoton_receive::
+	 process0013(data.length(), data, symmetricKeys,
+		     setting("gui/chatAcceptSignedMessagesOnly", true).
+		     toBool(),
+		     QHostAddress("127.0.0.1"), 0,
+		     s_crypts.value("poptastic", 0)));
 
       if(!list.isEmpty())
 	spoton_misc::saveParticipantStatus
 	  (list.value(1),  // Name
 	   list.value(0),  // Public Key Hash
-	   list.value(2),
-	   s_crypts.value("chat")); // Status
+	   list.value(2),  // Status
+	   s_crypts.value("chat"));
     }
 }
 

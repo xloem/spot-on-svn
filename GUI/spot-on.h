@@ -323,6 +323,7 @@ class spoton: public QMainWindow
   void slotDeleteTransmitted(void);
   void slotDemagnetizeMissingLinks(void);
   void slotDetachListenerNeighbors(void);
+  void slotDisablePop3(bool state);
   void slotDisconnectAllNeighbors(void);
   void slotDisconnectListenerNeighbors(void);
   void slotDisconnectNeighbor(void);

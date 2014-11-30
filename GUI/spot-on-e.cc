@@ -433,3 +433,12 @@ void spoton::slotPoptasticSettingsReset(void)
   m_poptasticSettingsUi.out_ssltls->setCurrentIndex(2);
   m_poptasticSettingsUi.out_username->clear();
 }
+
+void spoton::slotDisablePop3(bool state)
+{
+  m_settings["gui/disablePop3"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/disablePop3", state);
+}

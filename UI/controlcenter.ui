@@ -552,6 +552,13 @@
                     </widget>
                    </item>
                    <item>
+                    <widget class="QCheckBox" name="disablePop3">
+                     <property name="text">
+                      <string>&amp;Disable POP3.</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
                     <widget class="QLabel" name="label_99">
                      <property name="styleSheet">
                       <string notr="true">QLabel {background-color : rgb(137, 207, 240)}
@@ -8527,6 +8534,7 @@
   <tabstop>impersonate</tabstop>
   <tabstop>chatSignMessages</tabstop>
   <tabstop>configurepoptastic</tabstop>
+  <tabstop>disablePop3</tabstop>
   <tabstop>poptasticRefresh</tabstop>
   <tabstop>chatUpdateInterval</tabstop>
   <tabstop>enableChatEmoticons</tabstop>
