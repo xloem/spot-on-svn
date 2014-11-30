@@ -6563,9 +6563,6 @@ void spoton::slotPopulateParticipants(void)
 
 			  if(i == 1) // OID
 			    oid = item->text();
-
-			  item->setData
-			    (Qt::ItemDataRole(Qt::UserRole + 1), keyType);
 			}
 
 		      item->setFlags
@@ -6631,6 +6628,8 @@ void spoton::slotPopulateParticipants(void)
 			}
 
 		      item->setData(Qt::UserRole, temporary);
+		      item->setData
+			(Qt::ItemDataRole(Qt::UserRole + 1), keyType);
 
 		      /*
 		      ** Delete the item if the participant is offline
@@ -6663,6 +6662,8 @@ void spoton::slotPopulateParticipants(void)
 		      else if(i == 1 || i == 2 || i == 3)
 			item = new QTableWidgetItem
 			  (query.value(i).toString());
+		      else
+			item = new QTableWidgetItem();
 
 		      if(i == 0)
 			{
@@ -6684,13 +6685,9 @@ void spoton::slotPopulateParticipants(void)
 			       query.value(3).toString().right(16));
 			}
 
-		      if(item)
-			{
-			  item->setData(Qt::UserRole, temporary);
-			  item->setFlags
-			    (Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-			}
-
+		      item->setData(Qt::UserRole, temporary);
+		      item->setFlags
+			(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		      m_ui.emailParticipants->setItem
 			(rowE - 1, i, item);
 		    }
@@ -6712,6 +6709,8 @@ void spoton::slotPopulateParticipants(void)
 		      else if(i == 1 || i == 2 || i == 3)
 			item = new QTableWidgetItem
 			  (query.value(i).toString());
+		      else
+			item = new QTableWidgetItem();
 
 		      if(i == 0)
 			{
@@ -6733,13 +6732,9 @@ void spoton::slotPopulateParticipants(void)
 			       query.value(3).toString().right(16));
 			}
 
-		      if(item)
-			{
-			  item->setData(Qt::UserRole, temporary);
-			  item->setFlags
-			    (Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-			}
-
+		      item->setData(Qt::UserRole, temporary);
+		      item->setFlags
+			(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		      m_ui.urlParticipants->setItem
 			(rowU - 1, i, item);
 		    }
@@ -7152,8 +7147,9 @@ void spoton::slotCallParticipant(void)
   QString oid("");
   QString keyType("");
   QString type(action->property("type").toString());
+  bool temporary = true;
   int row = -1;
-
+  
   if((row = m_ui.participants->currentRow()) >= 0)
     {
       QTableWidgetItem *item = m_ui.participants->item
@@ -7164,12 +7160,15 @@ void spoton::slotCallParticipant(void)
 	  keyType = item->data
 	    (Qt::ItemDataRole(Qt::UserRole + 1)).toString();
 	  oid = item->text();
+	  temporary = item->data(Qt::UserRole).toBool();
 	}
     }
 
   if(oid.isEmpty())
     return;
   else if(keyType == "poptastic" && type == "calling_two_way")
+    return; // Not allowed!
+  else if(temporary) // Temporary friend?
     return; // Not allowed!
 
   if(type == "calling")

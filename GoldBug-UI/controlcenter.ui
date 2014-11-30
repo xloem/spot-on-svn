@@ -609,6 +609,9 @@ QPushButton:pressed {
                       <string>Poptastic</string>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_70">
+                      <property name="margin">
+                       <number>7</number>
+                      </property>
                       <item>
                        <widget class="QPushButton" name="configurepoptastic">
                         <property name="text">
@@ -617,17 +620,37 @@ QPushButton:pressed {
                        </widget>
                       </item>
                       <item>
-                       <widget class="QLabel" name="label_117">
-                        <property name="text">
-                         <string>&amp;Poptastic Account:</string>
+                       <layout class="QHBoxLayout" name="horizontalLayout_71">
+                        <property name="topMargin">
+                         <number>0</number>
                         </property>
-                        <property name="alignment">
-                         <set>Qt::AlignCenter</set>
-                        </property>
-                        <property name="buddy">
-                         <cstring>poptasticName</cstring>
-                        </property>
-                       </widget>
+                        <item>
+                         <widget class="QCheckBox" name="disablePop3">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="text">
+                           <string>&amp;Disable</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="label_117">
+                          <property name="text">
+                           <string>&amp;Poptastic Account:</string>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                          </property>
+                          <property name="buddy">
+                           <cstring>poptasticName</cstring>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
                       </item>
                       <item>
                        <widget class="QLineEdit" name="poptasticName"/>
@@ -683,7 +706,7 @@ QPushButton:pressed {
 </string>
                           </property>
                           <property name="text">
-                           <string>Refresh:</string>
+                           <string>Server requests:</string>
                           </property>
                           <property name="buddy">
                            <cstring>poptasticRefresh</cstring>
@@ -7914,7 +7937,7 @@ QPushButton:pressed {
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>806</width>
+                     <width>833</width>
                      <height>267</height>
                     </rect>
                    </property>
@@ -11108,6 +11131,7 @@ spot-on-kernel&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; color:#666666;&quot;&
   <tabstop>sendMessage</tabstop>
   <tabstop>participants</tabstop>
   <tabstop>configurepoptastic</tabstop>
+  <tabstop>disablePop3</tabstop>
   <tabstop>poptasticName</tabstop>
   <tabstop>poptasticStatus</tabstop>
   <tabstop>poptasticRefresh</tabstop>

@@ -3733,6 +3733,8 @@ void spoton::slotGenerateGeminiInChat(void)
 
   if(!item1 || !item2 || !item3)
     return;
+  else if(item1->data(Qt::UserRole).toBool()) // Temporary friend?
+    return; // Temporary!
 
   QPair<QByteArray, QByteArray> gemini;
 
