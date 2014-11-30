@@ -297,6 +297,7 @@ void spoton_kernel::popPostPoptastic(void)
 	      curl_easy_setopt(curl, CURLOPT_READDATA, &upload_ctx);
 	      curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
 	      curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
+	      curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
 	      curl_easy_perform(curl);
 	      curl_slist_free_all(recipients);
 
