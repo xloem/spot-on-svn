@@ -702,6 +702,8 @@ spoton_kernel::~spoton_kernel()
 
   m_poptasticCache.clear();
   locker3.unlock();
+  m_future.cancel();
+  m_poptasticPopPostFuture.cancel();
   m_future.waitForFinished();
   m_poptasticPopPostFuture.waitForFinished();
   m_statisticsFuture.waitForFinished();
@@ -3416,6 +3418,9 @@ void spoton_kernel::purgeMessagingCache(void)
       if(now > it1.value())
 	if(now - it1.value() > 90)
 	  it1.remove();
+
+      if(m_future.isCanceled())
+	return;
     }
 
   locker1.unlock();
@@ -3432,6 +3437,9 @@ void spoton_kernel::purgeMessagingCache(void)
       if(now > it2.value())
 	if(now - it2.value() > 90)
 	  it2.remove();
+
+      if(m_future.isCanceled())
+	return;
     }
 
   locker2.unlock();
@@ -3460,6 +3468,9 @@ void spoton_kernel::purgeMessagingCache(void)
       if(now > it3.value())
 	if(now - it3.value() > 30)
 	  it3.remove();
+
+      if(m_future.isCanceled())
+	return;
     }
 }
 

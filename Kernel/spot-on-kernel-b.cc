@@ -125,71 +125,71 @@ void spoton_kernel::popPostPoptastic(void)
   */
 
   if(!setting("gui/disablePop3", false).toBool())
-    for(int i = 1; i <= 5; i++)
-      {
-	struct curl_memory chunk;
+    {
+      CURL *curl = curl_easy_init();
 
-	chunk.memory = (char *) malloc(1);
+      if(curl)
+	{
+	  curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
+	  curl_easy_setopt
+	    (curl, CURLOPT_PASSWORD,
+	     hash["in_password"].toByteArray().constData());
+	  curl_easy_setopt
+	    (curl, CURLOPT_USERNAME,
+	     hash["in_username"].toByteArray().constData());
 
-	if(!chunk.memory)
-	  break;
+	  QString ssltls(hash["in_ssltls"].toString().toUpper().trimmed());
+	  QString url("");
 
-	CURL *curl = curl_easy_init();
-
-	if(curl)
-	  {
-	    chunk.size = 0;
-	    curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
-	    curl_easy_setopt
-	      (curl, CURLOPT_PASSWORD,
-	       hash["in_password"].toByteArray().constData());
-	    curl_easy_setopt
-	      (curl, CURLOPT_USERNAME,
-	       hash["in_username"].toByteArray().constData());
-
-	    QString ssltls(hash["in_ssltls"].toString().toUpper().trimmed());
-	    QString url("");
-
-	    if(ssltls == "SSL" || ssltls == "TLS")
-	      {
-		url = QString("pop3s://%1:%2/1").
-		  arg(hash["in_server_address"].toString().trimmed()).
-		  arg(hash["in_server_port"].toString().trimmed());
-		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
-		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
-
-		if(ssltls == "TLS")
-		  curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_ALL);
-	      }
-	    else
-	      url = QString("pop3://%1:%2/1").
+	  if(ssltls == "SSL" || ssltls == "TLS")
+	    {
+	      url = QString("pop3s://%1:%2/1").
 		arg(hash["in_server_address"].toString().trimmed()).
 		arg(hash["in_server_port"].toString().trimmed());
+	      curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
+	      curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
 
-	    curl_easy_setopt
-	      (curl, CURLOPT_WRITEFUNCTION, curl_write_memory_callback);
-	    curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *) &chunk);
-	    curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
-	    curl_easy_setopt(curl, CURLOPT_URL, url.toLatin1().constData());
+	      if(ssltls == "TLS")
+		curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_ALL);
+	      }
+	  else
+	    url = QString("pop3://%1:%2/1").
+	      arg(hash["in_server_address"].toString().trimmed()).
+	      arg(hash["in_server_port"].toString().trimmed());
 
-	    bool isEmpty = true;
+	  curl_easy_setopt(curl, CURLOPT_URL, url.toLatin1().constData());
 
-	    if(curl_easy_perform(curl) == CURLE_OK)
-	      if(chunk.size > 0)
-		{
-		  isEmpty = false;
+	  for(int i = 1; i <= 5; i++)
+	    {
+	      struct curl_memory chunk;
+
+	      chunk.memory = (char *) malloc(1);
+
+	      if(!chunk.memory)
+		break;
+
+	      chunk.size = 0;
+	      curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
+	      curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *) &chunk);
+	      curl_easy_setopt
+		(curl, CURLOPT_WRITEFUNCTION, curl_write_memory_callback);
+
+	      if(curl_easy_perform(curl) == CURLE_OK)
+		if(chunk.size > 0)
 		  emit poppedMessage(QByteArray(chunk.memory, chunk.size));
-		}
 
-	    free(chunk.memory);
-	    curl_easy_cleanup(curl);
+	      free(chunk.memory);
 
-	    if(isEmpty)
-	      break;
-	  }
-	else
-	  free(chunk.memory);
-      }
+	      if(m_poptasticPopPostFuture.isCanceled())
+		break;
+	    }
+
+	  curl_easy_cleanup(curl);
+	}
+    }
+
+  if(m_poptasticPopPostFuture.isCanceled())
+    return;
 
   /*
   ** Now, we post!
@@ -197,26 +197,14 @@ void spoton_kernel::popPostPoptastic(void)
 
   QReadLocker locker(&m_poptasticCacheMutex);
 
-  bool isEmpty = m_poptasticCache.isEmpty();
-
-  locker.unlock();
-
-  while(!isEmpty)
+  if(!m_poptasticCache.isEmpty())
     {
-      QPair<QString, QByteArray> pair;
-      QWriteLocker locker1(&m_poptasticCacheMutex);
-
-      pair = m_poptasticCache.dequeue();
-      locker1.unlock();
+      locker.unlock();
 
       CURL *curl = curl_easy_init();
 
       if(curl)
 	{
-	  struct curl_slist *recipients = 0;
-	  struct curl_upload_status upload_ctx;
-
-	  upload_ctx.lines_read = 0;
 	  curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
 	  curl_easy_setopt
 	    (curl, CURLOPT_PASSWORD,
@@ -253,52 +241,71 @@ void spoton_kernel::popPostPoptastic(void)
 	      arg(hash["out_server_port"].toString().trimmed());
 
 	  curl_easy_setopt(curl, CURLOPT_URL, url.toLatin1().constData());
-	  curl_easy_setopt
-	    (curl, CURLOPT_MAIL_FROM,
-	     QString("<%1>").arg(from).toLatin1().constData());
 
-	  /*
-	  ** Prepare curl_payload_text.
-	  */
+	  for(int i = 1; i <= 5; i++)
+	    {
+	      QPair<QString, QByteArray> pair;
+	      QWriteLocker locker(&m_poptasticCacheMutex);
 
-	  curl_payload_text[0] = QString("Date: %1\r\n").arg
-	    (QDateTime::currentDateTime().toUTC().toString()).toLatin1();
-	  curl_payload_text[1] = QString("To: <%1> (%1)\r\n").arg(pair.first).
-	    toLatin1();
-	  curl_payload_text[2] = QString("From: <%1>\r\n").arg(from).
-	    toLatin1();
-	  curl_payload_text[3] =
-	    QString("Message-ID: <%1>\r\n").
-	    arg(spoton_crypt::weakRandomBytes(16).toHex().
-		constData()).toLatin1();
-	  curl_payload_text[4] =
-	    QString("Subject: %1\r\n").
-	    arg(spoton_crypt::weakRandomBytes(16).toHex().
-		constData()).toLatin1();
-	  curl_payload_text[5] = "\r\n";
-	  curl_payload_text[6] =
-	    QString("%1\r\n").arg(pair.second.constData()).toLatin1().
-	    constData();
-	  curl_payload_text[7] = "\r\n";
-	  curl_payload_text[8] = "\r\n";
-	  curl_payload_text[9] = "\r\n";
-	  curl_payload_text[10] = 0;
-	  recipients = curl_slist_append
-	    (recipients, pair.first.toLatin1().constData());
-	  curl_easy_setopt(curl, CURLOPT_MAIL_RCPT, recipients);
-	  curl_easy_setopt(curl, CURLOPT_READFUNCTION, curl_payload_source);
-	  curl_easy_setopt(curl, CURLOPT_READDATA, &upload_ctx);
-	  curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
-	  curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
-	  curl_easy_perform(curl);
-	  curl_slist_free_all(recipients);
+	      if(m_poptasticCache.isEmpty())
+		break;
+	      else
+		pair = m_poptasticCache.dequeue();
+
+	      locker.unlock();
+
+	      struct curl_slist *recipients = 0;
+	      struct curl_upload_status upload_ctx;
+
+	      upload_ctx.lines_read = 0;
+	      curl_easy_setopt
+		(curl, CURLOPT_MAIL_FROM,
+		 QString("<%1>").arg(from).toLatin1().constData());
+
+	      /*
+	      ** Prepare curl_payload_text.
+	      */
+
+	      curl_payload_text[0] = QString("Date: %1\r\n").arg
+		(QDateTime::currentDateTime().toUTC().toString()).toLatin1();
+	      curl_payload_text[1] = QString("To: <%1> (%1)\r\n").
+		arg(pair.first).
+		toLatin1();
+	      curl_payload_text[2] = QString("From: <%1>\r\n").arg(from).
+		toLatin1();
+	      curl_payload_text[3] =
+		QString("Message-ID: <%1>\r\n").
+		arg(spoton_crypt::weakRandomBytes(16).toHex().
+		    constData()).toLatin1();
+	      curl_payload_text[4] =
+		QString("Subject: %1\r\n").
+		arg(spoton_crypt::weakRandomBytes(16).toHex().
+		    constData()).toLatin1();
+	      curl_payload_text[5] = "\r\n";
+	      curl_payload_text[6] =
+		QString("%1\r\n").arg(pair.second.constData()).toLatin1().
+		constData();
+	      curl_payload_text[7] = "\r\n";
+	      curl_payload_text[8] = "\r\n";
+	      curl_payload_text[9] = "\r\n";
+	      curl_payload_text[10] = 0;
+	      recipients = curl_slist_append
+		(recipients, pair.first.toLatin1().constData());
+	      curl_easy_setopt(curl, CURLOPT_MAIL_RCPT, recipients);
+	      curl_easy_setopt
+		(curl, CURLOPT_READFUNCTION, curl_payload_source);
+	      curl_easy_setopt(curl, CURLOPT_READDATA, &upload_ctx);
+	      curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
+	      curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
+	      curl_easy_perform(curl);
+	      curl_slist_free_all(recipients);
+
+	      if(m_poptasticPopPostFuture.isCanceled())
+		break;
+	    }
+
 	  curl_easy_cleanup(curl);
 	}
-
-      QReadLocker locker2(&m_poptasticCacheMutex);
-
-      isEmpty = m_poptasticCache.isEmpty();
-      locker2.unlock();
     }
 }
 
