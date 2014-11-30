@@ -130,7 +130,6 @@ void spoton_kernel::popPostPoptastic(void)
 
       if(curl)
 	{
-	  curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
 	  curl_easy_setopt
 	    (curl, CURLOPT_PASSWORD,
 	     hash["in_password"].toByteArray().constData());
@@ -169,6 +168,7 @@ void spoton_kernel::popPostPoptastic(void)
 		break;
 
 	      chunk.size = 0;
+	      curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
 	      curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
 	      curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *) &chunk);
 	      curl_easy_setopt
@@ -205,7 +205,6 @@ void spoton_kernel::popPostPoptastic(void)
 
       if(curl)
 	{
-	  curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
 	  curl_easy_setopt
 	    (curl, CURLOPT_PASSWORD,
 	     hash["out_password"].toByteArray().trimmed().constData());
@@ -261,6 +260,7 @@ void spoton_kernel::popPostPoptastic(void)
 	      curl_easy_setopt
 		(curl, CURLOPT_MAIL_FROM,
 		 QString("<%1>").arg(from).toLatin1().constData());
+	      curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
 
 	      /*
 	      ** Prepare curl_payload_text.

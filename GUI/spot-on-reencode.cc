@@ -456,7 +456,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 	if(query.exec("SELECT gemini, gemini_hash_key, "
 		      "public_key_hash, "
 		      "public_key, key_type, name FROM "
-		      "friends_public_keys"))
+		      "friends_public_keys WHERE neighbor_oid = -1"))
 	  while(query.next())
 	    {
 	      QByteArray gemini;

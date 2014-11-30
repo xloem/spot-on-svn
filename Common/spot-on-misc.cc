@@ -3035,7 +3035,8 @@ bool spoton_misc::saveGemini(const QPair<QByteArray, QByteArray> &gemini,
 	QSqlQuery query(db);
 
 	query.prepare("UPDATE friends_public_keys SET "
-		      "gemini = ?, gemini_hash_key = ? WHERE OID = ?");
+		      "gemini = ?, gemini_hash_key = ? WHERE OID = ? AND "
+		      "neighbor_oid = -1");
 
 	if(gemini.first.isEmpty() || gemini.second.isEmpty())
 	  {
