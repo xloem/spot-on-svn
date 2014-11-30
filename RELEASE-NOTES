@@ -11,6 +11,8 @@
      the kernel.
 7.   Removed translations that may interfere with functionality.
 8.   Use default optimization levels in the user interface project files.
+9.   Do not allow calling of temporary participants.
+10.  Do not allow generation of geminis for temporary participants.
 
 0.16b (11/21/2014)
 
@@ -38,15 +40,15 @@
 14.  Compress StarBeam data. Compression occurs before encryption.
 15.  Compress file attachments. Compression occurs before encryption.
 16.  Corrected saving of e-mail attachments that were enveloped by
-     GoldBugs.
+     goldbugs.
 17.  Corrected the Reset widget's state in the file encryption tool.
 
 0.16a (11/08/2014)
 
 1.   Include expiry times in message types that change
-     communication states. For example, Geminis. Previous
-     functionality will be disrupted. Hashes of shared Geminis
-     will be retained for 90 seconds. Replayed Geminis will
+     communication states. For example, geminis. Previous
+     functionality will be disrupted. Hashes of shared geminis
+     will be retained for 90 seconds. Replayed geminis will
      be discarded. Call termination is included within this process.
 2.   Corrected A.E. time delta computations.
 3.   Must initialize databases from within the kernel. Refer
@@ -237,7 +239,7 @@
 21.  Use keyed hashes in account authentication. The account name and
      password must now contain at least thirty-two characters each. Please
      remove your accounts.
-22.  Increased the Gemini SHA-512 hash key size to 64 bytes. Other hash key
+22.  Increased the gemini SHA-512 hash key size to 64 bytes. Other hash key
      sizes have also been increased.
 23.  Do not echo approved StarBeam data.
 24.  Corrected buddies in various UI files.
@@ -769,7 +771,7 @@
      parameters. The passphrase parameter is trimmed, however.
 10.  Removed the incomplete method spoton_crypt::privateKeyInRem().
 11.  Corrected tab ordering.
-12.  Allow editing of Gemini cells.
+12.  Allow editing of gemini cells.
 13.  Removed all instances of QFileDialog::setFilter().
 14.  Introduced the StarBeam Transfer Protocol. The protocol misbehaves as
      follows:
@@ -804,12 +806,12 @@
      the database file.
 24.  Modified spoton_misc::findGeminiInCosmos() so that the method
      attempts to discover the gemini pair via hash computations.
-25.  Removed UTF-8 conversions for Gemini keys.
+25.  Removed UTF-8 conversions for gemini keys.
 26.  Added hash keys and types to Buzz channels. Modified communication
      protocols as well. Please note that if hash keys are not provided,
      they will assume slight variations of their channel keys counterparts.
 27.  Corrected purging of destroyed Buzz data from the kernel.
-28.  Removed UTF-8 conversions for Buzz channel names and Gold Bug keys.
+28.  Removed UTF-8 conversions for Buzz channel names and goldbug keys.
 29.  Increased many default buffer and key size values from 256 bytes
      to 512 bytes.
 30.  The method spoton_neighbor::slotDisconnected() should destroy the
@@ -1062,8 +1064,8 @@
      table by using their types. Only one person reads these release notes.
 3.   Apologies. This time I will really bundle the Translations directory
      into the Windows release.
-4.   Do not update the participant's name if the sender used a gold bug.
-5.   The simple mechanism that's used to determine if a gold bug
+4.   Do not update the participant's name if the sender used a goldbug.
+5.   The simple mechanism that's used to determine if a goldbug
      is set is deeply flawed. Corrected.
 6.   The method spoton_neighbor::resetKeepAlive() incorrectly restarted
      the keep-alive timer. The timer is responsible for sending
