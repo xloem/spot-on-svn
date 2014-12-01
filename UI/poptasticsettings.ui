@@ -99,19 +99,24 @@
        <item row="1" column="1">
         <widget class="QComboBox" name="in_method">
          <property name="currentIndex">
-          <number>1</number>
+          <number>2</number>
          </property>
          <property name="sizeAdjustPolicy">
           <enum>QComboBox::AdjustToContents</enum>
          </property>
          <item>
           <property name="text">
-           <string>Disable</string>
+           <string notr="true">Disable</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>POP3</string>
+           <string notr="true">IMAP</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string notr="true">POP3</string>
           </property>
          </item>
         </widget>
@@ -224,7 +229,7 @@
          </property>
          <item>
           <property name="text">
-           <string>SMTP</string>
+           <string notr="true">SMTP</string>
           </property>
          </item>
         </widget>

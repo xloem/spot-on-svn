@@ -101,7 +101,7 @@ void spoton::slotConfigurePoptastic(void)
   if(m_settings.value("gui/disablePop3", false).toBool())
     m_poptasticSettingsUi.in_method->setCurrentIndex(0);
   else
-    m_poptasticSettingsUi.in_method->setCurrentIndex(1);
+    m_poptasticSettingsUi.in_method->setCurrentIndex(2);
 
   if(!protocols.contains("pop3s"))
     {
@@ -134,6 +134,12 @@ void spoton::slotConfigurePoptastic(void)
   if(!hash.isEmpty())
     {
       int index = -1;
+
+      index = m_poptasticSettingsUi.in_method->findText
+	(hash["in_method"].toString());
+
+      if(index >= 0)
+	m_poptasticSettingsUi.in_method->setCurrentIndex(index);
 
       m_poptasticSettingsUi.in_password->setText
 	(hash["in_password"].toString());
@@ -316,24 +322,48 @@ void spoton::slotTestPoptasticPop3Settings(void)
 	 m_poptasticSettingsUi.in_username->text().trimmed().toLatin1().
 	 constData());
 
+      QString method
+	(m_poptasticSettingsUi.in_method->currentText().toLower());
       QString url("");
       int index = m_poptasticSettingsUi.in_ssltls->currentIndex();
 
       if(index == 1 || index == 2)
 	{
-	  url = QString("pop3s://%1:%2/").
-	    arg(m_poptasticSettingsUi.in_server_address->text().trimmed()).
-	    arg(m_poptasticSettingsUi.in_server_port->value());
+	  if(method == "imap")
+	    {
+	      if(index == 1) // SSL
+		url = QString("imaps://%1:%2/").
+		  arg(m_poptasticSettingsUi.
+		      in_server_address->text().trimmed()).
+		  arg(m_poptasticSettingsUi.in_server_port->value());
+	      else // TLS
+		url = QString("imap://%1:%2/").
+		  arg(m_poptasticSettingsUi.
+		      in_server_address->text().trimmed()).
+		  arg(m_poptasticSettingsUi.in_server_port->value());
+	    }
+	  else
+	    url = QString("pop3s://%1:%2/").
+	      arg(m_poptasticSettingsUi.in_server_address->text().trimmed()).
+	      arg(m_poptasticSettingsUi.in_server_port->value());
+
 	  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
 	  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
 
-	  if(index == 2)
+	  if(index == 2) // TLS
 	    curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_ALL);
 	}
       else
-	url = QString("pop3://%1:%2/").
-	  arg(m_poptasticSettingsUi.in_server_address->text().trimmed()).
-	  arg(m_poptasticSettingsUi.in_server_port->value());
+	{
+	  if(method == "imap")
+	    url = QString("imap://%1:%2/").
+	      arg(m_poptasticSettingsUi.in_server_address->text().trimmed()).
+	      arg(m_poptasticSettingsUi.in_server_port->value());
+	  else
+	    url = QString("pop3://%1:%2/").
+	      arg(m_poptasticSettingsUi.in_server_address->text().trimmed()).
+	      arg(m_poptasticSettingsUi.in_server_port->value());
+	}
 
       curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "NOOP");
       curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
@@ -384,11 +414,11 @@ void spoton::slotTestPoptasticSmtpSettings(void)
 
       if(index == 1 || index == 2)
 	{
-	  if(index == 1)
+	  if(index == 1) // SSL
 	    url = QString("smtps://%1:%2/").
 	      arg(m_poptasticSettingsUi.out_server_address->text().trimmed()).
 	      arg(m_poptasticSettingsUi.out_server_port->value());
-	  else
+	  else // TLS
 	    url = QString("smtp://%1:%2/").
 	      arg(m_poptasticSettingsUi.out_server_address->text().trimmed()).
 	      arg(m_poptasticSettingsUi.out_server_port->value());
@@ -396,7 +426,7 @@ void spoton::slotTestPoptasticSmtpSettings(void)
 	  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
 	  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
 
-	  if(index == 2)
+	  if(index == 2) // TLS
 	    curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_ALL);
 	}
       else
@@ -408,6 +438,7 @@ void spoton::slotTestPoptasticSmtpSettings(void)
       curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
       curl_easy_setopt(curl, CURLOPT_TIMEOUT, 5L);
       curl_easy_setopt(curl, CURLOPT_URL, url.toLatin1().constData());
+      curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
       res = curl_easy_perform(curl);
 
       if(res == CURLE_OK)
@@ -430,7 +461,7 @@ void spoton::slotTestPoptasticSmtpSettings(void)
 
 void spoton::slotPoptasticSettingsReset(void)
 {
-  m_poptasticSettingsUi.in_method->setCurrentIndex(1);
+  m_poptasticSettingsUi.in_method->setCurrentIndex(2);
   m_poptasticSettingsUi.in_password->clear();
   m_poptasticSettingsUi.in_server_address->clear();
   m_poptasticSettingsUi.in_server_port->setValue(995);
