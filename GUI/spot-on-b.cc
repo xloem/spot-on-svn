@@ -1111,8 +1111,7 @@ void spoton::slotShareChatPublicKeyWithParticipant(void)
 
   if(item)
     sharePublicKeyWithParticipant
-      (item->data(Qt::ItemDataRole(Qt::UserRole + 1)).toString(),
-       m_ui.participants);
+      (item->data(Qt::ItemDataRole(Qt::UserRole + 1)).toString());
 }
 
 void spoton::slotShareEmailPublicKeyWithParticipant(void)
@@ -1122,13 +1121,12 @@ void spoton::slotShareEmailPublicKeyWithParticipant(void)
 
   if(item)
     sharePublicKeyWithParticipant
-      (item->data(Qt::ItemDataRole(Qt::UserRole + 1)).toString(),
-       m_ui.emailParticipants);
+      (item->data(Qt::ItemDataRole(Qt::UserRole + 1)).toString());
 }
 
 void spoton::slotShareUrlPublicKeyWithParticipant(void)
 {
-  sharePublicKeyWithParticipant("url", m_ui.urlParticipants);
+  sharePublicKeyWithParticipant("url");
 }
 
 void spoton::slotViewLog(void)

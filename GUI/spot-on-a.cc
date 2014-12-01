@@ -1215,7 +1215,7 @@ spoton::spoton(void):QMainWindow()
 	  m_ui.postgresqlConnect, SLOT(setDisabled(bool)));
   connect(m_ui.sqlite, SIGNAL(toggled(bool)),
 	  this, SLOT(slotPostgreSQLDisconnect(bool)));
-  connect(m_ui.configurepoptastic, SIGNAL(clicked(void)),
+  connect(m_ui.action_Poptastic_Settings, SIGNAL(triggered(void)),
 	  this, SLOT(slotConfigurePoptastic(void)));
   connect(&m_chatInactivityTimer,
 	  SIGNAL(timeout(void)),
@@ -1793,6 +1793,7 @@ spoton::spoton(void):QMainWindow()
       m_ui.action_Import_Neighbors->setEnabled(false);
       m_ui.action_Export_Public_Keys->setEnabled(false);
       m_ui.action_Import_Public_Keys->setEnabled(false);
+      m_ui.action_Poptastic_Settings->setEnabled(false);
       m_ui.action_Rosetta->setEnabled(false);
       m_ui.encryptionKeyType->setEnabled(false);
       m_ui.encryptionKeySize->setEnabled(false);
@@ -1825,6 +1826,7 @@ spoton::spoton(void):QMainWindow()
       m_ui.action_Import_Neighbors->setEnabled(false);
       m_ui.action_Export_Public_Keys->setEnabled(false);
       m_ui.action_Import_Public_Keys->setEnabled(false);
+      m_ui.action_Poptastic_Settings->setEnabled(false);
       m_ui.action_Rosetta->setEnabled(false);
       m_ui.answer_authenticate->setEnabled(false);
       m_ui.encryptionKeySize->setEnabled(false);
@@ -5123,6 +5125,7 @@ void spoton::slotSetPassphrase(void)
       m_ui.action_Import_Neighbors->setEnabled(true);
       m_ui.action_Export_Public_Keys->setEnabled(true);
       m_ui.action_Import_Public_Keys->setEnabled(true);
+      m_ui.action_Poptastic_Settings->setEnabled(true);
       m_ui.action_Rosetta->setEnabled(true);
       m_ui.answer->clear();
       m_ui.encryptionKeyType->setEnabled(false);
@@ -5350,6 +5353,7 @@ void spoton::slotValidatePassphrase(void)
 	    m_ui.action_Import_Neighbors->setEnabled(true);
 	    m_ui.action_Export_Public_Keys->setEnabled(true);
 	    m_ui.action_Import_Public_Keys->setEnabled(true);
+	    m_ui.action_Poptastic_Settings->setEnabled(true);
 	    m_ui.action_Rosetta->setEnabled(true);
 	    m_ui.answer->clear();
 	    m_ui.answer_authenticate->clear();

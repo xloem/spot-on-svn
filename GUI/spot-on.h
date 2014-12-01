@@ -232,8 +232,7 @@ class spoton: public QMainWindow
   void saveUrlIniPath(const QString &path);
   void sendBuzzKeysToKernel(void);
   void sendKeysToKernel(void);
-  void sharePublicKeyWithParticipant(const QString &keyType,
-				     QWidget *from);
+  void sharePublicKeyWithParticipant(const QString &keyType);
   void showUrls(const QString &link, const QString &querystr);
   void updateListenersTable(const QSqlDatabase &db);
   void updateNeighborsTable(const QSqlDatabase &db);

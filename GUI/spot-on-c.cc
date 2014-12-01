@@ -2226,8 +2226,7 @@ void spoton::slotViewRosetta(void)
   m_rosetta.show(this);
 }
 
-void spoton::sharePublicKeyWithParticipant(const QString &keyType,
-					   QWidget *from)
+void spoton::sharePublicKeyWithParticipant(const QString &keyType)
 {
   if(!m_crypts.value(keyType, 0) ||
      !m_crypts.value(QString("%1-signature").arg(keyType), 0))
@@ -2242,11 +2241,11 @@ void spoton::sharePublicKeyWithParticipant(const QString &keyType,
   int row = -1;
 
   if(keyType == "chat" || keyType == "poptastic")
-    if(from == m_ui.participants)
+    if(currentTabName() == "chat")
       table = m_ui.participants;
 
   if(keyType == "email" || keyType == "poptastic")
-    if(from == m_ui.emailParticipants)
+    if(currentTabName() == "email")
       table = m_ui.emailParticipants;
 
   if(keyType == "url")
