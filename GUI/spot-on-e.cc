@@ -323,25 +323,17 @@ void spoton::slotTestPoptasticPop3Settings(void)
 	 constData());
 
       QString method
-	(m_poptasticSettingsUi.in_method->currentText().toLower());
+	(m_poptasticSettingsUi.in_method->currentText().toUpper());
       QString url("");
       int index = m_poptasticSettingsUi.in_ssltls->currentIndex();
 
       if(index == 1 || index == 2)
 	{
-	  if(method == "imap")
-	    {
-	      if(index == 1) // SSL
-		url = QString("imaps://%1:%2/").
-		  arg(m_poptasticSettingsUi.
-		      in_server_address->text().trimmed()).
-		  arg(m_poptasticSettingsUi.in_server_port->value());
-	      else // TLS
-		url = QString("imap://%1:%2/").
-		  arg(m_poptasticSettingsUi.
-		      in_server_address->text().trimmed()).
-		  arg(m_poptasticSettingsUi.in_server_port->value());
-	    }
+	  if(method == "IMAP")
+	    url = QString("imaps://%1:%2/").
+	      arg(m_poptasticSettingsUi.
+		  in_server_address->text().trimmed()).
+	      arg(m_poptasticSettingsUi.in_server_port->value());
 	  else
 	    url = QString("pop3s://%1:%2/").
 	      arg(m_poptasticSettingsUi.in_server_address->text().trimmed()).
@@ -355,7 +347,7 @@ void spoton::slotTestPoptasticPop3Settings(void)
 	}
       else
 	{
-	  if(method == "imap")
+	  if(method == "IMAP")
 	    url = QString("imap://%1:%2/").
 	      arg(m_poptasticSettingsUi.in_server_address->text().trimmed()).
 	      arg(m_poptasticSettingsUi.in_server_port->value());

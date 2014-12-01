@@ -2051,7 +2051,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
   QSqlDatabase::removeDatabase(connectionName);
 
-  if(interfaces() > 0)
+  if(interfaces() <= 0)
     return;
 
   QByteArray status

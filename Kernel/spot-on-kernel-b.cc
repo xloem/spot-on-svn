@@ -126,7 +126,12 @@ void spoton_kernel::popPostPoptastic(void)
 
   if(!setting("gui/disablePop3", false).toBool())
     {
-      CURL *curl = curl_easy_init();
+      CURL *curl = 0;
+      QList<int> list;
+      bool popRound = true;
+
+    begin_label:
+      curl = curl_easy_init();
 
       if(curl)
 	{
@@ -137,14 +142,28 @@ void spoton_kernel::popPostPoptastic(void)
 	    (curl, CURLOPT_USERNAME,
 	     hash["in_username"].toByteArray().constData());
 
+	  QString method(hash["in_method"].toString().toUpper().trimmed());
 	  QString ssltls(hash["in_ssltls"].toString().toUpper().trimmed());
 	  QString url("");
 
 	  if(ssltls == "SSL" || ssltls == "TLS")
 	    {
-	      url = QString("pop3s://%1:%2/1").
-		arg(hash["in_server_address"].toString().trimmed()).
-		arg(hash["in_server_port"].toString().trimmed());
+	      if(method == "IMAP")
+		{
+		  if(popRound)
+		    url = QString("imaps://%1:%2/INBOX/;UID=1").
+		      arg(hash["in_server_address"].toString().trimmed()).
+		      arg(hash["in_server_port"].toString().trimmed());
+		  else
+		    url = QString("imaps://%1:%2/INBOX").
+		      arg(hash["in_server_address"].toString().trimmed()).
+		      arg(hash["in_server_port"].toString().trimmed());
+		}
+	      else
+		url = QString("pop3s://%1:%2/1").
+		  arg(hash["in_server_address"].toString().trimmed()).
+		  arg(hash["in_server_port"].toString().trimmed());
+
 	      curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
 	      curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
 
@@ -152,40 +171,93 @@ void spoton_kernel::popPostPoptastic(void)
 		curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_ALL);
 	      }
 	  else
-	    url = QString("pop3://%1:%2/1").
-	      arg(hash["in_server_address"].toString().trimmed()).
-	      arg(hash["in_server_port"].toString().trimmed());
+	    {
+	      if(method == "IMAP")
+		{
+		  if(popRound)
+		    url = QString("imap://%1:%2/INBOX/;UID=1").
+		      arg(hash["in_server_address"].toString().trimmed()).
+		      arg(hash["in_server_port"].toString().trimmed());
+		  else
+		    url = QString("imap://%1:%2/INBOX").
+		      arg(hash["in_server_address"].toString().trimmed()).
+		      arg(hash["in_server_port"].toString().trimmed());
+		}
+	      else
+		url = QString("pop3://%1:%2/1").
+		  arg(hash["in_server_address"].toString().trimmed()).
+		  arg(hash["in_server_port"].toString().trimmed());
+	    }
 
 	  curl_easy_setopt(curl, CURLOPT_URL, url.toLatin1().constData());
 
-	  for(int i = 1; i <= 5; i++)
+	  if(popRound)
 	    {
-	      struct curl_memory chunk;
+	      popRound = false;
 
-	      chunk.memory = (char *) malloc(1);
+	      for(int i = 1; i <= 5; i++)
+		{
+		  struct curl_memory chunk;
 
-	      if(!chunk.memory)
-		break;
+		  chunk.memory = (char *) malloc(1);
 
-	      chunk.size = 0;
-	      curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
-	      curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
-	      curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *) &chunk);
-	      curl_easy_setopt
-		(curl, CURLOPT_WRITEFUNCTION, curl_write_memory_callback);
+		  if(!chunk.memory)
+		    break;
 
-	      if(curl_easy_perform(curl) == CURLE_OK)
-		if(chunk.size > 0)
-		  emit poppedMessage(QByteArray(chunk.memory, chunk.size));
+		  chunk.size = 0;
+		  curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
+		  curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
+		  curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *) &chunk);
+		  curl_easy_setopt
+		    (curl, CURLOPT_WRITEFUNCTION, curl_write_memory_callback);
 
-	      free(chunk.memory);
+		  if(curl_easy_perform(curl) == CURLE_OK)
+		    {
+		      if(method == "IMAP")
+			{
+			  list.append(i);
+			  url.replace
+			    (QString("UID=%1").arg(i),
+			     QString("UID=%1").arg(i + 1));
+			  curl_easy_setopt
+			    (curl, CURLOPT_URL, url.toLatin1().constData());
+			}
 
-	      if(m_poptasticPopPostFuture.isCanceled())
-		break;
+		      if(chunk.size > 0)
+			emit poppedMessage
+			  (QByteArray(chunk.memory, chunk.size));
+		    }
+
+		  free(chunk.memory);
+
+		  if(m_poptasticPopPostFuture.isCanceled())
+		    break;
+		}
+	    }
+	  else
+	    {
+	      while(!list.isEmpty())
+		{
+		  curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
+		  curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
+		  curl_easy_setopt
+		    (curl, CURLOPT_URL, url.toLatin1().constData());
+		  curl_easy_setopt
+		    (curl, CURLOPT_CUSTOMREQUEST,
+		     QString("STORE %1 +Flags \\Deleted").
+		     arg(list.takeFirst()).toLatin1().constData());
+		  curl_easy_perform(curl);
+		}
 	    }
 
 	  curl_easy_cleanup(curl);
+
+	  if(m_poptasticPopPostFuture.isCanceled())
+	    return;
 	}
+
+      if(!list.isEmpty())
+	goto begin_label;
     }
 
   if(m_poptasticPopPostFuture.isCanceled())
