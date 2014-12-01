@@ -2098,9 +2098,13 @@ void spoton_kernel::prepareStatus(const QString &keyType)
 
   QByteArray status(setting("gui/my_status", "Online").
 		    toByteArray().toLower());
+  QHash<QString, QVariant> hash;
   QList<QByteArray> list;
   QString connectionName("");
   QString receiverName("");
+
+  if(keyType == "poptastic")
+    hash = spoton_misc::poptasticSettings(s_crypt1, &ok);
 
   {
     QSqlDatabase db = spoton_misc::database(connectionName);
@@ -2172,8 +2176,15 @@ void spoton_kernel::prepareStatus(const QString &keyType)
 		name = setting("gui/nodeName", "unknown").
 		  toByteArray();
 	      else
-		name = setting("gui/poptasticName", "unknown@unknown.org").
-		  toByteArray();
+		name = hash["in_username"].toByteArray();
+
+	      if(name.isEmpty())
+		{
+		  if(keyType == "chat")
+		    name = "unknown";
+		  else
+		    name = "unknown@unknown.org";
+		}
 
 	      QByteArray symmetricKey;
 	      QByteArray symmetricKeyAlgorithm(cipherType);

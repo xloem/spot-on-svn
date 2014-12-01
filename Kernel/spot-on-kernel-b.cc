@@ -212,8 +212,7 @@ void spoton_kernel::popPostPoptastic(void)
 	    (curl, CURLOPT_USERNAME,
 	     hash["out_username"].toByteArray().trimmed().constData());
 
-	  QString from
-	    (setting("gui/poptasticName", "unknown@unknown.org").toString());
+	  QString from(hash["in_username"].toString());
 	  QString ssltls(hash["out_ssltls"].toString().toUpper().trimmed());
 	  QString url("");
 

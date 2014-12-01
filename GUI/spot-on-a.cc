@@ -5398,6 +5398,9 @@ void spoton::slotValidatePassphrase(void)
 	      m_poptasticSettingsUi.in_username->setText
 		("unknown@unknown.org");
 
+	    m_settings["gui/poptasticName"] =
+	      m_poptasticSettingsUi.in_username->text().toUtf8();
+
 	    if(!m_settings.value("gui/spot_on_neighbors_txt_processed",
 				 false).toBool())
 	      {

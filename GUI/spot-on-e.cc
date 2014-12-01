@@ -169,6 +169,8 @@ void spoton::slotConfigurePoptastic(void)
     {
       QSettings settings;
 
+      m_settings["gui/poptasticName"] =
+	m_poptasticSettingsUi.in_username->text().toUtf8();
       m_settings["gui/poptasticRefreshInterval"] =
 	m_poptasticSettingsUi.poptasticRefresh->value();
       m_settings["gui/disablePop3"] =
