@@ -15,7 +15,8 @@
 10.  Do not allow generation of geminis for temporary participants.
 11.  Updated GeoIP header and library files for Windows.
 12.  Updated GeoIP.dat.
-13.  Include timestamps in status messages.
+13.  Include timestamps in status messages. Previous functionality will
+     be disrupted.
 
 0.16b (11/21/2014)
 
