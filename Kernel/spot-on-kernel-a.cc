@@ -2051,24 +2051,22 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
   QSqlDatabase::removeDatabase(connectionName);
 
-  if(!interfaces())
+  if(interfaces() > 0)
     return;
 
-  QByteArray status(setting("gui/my_status", "Online").
-		    toByteArray().toLower());
+  QByteArray status
+    (setting("gui/my_status", "Online").toByteArray().toLower());
 
-  if(status != "offline")
-    prepareStatus("chat");
+  if(status == "offline")
+    return;
 
-  status = setting("gui/my_poptasticStatus", "Online").
-    toByteArray().toLower();
+  prepareStatus("chat");
 
-  if(status != "offline")
-    if(m_lastPoptasticStatus.secsTo(QDateTime::currentDateTime()) >= 30)
-      {
-	m_lastPoptasticStatus = QDateTime::currentDateTime();
-	prepareStatus("poptastic");
-      }
+  if(m_lastPoptasticStatus.secsTo(QDateTime::currentDateTime()) >= 30)
+    {
+      m_lastPoptasticStatus = QDateTime::currentDateTime();
+      prepareStatus("poptastic");
+    }
 }
 
 void spoton_kernel::prepareStatus(const QString &keyType)
@@ -2098,15 +2096,8 @@ void spoton_kernel::prepareStatus(const QString &keyType)
   if(!ok)
     return;
 
-  QByteArray status;
-
-  if(keyType == "chat")
-    status = setting("gui/my_status", "Online").
-      toByteArray().toLower();
-  else
-    status = setting("gui/my_poptasticStatus", "Online").
-      toByteArray().toLower();
-
+  QByteArray status(setting("gui/my_status", "Online").
+		    toByteArray().toLower());
   QList<QByteArray> list;
   QString connectionName("");
   QString receiverName("");

@@ -453,7 +453,7 @@ void spoton_kernel::saveGemini(const QByteArray &publicKeyHash,
 
   int secsTo = qAbs(now.secsTo(dateTime));
 
-  if(!(secsTo <= 90))
+  if(!(secsTo <= GEMINI_TIME_DELTA_MAXIMUM))
     {
       spoton_misc::logError
 	(QString("spoton_kernel::saveGemini(): "

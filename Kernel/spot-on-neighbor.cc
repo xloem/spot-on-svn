@@ -5123,7 +5123,7 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 
   int secsTo = qAbs(now.secsTo(dateTime));
 
-  if(!(secsTo <= 90))
+  if(!(secsTo <= spoton_kernel::GEMINI_TIME_DELTA_MAXIMUM))
     {
       spoton_misc::logError
 	(QString("spoton_neighbor::saveGemini(): "
