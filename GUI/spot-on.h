@@ -128,6 +128,7 @@ class spoton: public QMainWindow
   QDateTime m_neighborsLastModificationTime;
   QDateTime m_participantsLastModificationTime;
   QDateTime m_starsLastModificationTime;
+  QDialog *m_poptasticDialog;
   QHash<QByteArray, QString> m_neighborToOidMap;
   QHash<QByteArray, quint64> m_receivedChatSequenceNumbers;
   QHash<QString, QByteArray> m_buzzIds;
@@ -231,7 +232,8 @@ class spoton: public QMainWindow
   void saveUrlIniPath(const QString &path);
   void sendBuzzKeysToKernel(void);
   void sendKeysToKernel(void);
-  void sharePublicKeyWithParticipant(const QString &keyType);
+  void sharePublicKeyWithParticipant(const QString &keyType,
+				     QWidget *from);
   void showUrls(const QString &link, const QString &querystr);
   void updateListenersTable(const QSqlDatabase &db);
   void updateNeighborsTable(const QSqlDatabase &db);
@@ -441,7 +443,6 @@ class spoton: public QMainWindow
   void slotSaveKernelPath(void);
   void slotSaveMOTD(void);
   void slotSaveNodeName(void);
-  void slotSavePoptasticName(void);
   void slotSaveSslControlString(void);
   void slotSaveUrlCredentials(void);
   void slotSaveUrlName(void);
@@ -466,7 +467,6 @@ class spoton: public QMainWindow
   void slotShareEmailPublicKey(void);
   void slotShareEmailPublicKeyWithParticipant(void);
   void slotSharePoptasticPublicKey(void);
-  void slotSharePoptasticPublicKeyWithParticipant(void);
   void slotShareUrlPublicKeyWithParticipant(void);
   void slotShareURLPublicKey(void);
   void slotShowContextMenu(const QPoint &point);

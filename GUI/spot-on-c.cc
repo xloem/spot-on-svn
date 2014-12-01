@@ -2226,7 +2226,8 @@ void spoton::slotViewRosetta(void)
   m_rosetta.show(this);
 }
 
-void spoton::sharePublicKeyWithParticipant(const QString &keyType)
+void spoton::sharePublicKeyWithParticipant(const QString &keyType,
+					   QWidget *from)
 {
   if(!m_crypts.value(keyType, 0) ||
      !m_crypts.value(QString("%1-signature").arg(keyType), 0))
@@ -2241,10 +2242,14 @@ void spoton::sharePublicKeyWithParticipant(const QString &keyType)
   int row = -1;
 
   if(keyType == "chat" || keyType == "poptastic")
-    table = m_ui.participants;
-  else if(keyType == "email")
-    table = m_ui.emailParticipants;
-  else if(keyType == "url")
+    if(from == m_ui.participants)
+      table = m_ui.participants;
+
+  if(keyType == "email" || keyType == "poptastic")
+    if(from == m_ui.emailParticipants)
+      table = m_ui.emailParticipants;
+
+  if(keyType == "url")
     table = m_ui.urlParticipants;
 
   if(!table)
@@ -2293,8 +2298,7 @@ void spoton::sharePublicKeyWithParticipant(const QString &keyType)
 	name = m_settings.value("gui/emailName", "unknown").
 	  toByteArray();
       else if(keyType == "poptastic")
-	name = m_settings.value("gui/poptasticName", "unknown@unknown.org").
-	  toByteArray();
+	name = m_poptasticSettingsUi.in_username->text().trimmed().toUtf8();
       else if(keyType == "url")
 	name = name = m_settings.value("gui/urlName", "unknown").
 	  toByteArray();
@@ -3927,13 +3931,17 @@ void spoton::slotRenameParticipant(void)
 
   QModelIndexList list;
 
-  if(type == "chat" || type == "poptastic")
-    list = m_ui.participants->selectionModel()->
-      selectedRows(1); // OID
-  else if(type == "email")
-    list = m_ui.emailParticipants->selectionModel()->
-      selectedRows(1); // OID
-  else
+  if(currentTabName() == "chat")
+    if(type == "chat" || type == "poptastic")
+      list = m_ui.participants->selectionModel()->
+	selectedRows(1); // OID
+
+  if(currentTabName() == "email")
+    if(type == "email" || type == "poptastic")
+      list = m_ui.emailParticipants->selectionModel()->
+	selectedRows(1); // OID
+
+  if(type == "url")
     list = m_ui.urlParticipants->selectionModel()->
       selectedRows(1); // OID
 
@@ -3990,7 +3998,7 @@ void spoton::slotRenameParticipant(void)
   QSqlDatabase::removeDatabase(connectionName);
 
   if(ok)
-    if(type == "chat" || type == "poptastic")
+    if(currentTabName() == "chat")
       {
 	QTableWidgetItem *item = m_ui.participants->item
 	  (list.value(0).row(), 3); // public_key_hash

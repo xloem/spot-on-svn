@@ -264,6 +264,8 @@ spoton::spoton(void):QMainWindow()
   setAttribute(Qt::WA_MacMetalStyle, true);
 #endif
 #endif
+  m_poptasticDialog = new QDialog(this);
+  m_poptasticSettingsUi.setupUi(m_poptasticDialog);
   m_sbWidget = new QWidget(this);
   m_sb.setupUi(m_sbWidget);
   m_sb.authentication_request->setVisible(false);
@@ -531,10 +533,6 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotSaveNodeName(void)));
-  connect(m_ui.saveNodeName,
-	  SIGNAL(clicked(void)),
-	  this,
-	  SLOT(slotSavePoptasticName(void)));
   connect(m_ui.saveUrlName,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -567,10 +565,6 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(returnPressed(void)),
 	  this,
 	  SLOT(slotSaveNodeName(void)));
-  connect(m_ui.poptasticName,
-	  SIGNAL(returnPressed(void)),
-	  this,
-	  SLOT(slotSavePoptasticName(void)));
   connect(m_ui.emailName,
 	  SIGNAL(returnPressed(void)),
 	  this,
@@ -620,10 +614,6 @@ spoton::spoton(void):QMainWindow()
 	  this,
 	  SLOT(slotChatSendMethodChanged(int)));
   connect(m_ui.status,
-	  SIGNAL(currentIndexChanged(int)),
-	  this,
-	  SLOT(slotStatusChanged(int)));
-  connect(m_ui.poptasticStatus,
 	  SIGNAL(currentIndexChanged(int)),
 	  this,
 	  SLOT(slotStatusChanged(int)));
@@ -1379,6 +1369,8 @@ spoton::spoton(void):QMainWindow()
   settings.remove("gui/encryptionKey");
   settings.remove("gui/geoipPath");
   settings.remove("gui/keySize");
+  settings.remove("gui/my_poptasticStatus");
+  settings.remove("gui/poptasticName");
   settings.remove("gui/rsaKeySize");
   settings.remove("gui/signatureKey");
 
@@ -1549,17 +1541,6 @@ spoton::spoton(void):QMainWindow()
   else
     m_ui.status->setCurrentIndex(3);
 
-  status = m_settings.value("gui/my_poptasticStatus", "Online").toByteArray();
-
-  if(status == "Away")
-    m_ui.poptasticStatus->setCurrentIndex(0);
-  else if(status == "Busy")
-    m_ui.poptasticStatus->setCurrentIndex(1);
-  else if(status == "Offline")
-    m_ui.poptasticStatus->setCurrentIndex(2);
-  else
-    m_ui.poptasticStatus->setCurrentIndex(3);
-
 #ifdef SPOTON_LINKED_WITH_LIBGEOIP
   if(!m_ui.geoipPath4->text().isEmpty())
     m_ui.geoipPath4->setToolTip(m_ui.geoipPath4->text());
@@ -1589,12 +1570,6 @@ spoton::spoton(void):QMainWindow()
   m_ui.nodeName->setText
     (QString::fromUtf8(m_settings.value("gui/nodeName", "unknown").
 		       toByteArray()).trimmed());
-  m_ui.poptasticName->setMaxLength(spoton_common::NAME_MAXIMUM_LENGTH);
-  m_ui.poptasticName->setText
-    (QString::fromUtf8(m_settings.value("gui/poptasticName",
-					"unknown@unknown.org").
-		       toByteArray()).trimmed());
-  m_ui.poptasticName->setToolTip(m_ui.poptasticName->text());
   m_ui.urlName->setMaxLength(spoton_common::NAME_MAXIMUM_LENGTH);
   m_ui.urlName->setText
     (QString::fromUtf8(m_settings.value("gui/urlName", "unknown").
@@ -5180,7 +5155,6 @@ void spoton::slotSetPassphrase(void)
       m_settings["gui/kernelHashType"] =
 	m_ui.kernelHashType->currentText();
       m_settings["gui/nodeName"] = str3.toUtf8();
-      m_settings["gui/poptasticName"] = str3.toUtf8();
       m_settings["gui/rosettaName"] = str3.toUtf8();
       m_settings["gui/salt"] = salt;
       m_settings["gui/saltLength"] = m_ui.saltLength->value();
@@ -5200,8 +5174,6 @@ void spoton::slotSetPassphrase(void)
       settings.setValue("gui/kernelHashType",
 			m_settings["gui/kernelHashType"]);
       settings.setValue("gui/nodeName", m_settings["gui/nodeName"]);
-      settings.setValue
-	("gui/poptasticName", m_settings["gui/poptasticName"]);
       settings.setValue("gui/rosettaName", m_settings["gui/rosettaName"]);
       settings.setValue("gui/salt", m_settings["gui/salt"]);
       settings.setValue("gui/saltLength", m_settings["gui/saltLength"]);
@@ -5212,7 +5184,6 @@ void spoton::slotSetPassphrase(void)
       m_ui.buzzName->setText(m_ui.username->text());
       m_ui.emailName->setText(m_ui.username->text());
       m_ui.nodeName->setText(m_ui.username->text());
-      m_ui.poptasticName->setText(m_ui.username->text());
       m_ui.urlName->setText(m_ui.username->text());
 
       if(!m_settings.value("gui/spot_on_neighbors_txt_processed",
@@ -5409,6 +5380,19 @@ void spoton::slotValidatePassphrase(void)
 	    m_ui.tab->setCurrentIndex
 	      (m_settings.value("gui/currentTabIndex", m_ui.tab->count() - 1).
 	       toInt());
+
+	    QHash<QString, QVariant> hash;
+	    bool ok = true;
+
+	    hash = spoton_misc::poptasticSettings
+	      (m_crypts.value("chat", 0), &ok);
+
+	    if(ok)
+	      m_poptasticSettingsUi.in_username->setText
+		(hash["in_username"].toString().trimmed());
+	    else
+	      m_poptasticSettingsUi.in_username->setText
+		("unknown@unknown.org");
 
 	    if(!m_settings.value("gui/spot_on_neighbors_txt_processed",
 				 false).toBool())
@@ -6638,7 +6622,8 @@ void spoton::slotPopulateParticipants(void)
 		      else
 			m_ui.participants->setItem(row - 1, i, item);
 		    }
-		  else if(keyType == "email")
+
+		  if(keyType == "email" || keyType == "poptastic")
 		    {
 		      if(i == 0)
 			{
@@ -6649,9 +6634,18 @@ void spoton::slotPopulateParticipants(void)
 		      if(i == 0)
 			{
 			  if(name.isEmpty())
-			    name = "unknown";
+			    {
+			      if(keyType == "email")
+				name = "unknown";
+			      else
+				name = "unknown@unknown.org";
+			    }
 
 			  item = new QTableWidgetItem(name);
+
+			  if(keyType == "poptastic")
+			    item->setBackground
+			      (QBrush(QColor(137, 207, 240)));
 			}
 		      else if(i == 1 || i == 2 || i == 3)
 			item = new QTableWidgetItem

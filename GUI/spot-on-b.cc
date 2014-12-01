@@ -111,8 +111,8 @@ void spoton::slotSendMessage(void)
 	    name = m_settings.value("gui/nodeName", "unknown").
 	      toByteArray();
 	  else
-	    name = m_settings.value
-	      ("gui/poptasticName", "unknown@unknown.org").toByteArray();
+	    name = m_poptasticSettingsUi.in_username->text().
+	      trimmed().toUtf8();
 
 	  if(name.isEmpty())
 	    {
@@ -158,9 +158,6 @@ void spoton::slotSendMessage(void)
 	       arg(m_kernelSocket.peerPort()));
 	  else
 	    {
-	      if(m_ui.poptasticStatus->currentIndex() != 2) // Offline
-		m_ui.poptasticStatus->setCurrentIndex(3); // Online
-
 	      if(m_ui.status->currentIndex() != 2) // Offline
 		m_ui.status->setCurrentIndex(3); // Online
 
@@ -913,27 +910,6 @@ void spoton::slotSaveNodeName(void)
   m_ui.nodeName->selectAll();
 }
 
-void spoton::slotSavePoptasticName(void)
-{
-  QString str(m_ui.poptasticName->text().trimmed());
-
-  if(str.isEmpty())
-    {
-      str = "unknown@unknown.org";
-      m_ui.poptasticName->setText(str);
-    }
-  else
-    m_ui.poptasticName->setText(str);
-
-  m_settings["gui/poptasticName"] = str.toUtf8();
-  m_ui.poptasticName->setToolTip(str);
-
-  QSettings settings;
-
-  settings.setValue("gui/poptasticName", str.toUtf8());
-  m_ui.poptasticName->selectAll();
-}
-
 void spoton::highlightPaths(void)
 {
   QColor color;
@@ -1135,22 +1111,24 @@ void spoton::slotShareChatPublicKeyWithParticipant(void)
 
   if(item)
     sharePublicKeyWithParticipant
-      (item->data(Qt::ItemDataRole(Qt::UserRole + 1)).toString());
-}
-
-void spoton::slotSharePoptasticPublicKeyWithParticipant(void)
-{
-  sharePublicKeyWithParticipant("poptastic");
+      (item->data(Qt::ItemDataRole(Qt::UserRole + 1)).toString(),
+       m_ui.participants);
 }
 
 void spoton::slotShareEmailPublicKeyWithParticipant(void)
 {
-  sharePublicKeyWithParticipant("email");
+  QTableWidgetItem *item = m_ui.emailParticipants->item
+    (m_ui.emailParticipants->currentRow(), 1); // OID
+
+  if(item)
+    sharePublicKeyWithParticipant
+      (item->data(Qt::ItemDataRole(Qt::UserRole + 1)).toString(),
+       m_ui.emailParticipants);
 }
 
 void spoton::slotShareUrlPublicKeyWithParticipant(void)
 {
-  sharePublicKeyWithParticipant("url");
+  sharePublicKeyWithParticipant("url", m_ui.urlParticipants);
 }
 
 void spoton::slotViewLog(void)
@@ -1160,24 +1138,18 @@ void spoton::slotViewLog(void)
 
 void spoton::slotStatusChanged(int index)
 {
-  QString str("gui/my_poptasticStatus");
-
-  if(m_ui.status == sender())
-    str = "gui/my_status";
-
   if(index == 0)
-    m_settings[str] = "Away";
+    m_settings["gui/my_status"] = "Away";
   else if(index == 1)
-    m_settings[str] = "Busy";
+    m_settings["gui/my_status"] = "Busy";
   else if(index == 2)
-    m_settings[str] = "Offline";
+    m_settings["gui/my_status"] = "Offline";
   else
-    m_settings[str] = "Online";
+    m_settings["gui/my_status"] = "Online";
 
   QSettings settings;
 
-  settings.setValue
-    (str, m_settings.value(str));
+  settings.setValue("gui/my_status", m_settings.value("gui/my_status"));
 }
 
 void spoton::slotKernelCipherTypeChanged(int index)
@@ -1265,8 +1237,11 @@ QByteArray spoton::copyMyPoptasticPublicKey(void) const
   QByteArray sSignature;
   bool ok = true;
 
-  name = m_settings.value("gui/poptasticName", "unknown@unknown.org").
-    toByteArray();
+  name = m_poptasticSettingsUi.in_username->text().trimmed().toUtf8();
+
+  if(name.isEmpty())
+    name = "unknown@unknown.org";
+
   mPublicKey = m_crypts.value("poptastic")->publicKey(&ok);
 
   if(ok)
@@ -2466,8 +2441,7 @@ void spoton::slotCopyFriendshipBundle(void)
   if(keyType == "chat")
     myName = m_settings.value("gui/nodeName", "unknown").toByteArray();
   else
-    myName = m_settings.value("gui/poptasticName", "unknown@unknown.org").
-      toByteArray();
+    myName = m_poptasticSettingsUi.in_username->text().trimmed().toUtf8();
 
   if(myName.isEmpty())
     {
@@ -4063,12 +4037,8 @@ void spoton::slotSetIcons(void)
   list << "away.png" << "busy.png" << "offline.png" << "online.png";
 
   for(int i = 0; i < list.size(); i++)
-    {
-      m_ui.poptasticStatus->setItemIcon
-	(i, QIcon(QString(":/%1/%2").arg(iconSet).arg(list.at(i))));
-      m_ui.status->setItemIcon
-	(i, QIcon(QString(":/%1/%2").arg(iconSet).arg(list.at(i))));
-    }
+    m_ui.status->setItemIcon
+      (i, QIcon(QString(":/%1/%2").arg(iconSet).arg(list.at(i))));
 
   // Email
 
@@ -5274,9 +5244,6 @@ void spoton::slotTestSslControlString(void)
 
 void spoton::slotChatInactivityTimeout(void)
 {
-  if(m_ui.poptasticStatus->currentIndex() == 3) // Online
-    m_ui.poptasticStatus->setCurrentIndex(0); // Away
-
   if(m_ui.status->currentIndex() == 3) // Online
     m_ui.status->setCurrentIndex(0); // Away
 }
@@ -5728,9 +5695,6 @@ void spoton::slotChatWindowDestroyed(void)
 
 void spoton::slotChatWindowMessageSent(void)
 {
-  if(m_ui.poptasticStatus->currentIndex() != 2) // Offline
-    m_ui.poptasticStatus->setCurrentIndex(3); // Online
-
   if(m_ui.status->currentIndex() != 2) // Offline
     m_ui.status->setCurrentIndex(3); // Online
 

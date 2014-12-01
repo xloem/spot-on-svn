@@ -71,11 +71,9 @@ void spoton::slotConfigurePoptastic(void)
       return;
     }
 
-  QDialog dialog(this);
   QString connectionName("");
   QStringList protocols(curl_protocols());
 
-  m_poptasticSettingsUi.setupUi(&dialog);
   connect(m_poptasticSettingsUi.buttonBox->button(QDialogButtonBox::Reset),
 	  SIGNAL(clicked(void)),
 	  this,
@@ -91,11 +89,11 @@ void spoton::slotConfigurePoptastic(void)
 	  this,
 	  SLOT(slotTestPoptasticSmtpSettings(void)),
 	  Qt::UniqueConnection);
-  dialog.setWindowTitle
+  m_poptasticDialog->setWindowTitle
     (tr("%1: Poptastic Settings").
      arg(SPOTON_APPLICATION_NAME));
 #ifdef Q_OS_MAC
-  dialog.setAttribute(Qt::WA_MacMetalStyle, false);
+  m_poptasticDialog->setAttribute(Qt::WA_MacMetalStyle, false);
 #endif
   m_poptasticSettingsUi.poptasticRefresh->setValue
     (m_settings.value("gui/poptasticRefreshInterval", 5.00).toDouble());
@@ -167,7 +165,7 @@ void spoton::slotConfigurePoptastic(void)
 	(hash["out_username"].toString());
     }
 
-  if(dialog.exec() == QDialog::Accepted)
+  if(m_poptasticDialog->exec() == QDialog::Accepted)
     {
       QSettings settings;
 
@@ -181,7 +179,6 @@ void spoton::slotConfigurePoptastic(void)
       settings.setValue
 	("gui/poptasticRefreshInterval",
 	 m_poptasticSettingsUi.poptasticRefresh->value());
-      
 
       {
 	QSqlDatabase db = spoton_misc::database(connectionName);
@@ -291,7 +288,6 @@ void spoton::slotConfigurePoptastic(void)
   m_poptasticSettingsUi.in_password->clear();
   m_poptasticSettingsUi.in_server_address->clear();
   m_poptasticSettingsUi.in_server_port->setValue(1);
-  m_poptasticSettingsUi.in_username->clear();
   m_poptasticSettingsUi.out_password->clear();
   m_poptasticSettingsUi.out_server_address->clear();
   m_poptasticSettingsUi.out_server_port->setValue(1);
