@@ -421,6 +421,15 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
 				     interfaces(),
 				     s_crypts, "poptastic"));
 
+  if(messageType == "0000" || messageType == "0000a" ||
+     messageType == "0000b" || messageType == "0013")
+    {
+      if(messagingCacheContains(data))
+	return;
+      else
+	messagingCacheAdd(data);
+    }
+
   if(messageType == "0000")
     {
       QByteArray messageCode;
