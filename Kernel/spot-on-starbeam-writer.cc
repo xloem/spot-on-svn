@@ -376,7 +376,8 @@ void spoton_starbeam_writer::slotReadKeys(void)
 
 	      QHash<QString, QByteArray> elements;
 	      QList<QByteArray> list
-		(data.remove(0, qstrlen("magnet:?")).split('&'));
+		(data.remove(0, static_cast<int> (qstrlen("magnet:?"))).
+		 split('&'));
 
 	      while(!list.isEmpty())
 		{

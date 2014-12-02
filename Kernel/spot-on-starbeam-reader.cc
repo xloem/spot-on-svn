@@ -298,7 +298,8 @@ QHash<QString, QByteArray> spoton_starbeam_reader::elementsFromMagnet
   if(!ok)
     goto done_label;
 
-  list = data.remove(0, qstrlen("magnet:?")).split('&');
+  list = data.remove
+    (0, static_cast<int> (qstrlen("magnet:?"))).split('&');
 
   while(!list.isEmpty())
     {

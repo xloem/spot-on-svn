@@ -216,14 +216,16 @@ void spoton::slotReceivedKernelMessage(void)
 
 	  if(data.startsWith("authentication_requested_"))
 	    {
-	      data.remove(0, qstrlen("authentication_requested_"));
+	      data.remove
+		(0, static_cast<int> (qstrlen("authentication_requested_")));
 
 	      if(!data.isEmpty())
 		authenticationRequested(data);
 	    }
 	  else if(data.startsWith("buzz_"))
 	    {
-	      data.remove(0, qstrlen("buzz_"));
+	      data.remove
+		(0, static_cast<int> (qstrlen("buzz_")));
 
 	      QList<QByteArray> list(data.split('_'));
 
@@ -271,7 +273,8 @@ void spoton::slotReceivedKernelMessage(void)
 	    }
 	  else if(data.startsWith("chat_status_"))
 	    {
-	      data.remove(0, qstrlen("chat_status_"));
+	      data.remove
+		(0, static_cast<int> (qstrlen("chat_status_")));
 
 	      if(!data.isEmpty())
 		{
@@ -349,7 +352,8 @@ void spoton::slotReceivedKernelMessage(void)
 	    }
 	  else if(data.startsWith("message_"))
 	    {
-	      data.remove(0, qstrlen("message_"));
+	      data.remove
+		(0, static_cast<int> (qstrlen("message_")));
 
 	      if(!data.isEmpty())
 		{

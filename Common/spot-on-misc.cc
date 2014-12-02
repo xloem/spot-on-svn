@@ -2399,7 +2399,7 @@ bool spoton_misc::isValidBuzzMagnet(const QByteArray &magnet)
   */
 
   if(magnet.startsWith("magnet:?"))
-    list = magnet.mid(qstrlen("magnet:?")).split('&');
+    list = magnet.mid(static_cast<int> (qstrlen("magnet:?"))).split('&');
   else
     goto done_label;
 
@@ -2514,7 +2514,7 @@ bool spoton_misc::isValidStarBeamMagnet(const QByteArray &magnet)
   */
 
   if(magnet.startsWith("magnet:?"))
-    list = magnet.mid(qstrlen("magnet:?")).split('&');
+    list = magnet.mid(static_cast<int> (qstrlen("magnet:?"))).split('&');
   else
     goto done_label;
 
@@ -2602,7 +2602,7 @@ bool spoton_misc::isValidStarBeamMissingLinksMagnet(const QByteArray &magnet)
   */
 
   if(magnet.startsWith("magnet:?"))
-    list = magnet.mid(qstrlen("magnet:?")).split('&');
+    list = magnet.mid(static_cast<int> (qstrlen("magnet:?"))).split('&');
   else
     goto done_label;
 
@@ -2816,7 +2816,7 @@ bool spoton_misc::isValidInstitutionMagnet(const QByteArray &magnet)
   */
 
   if(magnet.startsWith("magnet:?"))
-    list = magnet.mid(qstrlen("magnet:?")).split('&');
+    list = magnet.mid(static_cast<int> (qstrlen("magnet:?"))).split('&');
   else
     goto done_label;
 

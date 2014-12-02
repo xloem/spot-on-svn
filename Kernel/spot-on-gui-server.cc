@@ -276,7 +276,8 @@ void spoton_gui_server::slotReadyRead(void)
 
 	  if(message.startsWith("addbuzz_"))
 	    {
-	      message.remove(0, qstrlen("addbuzz_"));
+	      message.remove
+		(0, static_cast<int> (qstrlen("addbuzz_")));
 
 	      QList<QByteArray> list(message.split('_'));
 
@@ -289,7 +290,8 @@ void spoton_gui_server::slotReadyRead(void)
 	    }
 	  else if(message.startsWith("befriendparticipant_"))
 	    {
-	      message.remove(0, qstrlen("befriendparticipant_"));
+	      message.remove
+		(0, static_cast<int> (qstrlen("befriendparticipant_")));
 
 	      QList<QByteArray> list(message.split('_'));
 
@@ -306,7 +308,8 @@ void spoton_gui_server::slotReadyRead(void)
 	    }
 	  else if(message.startsWith("buzz_"))
 	    {
-	      message.remove(0, qstrlen("buzz_"));
+	      message.remove
+		(0, static_cast<int> (qstrlen("buzz_")));
 
 	      QList<QByteArray> list(message.split('_'));
 
@@ -335,7 +338,10 @@ void spoton_gui_server::slotReadyRead(void)
 	    }
 	  else if(message.startsWith("call_participant_using_gemini_"))
 	    {
-	      message.remove(0, qstrlen("call_participant_using_gemini_"));
+	      message.remove
+		(0,
+		 static_cast<int> (qstrlen("call_participant_"
+					   "using_gemini_")));
 
 	      QList<QByteArray> list(message.split('_'));
 
@@ -346,7 +352,9 @@ void spoton_gui_server::slotReadyRead(void)
 	  else if(message.startsWith("call_participant_using_public_key_"))
 	    {
 	      message.remove
-		(0, qstrlen("call_participant_using_public_key_"));
+		(0,
+		 static_cast<int> (qstrlen("call_participant_"
+					   "using_public_key_")));
 
 	      QList<QByteArray> list(message.split('_'));
 
@@ -356,21 +364,24 @@ void spoton_gui_server::slotReadyRead(void)
 	    }
 	  else if(message.startsWith("detach_listener_neighbors_"))
 	    {
-	      message.remove(0, qstrlen("detach_listener_neighbors_"));
+	      message.remove
+		(0, static_cast<int> (qstrlen("detach_listener_neighbors_")));
 
 	      if(!message.isEmpty())
 		emit detachNeighbors(message.toLongLong());
 	    }
 	  else if(message.startsWith("disconnect_listener_neighbors_"))
 	    {
-	      message.remove(0, qstrlen("disconnect_listener_neighbors_"));
+	      message.remove
+		(0, static_cast<int> (qstrlen("disconnect_listener_"
+					      "neighbors_")));
 
 	      if(!message.isEmpty())
 		emit disconnectNeighbors(message.toLongLong());
 	    }
 	  else if(message.startsWith("keys_"))
 	    {
-	      message.remove(0, qstrlen("keys_"));
+	      message.remove(0, static_cast<int> (qstrlen("keys_")));
 
 	      QList<QByteArray> list(message.split('_'));
 
@@ -440,7 +451,7 @@ void spoton_gui_server::slotReadyRead(void)
 	    }
 	  else if(message.startsWith("message_"))
 	    {
-	      message.remove(0, qstrlen("message_"));
+	      message.remove(0, static_cast<int> (qstrlen("message_")));
 
 	      QList<QByteArray> list(message.split('_'));
 
@@ -455,7 +466,8 @@ void spoton_gui_server::slotReadyRead(void)
 	    }
 	  else if(message.startsWith("poptasticmessage_"))
 	    {
-	      message.remove(0, qstrlen("poptasticmessage_"));
+	      message.remove
+		(0, static_cast<int> (qstrlen("poptasticmessage_")));
 
 	      QList<QByteArray> list(message.split('_'));
 
@@ -474,7 +486,9 @@ void spoton_gui_server::slotReadyRead(void)
 	    emit publicizeAllListenersPlaintext();
 	  else if(message.startsWith("publicizelistenerplaintext"))
 	    {
-	      message.remove(0, qstrlen("publicizelistenerplaintext_"));
+	      message.remove
+		(0, static_cast<int> (qstrlen("publicize"
+					      "listenerplaintext_")));
 
 	      QList<QByteArray> list(message.split('_'));
 
@@ -484,14 +498,16 @@ void spoton_gui_server::slotReadyRead(void)
 	    }
 	  else if(message.startsWith("removebuzz_"))
 	    {
-	      message.remove(0, qstrlen("removebuzz_"));
+	      message.remove
+		(0, static_cast<int> (qstrlen("removebuzz_")));
 	      spoton_kernel::removeBuzzKey(QByteArray::fromBase64(message));
 	    }
 	  else if(message.startsWith("retrievemail"))
 	    emit retrieveMail();
 	  else if(message.startsWith("sharebuzzmagnet_"))
 	    {
-	      message.remove(0, qstrlen("sharebuzzmagnet_"));
+	      message.remove
+		(0, static_cast<int> (qstrlen("sharebuzzmagnet_")));
 
 	      QList<QByteArray> list(message.split('_'));
 
@@ -502,7 +518,8 @@ void spoton_gui_server::slotReadyRead(void)
 	    }
 	  else if(message.startsWith("sharepublickey_"))
 	    {
-	      message.remove(0, qstrlen("sharepublickey_"));
+	      message.remove
+		(0, static_cast<int> (qstrlen("sharepublickey_")));
 
 	      QList<QByteArray> list(message.split('_'));
 

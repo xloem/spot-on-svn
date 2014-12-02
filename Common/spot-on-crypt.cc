@@ -1440,6 +1440,16 @@ QByteArray spoton_crypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
 
   if(array.startsWith("ntru-private-key-"))
     {
+      /*
+      ** NTRU requires knowledge of the public key.
+      */
+
+      {
+	bool ok = true;
+
+	publicKey(&ok);
+      }
+
       array.replace(0, array.length(), QByteArray(array.length(), 0));
       array.clear();
       return publicKeyDecryptNTRU(data, ok);

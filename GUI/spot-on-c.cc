@@ -3359,7 +3359,8 @@ void spoton::importNeighbors(const QString &filePath)
 
 		    if(token.startsWith("echo_mode="))
 		      {
-			token.remove(0, qstrlen("echo_mode="));
+			token.remove
+			  (0, static_cast<int> (qstrlen("echo_mode=")));
 
 			if(!(token == "full" || token == "half"))
 			  fine = false;
@@ -3368,7 +3369,8 @@ void spoton::importNeighbors(const QString &filePath)
 		      }
 		    else if(token.startsWith("ip_address="))
 		      {
-			token.remove(0, qstrlen("ip_address="));
+			token.remove
+			  (0, static_cast<int> (qstrlen("ip_address=")));
 
 			if(QHostAddress(token.constData()).isNull())
 			  {
@@ -3382,7 +3384,8 @@ void spoton::importNeighbors(const QString &filePath)
 		      }
 		    else if(token.startsWith("orientation="))
 		      {
-			token.remove(0, qstrlen("orientation="));
+			token.remove
+			  (0, static_cast<int> (qstrlen("orientation=")));
 			token = token.toLower();
 
 			if(!(token == "packet" || token == "stream"))
@@ -3392,7 +3395,8 @@ void spoton::importNeighbors(const QString &filePath)
 		      }
 		    else if(token.startsWith("port="))
 		      {
-			token.remove(0, qstrlen("port="));
+			token.remove
+			  (0, static_cast<int> (qstrlen("port=")));
 
 			if(!(token.toInt() > 0 &&
 			     token.toInt() <= 65535))
@@ -3402,7 +3406,8 @@ void spoton::importNeighbors(const QString &filePath)
 		      }
 		    else if(token.startsWith("protocol="))
 		      {
-			token.remove(0, qstrlen("protocol="));
+			token.remove
+			  (0, static_cast<int> (qstrlen("protocol=")));
 			token = token.toLower();
 
 			if(token == "dynamic dns")
@@ -3416,12 +3421,14 @@ void spoton::importNeighbors(const QString &filePath)
 		      }
 		    else if(token.startsWith("scope_id="))
 		      {
-			token.remove(0, qstrlen("scope_id="));
+			token.remove
+			  (0, static_cast<int> (qstrlen("scope_id=")));
 			hash["scope_id"] = token;
 		      }
 		    else if(token.startsWith("ssl_key_size="))
 		      {
-			token.remove(0, qstrlen("ssl_key_size="));
+			token.remove
+			  (0, static_cast<int> (qstrlen("ssl_key_size=")));
 
 			if(!(token == "0" ||
 			     token == "2048" || token == "3072" ||
@@ -3432,7 +3439,8 @@ void spoton::importNeighbors(const QString &filePath)
 		      }
 		    else if(token.startsWith("transport="))
 		      {
-			token.remove(0, qstrlen("transport="));
+			token.remove
+			  (0, static_cast<int> (qstrlen("transport=")));
 			token = token.toLower();
 
 #ifdef SPOTON_SCTP_ENABLED

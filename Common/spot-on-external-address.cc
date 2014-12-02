@@ -66,7 +66,7 @@ void spoton_external_address::slotFinished(void)
 	bytes.remove
 	  (0,
 	   bytes.indexOf("Current IP Address:") +
-	   qstrlen("Current IP Address:"));
+	   static_cast<int> (qstrlen("Current IP Address:")));
 
       indexOf = bytes.indexOf("<");
 

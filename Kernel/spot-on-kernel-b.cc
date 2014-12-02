@@ -393,7 +393,8 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
 {
   QByteArray data
     (message.
-     mid(message.indexOf("content=") + qstrlen("content="),
+     mid(message.indexOf("content=") +
+	 static_cast<int> (qstrlen("content=")),
 	 message.indexOf(spoton_send::EOM) + spoton_send::EOM.length()).
      trimmed());
 
@@ -418,8 +419,7 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
   QString messageType
     (spoton_receive::findMessageType(data, symmetricKeys,
 				     interfaces(),
-				     s_crypts,
-				     "poptastic"));
+				     s_crypts, "poptastic"));
 
   if(messageType == "0000")
     {
@@ -439,7 +439,8 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
 	    (list.value(1),                   // Name
 	     list.value(0),                   // Public Key Hash
 	     QByteArray(),                    // Status
-	     QDateTime::currentDateTime().toString("MMddyyyyhhmmss").
+	     QDateTime::currentDateTime().toUTC().
+	     toString("MMddyyyyhhmmss").
 	     toLatin1(),                      // Timestamp
 	     POPTASTIC_STATUS_INTERVAL * 2.5, // Seconds
 	     s_crypts.value("poptastic", 0));
