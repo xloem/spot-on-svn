@@ -246,7 +246,16 @@ void spoton_kernel::popPostPoptastic(void)
 		    (curl, CURLOPT_CUSTOMREQUEST,
 		     QString("STORE %1 +Flags \\Deleted").
 		     arg(list.takeFirst()).toLatin1().constData());
-		  curl_easy_perform(curl);
+
+		  if(curl_easy_perform(curl) != CURLE_OK)
+		    {
+		      curl_easy_setopt
+			(curl, CURLOPT_CUSTOMREQUEST, "EXPUNGE");
+		      curl_easy_perform(curl);
+		    }
+
+		  if(m_poptasticPopPostFuture.isCanceled())
+		    break;
 		}
 	    }
 

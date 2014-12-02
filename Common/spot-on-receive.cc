@@ -887,6 +887,23 @@ QString spoton_receive::findMessageType
 	      goto done_label;
 	  }
 
+  if(list.size() == 4 || list.size() == 7)
+    if((s_crypt = s_crypts.value("email", 0)))
+      if(spoton_misc::participantCount("email", s_crypt) > 0)
+	{
+	  QByteArray data;
+	  bool ok = true;
+
+	  data = s_crypt->publicKeyDecrypt
+	    (QByteArray::fromBase64(list.value(0)), &ok);
+
+	  if(ok)
+	    type = QByteArray::fromBase64(data.split('\n').value(0));
+
+	  if(!type.isEmpty())
+	    goto done_label;
+	}
+
  done_label:
   return type;
 }

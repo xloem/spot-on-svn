@@ -4931,7 +4931,6 @@ QString spoton_neighbor::findMessageType
   QList<QByteArray> list(data.trimmed().split('\n'));
   QString type("");
   int interfaces = spoton_kernel::interfaces();
-  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
   /*
   ** list[0]: Data
@@ -5012,27 +5011,8 @@ QString spoton_neighbor::findMessageType
 	  }
       }
 
-  if(list.size() == 4 || list.size() == 7)
-    if((s_crypt = spoton_kernel::s_crypts.value("email", 0)))
-      if(spoton_misc::participantCount("email", s_crypt) > 0)
-	{
-	  QByteArray data;
-	  bool ok = true;
-
-	  data = s_crypt->publicKeyDecrypt
-	    (QByteArray::fromBase64(list.value(0)), &ok);
-
-	  if(ok)
-	    type = QByteArray::fromBase64(data.split('\n').value(0));
-
-	  if(!type.isEmpty())
-	    goto done_label;
-	}
-
-  type = spoton_receive::findMessageType(data, symmetricKeys,
-					 interfaces,
-					 spoton_kernel::s_crypts,
-					 "chat");
+  type = spoton_receive::findMessageType
+    (data, symmetricKeys, interfaces, spoton_kernel::s_crypts, "chat");
 
 done_label:
   spoton_kernel::discoverAdaptiveEchoPair
