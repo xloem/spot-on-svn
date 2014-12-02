@@ -442,7 +442,7 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
 	     QDateTime::currentDateTime().toUTC().
 	     toString("MMddyyyyhhmmss").
 	     toLatin1(),                      // Timestamp
-	     POPTASTIC_STATUS_INTERVAL * 2.5, // Seconds
+	     2.5 * POPTASTIC_STATUS_INTERVAL, // Seconds
 	     s_crypts.value("poptastic", 0));
 	  emit receivedChatMessage
 	    ("message_" +
@@ -496,11 +496,11 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
 
       if(!list.isEmpty())
 	spoton_misc::saveParticipantStatus
-	  (list.value(1),             // Name
-	   list.value(0),             // Public Key Hash
-	   list.value(2),             // Status
-	   list.value(3),             // Timestamp
-	   POPTASTIC_STATUS_INTERVAL, // Seconds
+	  (list.value(1),                   // Name
+	   list.value(0),                   // Public Key Hash
+	   list.value(2),                   // Status
+	   list.value(3),                   // Timestamp
+	   2.5 * POPTASTIC_STATUS_INTERVAL, // Seconds
 	   s_crypts.value("poptastic"));
     }
 }
