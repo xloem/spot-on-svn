@@ -2102,7 +2102,7 @@ void spoton_kernel::prepareStatus(const QString &keyType)
   QHash<QString, QVariant> hash;
   QList<QByteArray> list;
   QString connectionName("");
-  QString receiverName("");
+  QStringList receiverNames;
 
   if(keyType == "poptastic")
     hash = spoton_misc::poptasticSettings(s_crypt1, &ok);
@@ -2131,6 +2131,7 @@ void spoton_kernel::prepareStatus(const QString &keyType)
 	    {
 	      QByteArray data;
 	      QByteArray publicKey;
+	      QByteArray receiverName;
 	      QPair<QByteArray, QByteArray> gemini;
 	      bool ok = true;
 
@@ -2297,7 +2298,10 @@ void spoton_kernel::prepareStatus(const QString &keyType)
 		      }
 
 		  if(ok)
-		    list.append(data);
+		    {
+		      list.append(data);
+		      receiverNames.append(receiverName);
+		    }
 		}
 	    }
       }
@@ -2318,7 +2322,7 @@ void spoton_kernel::prepareStatus(const QString &keyType)
 
 	    message = spoton_send::message0013
 	      (list.takeFirst(), QPair<QByteArray, QByteArray> ());
-	    postPoptasticMessage(receiverName, message);
+	    postPoptasticMessage(receiverNames.takeFirst(), message);
 	  }
     }
 }
