@@ -73,6 +73,7 @@ class spoton_kernel: public QObject
   static QPointer<spoton_kernel> s_kernel;
   static const int GEMINI_TIME_DELTA_MAXIMUM = 90;
   static const int MAIL_TIME_DELTA_MAXIMUM = 90;
+  static const int POPTASTIC_STATUS_INTERVAL = 60;
   static QList<QByteArray> findBuzzKey(const QByteArray &data,
 				       const QByteArray &hash);
   static QList<QByteArray> findInstitutionKey(const QByteArray &data,

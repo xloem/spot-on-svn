@@ -377,7 +377,6 @@ void spoton_kernel::popPostPoptastic(void)
 	      curl_easy_setopt(curl, CURLOPT_READDATA, &upload_ctx);
 	      curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
 	      curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
-	      curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
 	      curl_easy_perform(curl);
 	      curl_slist_free_all(recipients);
 
@@ -437,13 +436,13 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
       if(!list.isEmpty())
 	{
 	  spoton_misc::saveParticipantStatus
-	    (list.value(1), // Name
-	     list.value(0), // Public Key Hash
-	     QByteArray(),  // Status
+	    (list.value(1),                   // Name
+	     list.value(0),                   // Public Key Hash
+	     QByteArray(),                    // Status
 	     QDateTime::currentDateTime().toString("MMddyyyyhhmmss").
-	     toLatin1(),    // Timestamp
-	     60,            // Seconds
-	     s_crypts.value("chat", 0));
+	     toLatin1(),                      // Timestamp
+	     POPTASTIC_STATUS_INTERVAL * 2.5, // Seconds
+	     s_crypts.value("poptastic", 0));
 	  emit receivedChatMessage
 	    ("message_" +
 	     list.value(0).toBase64() + "_" +
@@ -496,12 +495,12 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
 
       if(!list.isEmpty())
 	spoton_misc::saveParticipantStatus
-	  (list.value(1),  // Name
-	   list.value(0),  // Public Key Hash
-	   list.value(2),  // Status
-	   list.value(3),  // Timestamp
-	   60,             // Seconds
-	   s_crypts.value("chat"));
+	  (list.value(1),             // Name
+	   list.value(0),             // Public Key Hash
+	   list.value(2),             // Status
+	   list.value(3),             // Timestamp
+	   POPTASTIC_STATUS_INTERVAL, // Seconds
+	   s_crypts.value("poptastic"));
     }
 }
 

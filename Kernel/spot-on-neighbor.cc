@@ -2168,7 +2168,7 @@ void spoton_neighbor::slotSharePublicKey(const QByteArray &keyType,
 void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 				  const QList<QByteArray> &symmetricKeys)
 {
-  QByteArray mc; // Message Code
+  QByteArray messageCode;
   QList<QByteArray> list
     (spoton_receive::process0000(length, dataIn, symmetricKeys,
 				 spoton_kernel::setting("gui/chatAccept"
@@ -2176,7 +2176,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 							"Only",
 							true).toBool(),
 				 m_address, m_port,
-				 mc, // Message Code
+				 messageCode,
 				 spoton_kernel::s_crypts.value("chat", 0)));
 
   if(!list.isEmpty())
@@ -2191,7 +2191,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 	 list.value(2).toBase64() + "_" +
 	 list.value(3).toBase64() + "_" +
 	 list.value(4).toBase64() + "_" +
-	 mc.toBase64().append('\n'));
+	 messageCode.toBase64().append('\n'));
     }
 }
 

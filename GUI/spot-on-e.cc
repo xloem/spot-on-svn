@@ -430,7 +430,6 @@ void spoton::slotTestPoptasticSmtpSettings(void)
       curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
       curl_easy_setopt(curl, CURLOPT_TIMEOUT, 5L);
       curl_easy_setopt(curl, CURLOPT_URL, url.toLatin1().constData());
-      curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
       res = curl_easy_perform(curl);
 
       if(res == CURLE_OK)
