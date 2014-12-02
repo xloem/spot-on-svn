@@ -17,6 +17,8 @@
 12.  Updated GeoIP.dat.
 13.  Include timestamps in status messages. Previous functionality will
      be disrupted.
+14.  Corrected usage of qstrlen(). The function returns an unsigned
+     integer.
 
 0.16b (11/21/2014)
 
