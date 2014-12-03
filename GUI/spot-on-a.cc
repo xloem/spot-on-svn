@@ -6681,6 +6681,8 @@ void spoton::slotPopulateParticipants(void)
 			}
 
 		      item->setData(Qt::UserRole, temporary);
+		      item->setData
+			(Qt::ItemDataRole(Qt::UserRole + 1), keyType);
 		      item->setFlags
 			(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		      m_ui.emailParticipants->setItem

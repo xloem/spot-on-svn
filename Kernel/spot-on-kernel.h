@@ -234,6 +234,8 @@ class spoton_kernel: public QObject
 		    const QByteArray &subject,
 		    const QByteArray &attachment,
 		    const QByteArray &attachmentName,
+		    const QByteArray &keyType,
+		    const QByteArray &receiverName,
 		    const qint64 mailOid);
   void slotSettingsChanged(const QString &path);
   void slotStatusTimerExpired(void);
@@ -242,6 +244,7 @@ class spoton_kernel: public QObject
  signals:
   void callParticipant(const QByteArray &data,
 		       const QString &messageType);
+  void newEMailArrived(void);
   void poppedMessage(const QByteArray &message);
   void publicizeListenerPlaintext(const QByteArray &data,
 				  const qint64 id);

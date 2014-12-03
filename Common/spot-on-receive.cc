@@ -564,6 +564,140 @@ QList<QByteArray> spoton_receive::process0000b
   return QList<QByteArray> ();
 }
 
+QList<QByteArray> spoton_receive::process0001b
+(int length, const QByteArray &dataIn,
+ const QHostAddress &address,
+ const quint16 port,
+ spoton_crypt *s_crypt)
+{
+  QByteArray data(dataIn);
+
+  if(length == data.length())
+    {
+      data = data.trimmed();
+
+      QByteArray originalData(data);
+      QList<QByteArray> list(data.split('\n'));
+
+      if(list.size() != 7)
+	{
+	  spoton_misc::logError
+	    (QString("spoton_receive::process0001b(): "
+		     "received irregular data. Expecting 7 "
+		     "entries, "
+		     "received %1.").arg(list.size()));
+	  return QList<QByteArray> ();
+	}
+
+      for(int i = 0; i < list.size(); i++)
+	list.replace(i, QByteArray::fromBase64(list.at(i)));
+
+      QByteArray hashKey;
+      QByteArray keyInformation(list.value(0));
+      QByteArray symmetricKey;
+      QByteArray symmetricKeyAlgorithm;
+      bool ok = true;
+
+      keyInformation = s_crypt->
+	publicKeyDecrypt(keyInformation, &ok);
+
+      if(ok)
+	{
+	  QList<QByteArray> list(keyInformation.split('\n'));
+
+	  list.removeAt(0); // Message Type
+
+	  if(list.size() == 3)
+	    {
+	      hashKey = QByteArray::fromBase64(list.value(1));
+	      symmetricKey = QByteArray::fromBase64(list.value(0));
+	      symmetricKeyAlgorithm = QByteArray::fromBase64
+		(list.value(2));
+	    }
+	  else
+	    {
+	      spoton_misc::logError
+		(QString("spoton_receive::0001b(): "
+			 "received irregular data. "
+			 "Expecting 3 "
+			 "entries, "
+			 "received %1.").arg(list.size()));
+	      return QList<QByteArray> ();
+	    }
+	}
+
+      if(ok)
+	{
+	  QByteArray computedHash;
+	  QByteArray data(list.value(1));
+
+	  computedHash = spoton_crypt::keyedHash
+	    (data, hashKey, "sha512", &ok);
+
+	  if(ok)
+	    {
+	      QByteArray messageCode(list.value(2));
+
+	      if(!computedHash.isEmpty() && !messageCode.isEmpty() &&
+		 spoton_crypt::memcmp(computedHash, messageCode))
+		{
+		  spoton_crypt crypt(symmetricKeyAlgorithm,
+				     "sha512",
+				     QByteArray(),
+				     symmetricKey,
+				     0,
+				     0,
+				     QString(""));
+
+		  data = crypt.decrypted(data, &ok);
+
+		  if(ok)
+		    {
+		      QList<QByteArray> list(data.split('\n'));
+
+		      if(list.size() == 8)
+			{
+			  for(int i = 0; i < list.size(); i++)
+			    list.replace
+			      (i, QByteArray::fromBase64(list.at(i)));
+
+			  return list;
+			}
+		      else
+			{
+			  spoton_misc::logError
+			    (QString("spoton_receive::process0001b(): "
+				     "received irregular data. "
+				     "Expecting 8 "
+				     "entries, "
+				     "received %1.").arg(list.size()));
+			  return QList<QByteArray> ();
+			}
+		    }
+		}
+	      else
+		{
+		  spoton_misc::logError
+		    ("spoton_receive::process0001b(): "
+		     "computed message code does "
+		     "not match provided code.");
+		  return QList<QByteArray> ();
+		}
+	    }
+	}
+    }
+  else
+    spoton_misc::logError
+      (QString("spoton_receive::process0001b(): 0001b "
+	       "content-length mismatch (advertised: %1, received: %2) "
+	       "for %3:%4.").
+       arg(length).arg(data.length()).
+       arg(address.toString()).
+       arg(port));
+
+  return QList<QByteArray> ();
+}
+
 QList<QByteArray> spoton_receive::process0013
 (int length, const QByteArray &dataIn,
  const QList<QByteArray> &symmetricKeys,
@@ -888,8 +1022,8 @@ QString spoton_receive::findMessageType
 	  }
 
   if(list.size() == 4 || list.size() == 7)
-    if((s_crypt = s_crypts.value("email", 0)))
-      if(spoton_misc::participantCount("email", s_crypt) > 0)
+    if((s_crypt = s_crypts.value(keyType, 0)))
+      if(spoton_misc::participantCount(keyType, s_crypt) > 0)
 	{
 	  QByteArray data;
 	  bool ok = true;

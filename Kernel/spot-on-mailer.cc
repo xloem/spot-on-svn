@@ -123,8 +123,10 @@ void spoton_mailer::slotTimeout(void)
 	      QByteArray attachment;
 	      QByteArray attachmentName;
 	      QByteArray goldbug;
+	      QByteArray keyType;
 	      QByteArray message;
 	      QByteArray publicKey;
+	      QByteArray receiverName;
 	      QByteArray subject;
 	      qint64 mailOid = query.value(5).toLongLong();
 	      qint64 participantOid = -1;
@@ -150,18 +152,34 @@ void spoton_mailer::slotTimeout(void)
 		  QSqlQuery query(db2);
 
 		  query.setForwardOnly(true);
-		  query.prepare("SELECT public_key FROM "
+		  query.prepare("SELECT key_type, name, public_key FROM "
 				"friends_public_keys "
 				"WHERE OID = ? AND neighbor_oid = -1");
 		  query.bindValue(0, participantOid);
 
 		  if((ok = query.exec()))
 		    if((ok = query.next()))
-		      publicKey = s_crypt->
-			decryptedAfterAuthenticated
-			(QByteArray::fromBase64(query.value(0).
-						toByteArray()),
-			 &ok);
+		      {
+			keyType = s_crypt->
+			  decryptedAfterAuthenticated
+			  (QByteArray::fromBase64(query.value(0).
+						  toByteArray()),
+			   &ok);
+
+			if(ok)
+			  receiverName = s_crypt->
+			    decryptedAfterAuthenticated
+			    (QByteArray::fromBase64(query.value(1).
+						    toByteArray()),
+			     &ok);
+
+			if(ok)
+			  publicKey = s_crypt->
+			    decryptedAfterAuthenticated
+			    (QByteArray::fromBase64(query.value(2).
+						    toByteArray()),
+			     &ok);
+		      }
 		}
 
 	      if(ok)
@@ -208,6 +226,8 @@ void spoton_mailer::slotTimeout(void)
 			 << subject
 			 << attachment
 			 << attachmentName
+			 << keyType
+			 << receiverName
 			 << mailOid;
 		  list.append(vector);
 		}
@@ -236,7 +256,9 @@ void spoton_mailer::slotTimeout(void)
 		    vector.value(4).toByteArray(),
 		    vector.value(5).toByteArray(),
 		    vector.value(6).toByteArray(),
-		    vector.value(7).toLongLong());
+		    vector.value(7).toByteArray(),
+		    vector.value(8).toByteArray(),
+		    vector.value(9).toLongLong());
     }
 }
 

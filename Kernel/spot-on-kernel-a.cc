@@ -640,6 +640,8 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 			  const QByteArray &,
 			  const QByteArray &,
 			  const QByteArray &,
+			  const QByteArray &,
+			  const QByteArray &,
 			  const qint64)),
 	  this,
 	  SLOT(slotSendMail(const QByteArray &,
@@ -649,7 +651,13 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 			    const QByteArray &,
 			    const QByteArray &,
 			    const QByteArray &,
+			    const QByteArray &,
+			    const QByteArray &,
 			    const qint64)));
+  connect(this,
+	  SIGNAL(newEMailArrived(void)),
+	  m_guiServer,
+	  SLOT(slotNewEMailArrived(void)));
   connect(this,
 	  SIGNAL(receivedChatMessage(const QByteArray &)),
 	  m_guiServer,
@@ -2651,14 +2659,17 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 				 const QByteArray &subject,
 				 const QByteArray &attachment,
 				 const QByteArray &attachmentName,
+				 const QByteArray &keyType,
+				 const QByteArray &receiverName,
 				 const qint64 mailOid)
 {
-  spoton_crypt *s_crypt1 = s_crypts.value("email", 0);
+  spoton_crypt *s_crypt1 = s_crypts.value(keyType, 0);
 
   if(!s_crypt1)
     return;
 
-  spoton_crypt *s_crypt2 = s_crypts.value("email-signature", 0);
+  spoton_crypt *s_crypt2 = s_crypts.value
+    (QString("%1-signature").arg(keyType.constData()), 0);
 
   if(!s_crypt2)
     return;
@@ -2703,7 +2714,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "email.db");
 
-    if(db.open())
+    if(db.open() || keyType == "poptastic")
       {
 	/*
 	** Much of this is duplicated in the below branch.
@@ -2713,9 +2724,10 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT cipher_type, "
+	if(keyType == "poptastic" ||
+	   query.exec("SELECT cipher_type, "
 		      "hash_type, name, postal_address FROM institutions"))
-	  while(query.next())
+	  while(keyType == "poptastic" || query.next())
 	    {
 	      QByteArray cipherType
 		(setting("gui/kernelCipherType", "aes256").
@@ -2735,28 +2747,46 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 	      QString institutionCipherType;
 	      bool ok = true;
 
-	      institutionCipherType = s_crypt1->decryptedAfterAuthenticated
-		(QByteArray::fromBase64(query.value(0).toByteArray()),
-		 &ok).constData();
+	      if(keyType == "email")
+		{
+		  institutionCipherType = s_crypt1->
+		    decryptedAfterAuthenticated
+		    (QByteArray::fromBase64(query.value(0).toByteArray()),
+		     &ok).constData();
 
-	      if(ok)
-		institutionHashType = s_crypt1->decryptedAfterAuthenticated
-		  (QByteArray::fromBase64(query.value(1).toByteArray()),
-		   &ok);
+		  if(ok)
+		    institutionHashType = s_crypt1->
+		      decryptedAfterAuthenticated
+		      (QByteArray::fromBase64(query.value(1).toByteArray()),
+		       &ok);
 
-	      if(ok)
-		institutionName = s_crypt1->decryptedAfterAuthenticated
-		  (QByteArray::fromBase64(query.value(2).toByteArray()),
-		   &ok);
+		  if(ok)
+		    institutionName = s_crypt1->decryptedAfterAuthenticated
+		      (QByteArray::fromBase64(query.value(2).toByteArray()),
+		       &ok);
 
-	      if(ok)
-		institutionPostalAddress = s_crypt1->
-		  decryptedAfterAuthenticated
-		  (QByteArray::fromBase64(query.value(3).toByteArray()),
-		   &ok);
+		  if(ok)
+		    institutionPostalAddress = s_crypt1->
+		      decryptedAfterAuthenticated
+		      (QByteArray::fromBase64(query.value(3).toByteArray()),
+		       &ok);
+		}
+	      else
+		{
+		  institutionCipherType = "aes256";
+		  institutionHashType = "sha512";
+		  institutionName = spoton_crypt::weakRandomBytes(32);
+		  institutionPostalAddress =
+		    spoton_crypt::weakRandomBytes(32);
+		}
 
 	      if(!ok)
-		continue;
+		{
+		  if(keyType == "poptastic")
+		    break;
+
+		  continue;
+		}
 
 	      symmetricKeyAlgorithm = cipherType;
 
@@ -2776,6 +2806,10 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 		  spoton_misc::logError
 		    ("spoton_kernel::slotSendMail(): "
 		     "cipherKeyLength() failure.");
+
+		  if(keyType == "poptastic")
+		    break;
+
 		  continue;
 		}
 
@@ -2887,6 +2921,9 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 
 		  list.append(pair);
 		}
+
+	      if(keyType == "poptastic")
+		break;
 	    }
       }
 
@@ -2894,7 +2931,21 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
   }
 
   if(!list.isEmpty())
-    emit sendMail(list, "0001b");
+    {
+      if(keyType == "email")
+	emit sendMail(list, "0001b");
+      else
+	{
+	  QByteArray message;
+
+	  message = spoton_send::message0001b
+	    (list.first().first, QPair<QByteArray, QByteArray> ());
+	  postPoptasticMessage(receiverName, message);
+	  spoton_misc::moveSentMailToSentFolder
+	    (QList<qint64> () << mailOid, s_crypt1);
+	  return;
+	}
+    }
 
   list.clear();
   QSqlDatabase::removeDatabase(connectionName);

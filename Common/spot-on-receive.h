@@ -55,6 +55,11 @@ class spoton_receive
      const QHostAddress &address,
      const quint16 port,
      spoton_crypt *s_crypt);
+  static QList<QByteArray> process0001b
+    (int length, const QByteArray &dataIn,
+     const QHostAddress &address,
+     const quint16 port,
+     spoton_crypt *s_crypt);
   static QList<QByteArray> process0013
     (int length, const QByteArray &dataIn,
      const QList<QByteArray> &symmetricKeys,

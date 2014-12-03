@@ -64,7 +64,10 @@ static size_t curl_payload_source
       size_t length = strlen(data);
 
       if(length > 0)
-	memcpy(ptr, data, length);
+	memcpy(ptr, data, qMin(length, nmemb * size));
+
+      if(length > nmemb * size)
+	return nmemb * size;
 
       upload_ctx->lines_read++;
       return length;
@@ -424,9 +427,9 @@ void spoton_kernel::popPostPoptastic(void)
 	      recipients = curl_slist_append
 		(recipients, pair.first.toLatin1().constData());
 	      curl_easy_setopt(curl, CURLOPT_MAIL_RCPT, recipients);
+	      curl_easy_setopt(curl, CURLOPT_READDATA, &upload_ctx);
 	      curl_easy_setopt
 		(curl, CURLOPT_READFUNCTION, curl_payload_source);
-	      curl_easy_setopt(curl, CURLOPT_READDATA, &upload_ctx);
 	      curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
 	      curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
 	      curl_easy_perform(curl);
@@ -535,6 +538,205 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
 	saveGemini(list.value(1), list.value(2),
 		   list.value(3), list.value(4),
 		   "0000b");
+    }
+  else if(messageType == "0001b")
+    {
+      QList<QByteArray> list
+	(spoton_receive::
+	 process0001b(data.length(), data,
+		      QHostAddress("127.0.0.1"), 0,
+		      s_crypts.value("poptastic", 0)));
+
+      if(!list.isEmpty())
+	{
+	  QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
+			     "email.db");
+	  qint64 maximumSize = 1048576 * setting
+	    ("gui/maximumEmailFileSize", 100).toLongLong();
+
+	  if(fileInfo.size() >= maximumSize)
+	    {
+	      spoton_misc::logError("spoton_kernel::slotPoppedMessage(): "
+			    "email.db has exceeded the specified limit.");
+	      return;
+	    }
+
+	  spoton_crypt *s_crypt = s_crypts.value("poptastic", 0);
+
+	  if(!s_crypt)
+	    return;
+
+	  QByteArray attachment;
+	  QByteArray attachmentName;
+	  QByteArray message;
+	  QByteArray name;
+	  QByteArray senderPublicKeyHash;
+	  QByteArray signature;
+	  QByteArray subject;
+	  bool goldbugUsed = false;
+
+	  senderPublicKeyHash = list.value(0);
+	  name = list.value(1);
+	  subject = list.value(2);
+	  message = list.value(3);
+	  attachment = list.value(4);
+	  attachmentName = list.value(5);
+	  signature = list.value(6);
+	  goldbugUsed = QVariant(list.value(7)).toBool();
+
+	  if(setting("gui/emailAcceptSignedMessagesOnly",
+		     true).toBool())
+	    if(!spoton_misc::
+	       isValidSignature(senderPublicKeyHash +
+				name +
+				subject +
+				message +
+				attachment +
+				attachmentName,
+				senderPublicKeyHash,
+				signature, s_crypt))
+	      {
+		spoton_misc::logError
+		  ("spoton_kernel::slotPoppedMessage(): invalid signature.");
+		return;
+	      }
+
+	  /*
+	  ** We need to remember that the information here may have been
+	  ** encoded with a goldbug. The interface will prompt the user
+	  ** for the symmetric key.
+	  */
+
+	  if(!spoton_misc::isAcceptedParticipant(senderPublicKeyHash,
+						 "poptastic",
+						 s_crypt))
+	    return;
+
+	  QString connectionName("");
+
+	  {
+	    QSqlDatabase db = spoton_misc::database(connectionName);
+
+	    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+			       "email.db");
+
+	    if(db.open())
+	      {
+		QSqlQuery query(db);
+		bool ok = true;
+
+		query.prepare("INSERT INTO folders "
+			      "(date, folder_index, goldbug, hash, "
+			      "message, message_code, "
+			      "receiver_sender, receiver_sender_hash, "
+			      "status, subject, participant_oid) "
+			      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		query.bindValue
+		  (0, s_crypt->
+		   encryptedThenHashed(QDateTime::currentDateTime().
+				       toString(Qt::ISODate).
+				       toLatin1(), &ok).toBase64());
+		query.bindValue(1, 0); // Inbox Folder
+
+		if(ok)
+		  query.bindValue
+		    (2, s_crypt->
+		     encryptedThenHashed(QByteArray::number(goldbugUsed), &ok).
+		     toBase64());
+
+		if(ok)
+		  query.bindValue
+		    (3, s_crypt->keyedHash(message + subject,
+					   &ok).toBase64());
+
+		if(ok)
+		  if(!message.isEmpty())
+		    query.bindValue
+		      (4, s_crypt->encryptedThenHashed(message,
+						       &ok).toBase64());
+
+		if(ok)
+		  query.bindValue
+		    (5, s_crypt->encryptedThenHashed(QByteArray(), &ok).
+		     toBase64());
+
+		if(ok)
+		  if(!name.isEmpty())
+		    query.bindValue
+		      (6, s_crypt->encryptedThenHashed(name,
+						       &ok).toBase64());
+
+		if(ok)
+		  query.bindValue
+		    (7, senderPublicKeyHash.toBase64());
+
+		if(ok)
+		  query.bindValue
+		    (8, s_crypt->
+		     encryptedThenHashed(QByteArray("Unread"), &ok).
+		     toBase64());
+
+		if(ok)
+		  query.bindValue
+		    (9, s_crypt->encryptedThenHashed(subject, &ok).
+		     toBase64());
+
+		if(ok)
+		  query.bindValue
+		    (10, s_crypt->
+		     encryptedThenHashed(QByteArray::number(-1), &ok).
+		     toBase64());
+
+		if(ok)
+		  if(query.exec())
+		    {
+		      if(!attachment.isEmpty() && !attachmentName.isEmpty())
+			{
+			  QVariant variant(query.lastInsertId());
+			  qint64 id = query.lastInsertId().toLongLong();
+
+			  if(variant.isValid())
+			    {
+			      QByteArray data;
+
+			      if(!goldbugUsed)
+				data = qUncompress(attachment);
+			      else
+				data = attachment;
+
+			      if(!data.isEmpty())
+				{
+				  query.prepare
+				    ("INSERT INTO folders_attachment "
+				     "(data, folders_oid, name) "
+				     "VALUES (?, ?, ?)");
+				  query.bindValue
+				    (0, s_crypt->
+				     encryptedThenHashed(data,
+							 &ok).toBase64());
+				  query.bindValue(1, id);
+
+				  if(ok)
+				    query.bindValue
+				      (2, s_crypt->
+				       encryptedThenHashed(attachmentName,
+							   &ok).toBase64());
+
+				  if(ok)
+				    query.exec();
+				}
+			    }
+			}
+
+		      emit newEMailArrived();
+		    }
+	      }
+
+	    db.close();
+	  }
+
+	  QSqlDatabase::removeDatabase(connectionName);
+	}
     }
   else if(messageType == "0013")
     {

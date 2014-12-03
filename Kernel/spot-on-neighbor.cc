@@ -2672,9 +2672,10 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn,
 		    }
 		  else
 		    {
-		      spoton_misc::logError("spoton_neighbor::process0001b(): "
-					    "computed message code does "
-					    "not match provided code.");
+		      spoton_misc::logError
+			("spoton_neighbor::process0001b(): "
+			 "computed message code does "
+			 "not match provided code.");
 		      return;
 		    }
 		}
@@ -2693,8 +2694,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn,
 	** This letter is destined for someone else.
 	*/
 
-	if(spoton_kernel::setting("gui/postoffice_enabled",
-				  false).toBool())
+	if(spoton_kernel::setting("gui/postoffice_enabled", false).toBool())
 	  {
 	    QByteArray publicKeyHash
 	      (spoton_misc::findPublicKeyHashGivenHash(list.value(3),
@@ -4341,7 +4341,7 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
 			signature, s_crypt))
       {
 	spoton_misc::logError
-	  ("spoton_neighbor::storeLetter: invalid signature.");
+	  ("spoton_neighbor::storeLetter(): invalid signature.");
 	return;
       }
 
@@ -5021,6 +5021,10 @@ QString spoton_neighbor::findMessageType
 
   type = spoton_receive::findMessageType
     (data, symmetricKeys, interfaces, spoton_kernel::s_crypts, "chat");
+
+  if(type.isEmpty())
+    type = spoton_receive::findMessageType
+      (data, symmetricKeys, interfaces, spoton_kernel::s_crypts, "email");
 
 done_label:
   spoton_kernel::discoverAdaptiveEchoPair
