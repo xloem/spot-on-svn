@@ -463,7 +463,13 @@ void spoton_misc::prepareDatabases(void)
 		   "out_server_address TEXT NOT NULL, "
 		   "out_server_port TEXT NOT NULL, "
 		   "out_ssltls TEXT NOT NULL, "
-		   "out_username TEXT NOT NULL)");
+		   "out_username TEXT NOT NULL, "
+		   "proxy_enabled TEXT NOT NULL, "
+		   "proxy_password TEXT NOT NULL, "
+		   "proxy_server_address TEXT NOT NULL, "
+		   "proxy_server_port TEXT NOT NULL, "
+		   "proxy_type TEXT NOT NULL, "
+		   "proxy_username TEXT NOT NULL)");
 	query.exec("CREATE TRIGGER IF NOT EXISTS "
 		   "poptastic_trigger "
 		   "BEFORE INSERT ON poptastic "
@@ -3102,7 +3108,12 @@ QHash<QString, QVariant> spoton_misc::poptasticSettings(spoton_crypt *crypt,
 
 	    for(int i = 0; i < record.count(); i++)
 	      {
-		if(record.fieldName(i).endsWith("_password") ||
+		if(record.fieldName(i) == "proxy_enabled" ||
+		   record.fieldName(i) == "proxy_password" ||
+		   record.fieldName(i) == "proxy_server_address" ||
+		   record.fieldName(i) == "proxy_server_port" ||
+		   record.fieldName(i) == "proxy_username" ||
+		   record.fieldName(i).endsWith("_password") ||
 		   record.fieldName(i).endsWith("_server_address") ||
 		   record.fieldName(i).endsWith("_server_port") ||
 		   record.fieldName(i).endsWith("_username"))

@@ -79,6 +79,11 @@ void spoton::slotConfigurePoptastic(void)
 	  this,
 	  SLOT(slotPoptasticSettingsReset(void)),
 	  Qt::UniqueConnection);
+  connect(m_poptasticSettingsUi.proxy,
+	  SIGNAL(clicked(bool)),
+	  this,
+	  SLOT(slotPoptasticSettingsReset(bool)),
+	  Qt::UniqueConnection);
   connect(m_poptasticSettingsUi.testpop3,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -140,6 +145,8 @@ void spoton::slotConfigurePoptastic(void)
 
       if(index >= 0)
 	m_poptasticSettingsUi.in_method->setCurrentIndex(index);
+      else
+	m_poptasticSettingsUi.in_method->setCurrentIndex(2);
 
       m_poptasticSettingsUi.in_password->setText
 	(hash["in_password"].toString());
@@ -152,6 +159,8 @@ void spoton::slotConfigurePoptastic(void)
 
       if(index >= 0)
 	m_poptasticSettingsUi.in_ssltls->setCurrentIndex(index);
+      else
+	m_poptasticSettingsUi.in_ssltls->setCurrentIndex(2);
 
       m_poptasticSettingsUi.in_username->setText
 	(hash["in_username"].toString());
@@ -166,9 +175,30 @@ void spoton::slotConfigurePoptastic(void)
 
       if(index >= 0)
 	m_poptasticSettingsUi.out_ssltls->setCurrentIndex(index);
+      else
+	m_poptasticSettingsUi.out_ssltls->setCurrentIndex(2);
 
       m_poptasticSettingsUi.out_username->setText
 	(hash["out_username"].toString());
+      m_poptasticSettingsUi.proxy->setChecked
+	(hash["proxy_enabled"].toBool());
+      m_poptasticSettingsUi.proxy_password->setText
+	(hash["proxy_password"].toString());
+      m_poptasticSettingsUi.proxy_server_address->setText
+	(hash["proxy_server_address"].toString());
+      m_poptasticSettingsUi.proxy_server_port->setValue
+	(hash["proxy_server_port"].toInt());
+
+      index = m_poptasticSettingsUi.proxy_type->findText
+	(hash["proxy_type"].toString());
+
+      if(index >= 0)
+	m_poptasticSettingsUi.proxy_type->setCurrentIndex(index);
+      else
+	m_poptasticSettingsUi.proxy_type->setCurrentIndex(0);
+
+      m_poptasticSettingsUi.proxy_username->setText
+	(hash["proxy_username"].toString());
     }
 
   if(m_poptasticDialog->exec() == QDialog::Accepted)
@@ -206,8 +236,12 @@ void spoton::slotConfigurePoptastic(void)
 	       "in_server_port, in_ssltls, in_username, "
 	       "out_authentication, "
 	       "out_method, out_password, out_server_address, "
-	       "out_server_port, out_ssltls, out_username) "
-	       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	       "out_server_port, out_ssltls, out_username, "
+	       "proxy_enabled, "
+	       "proxy_password, proxy_server_address, proxy_server_port, "
+	       "proxy_type, proxy_username) "
+	       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+	       "?, ?, ?, ?, ?, ?)");
 	    query.bindValue
 	      (0, m_poptasticSettingsUi.in_authentication->currentText());
 	    query.bindValue
@@ -215,8 +249,8 @@ void spoton::slotConfigurePoptastic(void)
 	    query.bindValue
 	      (2, crypt->encryptedThenHashed(m_poptasticSettingsUi.
 					     in_password->
-					     text().trimmed().
-					     toLatin1(), &ok).toBase64());
+					     text().
+					     toUtf8(), &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
@@ -253,8 +287,8 @@ void spoton::slotConfigurePoptastic(void)
 	      query.bindValue
 		(9, crypt->encryptedThenHashed(m_poptasticSettingsUi.
 					       out_password->
-					       text().trimmed().
-					       toLatin1(), &ok).toBase64());
+					       text().
+					       toUtf8(), &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
@@ -284,6 +318,47 @@ void spoton::slotConfigurePoptastic(void)
 		 toBase64());
 
 	    if(ok)
+	      query.bindValue
+		(14, crypt->
+		 encryptedThenHashed(QByteArray::
+				     number(m_poptasticSettingsUi.proxy->
+					    isChecked() ? 1 : 0),
+				     &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(15, crypt->
+		 encryptedThenHashed(m_poptasticSettingsUi.
+				     proxy_password->text().
+				     toUtf8(), &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(16, crypt->
+		 encryptedThenHashed(m_poptasticSettingsUi.
+				     proxy_server_address->text().
+				     trimmed().toLatin1(), &ok).
+		 toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(17, crypt->
+		 encryptedThenHashed(QByteArray::
+				     number(m_poptasticSettingsUi.
+					    proxy_server_port->
+					    value()), &ok).toBase64());
+
+	    query.bindValue(18, m_poptasticSettingsUi.proxy_type->
+			    currentText().toLatin1());
+
+	    if(ok)
+	      query.bindValue
+		(19, crypt->
+		 encryptedThenHashed(m_poptasticSettingsUi.proxy_username->
+				     text().trimmed().toUtf8(),
+				     &ok).toBase64());
+
+	    if(ok)
 	      query.exec();
 	  }
 
@@ -300,6 +375,12 @@ void spoton::slotConfigurePoptastic(void)
   m_poptasticSettingsUi.out_server_address->clear();
   m_poptasticSettingsUi.out_server_port->setValue(1);
   m_poptasticSettingsUi.out_username->clear();
+  m_poptasticSettingsUi.proxy->setChecked(false);
+  m_poptasticSettingsUi.proxy_password->clear();
+  m_poptasticSettingsUi.proxy_server_address->clear();
+  m_poptasticSettingsUi.proxy_server_port->setValue(1);
+  m_poptasticSettingsUi.proxy_type->setCurrentIndex(0);
+  m_poptasticSettingsUi.proxy_username->clear();
 }
 
 void spoton::slotTestPoptasticPop3Settings(void)
@@ -315,12 +396,39 @@ void spoton::slotTestPoptasticPop3Settings(void)
     {
       curl_easy_setopt
 	(curl, CURLOPT_PASSWORD,
-	 m_poptasticSettingsUi.in_password->text().trimmed().toLatin1().
+	 m_poptasticSettingsUi.in_password->text().toLatin1().
 	 constData());
       curl_easy_setopt
 	(curl, CURLOPT_USERNAME,
 	 m_poptasticSettingsUi.in_username->text().trimmed().toLatin1().
 	 constData());
+
+      if(m_poptasticSettingsUi.proxy->isChecked())
+	{
+	  QString address("");
+	  QString port("");
+	  QString scheme("");
+	  QString url("");
+
+	  address = m_poptasticSettingsUi.proxy_server_address->
+	    text().trimmed();
+	  port = QString::number(m_poptasticSettingsUi.
+				 proxy_server_port->value());
+
+	  if(m_poptasticSettingsUi.proxy_type->currentText() == "HTTP")
+	    scheme = "http";
+	  else
+	    scheme = "socks5";
+
+	  url = QString("%1://%2:%3").arg(scheme).arg(address).arg(port);
+	  curl_easy_setopt(curl, CURLOPT_PROXY, url.toLatin1().constData());
+	  curl_easy_setopt(curl, CURLOPT_PROXYPASSWORD,
+			   m_poptasticSettingsUi.proxy_password->text().
+			   toUtf8().constData());
+	  curl_easy_setopt(curl, CURLOPT_PROXYUSERNAME,
+			   m_poptasticSettingsUi.proxy_username->text().
+			   trimmed().toLatin1().constData());
+	}
 
       QString method
 	(m_poptasticSettingsUi.in_method->currentText().toUpper());
@@ -359,7 +467,8 @@ void spoton::slotTestPoptasticPop3Settings(void)
 
       curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "NOOP");
       curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
-      curl_easy_setopt(curl, CURLOPT_TIMEOUT, 5L);
+      curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
+      curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
       curl_easy_setopt(curl, CURLOPT_URL, url.toLatin1().constData());
       res = curl_easy_perform(curl);
 
@@ -394,12 +503,39 @@ void spoton::slotTestPoptasticSmtpSettings(void)
     {
       curl_easy_setopt
 	(curl, CURLOPT_PASSWORD,
-	 m_poptasticSettingsUi.out_password->text().trimmed().toLatin1().
+	 m_poptasticSettingsUi.out_password->text().toLatin1().
 	 constData());
       curl_easy_setopt
 	(curl, CURLOPT_USERNAME,
 	 m_poptasticSettingsUi.out_username->text().trimmed().toLatin1().
 	 constData());
+
+      if(m_poptasticSettingsUi.proxy->isChecked())
+	{
+	  QString address("");
+	  QString port("");
+	  QString scheme("");
+	  QString url("");
+
+	  address = m_poptasticSettingsUi.proxy_server_address->
+	    text().trimmed();
+	  port = QString::number(m_poptasticSettingsUi.
+				 proxy_server_port->value());
+
+	  if(m_poptasticSettingsUi.proxy_type->currentText() == "HTTP")
+	    scheme = "http";
+	  else
+	    scheme = "socks5";
+
+	  url = QString("%1://%2:%3").arg(scheme).arg(address).arg(port);
+	  curl_easy_setopt(curl, CURLOPT_PROXY, url.toLatin1().constData());
+	  curl_easy_setopt(curl, CURLOPT_PROXYPASSWORD,
+			   m_poptasticSettingsUi.proxy_password->text().
+			   toUtf8().constData());
+	  curl_easy_setopt(curl, CURLOPT_PROXYUSERNAME,
+			   m_poptasticSettingsUi.proxy_username->text().
+			   trimmed().toLatin1().constData());
+	}
 
       QString url("");
       int index = m_poptasticSettingsUi.out_ssltls->currentIndex();
@@ -428,7 +564,8 @@ void spoton::slotTestPoptasticSmtpSettings(void)
 
       curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "NOOP");
       curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
-      curl_easy_setopt(curl, CURLOPT_TIMEOUT, 5L);
+      curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
+      curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
       curl_easy_setopt(curl, CURLOPT_URL, url.toLatin1().constData());
       res = curl_easy_perform(curl);
 
@@ -450,6 +587,16 @@ void spoton::slotTestPoptasticSmtpSettings(void)
 			  tr("Failure!"));
 }
 
+void spoton::slotPoptasticSettingsReset(bool state)
+{
+  Q_UNUSED(state);
+  m_poptasticSettingsUi.proxy_password->clear();
+  m_poptasticSettingsUi.proxy_server_address->clear();
+  m_poptasticSettingsUi.proxy_server_port->setValue(1);
+  m_poptasticSettingsUi.proxy_type->setCurrentIndex(0);
+  m_poptasticSettingsUi.proxy_username->clear();
+}
+
 void spoton::slotPoptasticSettingsReset(void)
 {
   m_poptasticSettingsUi.in_method->setCurrentIndex(2);
@@ -464,4 +611,10 @@ void spoton::slotPoptasticSettingsReset(void)
   m_poptasticSettingsUi.out_ssltls->setCurrentIndex(2);
   m_poptasticSettingsUi.out_username->clear();
   m_poptasticSettingsUi.poptasticRefresh->setValue(5.00);
+  m_poptasticSettingsUi.proxy->setChecked(false);
+  m_poptasticSettingsUi.proxy_password->clear();
+  m_poptasticSettingsUi.proxy_server_address->clear();
+  m_poptasticSettingsUi.proxy_server_port->setValue(1);
+  m_poptasticSettingsUi.proxy_type->setCurrentIndex(0);
+  m_poptasticSettingsUi.proxy_username->clear();
 }

@@ -86,6 +86,11 @@ out_password
 out_server_address
 out_server_port
 out_username
+proxy_enabled
+proxy_password
+proxy_server_address
+proxy_server_port
+proxy_username
 
 shared.db:
 

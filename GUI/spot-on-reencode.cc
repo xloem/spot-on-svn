@@ -1337,8 +1337,11 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 	if(query.exec("SELECT in_password, in_server_address, "
 		      "in_server_port, in_username, "
 		      "out_password, out_server_address, "
-		      "out_server_port, out_username FROM "
-		      "poptastic"))
+		      "out_server_port, out_username, "
+		      "proxy_enabled, proxy_password, "
+		      "proxy_server_address, proxy_server_port, "
+		      "proxy_username "
+		      "FROM poptastic"))
 	  while(query.next())
 	    {
 	      QByteArray bytes;
@@ -1353,9 +1356,14 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 				  "out_password = ?, "
 				  "out_server_address = ?, "
 				  "out_server_port = ?, "
-				  "out_username = ?");
+				  "out_username = ?, "
+				  "proxy_enabled = ?, "
+				  "proxy_password = ?, "
+				  "proxy_server_address = ?, "
+				  "proxy_server_port = ?, "
+				  "proxy_username = ?");
 
-	      for(int i = 0; i < 8; i++)
+	      for(int i = 0; i < query.record().count(); i++)
 		{
 		  bytes = oldCrypt->decryptedAfterAuthenticated
 		    (QByteArray::

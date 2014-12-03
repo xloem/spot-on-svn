@@ -140,7 +140,33 @@ void spoton_kernel::popPostPoptastic(void)
 	     hash["in_password"].toByteArray().constData());
 	  curl_easy_setopt
 	    (curl, CURLOPT_USERNAME,
-	     hash["in_username"].toByteArray().constData());
+	     hash["in_username"].toByteArray().trimmed().constData());
+
+	  if(hash["proxy_enabled"].toBool())
+	    {
+	      QString address("");
+	      QString port("");
+	      QString scheme("");
+	      QString url("");
+
+	      address = hash["proxy_server_address"].toString().trimmed();
+	      port = hash["proxy_server_port"].toString().trimmed();
+
+	      if(hash["proxy_type"] == "HTTP")
+		scheme = "http";
+	      else
+		scheme = "socks5";
+
+	      url = QString("%1://%2:%3").arg(scheme).arg(address).arg(port);
+	      curl_easy_setopt
+		(curl, CURLOPT_PROXY, url.toLatin1().constData());
+	      curl_easy_setopt(curl, CURLOPT_PROXYPASSWORD,
+			       hash["proxy_password"].toString().
+			       toUtf8().constData());
+	      curl_easy_setopt(curl, CURLOPT_PROXYUSERNAME,
+			       hash["proxy_username"].toString().
+			       trimmed().toLatin1().constData());
+	    }
 
 	  QString method(hash["in_method"].toString().toUpper().trimmed());
 	  QString ssltls(hash["in_ssltls"].toString().toUpper().trimmed());
@@ -288,12 +314,38 @@ void spoton_kernel::popPostPoptastic(void)
 	{
 	  curl_easy_setopt
 	    (curl, CURLOPT_PASSWORD,
-	     hash["out_password"].toByteArray().trimmed().constData());
+	     hash["out_password"].toByteArray().constData());
 	  curl_easy_setopt
 	    (curl, CURLOPT_USERNAME,
 	     hash["out_username"].toByteArray().trimmed().constData());
 
-	  QString from(hash["in_username"].toString());
+	  if(hash["proxy_enabled"].toBool())
+	    {
+	      QString address("");
+	      QString port("");
+	      QString scheme("");
+	      QString url("");
+
+	      address = hash["proxy_server_address"].toString().trimmed();
+	      port = hash["proxy_server_port"].toString().trimmed();
+
+	      if(hash["proxy_type"] == "HTTP")
+		scheme = "http";
+	      else
+		scheme = "socks5";
+
+	      url = QString("%1://%2:%3").arg(scheme).arg(address).arg(port);
+	      curl_easy_setopt
+		(curl, CURLOPT_PROXY, url.toLatin1().constData());
+	      curl_easy_setopt(curl, CURLOPT_PROXYPASSWORD,
+			       hash["proxy_password"].toString().
+			       toUtf8().constData());
+	      curl_easy_setopt(curl, CURLOPT_PROXYUSERNAME,
+			       hash["proxy_username"].toString().
+			       trimmed().toLatin1().constData());
+	    }
+
+	  QString from(hash["in_username"].toString().trimmed());
 	  QString ssltls(hash["out_ssltls"].toString().toUpper().trimmed());
 	  QString url("");
 
