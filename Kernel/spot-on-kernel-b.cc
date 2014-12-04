@@ -32,7 +32,7 @@
 
 #include <QSqlQuery>
 
-static QByteArray curl_payload_text[11];
+static QList<QByteArray> curl_payload_text;
 
 struct curl_memory
 {
@@ -54,7 +54,7 @@ static size_t curl_payload_source
   struct curl_upload_status *upload_ctx =
     (struct curl_upload_status *) userp;
 
-  if(!upload_ctx || upload_ctx->lines_read >= 11)
+  if(!upload_ctx || upload_ctx->lines_read >= curl_payload_text.size())
     return 0;
 
   const char *data = curl_payload_text[upload_ctx->lines_read].constData();
@@ -65,9 +65,6 @@ static size_t curl_payload_source
 
       if(length > 0)
 	memcpy(ptr, data, qMin(length, nmemb * size));
-
-      if(length > nmemb * size)
-	return nmemb * size;
 
       upload_ctx->lines_read++;
       return length;
@@ -388,6 +385,8 @@ void spoton_kernel::popPostPoptastic(void)
 
 	      locker.unlock();
 
+	      QByteArray bytes(pair.second);
+	      long count = 0;
 	      struct curl_slist *recipients = 0;
 	      struct curl_upload_status upload_ctx;
 
@@ -401,36 +400,44 @@ void spoton_kernel::popPostPoptastic(void)
 	      ** Prepare curl_payload_text.
 	      */
 
-	      curl_payload_text[0] = QString("Date: %1\r\n").arg
-		(QDateTime::currentDateTime().toUTC().toString()).toLatin1();
-	      curl_payload_text[1] = QString("To: <%1> (%1)\r\n").
-		arg(pair.first).
-		toLatin1();
-	      curl_payload_text[2] = QString("From: <%1>\r\n").arg(from).
-		toLatin1();
-	      curl_payload_text[3] =
-		QString("Message-ID: <%1>\r\n").
-		arg(spoton_crypt::weakRandomBytes(16).toHex().
-		    constData()).toLatin1();
-	      curl_payload_text[4] =
-		QString("Subject: %1\r\n").
-		arg(spoton_crypt::weakRandomBytes(16).toHex().
-		    constData()).toLatin1();
-	      curl_payload_text[5] = "\r\n";
-	      curl_payload_text[6] =
-		QString("%1\r\n").arg(pair.second.constData()).toLatin1().
-		constData();
-	      curl_payload_text[7] = "\r\n";
-	      curl_payload_text[8] = "\r\n";
-	      curl_payload_text[9] = "\r\n";
-	      curl_payload_text[10] = 0;
+	      curl_payload_text.clear();
+	      curl_payload_text.append
+		(QString("Date: %1\r\n").arg(QDateTime::currentDateTime().
+					     toUTC().toString()).toLatin1());
+	      curl_payload_text.append(QString("To: <%1> (%1)\r\n").
+				       arg(pair.first).
+				       toLatin1());
+	      curl_payload_text.append(QString("From: <%1>\r\n").arg(from).
+				       toLatin1());
+	      curl_payload_text.append
+		(QString("Message-ID: <%1>\r\n").
+		 arg(spoton_crypt::weakRandomBytes(16).toHex().
+		     constData()).toLatin1());
+	      curl_payload_text.append
+		(QString("Subject: %1\r\n").
+		 arg(spoton_crypt::weakRandomBytes(16).toHex().
+		     constData()).toLatin1());
+	      curl_payload_text.append("\r\n");
+
+	      while(!bytes.isEmpty())
+		{
+		  count += 1;
+		  curl_payload_text.append(bytes.mid(0, CURL_MAX_WRITE_SIZE));
+		  bytes.remove(0, CURL_MAX_WRITE_SIZE);
+		}
+
+	      curl_payload_text.append("\r\n");
+	      curl_payload_text.append("\r\n");
+	      curl_payload_text.append("\r\n");
+	      curl_payload_text.append("\r\n");
+	      curl_payload_text.append(0);
 	      recipients = curl_slist_append
 		(recipients, pair.first.toLatin1().constData());
 	      curl_easy_setopt(curl, CURLOPT_MAIL_RCPT, recipients);
 	      curl_easy_setopt(curl, CURLOPT_READDATA, &upload_ctx);
 	      curl_easy_setopt
 		(curl, CURLOPT_READFUNCTION, curl_payload_source);
-	      curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
+	      curl_easy_setopt(curl, CURLOPT_TIMEOUT, count * 2.5);
 	      curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
 	      curl_easy_perform(curl);
 	      curl_slist_free_all(recipients);
