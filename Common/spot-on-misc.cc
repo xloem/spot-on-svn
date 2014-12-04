@@ -792,9 +792,18 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
       if(ok)
 	{
 	  if(name.isEmpty())
-	    query.bindValue
-	      (4, crypt->encryptedThenHashed(QByteArray("unknown"),
-					     &ok).toBase64());
+	    {
+	      if(keyType == "poptastic")
+		query.bindValue
+		  (4, crypt->
+		   encryptedThenHashed(QByteArray("unknown@unknown.org"),
+				       &ok).toBase64());
+	      else
+		query.bindValue
+		  (4, crypt->
+		   encryptedThenHashed(QByteArray("unknown"),
+				       &ok).toBase64());
+	    }
 	  else
 	    query.bindValue
 	      (4, crypt->
@@ -805,7 +814,7 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
 	}
     }
   else if(ok) // Signature keys will be labeled as their type.
-    query.bindValue(4, crypt->keyedHash(keyType, &ok).toBase64());
+    query.bindValue(4, crypt->encryptedThenHashed(keyType, &ok).toBase64());
 
   if(ok)
     query.bindValue
