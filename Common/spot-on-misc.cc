@@ -584,7 +584,7 @@ void spoton_misc::logError(const QString &error)
 #ifdef Q_OS_WIN32
       QString eol("\r\n");
 #else
-      QString eol('\n');
+      QString eol("\n");
 #endif
 
       file.write(now.toString().toLatin1());

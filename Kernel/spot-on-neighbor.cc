@@ -2176,7 +2176,6 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 							"Only",
 							true).toBool(),
 				 m_address, m_port,
-				 messageCode,
 				 spoton_kernel::s_crypts.value("chat", 0)));
 
   if(!list.isEmpty())
@@ -2191,7 +2190,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 	 list.value(2).toBase64() + "_" +
 	 list.value(3).toBase64() + "_" +
 	 list.value(4).toBase64() + "_" +
-	 messageCode.toBase64().append('\n'));
+	 list.last().toBase64().append("\n"));
     }
 }
 
@@ -4939,6 +4938,7 @@ QString spoton_neighbor::findMessageType
   QList<QByteArray> list(data.trimmed().split('\n'));
   QString type("");
   int interfaces = spoton_kernel::interfaces();
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
   /*
   ** list[0]: Data
@@ -4977,13 +4977,86 @@ QString spoton_neighbor::findMessageType
 
 	  if(ok)
 	    type = QByteArray::fromBase64(data.split('\n').value(0));
-
 	  if(!type.isEmpty())
 	    goto done_label;
 	  else
 	    symmetricKeys.clear();
 	}
     }
+
+  /*
+  ** Do not attempt to locate a gemini if an interface is not
+  ** attached to the kernel.
+  */
+
+  if(s_crypt)
+    if(interfaces > 0 && list.size() == 3 &&
+       spoton_misc::participantCount("chat", s_crypt) > 0)
+      {
+	QPair<QByteArray, QByteArray> gemini;
+
+	gemini = spoton_misc::findGeminiInCosmos
+	  (QByteArray::fromBase64(list.value(0)),
+	   QByteArray::fromBase64(list.value(1)),
+	   s_crypt);
+
+	if(!gemini.first.isEmpty())
+	  {
+	    QByteArray data;
+	    bool ok = true;
+	    spoton_crypt crypt("aes256",
+			       "sha512",
+			       QByteArray(),
+			       gemini.first,
+			       0,
+			       0,
+			       QString(""));
+
+	    data = crypt.decrypted
+	      (QByteArray::fromBase64(list.value(0)), &ok);
+
+	    if(ok)
+	      type = QByteArray::fromBase64(data.split('\n').value(0));
+
+	    if(!type.isEmpty())
+	      {
+		symmetricKeys.append(gemini.first);
+		symmetricKeys.append("aes256");
+		symmetricKeys.append(gemini.second);
+		symmetricKeys.append("sha512");
+		goto done_label;
+	      }
+	    else
+	      symmetricKeys.clear();
+	  }
+	else
+	  symmetricKeys.clear();
+      }
+
+  /*
+  ** Finally, attempt to decipher the message via our private key.
+  ** We would like to determine the message type only if we have at least
+  ** one interface attached to the kernel or if we're processing
+  ** a letter.
+  */
+
+  if(s_crypt)
+    if(interfaces > 0 && list.size() == 4)
+      if(!spoton_misc::allParticipantsHaveGeminis())
+	if(spoton_misc::participantCount("chat", s_crypt) > 0)
+	  {
+	    QByteArray data;
+	    bool ok = true;
+
+	    data = s_crypt->publicKeyDecrypt
+	      (QByteArray::fromBase64(list.value(0)), &ok);
+
+	    if(ok)
+	      type = QByteArray::fromBase64(data.split('\n').value(0));
+
+	    if(!type.isEmpty())
+	      goto done_label;
+	  }
 
   if(list.size() == 3 || list.size() == 7)
     /*
@@ -4992,8 +5065,8 @@ QString spoton_neighbor::findMessageType
     */
 
     if(spoton_misc::participantCount("email",
-				     spoton_kernel::
-				     s_crypts.value("email", 0)) > 0)
+				     spoton_kernel::s_crypts.
+				     value("email", 0)) > 0)
       {
 	if(list.size() == 3)
 	  symmetricKeys = spoton_kernel::findInstitutionKey
@@ -5014,19 +5087,28 @@ QString spoton_neighbor::findMessageType
 	      type = "0002b";
 	    else
 	      type = "0001b";
-
 	    goto done_label;
 	  }
       }
 
-  type = spoton_receive::findMessageType
-    (data, symmetricKeys, interfaces, spoton_kernel::s_crypts, "chat");
+  if(list.size() == 4 || list.size() == 7)
+    if((s_crypt = spoton_kernel::s_crypts.value("email", 0)))
+      if(spoton_misc::participantCount("email", s_crypt) > 0)
+	{
+	  QByteArray data;
+	  bool ok = true;
 
-  if(type.isEmpty())
-    type = spoton_receive::findMessageType
-      (data, symmetricKeys, interfaces, spoton_kernel::s_crypts, "email");
+	  data = s_crypt->publicKeyDecrypt
+	    (QByteArray::fromBase64(list.value(0)), &ok);
 
-done_label:
+	  if(ok)
+	    type = QByteArray::fromBase64(data.split('\n').value(0));
+
+	  if(!type.isEmpty())
+	    goto done_label;
+	}
+
+ done_label:
   spoton_kernel::discoverAdaptiveEchoPair
     (data.trimmed(), discoveredAdaptiveEchoPair);
 
@@ -5035,7 +5117,7 @@ done_label:
     if(!m_learnedAdaptiveEchoPairs.contains(discoveredAdaptiveEchoPair))
       m_learnedAdaptiveEchoPairs.append(discoveredAdaptiveEchoPair);
 
-  return type;
+  return type; 
 }
 
 void spoton_neighbor::slotCallParticipant(const QByteArray &data,

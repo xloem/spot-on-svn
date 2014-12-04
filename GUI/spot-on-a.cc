@@ -5971,7 +5971,7 @@ void spoton::sendKeysToKernel(void)
 	  keys.append(symmetricKey);
 	  keys.append("_");
 	  keys.append(hashKey);
-	  keys.append('\n');
+	  keys.append("\n");
 
 	  if(m_kernelSocket.write(keys.constData(), keys.length()) !=
 	     keys.length())

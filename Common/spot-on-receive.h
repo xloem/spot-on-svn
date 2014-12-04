@@ -41,7 +41,6 @@ class spoton_receive
 				       const bool acceptSignedMessagesOnly,
 				       const QHostAddress &address,
 				       const quint16 port,
-				       QByteArray &mc,
 				       spoton_crypt *s_crypt);
   static QList<QByteArray> process0000a(int length, const QByteArray &dataIn,
 					const bool acceptSignedMessagesOnly,
@@ -71,8 +70,8 @@ class spoton_receive
     (const QByteArray &data,
      QList<QByteArray> &symmetricKeys,
      const int interfaces,
-     const QHash<QString, spoton_crypt *> &s_crypts,
-     const QString &keyType);
+     const QString &keyType,
+     spoton_crypt *s_crypt);
 
  private:
   spoton_receive(void);

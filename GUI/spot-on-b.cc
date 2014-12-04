@@ -141,7 +141,7 @@ void spoton::slotSendMessage(void)
 	  message.append("_");
 	  message.append(QDateTime::currentDateTime().toUTC().
 			 toString("MMddyyyyhhmmss").toLatin1().toBase64());
-	  message.append('\n');
+	  message.append("\n");
 
 	  QPointer<spoton_chatwindow> chat = m_chatWindows.value
 	    (publicKeyHash);
@@ -202,13 +202,13 @@ void spoton::slotReceivedKernelMessage(void)
 {
   m_kernelSocketData.append(m_kernelSocket.readAll());
 
-  if(m_kernelSocketData.endsWith('\n'))
+  if(m_kernelSocketData.endsWith("\n"))
     {
       QList<QByteArray> list
-	(m_kernelSocketData.mid(0, m_kernelSocketData.lastIndexOf('\n')).
+	(m_kernelSocketData.mid(0, m_kernelSocketData.lastIndexOf("\n")).
 	 split('\n'));
 
-      m_kernelSocketData.remove(0, m_kernelSocketData.lastIndexOf('\n'));
+      m_kernelSocketData.remove(0, m_kernelSocketData.lastIndexOf("\n"));
 
       while(!list.isEmpty())
 	{
@@ -678,7 +678,7 @@ void spoton::slotShareChatPublicKey(void)
       message.append(sPublicKey.toBase64());
       message.append("_");
       message.append(sSignature.toBase64());
-      message.append('\n');
+      message.append("\n");
 
       if(m_kernelSocket.write(message.constData(), message.length()) !=
 	 message.length())
@@ -757,7 +757,7 @@ void spoton::slotShareEmailPublicKey(void)
       message.append(sPublicKey.toBase64());
       message.append("_");
       message.append(sSignature.toBase64());
-      message.append('\n');
+      message.append("\n");
 
       if(m_kernelSocket.write(message.constData(), message.length()) !=
 	 message.length())
@@ -3017,7 +3017,7 @@ void spoton::slotShareURLPublicKey(void)
       message.append(sPublicKey.toBase64());
       message.append("_");
       message.append(sSignature.toBase64());
-      message.append('\n');
+      message.append("\n");
 
       if(m_kernelSocket.write(message.constData(), message.length()) !=
 	 message.length())
@@ -3119,7 +3119,9 @@ void spoton::populateMail(void)
 
   if(m_ui.folder->currentIndex() == 0)
     {
-      m_sb.email->setVisible(false);
+      if(currentTabName() == "email")
+	m_sb.email->setVisible(false);
+
       m_ui.mail->horizontalHeaderItem(1)->setText(tr("From"));
     }
   else if(m_ui.folder->currentIndex() == 1)
@@ -4604,7 +4606,7 @@ void spoton::slotPublicizeListenerPlaintext(void)
 
   message.append("publicizelistenerplaintext_");
   message.append(oid);
-  message.append('\n');
+  message.append("\n");
 
   if(m_kernelSocket.write(message.constData(), message.length()) !=
      message.length())

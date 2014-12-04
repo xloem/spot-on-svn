@@ -247,7 +247,7 @@ void spoton_buzzpage::slotSendMessage(void)
     message.append(m_hashKey.toBase64());
     message.append("_");
     message.append(m_hashType.toBase64());
-    message.append('\n');
+    message.append("\n");
 
     if(m_kernelSocket->write(message.constData(),
 			     message.length()) != message.length())
@@ -349,7 +349,7 @@ void spoton_buzzpage::slotSendStatus(void)
   message.append(m_hashKey.toBase64());
   message.append("_");
   message.append(m_hashType.toBase64());
-  message.append('\n');
+  message.append("\n");
 
   if(m_kernelSocket->write(message.constData(),
 			   message.length()) != message.length())

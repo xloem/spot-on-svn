@@ -142,8 +142,12 @@ void spoton_kernel::popPostPoptastic(void)
 	    (curl, CURLOPT_USERNAME,
 	     hash["in_username"].toByteArray().trimmed().constData());
 
+	  long timeout = 10L;
+
 	  if(hash["proxy_enabled"].toBool())
 	    {
+	      timeout += 15L;
+
 	      QString address("");
 	      QString port("");
 	      QString scheme("");
@@ -232,7 +236,7 @@ void spoton_kernel::popPostPoptastic(void)
 
 		  chunk.size = 0;
 		  curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
-		  curl_easy_setopt(curl, CURLOPT_TIMEOUT, 25L);
+		  curl_easy_setopt(curl, CURLOPT_TIMEOUT, timeout);
 		  curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *) &chunk);
 		  curl_easy_setopt
 		    (curl, CURLOPT_WRITEFUNCTION, curl_write_memory_callback);
@@ -265,7 +269,7 @@ void spoton_kernel::popPostPoptastic(void)
 	      while(!list.isEmpty())
 		{
 		  curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
-		  curl_easy_setopt(curl, CURLOPT_TIMEOUT, 25L);
+		  curl_easy_setopt(curl, CURLOPT_TIMEOUT, timeout);
 		  curl_easy_setopt
 		    (curl, CURLOPT_URL, url.toLatin1().constData());
 		  curl_easy_setopt
@@ -319,8 +323,12 @@ void spoton_kernel::popPostPoptastic(void)
 	    (curl, CURLOPT_USERNAME,
 	     hash["out_username"].toByteArray().trimmed().constData());
 
+	  long timeout = 10L;
+
 	  if(hash["proxy_enabled"].toBool())
 	    {
+	      timeout += 15L;
+
 	      QString address("");
 	      QString port("");
 	      QString scheme("");
@@ -439,9 +447,15 @@ void spoton_kernel::popPostPoptastic(void)
 		(curl, CURLOPT_READFUNCTION, curl_payload_source);
 
 	      if(count <= 1)
-		curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
+		curl_easy_setopt
+		  (curl, CURLOPT_TIMEOUT, timeout);
 	      else
-		curl_easy_setopt(curl, CURLOPT_TIMEOUT, 2.5 * count);
+		/*
+		** 2.5 seconds per CURL_MAX_WRITE_SIZE bytes.
+		*/
+
+		curl_easy_setopt
+		  (curl, CURLOPT_TIMEOUT, 2.5 * count + timeout);
 
 	      curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
 	      curl_easy_perform(curl);
@@ -486,18 +500,17 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
   QString messageType
     (spoton_receive::findMessageType(data, symmetricKeys,
 				     interfaces(),
-				     s_crypts, "poptastic"));
+				     "poptastic",
+				     s_crypts.value("poptastic", 0)));
 
   if(messageType == "0000")
     {
-      QByteArray messageCode;
       QList<QByteArray> list
 	(spoton_receive::
 	 process0000(data.length(), data, symmetricKeys,
 		     setting("gui/chatAcceptSignedMessagesOnly", true).
 		     toBool(),
 		     QHostAddress("127.0.0.1"), 0,
-		     messageCode,
 		     s_crypts.value("poptastic", 0)));
 
       if(!list.isEmpty())
@@ -518,7 +531,7 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
 	     list.value(2).toBase64() + "_" +
 	     list.value(3).toBase64() + "_" +
 	     list.value(4).toBase64() + "_" +
-	     messageCode.toBase64().append('\n'));
+	     list.last().toBase64().append("\n"));
 	}
     }
   else if(messageType == "0000a")

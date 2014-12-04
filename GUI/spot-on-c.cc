@@ -1123,7 +1123,7 @@ void spoton::slotShareBuzzMagnet(void)
   message.append(oid);
   message.append("_");
   message.append(data.toBase64());
-  message.append('\n');
+  message.append("\n");
 
   if(m_kernelSocket.write(message.constData(), message.length()) !=
      message.length())
@@ -2324,7 +2324,7 @@ void spoton::sharePublicKeyWithParticipant(const QString &keyType)
       message.append(sPublicKey.toBase64());
       message.append("_");
       message.append(sSignature.toBase64());
-      message.append('\n');
+      message.append("\n");
 
       if(m_kernelSocket.write(message.constData(), message.length()) !=
 	 message.length())

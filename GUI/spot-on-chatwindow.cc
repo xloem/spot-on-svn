@@ -221,7 +221,7 @@ void spoton_chatwindow::slotSendMessage(void)
   message.append("_");
   message.append(QDateTime::currentDateTime().toUTC().
 		 toString("MMddyyyyhhmmss").toLatin1().toBase64());
-  message.append('\n');
+  message.append("\n");
 
   if(m_kernelSocket->write(message.constData(), message.length()) !=
      message.length())
