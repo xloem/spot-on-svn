@@ -232,7 +232,7 @@ void spoton_kernel::popPostPoptastic(void)
 
 		  chunk.size = 0;
 		  curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
-		  curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
+		  curl_easy_setopt(curl, CURLOPT_TIMEOUT, 25L);
 		  curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *) &chunk);
 		  curl_easy_setopt
 		    (curl, CURLOPT_WRITEFUNCTION, curl_write_memory_callback);
@@ -265,7 +265,7 @@ void spoton_kernel::popPostPoptastic(void)
 	      while(!list.isEmpty())
 		{
 		  curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
-		  curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
+		  curl_easy_setopt(curl, CURLOPT_TIMEOUT, 25L);
 		  curl_easy_setopt
 		    (curl, CURLOPT_URL, url.toLatin1().constData());
 		  curl_easy_setopt
@@ -437,7 +437,12 @@ void spoton_kernel::popPostPoptastic(void)
 	      curl_easy_setopt(curl, CURLOPT_READDATA, &upload_ctx);
 	      curl_easy_setopt
 		(curl, CURLOPT_READFUNCTION, curl_payload_source);
-	      curl_easy_setopt(curl, CURLOPT_TIMEOUT, count * 2.5);
+
+	      if(count <= 1)
+		curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);
+	      else
+		curl_easy_setopt(curl, CURLOPT_TIMEOUT, 2.5 * count);
+
 	      curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
 	      curl_easy_perform(curl);
 	      curl_slist_free_all(recipients);
