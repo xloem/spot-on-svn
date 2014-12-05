@@ -452,7 +452,7 @@ void spoton::slotTestPoptasticPop3Settings(void)
 	      arg(m_poptasticSettingsUi.
 		  in_server_address->text().trimmed()).
 	      arg(m_poptasticSettingsUi.in_server_port->value());
-	  else
+	  else if(method == "POP3")
 	    url = QString("pop3s://%1:%2/").
 	      arg(m_poptasticSettingsUi.in_server_address->text().trimmed()).
 	      arg(m_poptasticSettingsUi.in_server_port->value());
@@ -469,7 +469,7 @@ void spoton::slotTestPoptasticPop3Settings(void)
 	    url = QString("imap://%1:%2/").
 	      arg(m_poptasticSettingsUi.in_server_address->text().trimmed()).
 	      arg(m_poptasticSettingsUi.in_server_port->value());
-	  else
+	  else if(method == "POP3")
 	    url = QString("pop3://%1:%2/").
 	      arg(m_poptasticSettingsUi.in_server_address->text().trimmed()).
 	      arg(m_poptasticSettingsUi.in_server_port->value());
@@ -547,19 +547,26 @@ void spoton::slotTestPoptasticSmtpSettings(void)
 			   trimmed().toLatin1().constData());
 	}
 
+      QString method
+	(m_poptasticSettingsUi.out_method->currentText().toUpper());
       QString url("");
       int index = m_poptasticSettingsUi.out_ssltls->currentIndex();
 
       if(index == 1 || index == 2)
 	{
-	  if(index == 1) // SSL
-	    url = QString("smtps://%1:%2/").
-	      arg(m_poptasticSettingsUi.out_server_address->text().trimmed()).
-	      arg(m_poptasticSettingsUi.out_server_port->value());
-	  else // TLS
-	    url = QString("smtp://%1:%2/").
-	      arg(m_poptasticSettingsUi.out_server_address->text().trimmed()).
-	      arg(m_poptasticSettingsUi.out_server_port->value());
+	  if(method == "SMTP")
+	    {
+	      if(index == 1) // SSL
+		url = QString("smtps://%1:%2/").
+		  arg(m_poptasticSettingsUi.out_server_address->text().
+		      trimmed()).
+		  arg(m_poptasticSettingsUi.out_server_port->value());
+	      else // TLS
+		url = QString("smtp://%1:%2/").
+		  arg(m_poptasticSettingsUi.out_server_address->text().
+		      trimmed()).
+		  arg(m_poptasticSettingsUi.out_server_port->value());
+	    }
 
 	  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
 	  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
@@ -568,9 +575,12 @@ void spoton::slotTestPoptasticSmtpSettings(void)
 	    curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_ALL);
 	}
       else
-	url = QString("smtp://%1:%2/").
-	  arg(m_poptasticSettingsUi.out_server_address->text().trimmed()).
-	  arg(m_poptasticSettingsUi.out_server_port->value());
+	{
+	  if(method == "SMTP")
+	    url = QString("smtp://%1:%2/").
+	      arg(m_poptasticSettingsUi.out_server_address->text().trimmed()).
+	      arg(m_poptasticSettingsUi.out_server_port->value());
+	}
 
       curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "NOOP");
       curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
@@ -615,6 +625,7 @@ void spoton::slotPoptasticSettingsReset(void)
   m_poptasticSettingsUi.in_server_port->setValue(995);
   m_poptasticSettingsUi.in_ssltls->setCurrentIndex(2);
   m_poptasticSettingsUi.in_username->clear();
+  m_poptasticSettingsUi.out_method->setCurrentIndex(1);
   m_poptasticSettingsUi.out_password->clear();
   m_poptasticSettingsUi.out_server_address->clear();
   m_poptasticSettingsUi.out_server_port->setValue(587);
