@@ -108,6 +108,11 @@ void spoton::slotConfigurePoptastic(void)
   else
     m_poptasticSettingsUi.in_method->setCurrentIndex(2);
 
+  if(m_settings.value("gui/disableSmtp", false).toBool())
+    m_poptasticSettingsUi.out_method->setCurrentIndex(0);
+  else
+    m_poptasticSettingsUi.out_method->setCurrentIndex(1);
+
   if(!protocols.contains("pop3s"))
     {
       m_poptasticSettingsUi.in_ssltls->clear();
@@ -211,8 +216,13 @@ void spoton::slotConfigurePoptastic(void)
 	m_poptasticSettingsUi.poptasticRefresh->value();
       m_settings["gui/disablePop3"] =
 	m_poptasticSettingsUi.in_method->currentIndex() == 0 ? true : false;
+      m_settings["gui/disableSmtp"] =
+	m_poptasticSettingsUi.out_method->currentIndex() == 0 ? true : false;
       settings.setValue("gui/disablePop3",
 			m_poptasticSettingsUi.in_method->
+			currentIndex() == 0 ? true : false);
+      settings.setValue("gui/disableSmtp",
+			m_poptasticSettingsUi.out_method->
 			currentIndex() == 0 ? true : false);
       settings.setValue
 	("gui/poptasticRefreshInterval",

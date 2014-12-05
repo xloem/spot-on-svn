@@ -306,6 +306,9 @@ void spoton_kernel::popPostPoptastic(void)
   ** Now, we post!
   */
 
+  if(setting("gui/disableSmtp", false).toBool())
+    return;
+
   QReadLocker locker(&m_poptasticCacheMutex);
 
   if(!m_poptasticCache.isEmpty())
