@@ -106,6 +106,23 @@ QReadWriteLock spoton_kernel::s_messagesToProcessMutex;
 QReadWriteLock spoton_kernel::s_messagingCacheMutex;
 QReadWriteLock spoton_kernel::s_settingsMutex;
 
+#if QT_VERSION >= 0x050000
+static void qt_message_handler(QtMsgType type,
+			       const QMessageLogContext &context,
+			       const QString &msg)
+{
+  Q_UNUSED(type);
+  Q_UNUSED(context);
+  spoton_misc::logError(QString("An error (%1) occurred.").arg(msg));
+}
+#else
+static void qt_message_handler(QtMsgType type, const char *msg)
+{
+  Q_UNUSED(type);
+  spoton_misc::logError(QString("An error (%1) occurred.").arg(msg));
+}
+#endif
+
 static void sig_handler(int signum)
 {
   static int fatal_error = 0;
@@ -193,6 +210,11 @@ int main(int argc, char *argv[])
   sigemptyset(&act.sa_mask);
   act.sa_flags = 0;
   sigaction(SIGPIPE, &act, 0);
+#if QT_VERSION >= 0x050000
+  qInstallMessageHandler(qt_message_handler);
+#else
+  qInstallMsgHandler(qt_message_handler);
+#endif
 #endif
 #ifdef SPOTON_USE_HIDDEN_KERNEL_WINDOW
   QApplication qapplication(argc, argv);

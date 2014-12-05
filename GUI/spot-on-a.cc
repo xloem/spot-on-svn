@@ -52,6 +52,23 @@ extern "C"
 
 QPointer<spoton> spoton::s_gui = 0;
 
+#if QT_VERSION >= 0x050000
+static void qt_message_handler(QtMsgType type,
+			       const QMessageLogContext &context,
+			       const QString &msg)
+{
+  Q_UNUSED(type);
+  Q_UNUSED(context);
+  spoton_misc::logError(QString("An error (%1) occurred.").arg(msg));
+}
+#else
+static void qt_message_handler(QtMsgType type, const char *msg)
+{
+  Q_UNUSED(type);
+  spoton_misc::logError(QString("An error (%1) occurred.").arg(msg));
+}
+#endif
+
 static void sig_handler(int signum)
 {
   static int fatal_error = 0;
@@ -82,6 +99,11 @@ int main(int argc, char *argv[])
   if(style)
     QApplication::setStyle(style);
 #endif
+#endif
+#if QT_VERSION >= 0x050000
+  qInstallMessageHandler(qt_message_handler);
+#else
+  qInstallMsgHandler(qt_message_handler);
 #endif
 
   QApplication qapplication(argc, argv);

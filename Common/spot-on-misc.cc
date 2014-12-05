@@ -1571,8 +1571,9 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 		   "account_name, "
 		   "account_password, "
 		   "transport, "
-		   "orientation) "
-		   "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+		   "orientation, "
+		   "ssl_control_string) "
+		   "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
 		   "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	query.bindValue(0, QVariant(QVariant::String));
 	query.bindValue(1, QVariant(QVariant::String));
@@ -1746,6 +1747,12 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 	      query.bindValue
 		(25, crypt->encryptedThenHashed("packet", &ok).toBase64());
 	  }
+
+	if(transport == "tcp")
+	  query.bindValue
+	    (26, "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH");
+	else
+	  query.bindValue(26, "N/A");
 
 	if(ok)
 	  query.exec();

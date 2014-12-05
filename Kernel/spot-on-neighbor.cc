@@ -197,7 +197,10 @@ spoton_neighbor::spoton_neighbor
   if(m_transport == "tcp")
     m_requireSsl = true;
   else
-    m_requireSsl = false;
+    {
+      m_requireSsl = false;
+      m_sslControlString = "N/A";
+    }
 
   m_startTime = QDateTime::currentDateTime();
   m_transport = transport;
@@ -531,7 +534,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   if(m_transport == "tcp")
     m_useSsl = true;
   else
-    m_useSsl = false;
+    {
+      m_sslControlString = "N/A";
+      m_useSsl = false;
+    }
 
   try
     {
