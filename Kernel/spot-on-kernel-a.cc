@@ -1713,6 +1713,8 @@ void spoton_kernel::slotMessageReceivedFromUI
 		  message = spoton_send::message0000
 		    (data, spoton_send::ARTIFICIAL_GET,
 		     QPair<QByteArray, QByteArray> ());
+		  message = message.mid(message.indexOf("content=")).
+		    trimmed();
 		  postPoptasticMessage(receiverName, message);
 		}
 	    }
@@ -1727,6 +1729,8 @@ void spoton_kernel::slotMessageReceivedFromUI
 		  message = spoton_send::message0000
 		    (data, spoton_send::NORMAL_POST,
 		     QPair<QByteArray, QByteArray> ());
+		  message = message.mid(message.indexOf("content=")).
+		    trimmed();
 		  postPoptasticMessage(receiverName, message);
 		}
 	    }
@@ -2354,6 +2358,8 @@ void spoton_kernel::prepareStatus(const QString &keyType)
 
 	    message = spoton_send::message0013
 	      (list.takeFirst(), QPair<QByteArray, QByteArray> ());
+	    message = message.mid(message.indexOf("content=")).
+	      trimmed();
 	    postPoptasticMessage(receiverNames.takeFirst(), message);
 	  }
     }
@@ -2964,7 +2970,14 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 
 	  message = spoton_send::message0001b
 	    (list.first().first, QPair<QByteArray, QByteArray> ());
+	  message = message.mid(message.indexOf("content=")).
+	    trimmed();
 	  postPoptasticMessage(receiverName, message);
+
+	  /*
+	  ** We do not guarantee e-mail delivery.
+	  */
+
 	  spoton_misc::moveSentMailToSentFolder
 	    (QList<qint64> () << mailOid, s_crypt1);
 	  return;
@@ -3968,6 +3981,8 @@ void spoton_kernel::slotCallParticipant(const QByteArray &keyType,
 	       spoton_send::NORMAL_POST,
 	       QPair<QByteArray, QByteArray> ());
 
+	  message = message.mid(message.indexOf("content=")).
+	    trimmed();
 	  postPoptasticMessage(receiverName, message);
 	}
     }
@@ -4176,6 +4191,8 @@ void spoton_kernel::slotCallParticipantUsingGemini(const QByteArray &keyType,
 		   spoton_send::NORMAL_POST,
 		   QPair<QByteArray, QByteArray> ());
 
+	      message = message.mid(message.indexOf("content=")).
+		trimmed();
 	      postPoptasticMessage(receiverName, message);
 	    }
 	}
