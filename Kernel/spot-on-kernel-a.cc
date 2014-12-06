@@ -42,6 +42,7 @@
 #include <QtCore/qmath.h>
 
 #include <limits>
+#include <iostream>
 
 extern "C"
 {
@@ -309,22 +310,22 @@ int main(int argc, char *argv[])
 	}
       catch(std::bad_alloc &exception)
 	{
-	  qDebug() << "Critical memory failure. Exiting kernel.";
+	  std::cerr << "Critical memory failure. Exiting kernel.\n";
 	  curl_global_cleanup();
 	  return EXIT_FAILURE;
 	}
       catch(...)
 	{
-	  qDebug() << "Critical failure. Exiting kernel.";
+	  std::cerr << "Critical failure. Exiting kernel.\n";
 	  curl_global_cleanup();
 	  return EXIT_FAILURE;
 	}
     }
   else
     {
-      qDebug() << "Critical kernel error ("
-	       << libspoton_strerror(err)
-	       << ") with libspoton_init_b().";
+      std::cerr << "Critical kernel error ("
+		<< libspoton_strerror(err)
+		<< ") with libspoton_init_b().\n";
       curl_global_cleanup();
       return EXIT_FAILURE;
     }
