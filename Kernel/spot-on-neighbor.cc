@@ -193,6 +193,9 @@ spoton_neighbor::spoton_neighbor
     m_sslControlString = "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH";
 
   m_statusControl = "connected";
+  m_startTime = QDateTime::currentDateTime();
+  m_transport = transport;
+  m_useAccounts = useAccounts;
 
   if(m_transport == "tcp")
     m_requireSsl = true;
@@ -201,10 +204,6 @@ spoton_neighbor::spoton_neighbor
       m_requireSsl = false;
       m_sslControlString = "N/A";
     }
-
-  m_startTime = QDateTime::currentDateTime();
-  m_transport = transport;
-  m_useAccounts = useAccounts;
 
   if(certificate.isEmpty() || privateKey.isEmpty())
     m_useSsl = false;
@@ -466,8 +465,8 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   m_accountAuthenticated = false;
   m_accountName = accountName;
   m_accountPassword = accountPassword;
-  m_allowExceptions = allowExceptions;
   m_address = QHostAddress(ipAddress);
+  m_allowExceptions = allowExceptions;
   m_bytesRead = 0;
   m_bytesWritten = 0;
   m_echoMode = echoMode;
@@ -477,9 +476,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   m_isUserDefined = userDefined;
   m_keySize = qAbs(keySize);
 
-  if(!(m_keySize == 2048 || m_keySize == 3072 ||
-       m_keySize == 4096 || m_keySize == 8192))
-    m_keySize = 2048;
+  if(transport == "tcp")
+    if(!(m_keySize == 2048 || m_keySize == 3072 ||
+	 m_keySize == 4096 || m_keySize == 8192))
+      m_keySize = 2048;
 
   m_lastReadTime = QDateTime::currentDateTime();
   m_listenerOid = -1;
@@ -569,23 +569,26 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   QByteArray publicKey;
   QString error("");
 
-  spoton_crypt::generateSslKeys
-    (m_keySize,
-     certificate,
-     privateKey,
-     publicKey,
-     QHostAddress(),
-     0, // Days are not used.
-     error);
+  if(m_transport == "tcp")
+    {
+      spoton_crypt::generateSslKeys
+	(m_keySize,
+	 certificate,
+	 privateKey,
+	 publicKey,
+	 QHostAddress(),
+	 0, // Days are not used.
+	 error);
 
-  if(!error.isEmpty())
-    spoton_misc::logError
-      (QString("spoton_neighbor:: "
-	       "spoton_neighbor(): "
-	       "generateSslKeys() failure (%1) for %2:%3.").
-       arg(error.remove(".")).
-       arg(ipAddress).
-       arg(port));
+      if(!error.isEmpty())
+	spoton_misc::logError
+	  (QString("spoton_neighbor:: "
+		   "spoton_neighbor(): "
+		   "generateSslKeys() failure (%1) for %2:%3.").
+	   arg(error.remove(".")).
+	   arg(ipAddress).
+	   arg(port));
+    }
 
   if(!privateKey.isEmpty())
     {
