@@ -22,6 +22,8 @@
 15.  Updated NTRU files with 4a47c952c250731177fc65547ba8a09c75013506.
      Please see https://github.com/tbuktu/libntru.
 16.  Ignore the SSL Control String for non-TCP neighbors.
+17.  Corrected flawed use of m_transport in spot-on-neighbor.cc. The variable
+     must be set before it's inspected.
 
 0.16b (11/21/2014)
 
