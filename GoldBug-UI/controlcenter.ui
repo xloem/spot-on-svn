@@ -46,7 +46,7 @@
        <enum>QTabWidget::East</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>8</number>
       </property>
       <property name="iconSize">
        <size>
@@ -217,7 +217,7 @@ p, li { white-space: pre-wrap; }
                   <item>
                    <widget class="QPushButton" name="clearMessages">
                     <property name="toolTip">
-                     <string>Clear Chat.</string>
+                     <string>Clear chat.</string>
                     </property>
                     <property name="styleSheet">
                      <string notr="true">QPushButton {
@@ -382,7 +382,7 @@ background-position: top center; } </string>
                   <item>
                    <widget class="QPushButton" name="melodica">
                     <property name="toolTip">
-                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;table border=&quot;0&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;&quot; width=&quot;350&quot; cellspacing=&quot;2&quot; cellpadding=&quot;0&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;p&gt;MELODICA: Call Friend with new Gemini&lt;br/&gt;(&lt;span style=&quot; text-decoration: underline;&quot;&gt;M&lt;/span&gt;ulti &lt;span style=&quot; text-decoration: underline;&quot;&gt;E&lt;/span&gt;ncrypted &lt;span style=&quot; text-decoration: underline;&quot;&gt;LO&lt;/span&gt;ng &lt;span style=&quot; text-decoration: underline;&quot;&gt;DI&lt;/span&gt;stance &lt;span style=&quot; text-decoration: underline;&quot;&gt;CA&lt;/span&gt;lling).&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;p&gt;(Creates for selected friend an Auto-Gemini at both sides for instant perfect forward secrecy (IPFS)). It is renewed whenever you click MELODICA, and not only once per online session.&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;table border=&quot;0&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;&quot; width=&quot;350&quot; cellspacing=&quot;2&quot; cellpadding=&quot;0&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;p&gt;MELODICA: Call Friend with new Gemini&lt;br/&gt;(&lt;span style=&quot; text-decoration: underline;&quot;&gt;M&lt;/span&gt;ulti &lt;span style=&quot; text-decoration: underline;&quot;&gt;E&lt;/span&gt;ncrypted &lt;span style=&quot; text-decoration: underline;&quot;&gt;LO&lt;/span&gt;ng &lt;span style=&quot; text-decoration: underline;&quot;&gt;DI&lt;/span&gt;stance &lt;span style=&quot; text-decoration: underline;&quot;&gt;CA&lt;/span&gt;lling).&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;p&gt;(Creates for selected friend an auto-Gemini at both sides for instant perfect forward secrecy (IPFS)). It is renewed whenever you click MELODICA, and not only once per online session.&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</string>
                     </property>
                     <property name="styleSheet">
                      <string notr="true">QPushButton {
@@ -690,7 +690,7 @@ QPushButton:pressed {
                    <item>
                     <widget class="QCheckBox" name="chatAcceptSigned">
                      <property name="toolTip">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;People who have your key can only send messages if they are signed and authenticated.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;People who have your key can only send messages if they are signed.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                      <property name="text">
                       <string>&amp;Accept only signed messages.</string>
@@ -746,7 +746,7 @@ QPushButton:pressed {
                <item>
                 <widget class="QPushButton" name="chatActionMenu">
                  <property name="toolTip">
-                  <string>Right mouse context menu as a button for tablets.</string>
+                  <string>Right-mouse context menu as a button for tablets.</string>
                  </property>
                  <property name="styleSheet">
                   <string notr="true">QPushButton {
@@ -793,7 +793,7 @@ QPushButton:pressed {
         <string/>
        </attribute>
        <attribute name="toolTip">
-        <string>Email</string>
+        <string>E-Mail</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <property name="spacing">
@@ -1175,7 +1175,7 @@ QPushButton:pressed {
                     <bool>true</bool>
                    </property>
                    <property name="toolTip">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Relpy to the selected e-mail.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Reply to the selected e-mail.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                    <property name="styleSheet">
                     <string notr="true">QPushButton {
@@ -1508,7 +1508,7 @@ QPushButton:pressed {
                    <item>
                     <widget class="QPushButton" name="generateGoldBug">
                      <property name="toolTip">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add with the GoldBug an additional layer of encryption to the e-mail. &lt;br&gt;Do remember to notify all recipients of the GoldBug-Password.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add with the GoldBug an additional layer of encryption to the e-mail. &lt;br&gt;Do remember to notify all recipients of the GoldBug password.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                      <property name="styleSheet">
                       <string notr="true">QPushButton {
@@ -1586,7 +1586,7 @@ QPushButton:pressed {
                        <item>
                         <widget class="QPushButton" name="copyrepleo_email">
                          <property name="toolTip">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Copy the Email-Repleo of one selected friend.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Copy the E-Mail-Repleo of one selected friend.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                          <property name="styleSheet">
                           <string notr="true">QPushButton {
@@ -1672,7 +1672,7 @@ QPushButton:pressed {
                      <item>
                       <widget class="QPushButton" name="emailWriteActionMenu">
                        <property name="toolTip">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Right mouse context menu as a button for tablets.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Right-mouse context menu as a button for tablets.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                        </property>
                        <property name="styleSheet">
                         <string notr="true">QPushButton {
@@ -2375,7 +2375,7 @@ QPushButton:pressed {
                   <item>
                    <widget class="QCheckBox" name="emailAcceptSigned">
                     <property name="toolTip">
-                     <string>People, who have your key can only send messages, if they are signed and authenticated.</string>
+                     <string>People who have your key can only send messages if they are signed.</string>
                     </property>
                     <property name="layoutDirection">
                      <enum>Qt::LeftToRight</enum>
@@ -2388,7 +2388,7 @@ QPushButton:pressed {
                   <item>
                    <widget class="QCheckBox" name="acceptEmailKeys">
                     <property name="toolTip">
-                     <string>Accept, that neighbors with a Spot-on-gui-client (e.g. chat-servers) can send their key over IP to you. </string>
+                     <string>Accept that neighbors with Spot-On (e.g. servers) can send their key over IP to you.</string>
                     </property>
                     <property name="text">
                      <string>Auto-Accept &amp;Email-Keys via IP.</string>
@@ -2877,7 +2877,7 @@ QPushButton:pressed {
         <string/>
        </attribute>
        <attribute name="toolTip">
-        <string>StarBeam FileSharing</string>
+        <string>StarBeam File Sharing</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_50">
         <property name="spacing">
@@ -3004,7 +3004,7 @@ color: rgb(255, 255, 255);</string>
                  <item>
                   <widget class="QTextEdit" name="etpMagnet">
                    <property name="toolTip">
-                    <string>Add a StarBeam-Magnet.</string>
+                    <string>Add a StarBeam magnet.</string>
                    </property>
                    <property name="styleSheet">
                     <string notr="true">background-color: qlineargradient(spread:pad, x1:0.968, y1:0.932, x2:0.513, y2:0.5, stop:0 rgba(183, 235, 255, 255), stop:1 rgba(255, 255, 255, 255)); </string>
@@ -3237,7 +3237,7 @@ QPushButton:pressed {
             <item>
              <widget class="QTableWidget" name="etpMagnets">
               <property name="toolTip">
-               <string>List of Magnets for StarBeam.</string>
+               <string>List of magnets for StarBeam.</string>
               </property>
               <property name="verticalScrollBarPolicy">
                <enum>Qt::ScrollBarAsNeeded</enum>
@@ -3274,7 +3274,7 @@ QPushButton:pressed {
                 <string>OTM</string>
                </property>
                <property name="toolTip">
-                <string>One-Time-Magnet</string>
+                <string>One-Time Magnet</string>
                </property>
               </column>
               <column>
@@ -3292,7 +3292,7 @@ QPushButton:pressed {
             <item>
              <widget class="QPushButton" name="magnetsActionMenu">
               <property name="toolTip">
-               <string>Right mouse context menu as a button for tablets.</string>
+               <string>Right-mouse context menu as a button for tablets.</string>
               </property>
               <property name="styleSheet">
                <string notr="true">QPushButton {
@@ -3353,7 +3353,7 @@ QPushButton:pressed {
                   <string>You get the Nova from a sender of a file.</string>
                  </property>
                  <property name="text">
-                  <string>Novas are a Passphrase added to the Magnet of the File. </string>
+                  <string>Novas are a passphrase added to the magnet of the file. </string>
                  </property>
                 </widget>
                </item>
@@ -3563,7 +3563,7 @@ QPushButton:pressed {
                <item>
                 <widget class="QPushButton" name="receivedActionMenu">
                  <property name="toolTip">
-                  <string>Right mouse context menu as a button for tablets.</string>
+                  <string>Right-mouse context menu as a button for tablets.</string>
                  </property>
                  <property name="styleSheet">
                   <string notr="true">QPushButton {
@@ -3675,7 +3675,7 @@ QPushButton:pressed {
                     </sizepolicy>
                    </property>
                    <property name="toolTip">
-                    <string>The pieces (also called links) of the mosaic create the file.</string>
+                    <string>The pieces (also called links) of a mosaic create the file.</string>
                    </property>
                    <property name="text">
                     <string>&amp;Maximum Mosaic Size.</string>
@@ -3747,7 +3747,7 @@ QPushButton:pressed {
                  <item>
                   <widget class="QPushButton" name="etpSelectFile">
                    <property name="toolTip">
-                    <string>Select a file from your hard disc.</string>
+                    <string>Select a file from your hard drive.</string>
                    </property>
                    <property name="styleSheet">
                     <string notr="true">QPushButton {
@@ -3780,7 +3780,7 @@ QPushButton:pressed {
                <item>
                 <widget class="QTableWidget" name="addTransmittedMagnets">
                  <property name="toolTip">
-                  <string>Available Magnets.</string>
+                  <string>Available magnets.</string>
                  </property>
                  <property name="verticalScrollBarPolicy">
                   <enum>Qt::ScrollBarAlwaysOn</enum>
@@ -3842,7 +3842,7 @@ QPushButton:pressed {
                  <item>
                   <widget class="QPushButton" name="generateNova">
                    <property name="toolTip">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Bundle each pulse with an additional layer of AES-256 encryption. Do remember to notify all recipients of the key/password that you created for this transfer magnet.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Bundle each pulse with an additional layer of AES-256 encryption. Do remember to notify all recipients of the key that you created for this transfer magnet.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                    <property name="styleSheet">
                     <string notr="true">QPushButton {
@@ -3929,7 +3929,7 @@ QPushButton:pressed {
                  <item>
                   <widget class="QCheckBox" name="missingLinksCheckBox">
                    <property name="toolTip">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Tools: StarBeam-Analyzer. It allows to check, if you got all links for a mosaic, if not, send your friend the &amp;quot;missing links magnet&amp;quot; and he will transfer only the missing links of the file again. The hash comparison with your friend allows to check, if you have the same file.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Tools: StarBeam Analyzer. It allows to check if you received all links for a mosaic. If not, send your friend the &amp;quot;missing links magnet&amp;quot; and they will transfer only the missing links of the file again. The hash comparison with your friend allows to check if you have the same file.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                    <property name="text">
                     <string>&amp;Missing Links Magnet:</string>
@@ -3993,7 +3993,7 @@ QPushButton:pressed {
                  </property>
                  <widget class="QTableWidget" name="transmitted">
                   <property name="toolTip">
-                   <string>Uploads. Please unchecked Paused after you have copied and sent the magnet to your receiving friend(s).</string>
+                   <string>Uploads. Please unchecked paused after you have copied and sent the magnet to your receiving friend(s).</string>
                   </property>
                   <property name="verticalScrollBarPolicy">
                    <enum>Qt::ScrollBarAsNeeded</enum>
@@ -4559,7 +4559,7 @@ QPushButton:pressed {
         <string/>
        </attribute>
        <attribute name="toolTip">
-        <string>Connect Neighbor-IP</string>
+        <string>Connect Neighbor IP</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_7">
         <property name="spacing">
@@ -5072,7 +5072,7 @@ color: rgb(255, 255, 255);</string>
                 </sizepolicy>
                </property>
                <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Harry, add this neighbor (with Floo-Powder).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Harry, add this neighbor.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="styleSheet">
                 <string notr="true">QPushButton#addNeighbor {
@@ -5183,7 +5183,7 @@ QPushButton:pressed {
         <string/>
        </attribute>
        <attribute name="toolTip">
-        <string>Create Listener/Chat-Server</string>
+        <string>Create Chat/Listener Server</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_9">
         <property name="spacing">
@@ -5406,7 +5406,7 @@ color: rgb(255, 255, 255);</string>
                <item>
                 <widget class="QPushButton" name="listenersActionMenu">
                  <property name="toolTip">
-                  <string>Right mouse context menu as a button for tablets.</string>
+                  <string>Right-mouse context menu as a button for tablets.</string>
                  </property>
                  <property name="styleSheet">
                   <string notr="true">QPushButton {
@@ -5476,7 +5476,7 @@ QPushButton:pressed {
                     <item>
                      <widget class="QCheckBox" name="permanentCertificate">
                       <property name="toolTip">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Create a Permanent Certificate, which identifies, &lt;/p&gt;&lt;p&gt;when an unknown neighbor connects &lt;/p&gt;&lt;p&gt;and the cert is different from the known. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Create a permanent certificate which identifies, &lt;/p&gt;&lt;p&gt;when an unknown neighbor connects &lt;/p&gt;&lt;p&gt;and the certificate is different from the known. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                       <property name="text">
                        <string>Create Permanent Certificate</string>
@@ -5496,7 +5496,7 @@ QPushButton:pressed {
                     <item>
                      <widget class="QCheckBox" name="sslListener">
                       <property name="toolTip">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Create and use always 2 listeners / ports for both: SSL (HTTPS) and non-SSL (HTTP) incoming connections.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Create and use two listeners / ports for both SSL (HTTPS) and non-SSL (HTTP) incoming connections.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                       <property name="text">
                        <string>Use SSL with this Key Size: </string>
@@ -5670,7 +5670,7 @@ QPushButton:pressed {
                  <item row="8" column="1" colspan="4">
                   <widget class="QSpinBox" name="listenerPort">
                    <property name="toolTip">
-                    <string>Please forward this port in your router/nat.</string>
+                    <string>Please forward this port in your router.</string>
                    </property>
                    <property name="minimum">
                     <number>1</number>
@@ -5800,7 +5800,7 @@ background-position: top center; } </string>
                  <item>
                   <widget class="QPushButton" name="addListener">
                    <property name="toolTip">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Echoed Messaging and Presence Protocol (EMPP): Create own Chat Server.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Echoed Messaging and Presence Protocol (EMPP). Create own chat server.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                    <property name="styleSheet">
                     <string notr="true">QPushButton#addListener {
@@ -5836,7 +5836,7 @@ QPushButton#addListener:pressed {
                  <item>
                   <widget class="QPushButton" name="listenerAnnounce">
                    <property name="toolTip">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Go Live sends the Listener / Chat-Server information (that means your IP and port) to connected neighbors. Your peers will be able to connect, if you have not set 'accounts' for this Listener.&lt;/p&gt;&lt;p&gt;Wilkie Twycross, apparition instructor in Hogwarts, shows regularly in a workshop about &amp;quot;Going Live with a Listener&amp;quot;, how easy it is, to set up a Chat Server for your friends with or without a chat account. Apparition is possible.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Go Live sends the listener information (that means your IP and port) to connected neighbors. Your peers will be able to connect if you have not set accounts for this listener.&lt;/p&gt;&lt;p&gt;Wilkie Twycross, apparition instructor in Hogwarts, shows regularly in a workshop about &amp;quot;Going Live with a listener&amp;quot;, how easy it is to set up a server for your friends with or without a chat account. Apparition is possible.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                    <property name="styleSheet">
                     <string notr="true">QPushButton#listenerAnnounce {
@@ -5924,7 +5924,7 @@ QPushButton:pressed {
                <item>
                 <widget class="QGroupBox" name="accountsGB">
                  <property name="toolTip">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;Accounts prevent unknow nodes to connect and enable the creation of a web of trust. The account name and the account password must contain at least thirty-two characters each.&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;Accounts prevent unknown nodes to connect and enable the creation of a graph of trust. The account name and the account password must contain at least thirty-two characters each.&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                  <property name="title">
                   <string>Create Accounts for existing Listener Connections</string>
@@ -6311,7 +6311,7 @@ QPushButton:pressed {
                        </size>
                       </property>
                       <property name="toolTip">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When you, your chat friend, and the chat server add the same Adaptive-Echo (AE) token, then the chat server will send your message only to your friend (and not to all connected users, as provided by the &amp;quot;Full Echo&amp;quot;). With an AE-Token, no one else will get or see your message because potential recording nodes are excluded.&lt;/p&gt;&lt;p&gt;Gretel and Hansel, another Adaptive Echo Example: when node A2, E5, and E2 share the same AE token, then E6 will not get any message, which A2 (Hansel) and E2 (Gretel) will exchange. Node E5 learns via the known token &amp;quot;white_pebbles&amp;quot;, not to send to E6 (Wicked Witch). &lt;/p&gt;&lt;p&gt;An Adaptive Echo network does not reveal any destination information (Ants Routing). Remember, &amp;quot;Half Echo&amp;quot; sends only one hop to the connected neighbor and &amp;quot;Full Echo&amp;quot; sends the message to all connected nodes over infinite hops. While accounts prevent clients from connecting, AE tokens provide graph- or path-exclusivness for sent messages via nodes, knowing an AE token. Server administrators can share their tokens with other server administrators as well, if they trust each other (ultrapeering for trust).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When you, your chat friend, and the chat server add the same Adaptive-Echo (AE) token, then the chat server will send your message only to your friend (and not to all connected users, as provided by the &amp;quot;Full Echo&amp;quot;). With an AE token, no one else will get or see your message because potential recording nodes are excluded.&lt;/p&gt;&lt;p&gt;Gretel and Hansel, another Adaptive Echo example: when node A2, E5, and E2 share the same AE token, then E6 will not get any message, which A2 (Hansel) and E2 (Gretel) will exchange. Node E5 learns via the known token &amp;quot;white_pebbles&amp;quot;, not to send to E6 (Wicked Witch). &lt;/p&gt;&lt;p&gt;An Adaptive Echo network does not reveal any destination information (Ants Routing). Remember, &amp;quot;Half Echo&amp;quot; sends only one hop to the connected neighbor and &amp;quot;Full Echo&amp;quot; sends the message to all connected nodes over infinite hops. While accounts prevent clients from connecting, AE tokens provide graph- or path-exclusivness for sent messages via nodes, knowing an AE token. Server administrators can share their tokens with other server administrators as well, if they trust each other (ultra-peering for trust).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                       <property name="text">
                        <string/>
@@ -7031,7 +7031,7 @@ QPushButton:pressed {
                <item>
                 <widget class="QPushButton" name="regenerate">
                  <property name="toolTip">
-                  <string>Creates a new Key Pair and deletes the old.</string>
+                  <string>Creates a new key pair and deletes the old.</string>
                  </property>
                  <property name="text">
                   <string>Regenerate</string>
@@ -7794,7 +7794,7 @@ QPushButton:pressed {
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>822</width>
+                     <width>853</width>
                      <height>239</height>
                     </rect>
                    </property>
@@ -8074,7 +8074,7 @@ QPushButton:pressed {
                            <item>
                             <widget class="QPushButton" name="verify">
                              <property name="toolTip">
-                              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Computed a salted hash of the provided passphrase and compare it with the hash in the provided INI.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Compute a salted hash of the provided passphrase and compare it with the hash in the provided INI.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                              </property>
                              <property name="text">
                               <string>Verify</string>
@@ -8937,7 +8937,7 @@ QPushButton:pressed {
              <item>
               <widget class="QCheckBox" name="acceptChatKeys">
                <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Accept that neighbors with a Spot-on-gui-client (e.g. chat-servers) can send their key over IP to you. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Accept that neighbors with Spot-On (e.g. servers) can send their key over IP to you. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="text">
                 <string>Auto-Accept &amp;Chat-Keys via IP.</string>
@@ -10645,7 +10645,7 @@ QPushButton:pressed {
             <item>
              <widget class="QLabel" name="label_39">
               <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;A minimalistic &lt;br/&gt;Desktop Messenger GUI&lt;br/&gt;for the messaging library of&lt;br/&gt;http://spot-on.sf.net&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;A minimalistic &lt;br/&gt;desktop messenger GUI&lt;br/&gt;for the messaging library of&lt;br/&gt;http://spot-on.sf.net.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
               <property name="text">
                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#666666;&quot;&gt;GB v. 1.7&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -10942,7 +10942,7 @@ spot-on-kernel&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; color:#666666;&quot;&
     <string>&amp;StarBeam Analyzer</string>
    </property>
    <property name="toolTip">
-    <string>StarBeam Analyzer: Check for 100% and load the chunks, if they are missing.</string>
+    <string>StarBeam Analyzer: check for 100% and load the chunks if they are missing.</string>
    </property>
   </action>
   <action name="action_Minimal_Display">
