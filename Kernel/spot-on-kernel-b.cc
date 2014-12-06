@@ -584,8 +584,9 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
 
 	  if(fileInfo.size() >= maximumSize)
 	    {
-	      spoton_misc::logError("spoton_kernel::slotPoppedMessage(): "
-			    "email.db has exceeded the specified limit.");
+	      spoton_misc::logError
+		("spoton_kernel::slotPoppedMessage(): "
+		 "email.db has exceeded the specified limit.");
 	      return;
 	    }
 
@@ -804,7 +805,7 @@ void spoton_kernel::saveGemini(const QByteArray &publicKeyHash,
   if(!dateTime.isValid())
     {
       spoton_misc::logError
-	("spoton_kernel(): saveGemini(): invalid date-time object.");
+	("spoton_kernel::saveGemini(): invalid date-time object.");
       return;
     }
 
