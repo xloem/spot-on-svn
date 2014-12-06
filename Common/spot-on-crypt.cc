@@ -1890,6 +1890,7 @@ void spoton_crypt::generatePrivatePublicKeys(const QString &keySize,
 	spoton_misc::logError
 	  ("spoton_crypt::generatePrivatePublicKeys(): gcry_pk_genkey() "
 	   "failure.");
+
       goto done_label;
     }
 
