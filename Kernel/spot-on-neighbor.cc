@@ -1442,7 +1442,7 @@ void spoton_neighbor::processData(void)
       else
 	{
 	  spoton_misc::logError
-	    (QString("spoton_neighbor::processData() "
+	    (QString("spoton_neighbor::processData(): "
 		     "data does not contain Content-Length "
 		     "for %1:%2.").
 	     arg(m_address.toString()).
@@ -2542,7 +2542,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0001a(): 0001a "
-	       "content-length mismatch (advertised: %1, received: %2) "
+	       "Content-Length mismatch (advertised: %1, received: %2) "
 	       "for %3:%4.").
        arg(length).arg(data.length()).
        arg(m_address.toString()).
@@ -2717,7 +2717,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn,
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0001b(): 0001b "
-	       "content-length mismatch (advertised: %1, received: %2) "
+	       "Content-Length mismatch (advertised: %1, received: %2) "
 	       "for %3:%4.").
        arg(length).arg(data.length()).
        arg(m_address.toString()).
@@ -2860,7 +2860,7 @@ void spoton_neighbor::process0002a
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0002a(): 0002a "
-	       "content-length mismatch (advertised: %1, received: %2) "
+	       "Content-Length mismatch (advertised: %1, received: %2) "
 	       "for %3:%4.").
        arg(length).arg(data.length()).
        arg(m_address.toString()).
@@ -2994,7 +2994,7 @@ void spoton_neighbor::process0002b
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0002b(): 0002b "
-	       "content-length mismatch (advertised: %1, received: %2) "
+	       "Content-Length mismatch (advertised: %1, received: %2) "
 	       "for %3:%4.").
        arg(length).arg(data.length()).
        arg(m_address.toString()).
@@ -3056,7 +3056,7 @@ void spoton_neighbor::process0011(int length, const QByteArray &dataIn)
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0011(): 0011 "
-	       "content-length mismatch (advertised: %1, received: %2) "
+	       "Content-Length mismatch (advertised: %1, received: %2) "
 	       "for %3:%4.").
        arg(length).arg(data.length()).
        arg(m_address.toString()).
@@ -3112,7 +3112,7 @@ void spoton_neighbor::process0012(int length, const QByteArray &dataIn)
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0012(): 0012 "
-	       "content-length mismatch (advertised: %1, received: %2) "
+	       "Content-Length mismatch (advertised: %1, received: %2) "
 	       "for %3:%4.").
        arg(length).arg(data.length()).
        arg(m_address.toString()).
@@ -3216,7 +3216,7 @@ void spoton_neighbor::process0014(int length, const QByteArray &dataIn)
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0014(): 0014 "
-	       "content-length mismatch (advertised: %1, received: %2) "
+	       "Content-Length mismatch (advertised: %1, received: %2) "
 	       "for %3:%4.").
        arg(length).arg(data.length()).
        arg(m_address.toString()).
@@ -3308,7 +3308,7 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0030(): 0030 "
-	       "content-length mismatch (advertised: %1, received: %2) "
+	       "Content-Length mismatch (advertised: %1, received: %2) "
 	       "for %3:%4.").
        arg(length).arg(data.length()).
        arg(m_address.toString()).
@@ -3393,7 +3393,7 @@ void spoton_neighbor::process0040a(int length, const QByteArray &dataIn,
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0040a(): 0040a "
-	       "content-length mismatch (advertised: %1, received: %2) "
+	       "Content-Length mismatch (advertised: %1, received: %2) "
 	       "for %3:%4.").
        arg(length).arg(data.length()).
        arg(m_address.toString()).
@@ -3478,7 +3478,7 @@ void spoton_neighbor::process0040b(int length, const QByteArray &dataIn,
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0040b(): 0040b "
-	       "content-length mismatch (advertised: %1, received: %2) "
+	       "Content-Length mismatch (advertised: %1, received: %2) "
 	       "for %3:%4.").
        arg(length).arg(data.length()).
        arg(m_address.toString()).
@@ -3610,7 +3610,7 @@ void spoton_neighbor::process0050(int length, const QByteArray &dataIn)
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0050(): 0050 "
-	       "content-length mismatch (advertised: %1, received: %2) "
+	       "Content-Length mismatch (advertised: %1, received: %2) "
 	       "for %3:%4.").
        arg(length).arg(data.length()).
        arg(m_address.toString()).
@@ -3798,7 +3798,7 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0051(): 0051 "
-	       "content-length mismatch (advertised: %1, received: %2) "
+	       "Content-Length mismatch (advertised: %1, received: %2) "
 	       "for %3:%4.").
        arg(length).arg(data.length()).
        arg(m_address.toString()).
@@ -3879,7 +3879,7 @@ void spoton_neighbor::process0065(int length, const QByteArray &dataIn)
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0065(): 0065 "
-	       "content-length mismatch (advertised: %1, received: %2) "
+	       "Content-Length mismatch (advertised: %1, received: %2) "
 	       "for %3:%4.").
        arg(length).arg(data.length()).
        arg(m_address.toString()).
@@ -3949,7 +3949,7 @@ void spoton_neighbor::process0070(int length, const QByteArray &dataIn)
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0070(): 0070 "
-	       "content-length mismatch (advertised: %1, received: %2) "
+	       "Content-Length mismatch (advertised: %1, received: %2) "
 	       "for %3:%4.").
        arg(length).arg(data.length()).
        arg(m_address.toString()).
@@ -5192,7 +5192,7 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
   if(!dateTime.isValid())
     {
       spoton_misc::logError
-	("spoton_neighbor(): saveGemini(): invalid date-time object.");
+	("spoton_neighbor::saveGemini(): invalid date-time object.");
       return;
     }
 

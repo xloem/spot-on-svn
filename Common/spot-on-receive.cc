@@ -267,7 +267,7 @@ QList<QByteArray> spoton_receive::process0000
   else
     spoton_misc::logError
       (QString("spoton_receive::process0000(): 0000 "
-	       "content-length mismatch (advertised: %1, received: %2) "
+	       "Content-Length mismatch (advertised: %1, received: %2) "
 	       "for %3:%4.").
        arg(length).arg(data.length()).
        arg(address.toString()).
@@ -434,7 +434,7 @@ QList<QByteArray> spoton_receive::process0000a
   else
     spoton_misc::logError
       (QString("spoton_receive::process0000a(): 0000a "
-	       "content-length mismatch (advertised: %1, received: %2) "
+	       "Content-Length mismatch (advertised: %1, received: %2) "
 	       "for %3:%4.").
        arg(length).arg(data.length()).
        arg(address.toString()).
@@ -554,7 +554,7 @@ QList<QByteArray> spoton_receive::process0000b
   else
     spoton_misc::logError
       (QString("spoton_receive::process0000b(): 0000b "
-	       "content-length mismatch (advertised: %1, received: %2) "
+	       "Content-Length mismatch (advertised: %1, received: %2) "
 	       "for %3:%4.").
        arg(length).arg(data.length()).
        arg(address.toString()).
@@ -688,7 +688,7 @@ QList<QByteArray> spoton_receive::process0001b
   else
     spoton_misc::logError
       (QString("spoton_receive::process0001b(): 0001b "
-	       "content-length mismatch (advertised: %1, received: %2) "
+	       "Content-Length mismatch (advertised: %1, received: %2) "
 	       "for %3:%4.").
        arg(length).arg(data.length()).
        arg(address.toString()).
@@ -924,7 +924,7 @@ QList<QByteArray> spoton_receive::process0013
   else
     spoton_misc::logError
       (QString("spoton_receive::process0013(): 0013 "
-	       "content-length mismatch (advertised: %1, received: %2) "
+	       "Content-Length mismatch (advertised: %1, received: %2) "
 	       "for %3:%4.").
        arg(length).arg(data.length()).
        arg(address.toString()).

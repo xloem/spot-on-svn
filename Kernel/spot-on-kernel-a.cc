@@ -2047,11 +2047,12 @@ void spoton_kernel::slotStatusTimerExpired(void)
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA synchronous = OFF");
+
 	for(int i = 1; i <= 2; i++)
 	  {
 	    bool ok = true;
 
-	    query.exec("PRAGMA synchronous = OFF");
 	    query.prepare("UPDATE friends_public_keys SET "
 			  "status = 'offline' WHERE "
 			  "key_type_hash = ? AND "
@@ -2075,7 +2076,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 	      query.bindValue
 		(2, 2.5 * qCeil(m_statusTimer.interval() / 1000.0));
 	    else
-	      query.bindValue(2, POPTASTIC_STATUS_INTERVAL);
+	      query.bindValue(2, 2.5 * POPTASTIC_STATUS_INTERVAL);
 
 	    if(ok)
 	      query.exec();
