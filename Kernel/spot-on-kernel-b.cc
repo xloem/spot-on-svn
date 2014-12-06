@@ -255,7 +255,8 @@ void spoton_kernel::popPostPoptastic(void)
 
 		      if(chunk.size > 0)
 			emit poppedMessage
-			  (QByteArray(chunk.memory, chunk.size));
+			  (QByteArray(chunk.memory,
+				      static_cast<int> (chunk.size)));
 		    }
 
 		  free(chunk.memory);
@@ -458,7 +459,7 @@ void spoton_kernel::popPostPoptastic(void)
 		*/
 
 		curl_easy_setopt
-		  (curl, CURLOPT_TIMEOUT, 2.5 * count + timeout);
+		  (curl, CURLOPT_TIMEOUT, (long) 2.5 * count + timeout);
 
 	      curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
 	      curl_easy_perform(curl);
