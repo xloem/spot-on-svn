@@ -34,6 +34,8 @@ extern "C"
 #include <curl/curl.h>
 }
 
+#include <iostream>
+
 #include <QProgressDialog>
 
 #include "spot-on.h"
@@ -179,7 +181,7 @@ int main(int argc, char *argv[])
     }
   catch(std::bad_alloc &exception)
     {
-      qDebug() << "Critical memory failure. Exiting.";
+      std::cerr << "Critical memory failure. Exiting.\n";
       curl_global_cleanup();
       return EXIT_FAILURE;
     }

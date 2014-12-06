@@ -34,6 +34,7 @@
 
 #include <bitset>
 #include <limits>
+#include <iostream>
 
 #include "spot-on-crypt.h"
 #include "spot-on-misc.h"
@@ -135,9 +136,9 @@ void spoton_crypt::init(const int secureMemorySize)
 
       if(!gcry_check_version(GCRYPT_VERSION))
 	{
-	  qDebug() << "spoton_crypt::init(): gcry_check_version() "
-	    "failure. Perhaps you should verify some "
-	    "settings.";
+	  std::cerr << "spoton_crypt::init(): gcry_check_version() "
+		    << "failure. Perhaps you should verify some "
+		    << "settings.\n";
 	  spoton_misc::logError
 	    ("spoton_crypt::init(): gcry_check_version() "
 	     "failure. Perhaps you should verify some "

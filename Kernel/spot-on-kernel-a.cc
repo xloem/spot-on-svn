@@ -400,7 +400,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 
 	if(GetConsoleMode(hStdin, &mode) == 0)
 	  {
-	    qDebug() << "Unable to retrieve the terminal's mode. Exiting.";
+	    std::cerr << "Unable to retrieve the terminal's mode. Exiting.\n";
 	    deleteLater();
 	    break;
 	  }
@@ -413,7 +413,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 
 	if(tcgetattr(STDIN_FILENO, &oldt) != 0)
 	  {
-	    qDebug() << "Unable to retrieve the terminal's mode. Exiting.";
+	    std::cerr << "Unable to retrieve the terminal's mode. Exiting.\n";
 	    deleteLater();
 	    break;
 	  }
@@ -474,17 +474,17 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 
 	if(!error)
 	  {
-	    qDebug();
-	    qDebug() << "Validating the input... Please remain calm.";
+	    std::cout << "\n";
+	    std::cout << "Validating the input... Please remain calm.\n";
 
 	    if(!initializeSecurityContainers(input1, input2))
 	      {
-		qDebug() << "Invalid input?";
+		std::cerr << "Invalid input?\n";
 		deleteLater();
 	      }
 	    else
 	      {
-		qDebug() << "Input validated.";
+		std::cout << "Input validated.\n";
 		spoton_misc::cleanupDatabases(s_crypts.value("chat", 0));
 	      }
 
@@ -492,7 +492,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  }
 	else
 	  {
-	    qDebug() << "Unable to silence the terminal's echo. Exiting.";
+	    std::cerr << "Unable to silence the terminal's echo. Exiting.\n";
 	    deleteLater();
 	  }
       }
@@ -501,7 +501,8 @@ spoton_kernel::spoton_kernel(void):QObject(0)
       }
     else
       {
-	qDebug() << "Invalid option: " << arguments.at(i) << ". Exiting.";
+	std::cerr << "Invalid option: " << arguments.at(i).constData()
+		  << ". Exiting.\n";
 	deleteLater();
       }
 
