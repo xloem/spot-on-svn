@@ -435,7 +435,7 @@ void spoton::slotSelectDestination(void)
   QFileDialog dialog(this);
 
   dialog.setWindowTitle
-    (tr("%1: Select StarBeam Destination Path").
+    (tr("%1: Select StarBeam Destination Directory").
      arg(SPOTON_APPLICATION_NAME));
   dialog.setFileMode(QFileDialog::Directory);
   dialog.setDirectory(QDir::homePath());
@@ -2964,6 +2964,7 @@ void spoton::slotExportPublicKeys(void)
 
   QByteArray keys(copyMyChatPublicKey() + "@" +
 		  copyMyEmailPublicKey() + "@" +
+		  copyMyPoptasticPublicKey() + "@" +
 		  copyMyRosettaPublicKey() + "@" +
 		  copyMyUrlPublicKey());
 
