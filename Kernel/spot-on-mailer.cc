@@ -314,7 +314,7 @@ void spoton_mailer::slotRetrieveMail
   if(!ok)
     {
       spoton_misc::logError
-	("spoton_mailer(): slotRetrieveMail(): "
+	("spoton_mailer::slotRetrieveMail(): "
 	 "spoton_crypt::sha512Hash() failure.");
       return;
     }
@@ -325,7 +325,7 @@ void spoton_mailer::slotRetrieveMail
   if(!dateTime.isValid())
     {
       spoton_misc::logError
-	("spoton_mailer(): slotRetrieveMail(): "
+	("spoton_mailer::slotRetrieveMail(): "
 	 "invalid date-time object.");
       return;
     }
@@ -340,7 +340,7 @@ void spoton_mailer::slotRetrieveMail
   if(!(secsTo <= spoton_kernel::MAIL_TIME_DELTA_MAXIMUM))
     {
       spoton_misc::logError
-	(QString("spoton_mailer(): slotRetrieveMail(): "
+	(QString("spoton_mailer::slotRetrieveMail(): "
 		 "large time delta (%1).").arg(secsTo));
       return;
     }
