@@ -3118,7 +3118,6 @@ void spoton::slotImportPublicKeys(void)
 	bytes = file.readAll();
 
       file.close();
-      QApplication::restoreOverrideCursor();
 
       QList<QByteArray> list(bytes.split('@'));
 
@@ -3142,6 +3141,8 @@ void spoton::slotImportPublicKeys(void)
 	  }
 	else
 	  break;
+
+      QApplication::restoreOverrideCursor();
     }
 }
 
