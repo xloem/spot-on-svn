@@ -98,14 +98,21 @@ static size_t curl_write_memory_callback(void *contents, size_t size,
   return realsize;
 }
 
-void spoton_kernel::slotPoptasticPopPost(void)
+void spoton_kernel::slotPoptasticPop(void)
 {
-  if(m_poptasticPopPostFuture.isFinished())
-    m_poptasticPopPostFuture =
-      QtConcurrent::run(this, &spoton_kernel::popPostPoptastic);
+  if(m_poptasticPopFuture.isFinished())
+    m_poptasticPopFuture =
+      QtConcurrent::run(this, &spoton_kernel::popPoptastic);
 }
 
-void spoton_kernel::popPostPoptastic(void)
+void spoton_kernel::slotPoptasticPost(void)
+{
+  if(m_poptasticPostFuture.isFinished())
+    m_poptasticPostFuture =
+      QtConcurrent::run(this, &spoton_kernel::postPoptastic);
+}
+
+void spoton_kernel::popPoptastic(void)
 {
   spoton_crypt *s_crypt = s_crypts.value("poptastic", 0);
 
@@ -225,7 +232,7 @@ void spoton_kernel::popPostPoptastic(void)
 	    {
 	      popRound = false;
 
-	      for(int i = 1; i <= 5; i++)
+	      for(int i = 1; i <= 15; i++)
 		{
 		  struct curl_memory chunk;
 
@@ -261,7 +268,7 @@ void spoton_kernel::popPostPoptastic(void)
 
 		  free(chunk.memory);
 
-		  if(m_poptasticPopPostFuture.isCanceled())
+		  if(m_poptasticPopFuture.isCanceled())
 		    break;
 		}
 	    }
@@ -285,22 +292,35 @@ void spoton_kernel::popPostPoptastic(void)
 		      curl_easy_perform(curl);
 		    }
 
-		  if(m_poptasticPopPostFuture.isCanceled())
+		  if(m_poptasticPopFuture.isCanceled())
 		    break;
 		}
 	    }
 
 	  curl_easy_cleanup(curl);
 
-	  if(m_poptasticPopPostFuture.isCanceled())
+	  if(m_poptasticPopFuture.isCanceled())
 	    return;
 	}
 
       if(!list.isEmpty())
 	goto begin_label;
     }
+}
 
-  if(m_poptasticPopPostFuture.isCanceled())
+void spoton_kernel::postPoptastic(void)
+{
+  spoton_crypt *s_crypt = s_crypts.value("poptastic", 0);
+
+  if(!s_crypt)
+    return;
+
+  QHash<QString, QVariant> hash;
+  bool ok = true;
+
+  hash = spoton_misc::poptasticSettings(s_crypt, &ok);
+
+  if(hash.isEmpty() || !ok)
     return;
 
   /*
@@ -385,7 +405,7 @@ void spoton_kernel::popPostPoptastic(void)
 
 	  curl_easy_setopt(curl, CURLOPT_URL, url.toLatin1().constData());
 
-	  for(int i = 1; i <= 5; i++)
+	  for(int i = 1; i <= 15; i++)
 	    {
 	      QPair<QString, QByteArray> pair;
 	      QWriteLocker locker(&m_poptasticCacheMutex);
@@ -465,7 +485,7 @@ void spoton_kernel::popPostPoptastic(void)
 	      curl_easy_perform(curl);
 	      curl_slist_free_all(recipients);
 
-	      if(m_poptasticPopPostFuture.isCanceled())
+	      if(m_poptasticPostFuture.isCanceled())
 		break;
 	    }
 
