@@ -646,7 +646,6 @@ void spoton::slotShowMinimalDisplay(bool state)
   m_ui.etpMaxMosaicSize->setHidden(state);
 #else
   m_sb.errorlog->setHidden(state);
-  m_ui.chatSendMethod->setHidden(state);
   m_ui.neighborSummary->setHidden(state);
 #endif
 }
