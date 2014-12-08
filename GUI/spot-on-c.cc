@@ -2924,36 +2924,47 @@ void spoton::slotCopyOrPaste(void)
 void spoton::updatePublicKeysLabel(void)
 {
   QString str
-    (tr("<b>Chat Key:</b> %1, "
-	"<b>Chat Signature Key:</b> %2, "
-	"<b>E-Mail Key:</b> %3, "
-	"<b>E-Mail Signature Key:</b> %4, "
-	"<b>Poptastic Key:</b> %5, "
-	"<b>Poptastic Signature Key:</b>: %6, "
-	"<b>Rosetta Key:</b> %7, "
-	"<b>Rosetta Signature Key:</b> %8, "
-	"<b>URL Key:</b> %9, "
-	"<b>URL Signature Key:</b> %10."));
-  QStringList list;
+    (tr("<b>Chat Key:</b> AAA, "
+	"<b>Chat Signature Key:</b> BBB, "
+	"<b>E-Mail Key:</b> CCC, "
+	"<b>E-Mail Signature Key:</b> DDD, "
+	"<b>Poptastic Key:</b> EEE, "
+	"<b>Poptastic Signature Key:</b>: FFF, "
+	"<b>Rosetta Key:</b> GGG, "
+	"<b>Rosetta Signature Key:</b> HHH, "
+	"<b>URL Key:</b> III, "
+	"<b>URL Signature Key:</b> JJJ."));
+  QStringList list1;
+  QStringList list2;
 
-  list << "chat"
-       << "chat-signature"
-       << "email"
-       << "email-signature"
-       << "poptastic"
-       << "poptastic-signature"
-       << "rosetta"
-       << "rosetta-signature"
-       << "url"
-       << "url-signature";
+  list1 << "chat"
+	<< "chat-signature"
+	<< "email"
+	<< "email-signature"
+	<< "poptastic"
+	<< "poptastic-signature"
+	<< "rosetta"
+	<< "rosetta-signature"
+	<< "url"
+	<< "url-signature";
+  list2 << "AAA"
+	<< "BBB"
+	<< "CCC"
+	<< "DDD"
+	<< "EEE"
+	<< "FFF"
+	<< "GGG"
+	<< "HHH"
+	<< "III"
+	<< "JJJ";
 
-  for(int i = 0; i < list.size(); i++)
-    if(m_crypts.value(list.at(i), 0))
+  for(int i = 0; i < list1.size(); i++)
+    if(m_crypts.value(list1.at(i), 0))
       str.replace
-	(QString("%%1").arg(i + 1),
-	 QString::number(m_crypts.value(list.at(i))->publicKeyCount()));
+	(list2.at(i),
+	 QString::number(m_crypts.value(list1.at(i))->publicKeyCount()));
     else
-      str.replace(QString("%%1").arg(i + 1), "0");
+      str.replace(list2.at(i), "0");
 
   m_ui.publicKeysInformation->setText(str);
 }
