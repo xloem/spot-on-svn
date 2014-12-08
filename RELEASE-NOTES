@@ -2,6 +2,8 @@
 
 1.   Label correction.
 2.   Minimal display correction.
+3.   Separated Poptastic processes into two threads.
+4.   Added a casual congestion algorithm to POP3 and IMAP.
 
 0.17 (12/06/2014)
 
