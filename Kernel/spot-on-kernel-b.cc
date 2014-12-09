@@ -330,7 +330,12 @@ void spoton_kernel::popPoptastic(void)
 void spoton_kernel::postPoptastic(void)
 {
   if(setting("gui/disableSmtp", false).toBool())
-    return;
+    {
+      QWriteLocker locker(&m_poptasticCacheMutex);
+
+      m_poptasticCache.clear();
+      return;
+    }
 
   spoton_crypt *s_crypt = s_crypts.value("poptastic", 0);
 

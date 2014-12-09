@@ -5003,6 +5003,14 @@ void spoton_kernel::slotCallParticipant(const QByteArray &publicKeyHash,
 void spoton_kernel::postPoptasticMessage(const QString &receiverName,
 					 const QByteArray &message)
 {
+  if(setting("gui/disableSmtp", false).toBool())
+    {
+      QWriteLocker locker(&m_poptasticCacheMutex);
+
+      m_poptasticCache.clear();
+      return;
+    }
+
   QWriteLocker locker(&m_poptasticCacheMutex);
 
   m_poptasticCache.enqueue
