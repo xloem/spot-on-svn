@@ -114,6 +114,9 @@ void spoton_kernel::slotPoptasticPost(void)
 
 void spoton_kernel::popPoptastic(void)
 {
+  if(setting("gui/disablePop3", false).toBool())
+    return;
+
   spoton_crypt *s_crypt = s_crypts.value("poptastic", 0);
 
   if(!s_crypt)
@@ -125,9 +128,6 @@ void spoton_kernel::popPoptastic(void)
   hash = spoton_misc::poptasticSettings(s_crypt, &ok);
 
   if(hash.isEmpty() || !ok)
-    return;
-
-  if(setting("gui/disablePop3", false).toBool())
     return;
 
   CURL *curl = 0;
@@ -329,6 +329,9 @@ void spoton_kernel::popPoptastic(void)
 
 void spoton_kernel::postPoptastic(void)
 {
+  if(setting("gui/disableSmtp", false).toBool())
+    return;
+
   spoton_crypt *s_crypt = s_crypts.value("poptastic", 0);
 
   if(!s_crypt)
@@ -340,9 +343,6 @@ void spoton_kernel::postPoptastic(void)
   hash = spoton_misc::poptasticSettings(s_crypt, &ok);
 
   if(hash.isEmpty() || !ok)
-    return;
-
-  if(setting("gui/disableSmtp", false).toBool())
     return;
 
   QReadLocker locker(&m_poptasticCacheMutex);
