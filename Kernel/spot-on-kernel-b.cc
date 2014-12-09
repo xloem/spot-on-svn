@@ -127,185 +127,204 @@ void spoton_kernel::popPoptastic(void)
   if(hash.isEmpty() || !ok)
     return;
 
-  /*
-  ** First, we pop!
-  */
+  if(setting("gui/disablePop3", false).toBool())
+    return;
 
-  if(!setting("gui/disablePop3", false).toBool())
+  CURL *curl = 0;
+  QHash<QByteArray, char> cache;
+  QList<int> list;
+  bool popRound = true;
+
+ begin_label:
+  curl = curl_easy_init();
+
+  if(curl)
     {
-      CURL *curl = 0;
-      QList<int> list;
-      bool popRound = true;
+      curl_easy_setopt
+	(curl, CURLOPT_PASSWORD,
+	 hash["in_password"].toByteArray().constData());
+      curl_easy_setopt
+	(curl, CURLOPT_USERNAME,
+	 hash["in_username"].toByteArray().trimmed().constData());
 
-    begin_label:
-      curl = curl_easy_init();
+      long timeout = 10L;
 
-      if(curl)
+      if(hash["proxy_enabled"].toBool())
 	{
-	  curl_easy_setopt
-	    (curl, CURLOPT_PASSWORD,
-	     hash["in_password"].toByteArray().constData());
-	  curl_easy_setopt
-	    (curl, CURLOPT_USERNAME,
-	     hash["in_username"].toByteArray().trimmed().constData());
+	  timeout += 15L;
 
-	  long timeout = 10L;
-
-	  if(hash["proxy_enabled"].toBool())
-	    {
-	      timeout += 15L;
-
-	      QString address("");
-	      QString port("");
-	      QString scheme("");
-	      QString url("");
-
-	      address = hash["proxy_server_address"].toString().trimmed();
-	      port = hash["proxy_server_port"].toString().trimmed();
-
-	      if(hash["proxy_type"] == "HTTP")
-		scheme = "http";
-	      else
-		scheme = "socks5";
-
-	      url = QString("%1://%2:%3").arg(scheme).arg(address).arg(port);
-	      curl_easy_setopt
-		(curl, CURLOPT_PROXY, url.toLatin1().constData());
-	      curl_easy_setopt(curl, CURLOPT_PROXYPASSWORD,
-			       hash["proxy_password"].toString().
-			       toUtf8().constData());
-	      curl_easy_setopt(curl, CURLOPT_PROXYUSERNAME,
-			       hash["proxy_username"].toString().
-			       trimmed().toLatin1().constData());
-	    }
-
-	  QString method(hash["in_method"].toString().toUpper().trimmed());
-	  QString ssltls(hash["in_ssltls"].toString().toUpper().trimmed());
+	  QString address("");
+	  QString port("");
+	  QString scheme("");
 	  QString url("");
 
-	  if(ssltls == "SSL" || ssltls == "TLS")
-	    {
-	      if(method == "IMAP")
-		{
-		  if(popRound)
-		    url = QString("imaps://%1:%2/INBOX/;UID=1").
-		      arg(hash["in_server_address"].toString().trimmed()).
-		      arg(hash["in_server_port"].toString().trimmed());
-		  else
-		    url = QString("imaps://%1:%2/INBOX").
-		      arg(hash["in_server_address"].toString().trimmed()).
-		      arg(hash["in_server_port"].toString().trimmed());
-		}
-	      else
-		url = QString("pop3s://%1:%2/1").
-		  arg(hash["in_server_address"].toString().trimmed()).
-		  arg(hash["in_server_port"].toString().trimmed());
+	  address = hash["proxy_server_address"].toString().trimmed();
+	  port = hash["proxy_server_port"].toString().trimmed();
 
-	      curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
-	      curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
-
-	      if(ssltls == "TLS")
-		curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_ALL);
-	      }
+	  if(hash["proxy_type"] == "HTTP")
+	    scheme = "http";
 	  else
-	    {
-	      if(method == "IMAP")
-		{
-		  if(popRound)
-		    url = QString("imap://%1:%2/INBOX/;UID=1").
-		      arg(hash["in_server_address"].toString().trimmed()).
-		      arg(hash["in_server_port"].toString().trimmed());
-		  else
-		    url = QString("imap://%1:%2/INBOX").
-		      arg(hash["in_server_address"].toString().trimmed()).
-		      arg(hash["in_server_port"].toString().trimmed());
-		}
-	      else
-		url = QString("pop3://%1:%2/1").
-		  arg(hash["in_server_address"].toString().trimmed()).
-		  arg(hash["in_server_port"].toString().trimmed());
-	    }
+	    scheme = "socks5";
 
-	  curl_easy_setopt(curl, CURLOPT_URL, url.toLatin1().constData());
-
-	  if(popRound)
-	    {
-	      popRound = false;
-
-	      for(int i = 1; i <= 15; i++)
-		{
-		  struct curl_memory chunk;
-
-		  chunk.memory = (char *) malloc(1);
-
-		  if(!chunk.memory)
-		    break;
-
-		  chunk.size = 0;
-		  curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
-		  curl_easy_setopt(curl, CURLOPT_TIMEOUT, timeout);
-		  curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *) &chunk);
-		  curl_easy_setopt
-		    (curl, CURLOPT_WRITEFUNCTION, curl_write_memory_callback);
-
-		  if(curl_easy_perform(curl) == CURLE_OK)
-		    {
-		      if(method == "IMAP")
-			{
-			  list.append(i);
-			  url.replace
-			    (QString("UID=%1").arg(i),
-			     QString("UID=%1").arg(i + 1));
-			  curl_easy_setopt
-			    (curl, CURLOPT_URL, url.toLatin1().constData());
-			}
-
-		      if(chunk.size > 0)
-			emit poppedMessage
-			  (QByteArray(chunk.memory,
-				      static_cast<int> (chunk.size)));
-		    }
-
-		  free(chunk.memory);
-
-		  if(m_poptasticPopFuture.isCanceled())
-		    break;
-		}
-	    }
-	  else
-	    {
-	      while(!list.isEmpty())
-		{
-		  curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
-		  curl_easy_setopt(curl, CURLOPT_TIMEOUT, timeout);
-		  curl_easy_setopt
-		    (curl, CURLOPT_URL, url.toLatin1().constData());
-		  curl_easy_setopt
-		    (curl, CURLOPT_CUSTOMREQUEST,
-		     QString("STORE %1 +Flags \\Deleted").
-		     arg(list.takeFirst()).toLatin1().constData());
-
-		  if(curl_easy_perform(curl) != CURLE_OK)
-		    {
-		      curl_easy_setopt
-			(curl, CURLOPT_CUSTOMREQUEST, "EXPUNGE");
-		      curl_easy_perform(curl);
-		    }
-
-		  if(m_poptasticPopFuture.isCanceled())
-		    break;
-		}
-	    }
-
-	  curl_easy_cleanup(curl);
-
-	  if(m_poptasticPopFuture.isCanceled())
-	    return;
+	  url = QString("%1://%2:%3").arg(scheme).arg(address).arg(port);
+	  curl_easy_setopt
+	    (curl, CURLOPT_PROXY, url.toLatin1().constData());
+	  curl_easy_setopt(curl, CURLOPT_PROXYPASSWORD,
+			   hash["proxy_password"].toString().
+			   toUtf8().constData());
+	  curl_easy_setopt(curl, CURLOPT_PROXYUSERNAME,
+			   hash["proxy_username"].toString().
+			   trimmed().toLatin1().constData());
 	}
 
-      if(!list.isEmpty())
-	goto begin_label;
+      QString method(hash["in_method"].toString().toUpper().trimmed());
+      QString ssltls(hash["in_ssltls"].toString().toUpper().trimmed());
+      QString url("");
+
+      if(ssltls == "SSL" || ssltls == "TLS")
+	{
+	  if(method == "IMAP")
+	    {
+	      if(popRound)
+		url = QString("imaps://%1:%2/INBOX/;UID=1").
+		  arg(hash["in_server_address"].toString().trimmed()).
+		  arg(hash["in_server_port"].toString().trimmed());
+	      else
+		url = QString("imaps://%1:%2/INBOX").
+		  arg(hash["in_server_address"].toString().trimmed()).
+		  arg(hash["in_server_port"].toString().trimmed());
+	    }
+	  else
+	    url = QString("pop3s://%1:%2/1").
+	      arg(hash["in_server_address"].toString().trimmed()).
+	      arg(hash["in_server_port"].toString().trimmed());
+
+	  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
+	  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+
+	  if(ssltls == "TLS")
+	    curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_ALL);
+	}
+      else
+	{
+	  if(method == "IMAP")
+	    {
+	      if(popRound)
+		url = QString("imap://%1:%2/INBOX/;UID=1").
+		  arg(hash["in_server_address"].toString().trimmed()).
+		  arg(hash["in_server_port"].toString().trimmed());
+	      else
+		url = QString("imap://%1:%2/INBOX").
+		  arg(hash["in_server_address"].toString().trimmed()).
+		  arg(hash["in_server_port"].toString().trimmed());
+	    }
+	  else
+	    url = QString("pop3://%1:%2/1").
+	      arg(hash["in_server_address"].toString().trimmed()).
+	      arg(hash["in_server_port"].toString().trimmed());
+	}
+
+      curl_easy_setopt(curl, CURLOPT_URL, url.toLatin1().constData());
+
+      if(popRound)
+	{
+	  popRound = false;
+
+	  for(int i = 1; i <= 15; i++)
+	    {
+	      struct curl_memory chunk;
+
+	      chunk.memory = (char *) malloc(1);
+
+	      if(!chunk.memory)
+		break;
+
+	      chunk.size = 0;
+	      curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
+	      curl_easy_setopt(curl, CURLOPT_TIMEOUT, timeout);
+	      curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *) &chunk);
+	      curl_easy_setopt
+		(curl, CURLOPT_WRITEFUNCTION, curl_write_memory_callback);
+
+	      if(curl_easy_perform(curl) == CURLE_OK)
+		{
+		  if(method == "IMAP")
+		    {
+		      list.append(i);
+		      url.replace
+			(QString("UID=%1").arg(i),
+			 QString("UID=%1").arg(i + 1));
+		      curl_easy_setopt
+			(curl, CURLOPT_URL, url.toLatin1().constData());
+		    }
+		  else
+		    {
+		      url = url.mid(0, url.lastIndexOf('/'));
+		      url.append("/");
+		      url.append(QByteArray::number(i));
+		      curl_easy_setopt
+			(curl, CURLOPT_URL, url.toLatin1().constData());
+		    }
+
+		  if(chunk.size > 0)
+		    {
+		      QByteArray hash;
+		      QByteArray message
+			(QByteArray(chunk.memory,
+				    static_cast<int> (chunk.size)));
+		      bool ok = true;
+
+		      hash = s_crypt->keyedHash(message, &ok);
+
+		      if(!cache.contains(hash))
+			{
+			  emit poppedMessage(message);
+			  cache[hash] = 0;
+			}
+		    }
+		}
+	      else
+		break;
+
+	      free(chunk.memory);
+
+	      if(m_poptasticPopFuture.isCanceled())
+		break;
+	    }
+	}
+      else
+	{
+	  while(!list.isEmpty())
+	    {
+	      curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
+	      curl_easy_setopt(curl, CURLOPT_TIMEOUT, timeout);
+	      curl_easy_setopt
+		(curl, CURLOPT_URL, url.toLatin1().constData());
+	      curl_easy_setopt
+		(curl, CURLOPT_CUSTOMREQUEST,
+		 QString("STORE %1 +Flags \\Deleted").
+		 arg(list.takeFirst()).toLatin1().constData());
+
+	      if(curl_easy_perform(curl) != CURLE_OK)
+		{
+		  curl_easy_setopt
+		    (curl, CURLOPT_CUSTOMREQUEST, "EXPUNGE");
+		  curl_easy_perform(curl);
+		}
+
+	      if(m_poptasticPopFuture.isCanceled())
+		break;
+	    }
+	}
+
+      curl_easy_cleanup(curl);
+
+      if(m_poptasticPopFuture.isCanceled())
+	return;
     }
+
+  if(!list.isEmpty())
+    goto begin_label;
 }
 
 void spoton_kernel::postPoptastic(void)
@@ -322,10 +341,6 @@ void spoton_kernel::postPoptastic(void)
 
   if(hash.isEmpty() || !ok)
     return;
-
-  /*
-  ** Now, we post!
-  */
 
   if(setting("gui/disableSmtp", false).toBool())
     return;
