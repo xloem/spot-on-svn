@@ -1,6 +1,6 @@
-0.17b (12/31/2014)
+0.17b (12/09/2014)
 
-1.   Nothing yet.
+1.   Purge m_poptasticCache if SMTP is disabled.
 
 0.17a (12/08/2014)
 
