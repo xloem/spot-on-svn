@@ -284,6 +284,19 @@
          </item>
         </widget>
        </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>&amp;Server Address</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="buddy">
+          <cstring>in_server_address</cstring>
+         </property>
+        </widget>
+       </item>
        <item row="6" column="1">
         <widget class="QComboBox" name="in_authentication">
          <property name="sizeAdjustPolicy">
@@ -464,7 +477,7 @@
          </item>
         </widget>
        </item>
-       <item row="9" column="1">
+       <item row="10" column="1">
         <layout class="QHBoxLayout" name="horizontalLayout">
          <property name="spacing">
           <number>5</number>
@@ -543,19 +556,6 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_4">
-         <property name="text">
-          <string>&amp;Server Address</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-         <property name="buddy">
-          <cstring>in_server_address</cstring>
-         </property>
-        </widget>
-       </item>
        <item row="5" column="0">
         <widget class="QLabel" name="label_3">
          <property name="text">
@@ -569,7 +569,7 @@
          </property>
         </widget>
        </item>
-       <item row="9" column="3">
+       <item row="10" column="3">
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <property name="spacing">
           <number>5</number>
@@ -608,6 +608,33 @@
           </spacer>
          </item>
         </layout>
+       </item>
+       <item row="9" column="0">
+        <widget class="QLabel" name="label_16">
+         <property name="text">
+          <string>&amp;Verify Host/Peer</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="buddy">
+          <cstring>in_verify</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="1">
+        <widget class="QCheckBox" name="in_verify">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="3">
+        <widget class="QCheckBox" name="out_verify">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -660,6 +687,8 @@
   <tabstop>out_authentication</tabstop>
   <tabstop>out_username</tabstop>
   <tabstop>out_password</tabstop>
+  <tabstop>in_verify</tabstop>
+  <tabstop>out_verify</tabstop>
   <tabstop>testpop3</tabstop>
   <tabstop>testsmtp</tabstop>
   <tabstop>buttonBox</tabstop>
@@ -675,8 +704,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>362</x>
-     <y>624</y>
+     <x>367</x>
+     <y>546</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -691,8 +720,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>430</x>
-     <y>624</y>
+     <x>435</x>
+     <y>546</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
