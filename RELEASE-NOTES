@@ -1,6 +1,6 @@
 0.17c (12/12/2014)
 
-1.   Abort IMAP, POP3, SMTP on SSL/TLS errors. Optional.
+1.   Optionally verify SSL/TLS hosts and peers for poptastic.
 
 0.17b (12/09/2014)
 
