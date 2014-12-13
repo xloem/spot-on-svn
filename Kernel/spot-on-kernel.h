@@ -121,7 +121,7 @@ class spoton_kernel: public QObject
   QHash<qint64, QPointer<spoton_listener> > m_listeners;
   QHash<qint64, QPointer<spoton_neighbor> > m_neighbors;
   QHash<qint64, QPointer<spoton_starbeam_reader> > m_starbeamReaders;
-  QQueue<QPair<QString, QByteArray> > m_poptasticCache;
+  QQueue<QList<QVariant> > m_poptasticCache;
   QReadWriteLock m_poptasticCacheMutex;
   QTimer m_controlDatabaseTimer;
   QTimer m_impersonateTimer;
@@ -168,6 +168,9 @@ class spoton_kernel: public QObject
   void postPoptastic(void);
   void postPoptasticMessage(const QString &receiverName,
 			    const QByteArray &message);
+  void postPoptasticMessage(const QString &receiverName,
+			    const QByteArray &message,
+			    const qint64 mailOid);
   void prepareListeners(void);
   void prepareNeighbors(void);
   void prepareStarbeamReaders(void);

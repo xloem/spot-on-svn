@@ -2986,14 +2986,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 	    (list.first().first, QPair<QByteArray, QByteArray> ());
 	  message = message.mid(message.indexOf("content=")).
 	    trimmed();
-	  postPoptasticMessage(receiverName, message);
-
-	  /*
-	  ** We do not guarantee e-mail delivery.
-	  */
-
-	  spoton_misc::moveSentMailToSentFolder
-	    (QList<qint64> () << mailOid, s_crypt1);
+	  postPoptasticMessage(receiverName, message, mailOid);
 	  return;
 	}
     }
@@ -5003,6 +4996,13 @@ void spoton_kernel::slotCallParticipant(const QByteArray &publicKeyHash,
 void spoton_kernel::postPoptasticMessage(const QString &receiverName,
 					 const QByteArray &message)
 {
+  postPoptasticMessage(receiverName, message, -1);
+}
+
+void spoton_kernel::postPoptasticMessage(const QString &receiverName,
+					 const QByteArray &message,
+					 const qint64 mailOid)
+{
   if(setting("gui/disableSmtp", false).toBool())
     {
       QWriteLocker locker(&m_poptasticCacheMutex);
@@ -5013,6 +5013,8 @@ void spoton_kernel::postPoptasticMessage(const QString &receiverName,
 
   QWriteLocker locker(&m_poptasticCacheMutex);
 
-  m_poptasticCache.enqueue
-    (QPair<QString, QByteArray> (receiverName, message));
+  m_poptasticCache.enqueue(QList<QVariant> ()
+			   << receiverName
+			   << message
+			   << mailOid);
 }

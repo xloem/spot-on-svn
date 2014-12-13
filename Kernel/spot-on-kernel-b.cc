@@ -433,17 +433,17 @@ void spoton_kernel::postPoptastic(void)
 
 	  for(int i = 1; i <= 15; i++)
 	    {
-	      QPair<QString, QByteArray> pair;
+	      QList<QVariant> values;
 	      QWriteLocker locker(&m_poptasticCacheMutex);
 
 	      if(m_poptasticCache.isEmpty())
 		break;
 	      else
-		pair = m_poptasticCache.dequeue();
+		values = m_poptasticCache.dequeue();
 
 	      locker.unlock();
 
-	      QByteArray bytes(pair.second);
+	      QByteArray bytes(values.value(1).toByteArray());
 	      long count = 0;
 	      struct curl_slist *recipients = 0;
 	      struct curl_upload_status upload_ctx;
@@ -463,7 +463,7 @@ void spoton_kernel::postPoptastic(void)
 		(QString("Date: %1\r\n").arg(QDateTime::currentDateTime().
 					     toUTC().toString()).toLatin1());
 	      curl_payload_text.append(QString("To: <%1> (%1)\r\n").
-				       arg(pair.first).
+				       arg(values.value(0).toString()).
 				       toLatin1());
 	      curl_payload_text.append(QString("From: <%1>\r\n").arg(from).
 				       toLatin1());
@@ -490,7 +490,7 @@ void spoton_kernel::postPoptastic(void)
 	      curl_payload_text.append("\r\n");
 	      curl_payload_text.append(0);
 	      recipients = curl_slist_append
-		(recipients, pair.first.toLatin1().constData());
+		(recipients, values.value(0).toByteArray().constData());
 	      curl_easy_setopt(curl, CURLOPT_MAIL_RCPT, recipients);
 	      curl_easy_setopt(curl, CURLOPT_READDATA, &upload_ctx);
 	      curl_easy_setopt
@@ -508,7 +508,16 @@ void spoton_kernel::postPoptastic(void)
 		  (curl, CURLOPT_TIMEOUT, (long) 2.5 * count + timeout);
 
 	      curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
-	      curl_easy_perform(curl);
+
+	      if(curl_easy_perform(curl) == CURLE_OK)
+		{
+		  qint64 mailOid = values.value(2).toLongLong();
+
+		  if(mailOid > -1)
+		    spoton_misc::moveSentMailToSentFolder
+		      (QList<qint64> () << mailOid, s_crypt);
+		}
+
 	      curl_slist_free_all(recipients);
 
 	      if(m_poptasticPostFuture.isCanceled())
