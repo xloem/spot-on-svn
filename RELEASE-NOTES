@@ -1,4 +1,4 @@
-0.17c (12/12/2014)
+0.17c (12/25/2014)
 
 1.   Optionally verify SSL/TLS hosts and peers for poptastic.
 2.   Discard sent poptastic e-mails if and only if libcurl produces
