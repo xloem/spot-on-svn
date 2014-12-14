@@ -2114,10 +2114,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
   if(m_lastPoptasticStatus.secsTo(QDateTime::currentDateTime()) >=
      POPTASTIC_STATUS_INTERVAL)
-    {
-      m_lastPoptasticStatus = QDateTime::currentDateTime();
-      prepareStatus("poptastic");
-    }
+    prepareStatus("poptastic");
 }
 
 void spoton_kernel::prepareStatus(const QString &keyType)
@@ -5010,6 +5007,8 @@ void spoton_kernel::postPoptasticMessage(const QString &receiverName,
       m_poptasticCache.clear();
       return;
     }
+
+  m_lastPoptasticStatus = QDateTime::currentDateTime();
 
   QWriteLocker locker(&m_poptasticCacheMutex);
 
