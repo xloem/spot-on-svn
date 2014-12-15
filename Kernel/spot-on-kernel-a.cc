@@ -1711,38 +1711,19 @@ void spoton_kernel::slotMessageReceivedFromUI
 
       if(ok)
 	{
-	  if(setting("gui/chatSendMethod",
-		     "Artificial_GET").toString() == "Artificial_GET")
+	  if(keyType == "poptastic")
 	    {
-	      emit sendMessage(data, spoton_send::ARTIFICIAL_GET);
+	      QByteArray message(spoton_send::message0000(data.toBase64()));
 
-	      if(keyType == "poptastic")
-		{
-		  QByteArray message;
-
-		  message = spoton_send::message0000
-		    (data, spoton_send::ARTIFICIAL_GET,
-		     QPair<QByteArray, QByteArray> ());
-		  message = message.mid(message.indexOf("content=")).
-		    trimmed();
-		  postPoptasticMessage(receiverName, message);
-		}
+	      postPoptasticMessage(receiverName, message);
 	    }
 	  else
 	    {
-	      emit sendMessage(data, spoton_send::NORMAL_POST);
-
-	      if(keyType == "poptastic")
-		{
-		  QByteArray message;
-
-		  message = spoton_send::message0000
-		    (data, spoton_send::NORMAL_POST,
-		     QPair<QByteArray, QByteArray> ());
-		  message = message.mid(message.indexOf("content=")).
-		    trimmed();
-		  postPoptasticMessage(receiverName, message);
-		}
+	      if(setting("gui/chatSendMethod",
+			 "Artificial_GET").toString() == "Artificial_GET")
+		emit sendMessage(data, spoton_send::ARTIFICIAL_GET);
+	      else
+		emit sendMessage(data, spoton_send::NORMAL_POST);
 	    }
 	}
     }
@@ -2365,12 +2346,8 @@ void spoton_kernel::prepareStatus(const QString &keyType)
       else
 	while(!list.isEmpty())
 	  {
-	    QByteArray message;
+	    QByteArray message(spoton_send::message0013(list.takeFirst()));
 
-	    message = spoton_send::message0013
-	      (list.takeFirst(), QPair<QByteArray, QByteArray> ());
-	    message = message.mid(message.indexOf("content=")).
-	      trimmed();
 	    postPoptasticMessage(receiverNames.takeFirst(), message);
 	  }
     }
@@ -2977,12 +2954,8 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 	emit sendMail(list, "0001b");
       else
 	{
-	  QByteArray message;
+	  QByteArray message(spoton_send::message0001b(list.first().first));
 
-	  message = spoton_send::message0001b
-	    (list.first().first, QPair<QByteArray, QByteArray> ());
-	  message = message.mid(message.indexOf("content=")).
-	    trimmed();
 	  postPoptasticMessage(receiverName, message, mailOid);
 	  return;
 	}
@@ -3967,28 +3940,14 @@ void spoton_kernel::slotCallParticipant(const QByteArray &keyType,
 
   if(ok)
     {
-      emit callParticipant(data, "0000a");
-
       if(keyType == "poptastic")
 	{
-	  QByteArray message;
+	  QByteArray message(spoton_send::message0000a(data));
 
-	  if(setting("gui/chatSendMethod", "Artificial_GET").
-	     toString() == "Artificial_GET")
-	    message = spoton_send::message0000a
-	      (data,
-	       spoton_send::ARTIFICIAL_GET,
-	       QPair<QByteArray, QByteArray> ());
-	  else
-	    message = spoton_send::message0000a
-	      (data,
-	       spoton_send::NORMAL_POST,
-	       QPair<QByteArray, QByteArray> ());
-
-	  message = message.mid(message.indexOf("content=")).
-	    trimmed();
 	  postPoptasticMessage(receiverName, message);
 	}
+      else
+	emit callParticipant(data, "0000a");
     }
 }
 
@@ -4177,28 +4136,14 @@ void spoton_kernel::slotCallParticipantUsingGemini(const QByteArray &keyType,
 
       if(spoton_misc::saveGemini(gemini, QString::number(oid), s_crypt1))
 	{
-	  emit callParticipant(data, "0000b");
-
 	  if(keyType == "poptastic")
 	    {
-	      QByteArray message;
+	      QByteArray message(spoton_send::message0000b(data));
 
-	      if(setting("gui/chatSendMethod", "Artificial_GET").
-		 toString() == "Artificial_GET")
-		message = spoton_send::message0000b
-		  (data,
-		   spoton_send::ARTIFICIAL_GET,
-		   QPair<QByteArray, QByteArray> ());
-	      else
-		message = spoton_send::message0000b
-		  (data,
-		   spoton_send::NORMAL_POST,
-		   QPair<QByteArray, QByteArray> ());
-
-	      message = message.mid(message.indexOf("content=")).
-		trimmed();
 	      postPoptasticMessage(receiverName, message);
 	    }
+	  else
+	    emit callParticipant(data, "0000b");
 	}
     }
 }

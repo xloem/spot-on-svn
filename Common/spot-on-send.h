@@ -41,14 +41,17 @@ class spoton_send
   };
 
   static QByteArray EOM;
+  static QByteArray message0000(const QByteArray &message);
   static QByteArray message0000
     (const QByteArray &message,
      const spoton_send_method sendMethod,
      const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
+  static QByteArray message0000a(const QByteArray &message);
   static QByteArray message0000a
     (const QByteArray &message,
      const spoton_send_method sendMethod,
      const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
+  static QByteArray message0000b(const QByteArray &message);
   static QByteArray message0000b
     (const QByteArray &message,
      const spoton_send_method sendMethod,
@@ -56,6 +59,7 @@ class spoton_send
   static QByteArray message0001a
     (const QByteArray &message,
      const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
+  static QByteArray message0001b(const QByteArray &message);
   static QByteArray message0001b
     (const QByteArray &message,
      const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
@@ -72,6 +76,7 @@ class spoton_send
 				const QByteArray &sPublicKey,
 				const QByteArray &sSignature);
   static QByteArray message0012(const QByteArray &message);
+  static QByteArray message0013(const QByteArray &message);
   static QByteArray message0013
     (const QByteArray &message,
      const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
