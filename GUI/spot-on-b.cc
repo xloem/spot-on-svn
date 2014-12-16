@@ -5653,9 +5653,10 @@ void spoton::slotParticipantDoubleClicked(QTableWidgetItem *item)
 	{
 	  chat->showNormal();
 	  chat->raise();
+	  return;
 	}
-
-      return;
+      else
+	m_chatWindows.remove(publicKeyHash);
     }
 
   QPointer<spoton_chatwindow> chat = new spoton_chatwindow

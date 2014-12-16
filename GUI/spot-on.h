@@ -136,9 +136,6 @@ class spoton: public QMainWindow
   QHash<QString, bool> m_booleans;
   QHash<QString, spoton_crypt *> m_crypts;
 #ifdef SPOTON_LINKED_WITH_LIBPHONON
-#if 0
-  Phonon::MediaObject *m_mediaObject;
-#endif
 #endif
   QSqlDatabase m_urlDatabase;
   QSslSocket m_kernelSocket;
@@ -164,7 +161,7 @@ class spoton: public QMainWindow
   quint64 m_urlPages;
   spoton_crypt *m_urlCommonCrypt;
   spoton_encryptfile m_encryptFile;
-  spoton_external_address *m_externalAddress;
+  spoton_external_address m_externalAddress;
   spoton_logviewer m_logViewer;
   spoton_rosetta m_rosetta;
   spoton_starbeamanalyzer *m_starbeamAnalyzer;

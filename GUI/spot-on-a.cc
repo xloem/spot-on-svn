@@ -194,7 +194,6 @@ spoton::spoton(void):QMainWindow()
   m_booleans["buzz_channels_sent_to_kernel"] = false;
   m_booleans["keys_sent_to_kernel"] = false;
   m_buzzStatusTimer.setInterval(15000);
-  m_externalAddress = new spoton_external_address(this);
   m_buzzFavoritesLastModificationTime = QDateTime();
   m_kernelStatisticsLastModificationTime = QDateTime();
   m_magnetsLastModificationTime = QDateTime();
@@ -279,9 +278,6 @@ spoton::spoton(void):QMainWindow()
 	"libphoton.").arg(SPOTON_APPLICATION_NAME));
 #endif
 #else
-#if 0
-  m_mediaObject = new Phonon::MediaObject(this);
-#endif
 #endif
 #ifdef Q_OS_MAC
 #if QT_VERSION < 0x050000
@@ -2067,7 +2063,7 @@ spoton::spoton(void):QMainWindow()
   if(m_ui.guiExternalIpFetch->currentIndex() !=
      m_ui.guiExternalIpFetch->count() - 1)
     {
-      m_externalAddress->discover();
+      m_externalAddress.discover();
 
       if(m_ui.guiExternalIpFetch->currentIndex() == 0)
 	m_externalAddressDiscovererTimer.start(30000);
@@ -2190,7 +2186,7 @@ void spoton::slotAddListener(void)
       QHostAddress address;
 
       if(m_ui.recordIPAddress->isChecked())
-	address = m_externalAddress->address();
+	address = m_externalAddress.address();
 
       QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
       m_sb.status->setText
@@ -3302,6 +3298,7 @@ void spoton::slotPopulateListeners(void)
 			  {
 			    box->addItem("1");
 			    box->setEnabled(false);
+			    m_ui.listeners->setCellWidget(row, i, box);
 			  }
 		      }
 		    else if(i == 13 || i == 14)
@@ -4275,8 +4272,8 @@ void spoton::slotGeneralTimerTimeout(void)
 
   m_sb.status->setText
     (tr("External IP: %1.").
-     arg(m_externalAddress->address().isNull() ?
-	 "unknown" : m_externalAddress->address().toString()));
+     arg(m_externalAddress.address().isNull() ?
+	 "unknown" : m_externalAddress.address().toString()));
   m_sb.status->repaint();
 }
 
@@ -7447,7 +7444,7 @@ void spoton::slotSaveSslControlString(void)
 
 void spoton::slotDiscoverExternalAddress(void)
 {
-  m_externalAddress->discover();
+  m_externalAddress.discover();
 }
 
 void spoton::slotNeighborSelected(void)
