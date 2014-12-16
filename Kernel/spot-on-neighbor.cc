@@ -4952,7 +4952,7 @@ QString spoton_neighbor::findMessageType
   /*
   ** list[0]: Data
   ** ...
-  ** list[list.size - 1]: Hash
+  ** list[list.size - 1]: Adaptive Echo Data
   ** symmetricKeys[0]: Encryption Key
   ** symmetricKeys[1]: Encryption Type
   ** symmetricKeys[2]: Hash Key

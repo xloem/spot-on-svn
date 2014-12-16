@@ -83,9 +83,11 @@ QByteArray spoton_send::adaptiveEchoAuthentication
 
 QByteArray spoton_send::message0000(const QByteArray &message)
 {
+  QByteArray authenticated
+    (adaptiveEchoAuthentication(message, QPair<QByteArray, QByteArray> ()));
   QByteArray results("content=");
 
-  results.append(message);
+  results.append(authenticated);
   return results;
 }
 
@@ -120,9 +122,11 @@ QByteArray spoton_send::message0000
 
 QByteArray spoton_send::message0000a(const QByteArray &message)
 {
+  QByteArray authenticated
+    (adaptiveEchoAuthentication(message, QPair<QByteArray, QByteArray> ()));
   QByteArray results("content=");
 
-  results.append(message);
+  results.append(authenticated);
   return results;
 }
 
@@ -157,9 +161,11 @@ QByteArray spoton_send::message0000a
 
 QByteArray spoton_send::message0000b(const QByteArray &message)
 {
+  QByteArray authenticated
+    (adaptiveEchoAuthentication(message, QPair<QByteArray, QByteArray> ()));
   QByteArray results("content=");
 
-  results.append(message);
+  results.append(authenticated);
   return results;
 }
 
@@ -219,9 +225,11 @@ QByteArray spoton_send::message0001a
 
 QByteArray spoton_send::message0001b(const QByteArray &message)
 {
+  QByteArray authenticated
+    (adaptiveEchoAuthentication(message, QPair<QByteArray, QByteArray> ()));
   QByteArray results("content=");
 
-  results.append(message);
+  results.append(authenticated);
   return results;
 }
 
@@ -360,9 +368,11 @@ QByteArray spoton_send::message0012(const QByteArray &message)
 
 QByteArray spoton_send::message0013(const QByteArray &message)
 {
+  QByteArray authenticated
+    (adaptiveEchoAuthentication(message, QPair<QByteArray, QByteArray> ()));
   QByteArray results("content=");
 
-  results.append(message);
+  results.append(authenticated);
   return results;
 }
 
