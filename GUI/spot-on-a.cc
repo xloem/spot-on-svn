@@ -4930,7 +4930,8 @@ void spoton::slotSetPassphrase(void)
 			    arg(SPOTON_APPLICATION_NAME));
 	  mb.setWindowModality(Qt::WindowModal);
 	  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
-	  mb.setText(tr("Would you like to generate public key pairs?"));
+	  mb.setText
+	    (tr("Would you like to generate private and public keys?"));
 
 	  if(mb.exec() == QMessageBox::Yes)
 	    {

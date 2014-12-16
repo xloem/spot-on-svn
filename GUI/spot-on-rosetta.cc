@@ -328,7 +328,7 @@ void spoton_rosetta::slotAddContact(void)
     {
       QMessageBox::critical(this, tr("%1: Error").
 			    arg(SPOTON_APPLICATION_NAME),
-			    tr("Empty key. Really?"));
+			    tr("Empty key(s). Really?"));
       return;
     }
 
@@ -337,8 +337,8 @@ void spoton_rosetta::slotAddContact(void)
       QMessageBox::critical
 	(this, tr("%1: Error").
 	 arg(SPOTON_APPLICATION_NAME),
-	 tr("Invalid key. The key must start with either the letter "
-	    "K or the letter k."));
+	 tr("Invalid key(s). The provided text "
+	    "must start with either the letter K or the letter k."));
       return;
     }
 

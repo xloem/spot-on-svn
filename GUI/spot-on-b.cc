@@ -51,7 +51,7 @@ void spoton::slotSendMessage(void)
 
   if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
     {
-      error = tr("Not connected to the kernel.");
+      error = tr("The interface is not connected to the kernel.");
       goto done_label;
     }
   else if(!m_kernelSocket.isEncrypted())
@@ -1708,7 +1708,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 	{
 	  QMessageBox::critical(this, tr("%1: Error").
 				arg(SPOTON_APPLICATION_NAME),
-				tr("Empty key. Really?"));
+				tr("Empty key(s). Really?"));
 	  return;
 	}
 
@@ -1717,8 +1717,8 @@ void spoton::addFriendsKey(const QByteArray &key)
 	  QMessageBox::critical
 	    (this, tr("%1: Error").
 	     arg(SPOTON_APPLICATION_NAME),
-	     tr("Invalid key. The key must start with either the letter "
-		"K or the letter k."));
+	     tr("Invalid key(s). The provided text must start with either "
+		"the letter K or the letter k."));
 	  return;
 	}
 
@@ -1745,8 +1745,8 @@ void spoton::addFriendsKey(const QByteArray &key)
 	  QMessageBox::critical
 	    (this, tr("%1: Error").
 	     arg(SPOTON_APPLICATION_NAME),
-	     tr("Invalid key type. Expecting 'chat', 'email', 'poptastic', "
-		"'rosetta', or 'url'."));
+	     tr("Invalid key type. Expecting 'chat', 'email', "
+		"'poptastic', 'rosetta', or 'url'."));
 	  return;
 	}
 
@@ -1930,7 +1930,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 	{
 	  QMessageBox::critical(this, tr("%1: Error").
 				arg(SPOTON_APPLICATION_NAME),
-				tr("Empty key. Really?"));
+				tr("Empty key(s). Really?"));
 	  return;
 	}
 
@@ -1939,7 +1939,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 	  QMessageBox::critical
 	    (this, tr("%1: Error").
 	     arg(SPOTON_APPLICATION_NAME),
-	     tr("Invalid Repleo. The Repleo must start with "
+	     tr("Invalid repleo(s). The provided text must start with "
 		"either the letter R or the letter r."));
 	  return;
 	}
@@ -1994,7 +1994,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 			     arg(SPOTON_APPLICATION_NAME),
 			     tr("Asymmetric decryption failure. "
 				"Are you attempting "
-				"to add a Repleo that you gathered?"));
+				"to add a repleo that you gathered?"));
 			  return;
 			}
 		    }
@@ -2250,7 +2250,7 @@ void spoton::slotResetAll(void)
   mb.setWindowModality(Qt::WindowModal);
   mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
   mb.setText(tr("Are you sure that you wish to reset %1? All "
-		"data will be lost. Forever.").
+		"data will be lost.").
 	     arg(SPOTON_APPLICATION_NAME));
 
   if(mb.exec() != QMessageBox::Yes)
@@ -3430,7 +3430,7 @@ void spoton::slotMailSelected(QTableWidgetItem *item)
 	    QMessageBox::critical(this, tr("%1: Error").
 				  arg(SPOTON_APPLICATION_NAME),
 				  tr("An error occurred while processing "
-				     "the attachments."));
+				     "the attachment(s)."));
 	    return;
 	  }
 	else if(rc == APPLY_GOLDBUG_TO_LETTER_ERROR_DATABASE)
@@ -3847,7 +3847,7 @@ void spoton::slotRetrieveMail(void)
 	error = tr("The connection to the kernel is not encrypted.");
     }
   else
-    error = tr("Not connected to the kernel.");
+    error = tr("The interface is not connected to the kernel.");
 
   if(m_ui.retrieveMail == sender())
     if(!error.isEmpty())

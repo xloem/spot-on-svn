@@ -2989,7 +2989,7 @@ void spoton::slotExportPublicKeys(void)
     QMessageBox::critical
       (this, tr("%1: Error").
        arg(SPOTON_APPLICATION_NAME),
-       tr("A deep failure occurred while gathering your public key pairs. "
+       tr("A deep failure occurred while gathering your public keys. "
 	  "Do you have public keys? Please inspect the Settings tab."));
   else
     {

@@ -692,7 +692,8 @@ void spoton::slotSaveMOTD(void)
 	query.bindValue(1, oid);
 
 	if(!query.exec())
-	  error = tr("Database error. Unable to save the message of the day.");
+	  error = tr
+	    ("Database error. Unable to save the message of the day.");
       }
     else
       error = tr("Unable to open listeners.db.");
@@ -1003,7 +1004,7 @@ void spoton::slotAddAEToken(void)
 
       if(list.isEmpty())
 	{
-	  error = tr("Invalid Adaptive Echo magnet.");
+	  error = tr("Invalid adaptive echo magnet.");
 	  goto done_label;
 	}
       else

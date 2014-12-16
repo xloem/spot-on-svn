@@ -150,7 +150,7 @@ void spoton_chatwindow::slotSendMessage(void)
 
   if(m_kernelSocket->state() != QAbstractSocket::ConnectedState)
     {
-      error = tr("Not connected to the kernel.");
+      error = tr("The interface is not connected to the kernel.");
       goto done_label;
     }
   else if(!m_kernelSocket->isEncrypted())
