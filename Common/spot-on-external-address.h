@@ -38,6 +38,7 @@ class spoton_external_address: public QNetworkAccessManager
 
  public:
   spoton_external_address(QObject *parent);
+  spoton_external_address(void);
   QHostAddress address(void) const;
   void discover(void);
 

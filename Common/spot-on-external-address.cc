@@ -36,6 +36,12 @@ spoton_external_address::spoton_external_address(QObject *parent):
   m_address = QHostAddress();
 }
 
+spoton_external_address::spoton_external_address(void):
+  QNetworkAccessManager(0)
+{
+  m_address = QHostAddress();
+}
+
 void spoton_external_address::discover(void)
 {
   QNetworkReply *reply = 0;
