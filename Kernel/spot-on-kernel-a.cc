@@ -1713,7 +1713,7 @@ void spoton_kernel::slotMessageReceivedFromUI
 	{
 	  if(keyType == "poptastic")
 	    {
-	      QByteArray message(spoton_send::message0000(data.toBase64()));
+	      QByteArray message(spoton_send::message0000(data));
 
 	      postPoptasticMessage(receiverName, message);
 	    }
