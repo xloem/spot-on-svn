@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>750</width>
-    <height>552</height>
+    <height>576</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -680,6 +680,8 @@
   <tabstop>in_authentication</tabstop>
   <tabstop>in_username</tabstop>
   <tabstop>in_password</tabstop>
+  <tabstop>in_verify</tabstop>
+  <tabstop>testpop3</tabstop>
   <tabstop>out_method</tabstop>
   <tabstop>out_server_address</tabstop>
   <tabstop>out_server_port</tabstop>
@@ -687,9 +689,7 @@
   <tabstop>out_authentication</tabstop>
   <tabstop>out_username</tabstop>
   <tabstop>out_password</tabstop>
-  <tabstop>in_verify</tabstop>
   <tabstop>out_verify</tabstop>
-  <tabstop>testpop3</tabstop>
   <tabstop>testsmtp</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
