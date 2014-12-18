@@ -6,6 +6,7 @@
 3.   Avoid emitting unnecessary signals when preparing poptastic data.
 4.   Improved error reporting.
 5.   Corrected assignment of widgets to parents in the interface.
+6.   Updated NTRU files to 44e4dfd942bcd8d75eb7de5aa31bdad23d4f550b.
 
 0.17b (12/09/2014)
 
@@ -39,7 +40,7 @@
      be disrupted.
 14.  Corrected use of qstrlen(). The function returns an unsigned
      integer.
-15.  Updated NTRU files with 4a47c952c250731177fc65547ba8a09c75013506.
+15.  Updated NTRU files to 4a47c952c250731177fc65547ba8a09c75013506.
      Please see https://github.com/tbuktu/libntru.
 16.  Ignore the SSL Control String for non-TCP neighbors.
 17.  Corrected flawed use of m_transport in spot-on-neighbor.cc. The variable
@@ -52,7 +53,7 @@
 2.   Corrected the Resend widget's state.
 3.   Include expiry times in e-mail request messages.
      Previous functionality will be disrupted.
-4.   Updated NTRU files with 6e0c93312caac96e626f6622b4ef9b9758978309.
+4.   Updated NTRU files to 6e0c93312caac96e626f6622b4ef9b9758978309.
      Please see https://github.com/tbuktu/libntru.
 5.   Corrected the Adaptive Echo implementation with respect to StarBeam
      data.
