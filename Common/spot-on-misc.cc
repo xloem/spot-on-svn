@@ -1869,7 +1869,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
   str = settings.value("gui/hashType").toString();
 
   if(!(str == "sha512" || str == "stribog512" ||
-       str == "tiger" || str == "whirlpool"))
+       str == "whirlpool"))
     str = "sha512";
 
   settings.insert("gui/hashType", str);

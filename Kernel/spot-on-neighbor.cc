@@ -2330,7 +2330,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 	  QByteArray data;
 	  QByteArray senderPublicKeyHash2;
 	  spoton_crypt crypt(symmetricKeyAlgorithm,
-			     "sha512",
+			     hashKeyAlgorithm,
 			     QByteArray(),
 			     symmetricKey,
 			     0,
@@ -2444,7 +2444,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 		      QByteArray subject;
 		      bool goldbugUsed = false;
 		      spoton_crypt crypt(symmetricKeyAlgorithm,
-					 "sha512",
+					 hashKeyAlgorithm,
 					 QByteArray(),
 					 symmetricKey,
 					 0,
@@ -2640,7 +2640,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn,
 		     spoton_crypt::memcmp(computedHash, messageCode))
 		    {
 		      spoton_crypt crypt(symmetricKeyAlgorithm,
-					 "sha512",
+					 hashKeyAlgorithm,
 					 QByteArray(),
 					 symmetricKey,
 					 0,
@@ -2823,7 +2823,7 @@ void spoton_neighbor::process0002a
 		 spoton_crypt::memcmp(computedHash, messageCode))
 		{
 		  spoton_crypt crypt(symmetricKeyAlgorithm,
-				     "sha512",
+				     hashKeyAlgorithm,
 				     QByteArray(),
 				     symmetricKey,
 				     0,

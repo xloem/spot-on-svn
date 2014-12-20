@@ -3432,7 +3432,7 @@ void spoton_kernel::slotBuzzReceivedFromUI(const QByteArray &key,
   QByteArray messageCode;
   bool ok = true;
   spoton_crypt crypt(channelType,
-		     "sha512",
+		     hashType,
 		     QByteArray(),
 		     key,
 		     0,

@@ -194,7 +194,7 @@ QList<QByteArray> spoton_receive::process0000
 		 spoton_crypt::memcmp(computedHash, messageCode))
 		{
 		  spoton_crypt crypt(symmetricKeyAlgorithm,
-				     "sha512",
+				     hashKeyAlgorithm,
 				     QByteArray(),
 				     symmetricKey,
 				     0,
@@ -363,7 +363,7 @@ QList<QByteArray> spoton_receive::process0000a
 		 spoton_crypt::memcmp(computedHash, messageCode))
 		{
 		  spoton_crypt crypt(symmetricKeyAlgorithm,
-				     "sha512",
+				     hashKeyAlgorithm,
 				     QByteArray(),
 				     symmetricKey,
 				     0,
@@ -647,7 +647,7 @@ QList<QByteArray> spoton_receive::process0001b
 		 spoton_crypt::memcmp(computedHash, messageCode))
 		{
 		  spoton_crypt crypt(symmetricKeyAlgorithm,
-				     "sha512",
+				     hashKeyAlgorithm,
 				     QByteArray(),
 				     symmetricKey,
 				     0,
@@ -865,7 +865,7 @@ QList<QByteArray> spoton_receive::process0013
 		 spoton_crypt::memcmp(computedHash, messageCode))
 		{
 		  spoton_crypt crypt(symmetricKeyAlgorithm,
-				     "sha512",
+				     hashKeyAlgorithm,
 				     QByteArray(),
 				     symmetricKey,
 				     0,

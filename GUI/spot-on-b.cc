@@ -4721,7 +4721,7 @@ void spoton::slotJoinBuzzChannel(void)
 
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
   keys = spoton_crypt::derivedKeys(channelType,
-				   "sha512",
+				   hashType,
 				   iterationCount,
 				   channel + channelType,
 				   channelSalt,
