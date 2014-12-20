@@ -7,6 +7,9 @@
 4.   Improved error reporting.
 5.   Corrected assignment of widgets to parents in the interface.
 6.   Updated NTRU files to 44e4dfd942bcd8d75eb7de5aa31bdad23d4f550b.
+7.   Enabled the Kernel Hash Type. Message types changed. Previous
+     functionality will be disrupted.
+8.   Removed support for 2048-bit public keys.
 
 0.17b (12/09/2014)
 
