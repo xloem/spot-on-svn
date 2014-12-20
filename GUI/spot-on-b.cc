@@ -3114,13 +3114,18 @@ void spoton::populateMail(void)
   if(!m_crypts.value("email", 0))
     return;
 
-  m_ui.reply->setEnabled(m_ui.folder->currentIndex() == 0);
+  if(m_ui.folder->currentIndex() == 0 || m_ui.folder->currentIndex() == 2)
+    m_ui.reply->setEnabled(true);
+  else
+    m_ui.reply->setEnabled(false);
+
   m_ui.resend->setEnabled(m_ui.folder->currentIndex() == 1);
 
   if(m_ui.folder->currentIndex() == 0)
     {
       if(currentTabName() == "email")
-	m_sb.email->setVisible(false);
+	if(m_ui.mailTab->currentIndex() == 0)
+	  m_sb.email->setVisible(false);
 
       m_ui.mail->horizontalHeaderItem(1)->setText(tr("From"));
     }

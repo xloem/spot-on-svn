@@ -1564,8 +1564,7 @@ void spoton::slotSignatureKeyTypeChanged(int index)
   QStringList list;
 
   if(index == 0)
-    list << "2048"
-	 << "3072"
+    list << "3072"
 	 << "4096"
 	 << "7680"
 	 << "8192"
@@ -1578,15 +1577,13 @@ void spoton::slotSignatureKeyTypeChanged(int index)
   else if(index == 2)
     list << "Ed25519";
   else if(index == 3)
-    list << "2048"
-	 << "3072"
+    list << "3072"
 	 << "4096"
 	 << "7680"
 	 << "8192"
 	 << "15360";
   else
-    list << "2048"
-	 << "3072"
+    list << "3072"
 	 << "4096"
 	 << "7680"
 	 << "8192"
@@ -1594,9 +1591,7 @@ void spoton::slotSignatureKeyTypeChanged(int index)
 
   m_ui.signatureKeySize->clear();
   m_ui.signatureKeySize->addItems(list);
-
-  if(index != 2)
-    m_ui.signatureKeySize->setCurrentIndex(1);
+  m_ui.signatureKeySize->setCurrentIndex(0);
 }
 
 void spoton::slotShowEncryptFile(void)
@@ -1883,8 +1878,7 @@ void spoton::slotEncryptionKeyTypeChanged(int index)
   QStringList list;
 
   if(index == 0 || index == 2)
-    list << "2048"
-	 << "3072"
+    list << "3072"
 	 << "4096"
 	 << "7680"
 	 << "8192"
@@ -1896,11 +1890,7 @@ void spoton::slotEncryptionKeyTypeChanged(int index)
 
   m_ui.encryptionKeySize->clear();
   m_ui.encryptionKeySize->addItems(list);
-
-  if(index == 0 || index == 2)
-    m_ui.encryptionKeySize->setCurrentIndex(1);
-  else
-    m_ui.encryptionKeySize->setCurrentIndex(0);
+  m_ui.encryptionKeySize->setCurrentIndex(0);
 }
 
 void spoton::slotAddInstitutionCheckBoxToggled(bool state)
@@ -1919,10 +1909,10 @@ void spoton::slotAddInstitutionCheckBoxToggled(bool state)
 void spoton::slotNewKeys(bool state)
 {
   Q_UNUSED(state);
-  m_ui.encryptionKeySize->setCurrentIndex(1);
+  m_ui.encryptionKeySize->setCurrentIndex(0);
   m_ui.encryptionKeyType->setCurrentIndex(2);
   m_ui.keys->setCurrentIndex(0);
-  m_ui.signatureKeySize->setCurrentIndex(1);
+  m_ui.signatureKeySize->setCurrentIndex(0);
   m_ui.signatureKeyType->setCurrentIndex(4);
 }
 

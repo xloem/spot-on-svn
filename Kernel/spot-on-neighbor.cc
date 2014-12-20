@@ -2273,6 +2273,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
       QByteArray data1(list.value(1));
       QByteArray data2(list.value(3));
       QByteArray hashKey;
+      QByteArray hashKeyAlgorithm;
       QByteArray keyInformation1(list.value(0));
       QByteArray keyInformation2(list.value(2));
       QByteArray messageCode1(list.value(5));
@@ -2292,9 +2293,10 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 
 	  list.removeAt(0); // Message Type
 
-	  if(list.size() == 3)
+	  if(list.size() == 4)
 	    {
 	      hashKey = QByteArray::fromBase64(list.value(1));
+	      hashKeyAlgorithm = QByteArray::fromBase64(list.value(3));
 	      symmetricKey = QByteArray::fromBase64(list.value(0));
 	      symmetricKeyAlgorithm = QByteArray::fromBase64
 		(list.value(2));
@@ -2304,14 +2306,14 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 	      spoton_misc::logError
 		(QString("spoton_neighbor::process0001a(): "
 			 "received irregular data. "
-			 "Expecting 3 "
+			 "Expecting 4 "
 			 "entries, "
 			 "received %1.").arg(list.size()));
 	      return;
 	    }
 
 	  computedHash = spoton_crypt::keyedHash
-	    (data1 + keyInformation2 + data2, hashKey, "sha512", &ok);
+	    (data1 + keyInformation2 + data2, hashKey, hashKeyAlgorithm, &ok);
 
 	  if(ok)
 	    if(computedHash.isEmpty() || messageCode1.isEmpty() ||
@@ -2398,9 +2400,11 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 
 		      list.removeAt(0); // Message Type
 
-		      if(list.size() == 3)
+		      if(list.size() == 4)
 			{
 			  hashKey = QByteArray::fromBase64(list.value(1));
+			  hashKeyAlgorithm = QByteArray::fromBase64
+			    (list.value(3));
 			  symmetricKey = QByteArray::fromBase64
 			    (list.value(0));
 			  symmetricKeyAlgorithm = QByteArray::fromBase64
@@ -2411,14 +2415,14 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 			  spoton_misc::logError
 			    (QString("spoton_neighbor::process0001a(): "
 				     "received irregular data. "
-				     "Expecting 3 "
+				     "Expecting 4 "
 				     "entries, "
 				     "received %1.").arg(list.size()));
 			  return;
 			}
 
 		      computedHash = spoton_crypt::keyedHash
-			(data2, hashKey, "sha512", &ok);
+			(data2, hashKey, hashKeyAlgorithm, &ok);
 
 		      if(ok)
 			if(computedHash.isEmpty() || messageCode2.isEmpty() ||
@@ -2585,6 +2589,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn,
       if(list.size() == 4)
 	{
 	  QByteArray hashKey;
+	  QByteArray hashKeyAlgorithm;
 	  QByteArray keyInformation(list.value(0));
 	  QByteArray symmetricKey;
 	  QByteArray symmetricKeyAlgorithm;
@@ -2599,9 +2604,10 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn,
 
 	      list.removeAt(0); // Message Type
 
-	      if(list.size() == 3)
+	      if(list.size() == 4)
 		{
 		  hashKey = QByteArray::fromBase64(list.value(1));
+		  hashKeyAlgorithm = QByteArray::fromBase64(list.value(3));
 		  symmetricKey = QByteArray::fromBase64(list.value(0));
 		  symmetricKeyAlgorithm = QByteArray::fromBase64
 		    (list.value(2));
@@ -2611,7 +2617,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn,
 		  spoton_misc::logError
 		    (QString("spoton_neighbor::0001b(): "
 			     "received irregular data. "
-			     "Expecting 3 "
+			     "Expecting 4 "
 			     "entries, "
 			     "received %1.").arg(list.size()));
 		  return;
@@ -2624,7 +2630,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn,
 	      QByteArray data(list.value(1));
 
 	      computedHash = spoton_crypt::keyedHash
-		(data, hashKey, "sha512", &ok);
+		(data, hashKey, hashKeyAlgorithm, &ok);
 
 	      if(ok)
 		{
@@ -2767,6 +2773,7 @@ void spoton_neighbor::process0002a
       */
 
       QByteArray hashKey;
+      QByteArray hashKeyAlgorithm;
       QByteArray keyInformation(list.value(0));
       QByteArray symmetricKey;
       QByteArray symmetricKeyAlgorithm;
@@ -2780,9 +2787,10 @@ void spoton_neighbor::process0002a
 
 	  list.removeAt(0); // Message Type
 
-	  if(list.size() == 3)
+	  if(list.size() == 4)
 	    {
 	      hashKey = QByteArray::fromBase64(list.value(1));
+	      hashKeyAlgorithm = QByteArray::fromBase64(list.value(3));
 	      symmetricKey = QByteArray::fromBase64(list.value(0));
 	      symmetricKeyAlgorithm = QByteArray::fromBase64
 		(list.value(2));
@@ -2792,7 +2800,7 @@ void spoton_neighbor::process0002a
 	      spoton_misc::logError
 		(QString("spoton_neighbor::process0002a(): "
 			 "received irregular data. "
-			 "Expecting 3 "
+			 "Expecting 4 "
 			 "entries, "
 			 "received %1.").arg(list.size()));
 	      return;
@@ -2805,7 +2813,7 @@ void spoton_neighbor::process0002a
 	  QByteArray data(list.value(1));
 
 	  computedHash = spoton_crypt::keyedHash
-	    (data, hashKey, "sha512", &ok);
+	    (data, hashKey, hashKeyAlgorithm, &ok);
 
 	  if(ok)
 	    {

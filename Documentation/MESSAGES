@@ -4,7 +4,7 @@ Echo Chat
 Echoed? Yes
 
 Groups: 3
-Symmetric Key (Gemini Encryption Key)
+Gemini Encryption Key
 {
 0 - 0000 (Base-64)
 EOL
@@ -26,14 +26,16 @@ Public Key
 {
 0 - 0000 (Base-64)
 EOL
-1 - Encryption Symmetric Key (Base-64)
+1 - Encryption Key (Base-64)
 EOL
-2 - SHA-512 Hash Key (Base-64)
+2 - Hash Key (Base-64)
 EOL
-3 - Symmetric Algorithm (Base-64)
+3 - Encryption Algorithm (Base-64)
+EOL
+4 - Hash Algorithm (Base-64)
 }
 EOL
-Symmetric Key
+Encryption Key
 {
 0 - Dispatcher's SHA-512 Hash (Base-64)
 EOL
@@ -49,7 +51,7 @@ EOL
 }
 EOL
 {
-0 - Keyed SHA-512 Message Code of the Second Group (Base-64)
+0 - Keyed Message Code of the Second Group (Base-64)
 }
 EOL
 {
@@ -66,14 +68,16 @@ Public Key
 {
 0 - 0000(a | c) (Base-64)
 EOL
-1 - Encryption Symmetric Key (Base-64)
+1 - Encryption Key (Base-64)
 EOL
-2 - SHA-512 Hash Key (Base-64)
+2 - Hash Key (Base-64)
 EOL
-3 - Symmetric Algorithm (Base-64)
+3 - Encryption Algorithm (Base-64)
+EOL
+4 - Hash Algorithm (Base-64)
 }
 EOL
-Symmetric Key
+Encryption Key
 {
 0 - Dispatcher's SHA-512 Hash (Base-64)
 EOL
@@ -87,7 +91,7 @@ EOL
 }
 EOL
 {
-0 - Keyed SHA-512 Message Code of the Second Group (Base-64)
+0 - Keyed Message Code of the Second Group (Base-64)
 }
 EOL
 {
@@ -130,14 +134,16 @@ Public Key
 {
 0 - 0001a (Base-64)
 EOL
-1 - Encryption Symmetric Key (Base-64)
+1 - Encryption Key 1 (Base-64)
 EOL
-2 - SHA-512 Hash Key 1 (Base-64)
+2 - Hash Key 1 (Base-64)
 EOL
-3 - Symmetric Algorithm (Base64)
+3 - Encryption Algorithm (Base-64)
+EOL
+4 - Hash Algorithm (Base-64)
 }
 EOL
-Symmetric Key
+Encryption Key
 {
 0 - Dispatcher's SHA-512 Hash (Base-64)
 EOL
@@ -150,14 +156,16 @@ Public Key
 {
 0 - 0001b (Base-64)
 EOL
-1 - Encryption Symmetric Key (Base-64)
+1 - Encryption Key 2 (Base-64)
 EOL
-2 - SHA-512 Hash Key 2 (Base-64)
+2 - Hash Key 2 (Base-64)
 EOL
-3 - Symmetric Algorithm (Base-64)
+3 - Encryption Algorithm (Base-64)
+EOL
+4 - Hash Algorithm (Base-64)
 }
 EOL
-Symmetric Key
+Encryption Key
 {
 0 - Dispatcher's SHA-512 Hash (Base-64)
 EOL
@@ -177,11 +185,11 @@ EOL
 }
 EOL
 {
-0 - Keyed 2 SHA-512 Message Code of the Fourth Group (Base-64)
+0 - Keyed 2 Message Code of the Fourth Group (Base-64)
 }
 EOL
 {
-0 - Keyed 1 SHA-512 Message Code of the Second Group (Base-64)
+0 - Keyed 1 Message Code of the Second Group (Base-64)
 }
 EOL
 {
@@ -195,14 +203,16 @@ Public Key
 {
 0 - 0001b (Base-64)
 EOL
-1 - Encryption Symmetric Key (Base-64)
+1 - Encryption Key (Base-64)
 EOL
-2 - SHA-512 Hash Key (Base-64)
+2 - Hash Key (Base-64)
 EOL
-3 - Symmetric Algorithm (Base-64)
+3 - Encryption Algorithm (Base-64)
+EOL
+4 - Hash Algorithm (Base-64)
 }
 EOL
-Symmetric Key
+Encryption Key
 {
 0 - Dispatcher's SHA-512 Hash (Base-64)
 EOL
@@ -222,7 +232,7 @@ EOL
 }
 EOL
 {
-0 - Keyed SHA-512 Message Code of the Second Group (Base-64)
+0 - Keyed Message Code of the Second Group (Base-64)
 }
 EOL
 {
@@ -254,14 +264,16 @@ Public Key
 {
 0 - 0002a (Base-64)
 EOL
-1 - Encryption Symmetric Key (Base-64)
+1 - Encryption Key (Base-64)
 EOL
-2 - SHA-512 Hash Key (Base-64)
+2 - Hash Key (Base-64)
 EOL
-3 - Symmetric Algorithm (Base-64)
+3 - Encryption Algorithm (Base-64)
+EOL
+4 - Hash Algorithm (Base-64)
 }
 EOL
-Symmetric Key
+Encryption Key
 {
 0 - Requester's SHA-512 Hash (Base-64)
 EOL
@@ -273,7 +285,7 @@ EOL
 }
 EOL
 {
-0 - Keyed SHA-512 Message Code of the Second Group (Base-64)
+0 - Keyed Message Code of the Second Group (Base-64)
 }
 EOL
 {
@@ -283,7 +295,7 @@ EOL
 }
 
 Groups: 3
-Symmetric Key (Institution Encryption Key)
+Institution Encryption Key
 {
 0 - 0002b (Base-64)
 EOL
@@ -329,7 +341,7 @@ Participant Status
 Echoed? Yes
 
 Groups: 3
-Symmetric Key (Gemini Encryption Key)
+Gemini Encryption Key
 {
 0 - 0013 (Base-64)
 EOL
@@ -351,14 +363,16 @@ Public Key
 {
 0 - 0013 (Base-64)
 EOL
-1 - Encryption Symmetric Key (Base-64)
+1 - Encryption Key (Base-64)
 EOL
-2 - SHA-512 Hash Key (Base-64)
+2 - Hash Key (Base-64)
 EOL
-3 - Symmetric Algorithm (Base-64)
+3 - Encryption Algorithm (Base-64)
+EOL
+4 - Hash Algorithm (Base-64)
 }
 EOL
-Symmetric Key
+Encryption Key
 {
 0 - Dispatcher's SHA-512 Hash (Base-64)
 EOL
@@ -372,7 +386,7 @@ EOL
 }
 EOL
 {
-0 - Keyed SHA-512 Message Code of the Second Group (Base-64)
+0 - Keyed Message Code of the Second Group (Base-64)
 }
 EOL
 {
@@ -505,56 +519,3 @@ Echoed? No
 
 Message Type ("0080")
 0 (Base-64)
-
-Request Weather Data
-Echoed? Yes
-
-Groups: 4
-Public Key
-{
-0 - 0081 (Base-64)
-EOL
-1 - Encryption Symmetric Key (Base-64)
-EOL
-2 - SHA-512 Hash Key (Base-64)
-EOL
-3 - Symmetric Algorithm (Base-64)
-}
-EOL
-Symmetric Key
-{
-0 - URL (Base-64)
-EOL
-1 - Location Attributes (Base-64)
-}
-EOL
-{
-0 - Keyed SHA-512 Message Code of the Second Group (Base-64)
-}
-EOL
-{
-0 - Keyed (Adaptive Echo Hash Key) Message Code of the
-    Preceding Data and Encrypted Timestamp,
-    Encrypted Timestamp (Base-64)
-}
-
-Receive Weather Data
-Echoed? Yes
-
-Groups: 3
-Symmetric Key
-{
-0 - 0082 (Base-64)
-EOL
-1 - RSS (Base-64)
-}
-EOL
-{
-0 - Keyed SHA-512 Message Code (Base-64)
-}
-EOL
-{
-0 - Keyed (Adaptive Echo Hash Key) Message Code of the
-    Preceding Data and Encrypted Timestamp,
-    Encrypted Timestamp (Base-64)
-}
