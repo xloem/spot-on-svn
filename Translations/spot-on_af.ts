@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="af_ZA">
+<TS version="2.1" language="af_ZA">
 <context>
     <name>QObject</name>
     <message>
@@ -1992,7 +1992,7 @@ SSL Control String: %24</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-d.cc" line="695"/>
+        <location filename="../GUI/spot-on-d.cc" line="696"/>
         <source>Database error. Unable to save the message of the day.</source>
         <translation type="unfinished"></translation>
     </message>

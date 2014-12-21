@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="de_DE">
+<TS version="2.1" language="de_DE">
 <context>
     <name>QObject</name>
     <message>
@@ -2267,7 +2267,7 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <translation type="unfinished">Kann die Institution nicht aufzeichnen.</translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-d.cc" line="695"/>
+        <location filename="../GUI/spot-on-d.cc" line="696"/>
         <source>Database error. Unable to save the message of the day.</source>
         <translation type="unfinished"></translation>
     </message>

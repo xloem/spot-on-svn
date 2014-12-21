@@ -3486,17 +3486,8 @@ void spoton_kernel::slotBuzzReceivedFromUI(const QByteArray &key,
 void spoton_kernel::slotMessagingCachePurge(void)
 {
   if(m_future.isFinished())
-    {
-      QReadLocker locker(&s_messagingCacheMutex);
-
-      bool isEmpty = s_messagingCache.isEmpty();
-
-      locker.unlock();
-
-      if(!isEmpty)
-	m_future = QtConcurrent::run
-	  (this, &spoton_kernel::purgeMessagingCache);
-    }
+    m_future = QtConcurrent::run
+      (this, &spoton_kernel::purgeMessagingCache);
 }
 
 void spoton_kernel::purgeMessagingCache(void)
