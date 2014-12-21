@@ -10,6 +10,9 @@
 7.   Enabled the Kernel Hash Type. Message types changed. Previous
      functionality will be disrupted.
 8.   Removed support for 2048-bit public keys.
+9.   Execute purgeMessagingCache() in a timely manner because
+     the method is responsible for removing items from s_emailRequestCache
+     and s_geminisCache.
 
 0.17b (12/09/2014)
 
