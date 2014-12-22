@@ -715,7 +715,7 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
 	  if(neighbor)
 	    neighbor->deleteLater();
 
-	  error = "odd exception";
+	  error = "irregular exception";
 	  spoton_misc::logError("spoton_listener::slotNewConnection(): "
 				"critical failure.");
 	}
