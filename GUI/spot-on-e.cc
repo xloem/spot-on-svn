@@ -509,13 +509,15 @@ void spoton::slotTestPoptasticPop3Settings(void)
   QApplication::restoreOverrideCursor();
 
   if(ok)
-    QMessageBox::information(this, tr("%1: Poptastic POP3 Connection Test").
-			     arg(SPOTON_APPLICATION_NAME),
-			     tr("Test successful!"));
+    QMessageBox::information
+      (this, tr("%1: Poptastic Incoming Connection Test").
+       arg(SPOTON_APPLICATION_NAME),
+       tr("Test successful!"));
   else
-    QMessageBox::critical(this, tr("%1: Poptastic POP3 Connection Test").
-			  arg(SPOTON_APPLICATION_NAME),
-			  tr("Failure!"));
+    QMessageBox::critical
+      (this, tr("%1: Poptastic Incoming Connection Test").
+       arg(SPOTON_APPLICATION_NAME),
+       tr("Failure!"));
 }
 
 void spoton::slotTestPoptasticSmtpSettings(void)
@@ -619,13 +621,15 @@ void spoton::slotTestPoptasticSmtpSettings(void)
   QApplication::restoreOverrideCursor();
 
   if(ok)
-    QMessageBox::information(this, tr("%1: Poptastic SMTP Connection Test").
-			     arg(SPOTON_APPLICATION_NAME),
-			     tr("Test successful!"));
+    QMessageBox::information
+      (this, tr("%1: Poptastic Outgoing Connection Test").
+       arg(SPOTON_APPLICATION_NAME),
+       tr("Test successful!"));
   else
-    QMessageBox::critical(this, tr("%1: Poptastic SMTP Connection Test").
-			  arg(SPOTON_APPLICATION_NAME),
-			  tr("Failure!"));
+    QMessageBox::critical
+      (this, tr("%1: Poptastic Outgoing Connection Test").
+       arg(SPOTON_APPLICATION_NAME),
+       tr("Failure!"));
 }
 
 void spoton::slotPoptasticSettingsReset(bool state)
