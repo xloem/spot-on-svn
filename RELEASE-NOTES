@@ -13,6 +13,10 @@
 9.   Execute purgeMessagingCache() in a timely manner because
      the method is responsible for removing items from s_emailRequestCache
      and s_geminisCache.
+10.  A zero-bit key size denotes non-SSL/TLS listeners. Corrected.
+11.  Introduced abort mechanisms for threaded neighbors. The mechanisms are
+     not guaranteed to be timely.
+12.  Removed time parameter from QThread::wait() instances.
 
 0.17b (12/09/2014)
 
