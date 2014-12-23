@@ -73,6 +73,7 @@ spoton_neighbor::spoton_neighbor
  const QString &sslControlString,
  QObject *parent):QThread(parent)
 {
+  m_abortThread = false;
   m_sctpSocket = 0;
   m_tcpSocket = 0;
   m_udpSocket = 0;
@@ -462,6 +463,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 				 const QString &sslControlString,
 				 QObject *parent):QThread(parent)
 {
+  m_abortThread = false;
   m_accountAuthenticated = false;
   m_accountName = accountName;
   m_accountPassword = accountPassword;
@@ -477,9 +479,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   m_keySize = qAbs(keySize);
 
   if(transport == "tcp")
-    if(!(m_keySize == 2048 || m_keySize == 3072 ||
-	 m_keySize == 4096 || m_keySize == 8192))
-      m_keySize = 2048;
+    if(m_keySize != 0)
+      if(!(m_keySize == 2048 || m_keySize == 3072 ||
+	   m_keySize == 4096 || m_keySize == 8192))
+	m_keySize = 2048;
 
   m_lastReadTime = QDateTime::currentDateTime();
   m_listenerOid = -1;
@@ -532,7 +535,15 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
     m_useAccounts = false;
 
   if(m_transport == "tcp")
-    m_useSsl = true;
+    {
+      if(m_keySize != 0)
+	m_useSsl = true;
+      else
+	{
+	  m_sslControlString = "N/A";
+	  m_useSsl = false;
+	}
+    }
   else
     {
       m_sslControlString = "N/A";
@@ -805,6 +816,11 @@ spoton_neighbor::~spoton_neighbor()
   spoton_misc::logError(QString("Neighbor %1:%2 deallocated.").
 			arg(m_address.toString()).
 			arg(m_port));
+
+  QWriteLocker locker(&m_abortThreadMutex);
+
+  m_abortThread = true;
+  locker.unlock();
   m_accountTimer.stop();
   m_authenticationTimer.stop();
   m_externalAddressDiscovererTimer.stop();
@@ -898,7 +914,7 @@ spoton_neighbor::~spoton_neighbor()
     }
 
   quit();
-  wait(30000);
+  wait();
 }
 
 void spoton_neighbor::slotTimeout(void)
@@ -1390,6 +1406,13 @@ void spoton_neighbor::processData(void)
 
       while(data.contains(spoton_send::EOM))
 	{
+	  QReadLocker locker(&m_abortThreadMutex);
+
+	  if(m_abortThread)
+	    break;
+	  else
+	    locker.unlock();
+
 	  QByteArray bytes
 	    (data.mid(0,
 		      data.indexOf(spoton_send::EOM) +
@@ -1420,6 +1443,13 @@ void spoton_neighbor::processData(void)
 
   while(!list.isEmpty())
     {
+      QReadLocker locker(&m_abortThreadMutex);
+
+      if(m_abortThread)
+	break;
+      else
+	locker.unlock();
+
       QByteArray data(list.takeFirst());
       QByteArray originalData(data);
       int length = 0;

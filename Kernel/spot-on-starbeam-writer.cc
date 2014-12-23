@@ -42,7 +42,7 @@ spoton_starbeam_writer::spoton_starbeam_writer(QObject *parent):
 spoton_starbeam_writer::~spoton_starbeam_writer()
 {
   quit();
-  wait(30000);
+  wait();
 }
 
 void spoton_starbeam_writer::run(void)
@@ -325,7 +325,7 @@ void spoton_starbeam_writer::start(void)
 void spoton_starbeam_writer::stop(void)
 {
   quit();
-  wait(30000);
+  wait();
 
   QWriteLocker locker(&m_keyMutex);
 
