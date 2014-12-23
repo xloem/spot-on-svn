@@ -4855,6 +4855,9 @@ void spoton::slotCloseBuzzTab(int index)
 
 void spoton::initializeKernelSocket(void)
 {
+  if(m_kernelSocket.state() != QAbstractSocket::UnconnectedState)
+    return;
+
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
   m_sb.status->setText
     (tr("Generating SSL data for the kernel socket. Please be patient."));
@@ -4879,7 +4882,8 @@ void spoton::initializeKernelSocket(void)
   if(error.isEmpty())
     {
       QSslConfiguration configuration;
-      QString sslCS(m_ui.sslControlString->text().trimmed());
+      QString sslCS
+	(m_settings.value("gui/sslControlString", "").toString());
 
       configuration.setPrivateKey(QSslKey(privateKey, QSsl::Rsa));
 #if QT_VERSION >= 0x040800
