@@ -1356,35 +1356,14 @@ void spoton_neighbor::slotReadyRead(void)
   if(!data.isEmpty())
     {
       QWriteLocker locker(&m_dataMutex);
-      bool new_data = false;
+      int length = static_cast<int> (m_maximumBufferSize) - m_data.length();
 
-      if(data.length() <= m_maximumBufferSize - m_data.length())
-	{
-	  m_data.append(data);
-	  new_data = true;
-	}
-      else
-	{
-	  m_data.clear();
-
-	  if(data.length() <= m_maximumBufferSize)
-	    {
-	      m_data.append(data);
-	      new_data = true;
-	    }
-
-	  spoton_misc::logError
-	    (QString("spoton_neighbor::slotReadyRead(): "
-		     "too much data (%1 bytes) for %2:%3. "
-		     "Purging.").
-	     arg(data.length()).
-	     arg(m_address.toString()).
-	     arg(m_port));
-	}
+      if(length > 0)
+	m_data.append(data.mid(0, length));
 
       locker.unlock();
 
-      if(new_data)
+      if(length > 0)
 	emit newData();
     }
 }
@@ -5164,7 +5143,7 @@ QString spoton_neighbor::findMessageType
     if(!m_learnedAdaptiveEchoPairs.contains(discoveredAdaptiveEchoPair))
       m_learnedAdaptiveEchoPairs.append(discoveredAdaptiveEchoPair);
 
-  return type; 
+  return type;
 }
 
 void spoton_neighbor::slotCallParticipant(const QByteArray &data,
@@ -5721,4 +5700,19 @@ void spoton_neighbor::abort(void)
     m_tcpSocket->abort();
   else if(m_udpSocket)
     m_udpSocket->abort();
+}
+
+void spoton_neighbor::deleteLater(void)
+{
+  QWriteLocker locker1(&m_abortThreadMutex);
+
+  m_abortThread = true;
+  locker1.unlock();
+
+  QWriteLocker locker2(&m_dataMutex);
+
+  m_data.clear();
+  locker2.unlock();
+  quit();
+  QObject::deleteLater();
 }
