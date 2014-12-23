@@ -17,6 +17,8 @@
 11.  Introduced abort mechanisms for threaded neighbors. The mechanisms are
      not guaranteed to be timely.
 12.  Removed time parameter from QThread::wait() instances.
+13.  Overload QObject::deleteLater() in spoton_neighbor. Buffer clearing and
+     thread termination.
 
 0.17b (12/09/2014)
 
