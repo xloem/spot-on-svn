@@ -4232,6 +4232,16 @@ void spoton_kernel::updateStatistics(const QDateTime &uptime,
 	query.exec();
 	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
 		      "(statistic, value) "
+		      "VALUES ('Neighbors ITC Messages', ?)");
+
+	QReadLocker locker3(&s_messagesToProcessMutex);
+
+	v1 = s_messagesToProcess.size();
+	locker3.unlock();
+	query.bindValue(0, v1);
+	query.exec();
+	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
+		      "(statistic, value) "
 		      "VALUES ('Uptime', ?)");
 	query.bindValue
 	  (0, QString("%1 Minutes").

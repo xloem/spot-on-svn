@@ -736,10 +736,10 @@ void spoton::slotPopulateKernelStatistics(void)
 			(QBrush(QColor(240, 128, 128)));
 		  }
 		else if(query.value(0).toString().toLower().
-			contains("listeners"))
+			contains("live listeners"))
 		  activeListeners = query.value(1).toInt();
 		else if(query.value(0).toString().toLower().
-			contains("neighbors"))
+			contains("live neighbors"))
 		  activeNeighbors = query.value(1).toInt();
 
 		row += 1;
