@@ -16,7 +16,7 @@
 10.  A zero-bit key size denotes non-SSL/TLS listeners. Corrected.
 11.  Introduced abort mechanisms for threaded neighbors. The mechanisms are
      not guaranteed to be timely.
-12.  Removed time parameters from QThread::wait() instances.
+12.  Removed time parameter from QThread::wait() instances.
 13.  Overload QObject::deleteLater() in spoton_neighbor. Buffer clearing and
      thread termination.
 14.  Corrected placement of curl_global_cleanup().
