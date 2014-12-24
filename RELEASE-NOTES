@@ -19,6 +19,7 @@
 12.  Removed time parameter from QThread::wait() instances.
 13.  Overload QObject::deleteLater() in spoton_neighbor. Buffer clearing and
      thread termination.
+14.  Corrected placement of curl_global_cleanup().
 
 0.17b (12/09/2014)
 
