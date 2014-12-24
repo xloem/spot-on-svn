@@ -882,7 +882,7 @@ void spoton_kernel::prepareListeners(void)
 	      ** listeners that will listen.
 	      */
 
-	      if(status == "deleted")
+	      if(status == "deleted" || status == "offline")
 		{
 		  listener = m_listeners.value(id);
 
@@ -894,14 +894,9 @@ void spoton_kernel::prepareListeners(void)
 
 		  m_listeners.remove(id);
 		  s_connectionCounts.remove(id);
-		  cleanupListenersDatabase(db);
-		}
-	      else if(status == "offline")
-		{
-		  listener = m_listeners.value(id);
 
-		  if(listener)
-		    listener->close();
+		  if(status == "deleted")
+		    cleanupListenersDatabase(db);
 		}
 	      else if(status == "online")
 		{
@@ -1040,8 +1035,6 @@ void spoton_kernel::prepareListeners(void)
 		      listener = m_listeners.value(id);
 
 		      /*
-		      ** Remember, deactivating the listener will not
-		      ** destroy it. We need to be able to listen() again.
 		      ** We must also be careful if we've never listened
 		      ** before because serverAddress() and serverPort()
 		      ** may not be defined properly. Please notice
