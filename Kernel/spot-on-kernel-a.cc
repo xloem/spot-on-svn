@@ -4186,6 +4186,16 @@ void spoton_kernel::updateStatistics(const QDateTime &uptime,
 	query.exec("PRAGMA synchronous = OFF");
 	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
 		      "(statistic, value) "
+		      "VALUES ('Active Buzz Channels', ?)");
+
+	QReadLocker locker1(&s_buzzKeysMutex);
+
+	v1 = s_buzzKeys.size();
+	locker1.unlock();
+	query.bindValue(0, v1);
+	query.exec();
+	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
+		      "(statistic, value) "
 		      "VALUES ('Active StarBeam Readers', ?)");
 	query.bindValue(0, starbeams);
 	query.exec();
@@ -4198,10 +4208,10 @@ void spoton_kernel::updateStatistics(const QDateTime &uptime,
 		      "(statistic, value) "
 		      "VALUES ('Congestion Container Percent Used', ?)");
 
-	QReadLocker locker(&s_messagingCacheMutex);
+	QReadLocker locker2(&s_messagingCacheMutex);
 
 	v1 = s_messagingCache.size();
-	locker.unlock();
+	locker2.unlock();
 	v2 = qMax(1, setting("gui/congestionCost", 10000).toInt());
 	query.bindValue
 	  (0,
