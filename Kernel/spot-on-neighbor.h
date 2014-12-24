@@ -376,7 +376,7 @@ class spoton_neighbor_worker: public QObject
   Q_OBJECT
 
  public:
-  spoton_neighbor_worker(spoton_neighbor *neighbor)
+  spoton_neighbor_worker(spoton_neighbor *neighbor):QObject(0)
   {
     m_neighbor = neighbor;
   }

@@ -69,7 +69,7 @@ class spoton_starbeam_writer_worker: public QObject
   Q_OBJECT
 
  public:
-  spoton_starbeam_writer_worker(spoton_starbeam_writer *writer)
+  spoton_starbeam_writer_worker(spoton_starbeam_writer *writer):QObject(0)
   {
     m_writer = writer;
   }
