@@ -305,8 +305,9 @@ int main(int argc, char *argv[])
 			   spoton_kernel::s_kernel,
 			   SLOT(deleteLater(void)));
 #endif
+	  qapplication.exec();
 	  curl_global_cleanup();
-	  return qapplication.exec();
+	  return EXIT_SUCCESS;
 	}
       catch(std::bad_alloc &exception)
 	{

@@ -176,8 +176,9 @@ int main(int argc, char *argv[])
   try
     {
       spoton::s_gui = new spoton();
+      qapplication.exec();
       curl_global_cleanup();
-      return qapplication.exec();
+      return EXIT_SUCCESS;
     }
   catch(std::bad_alloc &exception)
     {

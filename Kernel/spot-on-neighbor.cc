@@ -1362,19 +1362,19 @@ void spoton_neighbor::slotReadyRead(void)
 	m_data.append(data.mid(0, length));
 
       locker.unlock();
-
-      if(length > 0)
-	emit newData();
+      emit newData();
     }
 }
 
 void spoton_neighbor::processData(void)
 {
   QByteArray data;
-  QReadLocker locker(&m_dataMutex);
 
-  data = m_data;
-  locker.unlock();
+  {
+    QReadLocker locker(&m_dataMutex);
+
+    data = m_data;
+  }
 
   QList<QByteArray> list;
 
@@ -1419,6 +1419,13 @@ void spoton_neighbor::processData(void)
 	  m_data.remove(0, totalBytes);
 	}
     }
+
+  {
+    QWriteLocker locker(&m_dataMutex);
+
+    if(m_data.length() >= m_maximumBufferSize)
+      m_data.clear();
+  }
 
   while(!list.isEmpty())
     {
