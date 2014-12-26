@@ -3486,6 +3486,10 @@ void spoton_kernel::slotMessagingCachePurge(void)
 
 void spoton_kernel::purgeMessagingCache(void)
 {
+  /*
+  ** Removed expired e-mail requests.
+  */
+
   QWriteLocker locker1(&s_emailRequestCacheMutex);
   QMutableHashIterator<QByteArray, uint> it1(s_emailRequestCache);
 
@@ -3496,7 +3500,7 @@ void spoton_kernel::purgeMessagingCache(void)
       uint now = QDateTime::currentDateTime().toTime_t();
 
       if(now > it1.value())
-	if(now - it1.value() > 90)
+	if(now - it1.value() > static_cast<uint> (MAIL_TIME_DELTA_MAXIMUM))
 	  it1.remove();
 
       if(m_future.isCanceled())
@@ -3504,6 +3508,10 @@ void spoton_kernel::purgeMessagingCache(void)
     }
 
   locker1.unlock();
+
+  /*
+  ** Removed expired geminis.
+  */
 
   QWriteLocker locker2(&s_geminisCacheMutex);
   QMutableHashIterator<QByteArray, uint> it2(s_geminisCache);
@@ -3515,7 +3523,7 @@ void spoton_kernel::purgeMessagingCache(void)
       uint now = QDateTime::currentDateTime().toTime_t();
 
       if(now > it2.value())
-	if(now - it2.value() > 90)
+	if(now - it2.value() > static_cast<uint> (GEMINI_TIME_DELTA_MAXIMUM))
 	  it2.remove();
 
       if(m_future.isCanceled())
@@ -3524,12 +3532,11 @@ void spoton_kernel::purgeMessagingCache(void)
 
   locker2.unlock();
 
-  QWriteLocker locker3(&s_messagingCacheMutex);
-
   /*
-  ** Remove old cache items.
+  ** Remove expired cache items.
   */
 
+  QWriteLocker locker3(&s_messagingCacheMutex);
   QMutableHashIterator<QByteArray, uint> it3(s_messagingCache);
   int i = 0;
   int maximum = qMax(250, qCeil(0.15 * s_messagingCache.size()));
@@ -3546,7 +3553,7 @@ void spoton_kernel::purgeMessagingCache(void)
       uint now = QDateTime::currentDateTime().toTime_t();
 
       if(now > it3.value())
-	if(now - it3.value() > 30)
+	if(now - it3.value() > static_cast<uint> (CACHE_TIME_DELTA_MAXIMUM))
 	  it3.remove();
 
       if(m_future.isCanceled())

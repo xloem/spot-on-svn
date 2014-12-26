@@ -143,7 +143,7 @@ EOL
 4 - Hash Algorithm (Base-64)
 }
 EOL
-Encryption Key
+Encryption Key 1
 {
 0 - Dispatcher's SHA-512 Hash (Base-64)
 EOL
@@ -165,7 +165,7 @@ EOL
 4 - Hash Algorithm (Base-64)
 }
 EOL
-Encryption Key
+Encryption Key 2
 {
 0 - Dispatcher's SHA-512 Hash (Base-64)
 EOL
