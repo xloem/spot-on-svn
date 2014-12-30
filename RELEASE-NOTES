@@ -1,6 +1,7 @@
 0.18 (01/01/2015)
 
 1.   Corrected a Qt 5.x flaw with the kernel.
+2.   Additional read and write locks.
 
 0.17c (12/25/2014)
 
