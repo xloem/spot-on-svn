@@ -264,13 +264,6 @@ QPushButton:pressed {
           </widget>
          </item>
          <item>
-          <widget class="QRadioButton" name="ctr">
-           <property name="text">
-            <string>&amp;CTR</string>
-           </property>
-          </widget>
-         </item>
-         <item>
           <widget class="QRadioButton" name="gcm">
            <property name="text">
             <string>&amp;GCM</string>
@@ -447,7 +440,7 @@ QPushButton:pressed {
      <x>0</x>
      <y>0</y>
      <width>805</width>
-     <height>22</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -505,7 +498,6 @@ QPushButton:pressed {
   <tabstop>encrypt</tabstop>
   <tabstop>cipher</tabstop>
   <tabstop>cbc</tabstop>
-  <tabstop>ctr</tabstop>
   <tabstop>gcm</tabstop>
   <tabstop>hash</tabstop>
   <tabstop>cancel</tabstop>
