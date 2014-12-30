@@ -275,8 +275,6 @@ void spoton_encryptfile::slotConvert(void)
 
   if(ui.cbc->isChecked())
     modeOfOperation = "cbc";
-  else if(ui.ctr->isChecked())
-    modeOfOperation = "ctr";
   else
     modeOfOperation = "gcm";
 
