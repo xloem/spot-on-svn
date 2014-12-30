@@ -1071,9 +1071,8 @@ void spoton_neighbor::slotTimeout(void)
 				    decryptedAfterAuthenticated
 				    (password, &ok);
 
-				bool useAccounts = false;
-
 				QWriteLocker locker(&m_useAccountsMutex);
+				bool useAccounts = false;
 
 				if(ok)
 				  m_useAccounts = !name.isEmpty() &&
@@ -1962,11 +1961,9 @@ void spoton_neighbor::slotConnected(void)
   if(!m_keepAliveTimer.isActive())
     m_keepAliveTimer.start();
 
-  bool useAccounts = false;
-
   QReadLocker locker(&m_useAccountsMutex);
+  bool useAccounts = m_useAccounts;
 
-  useAccounts = m_useAccounts;
   locker.unlock();
 
   if(useAccounts)
@@ -4325,6 +4322,8 @@ void spoton_neighbor::slotDiscoverExternalAddress(void)
 
 QUuid spoton_neighbor::receivedUuid(void) const
 {
+  QReadLocker locker(&m_receivedUuidMutex);
+
   return m_receivedUuid;
 }
 
@@ -4866,11 +4865,9 @@ void spoton_neighbor::slotModeChanged(QSslSocket::SslMode mode)
 	  return;
 	}
 
-      bool useAccounts = false;
-
       QReadLocker locker(&m_useAccountsMutex);
+      bool useAccounts = m_useAccounts;
 
-      useAccounts = m_useAccounts;
       locker.unlock();
 
       if(useAccounts)
@@ -5031,11 +5028,9 @@ bool spoton_neighbor::readyToWrite(void)
   if(state() != QAbstractSocket::ConnectedState)
     return false;
 
-  bool useAccounts = false;
-
   QReadLocker locker(&m_useAccountsMutex);
+  bool useAccounts = m_useAccounts;
 
-  useAccounts = m_useAccounts;
   locker.unlock();
 
   if(isEncrypted() && m_useSsl)
