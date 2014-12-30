@@ -179,8 +179,17 @@ class spoton_neighbor: public QThread
   QPointer<spoton_sctp_socket> m_sctpSocket;
   QReadWriteLock m_abortThreadMutex;
   QReadWriteLock m_accountAuthenticatedMutex;
+  QReadWriteLock m_accountClientSentSaltMutex;
+  QReadWriteLock m_accountNameMutex;
+  QReadWriteLock m_accountPasswordMutex;
   QReadWriteLock m_bytesWrittenMutex;
   QReadWriteLock m_dataMutex;
+  QReadWriteLock m_echoModeMutex;
+  QReadWriteLock m_learnedAdaptiveEchoPairsMutex;
+  QReadWriteLock m_maximumBufferSizeMutex;
+  QReadWriteLock m_maximumContentLengthMutex;
+  QReadWriteLock m_receivedUuidMutex;
+  QReadWriteLock m_useAccountsMutex;
   QSslCertificate m_peerCertificate;
   QString m_echoMode;
   QString m_ipAddress;

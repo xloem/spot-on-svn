@@ -1013,6 +1013,8 @@ void spoton_neighbor::slotTimeout(void)
 		      {
 			bool ok = true;
 
+			QWriteLocker locker(&m_echoModeMutex);
+
 			m_echoMode = s_crypt->decryptedAfterAuthenticated
 			  (QByteArray::fromBase64(query.value(2).
 						  toByteArray()),
@@ -1020,6 +1022,8 @@ void spoton_neighbor::slotTimeout(void)
 
 			if(!ok)
 			  m_echoMode = "full";
+
+			locker.unlock();
 
 			if(m_isUserDefined)
 			  {
@@ -1067,13 +1071,20 @@ void spoton_neighbor::slotTimeout(void)
 				    decryptedAfterAuthenticated
 				    (password, &ok);
 
+				bool useAccounts = false;
+
+				QWriteLocker locker(&m_useAccountsMutex);
+
 				if(ok)
 				  m_useAccounts = !name.isEmpty() &&
 				    !password.isEmpty();
 				else
 				  m_useAccounts = false;
 
-				if(m_useAccounts)
+				useAccounts = m_useAccounts;
+				locker.unlock();
+
+				if(useAccounts)
 				  {
 				    m_accountTimer.start();
 				    m_authenticationTimer.start();
@@ -1087,14 +1098,21 @@ void spoton_neighbor::slotTimeout(void)
 			  }
 		      }
 
+		    QWriteLocker locker1(&m_maximumBufferSizeMutex);
+
 		    m_maximumBufferSize =
 		      qBound(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH,
 			     query.value(3).toLongLong(),
 			     spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE);
+		    locker1.unlock();
+
+		    QWriteLocker locker2(&m_maximumContentLengthMutex);
+
 		    m_maximumContentLength =
 		      qBound(spoton_common::MINIMUM_NEIGHBOR_CONTENT_LENGTH,
 			     query.value(4).toLongLong(),
 			     spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
+		    locker2.unlock();
 		    m_sslControlString = query.value(9).toString();
 
 		    if(m_sslControlString.isEmpty())
@@ -1355,13 +1373,18 @@ void spoton_neighbor::slotReadyRead(void)
 
   if(!data.isEmpty())
     {
-      QWriteLocker locker(&m_dataMutex);
-      int length = static_cast<int> (m_maximumBufferSize) - m_data.length();
+      QReadLocker locker1(&m_maximumBufferSizeMutex);
+      int maximumBufferSize = m_maximumBufferSize;
+
+      locker1.unlock();
+
+      QWriteLocker locker2(&m_dataMutex);
+      int length = static_cast<int> (maximumBufferSize) - m_data.length();
 
       if(length > 0)
 	m_data.append(data.mid(0, length));
 
-      locker.unlock();
+      locker2.unlock();
       emit newData();
     }
 }
@@ -1375,6 +1398,44 @@ void spoton_neighbor::processData(void)
 
     data = m_data;
   }
+
+  QByteArray accountClientSentSalt;
+  QString echoMode("");
+  bool useAccounts = false;
+  qint64 maximumBufferSize = 0;
+  qint64 maximumContentLength = 0;
+
+  for(int i = 1; i <= 5; i++)
+    if(i == 1)
+      {
+	QReadLocker locker(&m_accountClientSentSaltMutex);
+
+	accountClientSentSalt = m_accountClientSentSalt;
+      }
+    else if(i == 2)
+      {
+	QReadLocker locker(&m_echoModeMutex);
+
+	echoMode = m_echoMode;
+      }
+    else if(i == 3)
+      {
+	QReadLocker locker(&m_maximumBufferSizeMutex);
+
+	maximumBufferSize = m_maximumBufferSize;
+      }
+    else if(i == 4)
+      {
+	QReadLocker locker(&m_maximumContentLengthMutex);
+
+	maximumContentLength = m_maximumContentLength;
+      }
+    else if(i == 5)
+      {
+	QReadLocker locker(&m_useAccountsMutex);
+
+	useAccounts = m_useAccounts;
+      }
 
   QList<QByteArray> list;
 
@@ -1423,7 +1484,7 @@ void spoton_neighbor::processData(void)
   {
     QWriteLocker locker(&m_dataMutex);
 
-    if(m_data.length() >= m_maximumBufferSize)
+    if(m_data.length() >= maximumBufferSize)
       m_data.clear();
   }
 
@@ -1472,7 +1533,7 @@ void spoton_neighbor::processData(void)
       if(length <= 0)
 	continue;
 
-      if(length > m_maximumContentLength)
+      if(length > maximumContentLength)
 	{
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::processData(): "
@@ -1490,7 +1551,7 @@ void spoton_neighbor::processData(void)
 	  ** We're a server!
 	  */
 
-	  if(m_useAccounts)
+	  if(useAccounts)
 	    {
 	      if(length > 0 && data.contains("type=0050&content="))
 		if(!spoton_misc::
@@ -1508,7 +1569,7 @@ void spoton_neighbor::processData(void)
 				 data.contains("type=0052&content=")))
 	    continue;
 	}
-      else if(m_useAccounts &&
+      else if(useAccounts &&
 	      length > 0 && data.contains("type=0051&content="))
 	{
 	  /*
@@ -1519,7 +1580,7 @@ void spoton_neighbor::processData(void)
 
 	  if(!spoton_misc::readSharedResource(&m_accountAuthenticated,
 					      m_accountAuthenticatedMutex))
-	    if(!m_accountClientSentSalt.isEmpty())
+	    if(!accountClientSentSalt.isEmpty())
 	      process0051(length, data);
 
 	  if(!spoton_misc::readSharedResource(&m_accountAuthenticated,
@@ -1577,7 +1638,7 @@ void spoton_neighbor::processData(void)
 	}
 
       if(m_isUserDefined)
-	if(m_useAccounts)
+	if(useAccounts)
 	  {
 	    if(!spoton_misc::readSharedResource(&m_accountAuthenticated,
 						m_accountAuthenticatedMutex))
@@ -1677,10 +1738,14 @@ void spoton_neighbor::processData(void)
 	      {
 		if(!discoveredAdaptiveEchoPair.first.isEmpty() &&
 		   !discoveredAdaptiveEchoPair.second.isEmpty())
-		  if(!m_learnedAdaptiveEchoPairs.
-		     contains(discoveredAdaptiveEchoPair))
-		    m_learnedAdaptiveEchoPairs.
-		      append(discoveredAdaptiveEchoPair);
+		  {
+		    QWriteLocker locker(&m_learnedAdaptiveEchoPairsMutex);
+
+		    if(!m_learnedAdaptiveEchoPairs.
+		       contains(discoveredAdaptiveEchoPair))
+		      m_learnedAdaptiveEchoPairs.
+			append(discoveredAdaptiveEchoPair);
+		  }
 
 		messageType = "0060";
 	      }
@@ -1695,7 +1760,7 @@ void spoton_neighbor::processData(void)
 		spoton_kernel::receivedMessage
 		  (originalData, m_id, QPair<QByteArray, QByteArray> ());
 	    }
-	  else if(m_echoMode == "full")
+	  else if(echoMode == "full")
 	    {
 	      if(messageType == "0001b" &&
 		 data.trimmed().split('\n').size() == 7)
@@ -1897,7 +1962,14 @@ void spoton_neighbor::slotConnected(void)
   if(!m_keepAliveTimer.isActive())
     m_keepAliveTimer.start();
 
-  if(m_useAccounts)
+  bool useAccounts = false;
+
+  QReadLocker locker(&m_useAccountsMutex);
+
+  useAccounts = m_useAccounts;
+  locker.unlock();
+
+  if(useAccounts)
     if(!m_useSsl)
       {
 	m_accountTimer.start();
@@ -2070,11 +2142,20 @@ void spoton_neighbor::write
   ** to send the message to its peer.
   */
 
+  QReadLocker locker1(&m_learnedAdaptiveEchoPairsMutex);
+
   if(!(adaptiveEchoPair == QPair<QByteArray, QByteArray> () ||
        m_learnedAdaptiveEchoPairs.contains(adaptiveEchoPair)))
     return;
 
-  if(m_echoMode == "full")
+  locker1.unlock();
+
+  QReadLocker locker2(&m_echoModeMutex);
+  QString echoMode(m_echoMode);
+
+  locker2.unlock();
+
+  if(echoMode == "full")
     if(readyToWrite())
       {
 	if(write(data.constData(), data.length()) != data.length())
@@ -3197,11 +3278,14 @@ void spoton_neighbor::process0014(int length, const QByteArray &dataIn)
       data = QByteArray::fromBase64(data);
 
       QUuid uuid(data.constData());
+      QWriteLocker locker(&m_receivedUuidMutex);
 
       m_receivedUuid = uuid;
 
       if(m_receivedUuid.isNull())
 	m_receivedUuid = "{00000000-0000-0000-0000-000000000000}";
+
+      locker.unlock();
 
       spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
@@ -3688,10 +3772,16 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
       for(int i = 0; i < list.size(); i++)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
+      QByteArray accountClientSentSalt;
+      QReadLocker locker(&m_accountClientSentSaltMutex);
+
+      accountClientSentSalt = m_accountClientSentSalt;
+      locker.unlock();
+
       spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
-      if(!list.at(1).isEmpty() && !m_accountClientSentSalt.isEmpty() &&
-	 !spoton_crypt::memcmp(list.at(1), m_accountClientSentSalt))
+      if(!list.at(1).isEmpty() && !accountClientSentSalt.isEmpty() &&
+	 !spoton_crypt::memcmp(list.at(1), accountClientSentSalt))
 	{
 	  if(s_crypt)
 	    {
@@ -3765,12 +3855,12 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 	  spoton_misc::setSharedResource
 	    (&m_accountAuthenticated, false, m_accountAuthenticatedMutex);
 
-	  if(m_accountClientSentSalt.isEmpty())
+	  if(accountClientSentSalt.isEmpty())
 	    spoton_misc::logError
 	      ("spoton_neighbor::process0051(): "
 	       "the server replied to an authentication message, however, "
 	       "my provided salt is empty.");
-	  else if(spoton_crypt::memcmp(list.at(1), m_accountClientSentSalt))
+	  else if(spoton_crypt::memcmp(list.at(1), accountClientSentSalt))
 	    spoton_misc::logError
 	      ("spoton_neighbor::process0051(): "
 	       "the provided salt is identical to the generated salt. "
@@ -4301,9 +4391,13 @@ void spoton_neighbor::slotSendMailFromPostOffice
 {
   bool adaptiveEcho = false;
 
+  QReadLocker locker(&m_learnedAdaptiveEchoPairsMutex);
+
   if(adaptiveEchoPair == QPair<QByteArray, QByteArray> () ||
      m_learnedAdaptiveEchoPairs.contains(adaptiveEchoPair))
     adaptiveEcho = true;
+
+  locker.unlock();
 
   if(adaptiveEcho && readyToWrite())
     {
@@ -4662,24 +4756,33 @@ void spoton_neighbor::slotPublicizeListenerPlaintext(const QByteArray &data,
   */
 
   if(id != m_id)
-    if(m_echoMode == "full")
-      if(readyToWrite())
-	{
-	  QByteArray message(spoton_send::message0030(data));
+    {
+      QReadLocker locker(&m_echoModeMutex);
+      QString echoMode(m_echoMode);
 
-	  if(write(message.constData(), message.length()) != message.length())
-	    spoton_misc::logError
-	      (QString("spoton_neighbor::slotPublicizeListenerPlaintext(): "
-		       "write() "
-		       "error for %1:%2.").
-	       arg(m_address.toString()).
-	       arg(m_port));
-	  else
-	    {
-	      addToBytesWritten(message.length());
+      locker.unlock();
+
+      if(echoMode == "full")
+	if(readyToWrite())
+	  {
+	    QByteArray message(spoton_send::message0030(data));
+
+	    if(write(message.constData(), message.length()) !=
+	       message.length())
+	      spoton_misc::logError
+		(QString("spoton_neighbor::"
+			 "slotPublicizeListenerPlaintext(): "
+			 "write() "
+			 "error for %1:%2.").
+		 arg(m_address.toString()).
+		 arg(m_port));
+	    else
+	      {
+		addToBytesWritten(message.length());
 	      spoton_kernel::messagingCacheAdd(message);
-	    }
-	}
+	      }
+	  }
+    }
 }
 
 void spoton_neighbor::slotSslErrors(const QList<QSslError> &errors)
@@ -4763,7 +4866,14 @@ void spoton_neighbor::slotModeChanged(QSslSocket::SslMode mode)
 	  return;
 	}
 
-      if(m_useAccounts)
+      bool useAccounts = false;
+
+      QReadLocker locker(&m_useAccountsMutex);
+
+      useAccounts = m_useAccounts;
+      locker.unlock();
+
+      if(useAccounts)
 	{
 	  m_accountTimer.start();
 	  m_authenticationTimer.start();
@@ -4920,9 +5030,17 @@ bool spoton_neighbor::readyToWrite(void)
 {
   if(state() != QAbstractSocket::ConnectedState)
     return false;
-  else if(isEncrypted() && m_useSsl)
+
+  bool useAccounts = false;
+
+  QReadLocker locker(&m_useAccountsMutex);
+
+  useAccounts = m_useAccounts;
+  locker.unlock();
+
+  if(isEncrypted() && m_useSsl)
     {
-      if(m_useAccounts)
+      if(useAccounts)
 	return spoton_misc::readSharedResource(&m_accountAuthenticated,
 					       m_accountAuthenticatedMutex);
       else
@@ -4930,7 +5048,7 @@ bool spoton_neighbor::readyToWrite(void)
     }
   else if(!isEncrypted() && !m_useSsl)
     {
-      if(m_useAccounts)
+      if(useAccounts)
 	return spoton_misc::readSharedResource(&m_accountAuthenticated,
 					       m_accountAuthenticatedMutex);
       else
@@ -5147,8 +5265,12 @@ QString spoton_neighbor::findMessageType
 
   if(!discoveredAdaptiveEchoPair.first.isEmpty() &&
      !discoveredAdaptiveEchoPair.second.isEmpty())
-    if(!m_learnedAdaptiveEchoPairs.contains(discoveredAdaptiveEchoPair))
-      m_learnedAdaptiveEchoPairs.append(discoveredAdaptiveEchoPair);
+    {
+      QWriteLocker locker(&m_learnedAdaptiveEchoPairsMutex);
+
+      if(!m_learnedAdaptiveEchoPairs.contains(discoveredAdaptiveEchoPair))
+	m_learnedAdaptiveEchoPairs.append(discoveredAdaptiveEchoPair);
+    }
 
   return type;
 }
@@ -5483,7 +5605,10 @@ void spoton_neighbor::slotSendAccountInformation(void)
 		 arg(m_port));
 	    else
 	      {
+		QWriteLocker locker(&m_accountClientSentSaltMutex);
+
 		m_accountClientSentSalt = salt;
+		locker.unlock();
 		addToBytesWritten(message.length());
 	      }
 	  }
