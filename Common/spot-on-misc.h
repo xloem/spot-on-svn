@@ -193,7 +193,8 @@ class spoton_misc
     }
 
  private:
-  static QMutex s_dbMutex;
+  static QReadWriteLock s_dbMutex;
+  static QReadWriteLock s_enableLogMutex;
   static bool s_enableLog;
   static quint64 s_dbId;
   spoton_misc(void);

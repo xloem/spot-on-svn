@@ -56,8 +56,9 @@ extern "C"
 #include <signal.h>
 }
 
-QMutex spoton_misc::s_dbMutex;
-bool spoton_misc::s_enableLog = false; // Not protected by a mutex.
+QReadWriteLock spoton_misc::s_dbMutex;
+QReadWriteLock spoton_misc::s_enableLogMutex;
+bool spoton_misc::s_enableLog = false;
 quint64 spoton_misc::s_dbId = 0;
 
 QString spoton_misc::homePath(void)
@@ -563,8 +564,12 @@ void spoton_misc::prepareDatabases(void)
 
 void spoton_misc::logError(const QString &error)
 {
+  QReadLocker locker(&s_enableLogMutex);
+
   if(!s_enableLog)
     return;
+
+  locker.unlock();
 
   if(error.trimmed().isEmpty())
     return;
@@ -2033,9 +2038,10 @@ QSqlDatabase spoton_misc::database(QString &connectionName)
   QSqlDatabase db;
   quint64 dbId = 0;
 
-  s_dbMutex.lock();
+  QWriteLocker locker(&s_dbMutex);
+
   dbId = s_dbId += 1;
-  s_dbMutex.unlock();
+  locker.unlock();
   db = QSqlDatabase::addDatabase
     ("QSQLITE", QString("spoton_database_%1").arg(dbId));
   connectionName = db.connectionName();
@@ -2044,6 +2050,8 @@ QSqlDatabase spoton_misc::database(QString &connectionName)
 
 void spoton_misc::enableLog(const bool state)
 {
+  QWriteLocker locker(&s_enableLogMutex);
+
   s_enableLog = state;
 }
 
