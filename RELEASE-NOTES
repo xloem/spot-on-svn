@@ -1,7 +1,6 @@
 0.18 (01/01/2015)
 
-1.   Introduced CTR mode for file encryption.
-2.   Corrected a Qt 5.x flaw with the kernel.
+1.   Corrected a Qt 5.x flaw with the kernel.
 
 0.17c (12/25/2014)
 
