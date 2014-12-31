@@ -3578,11 +3578,7 @@ bool spoton_kernel::messagingCacheContains(const QByteArray &data,
       hash = s_crypt->keyedHash(data, &ok);
 
       if(!ok)
-#if QT_VERSION < 0x050000
-	hash = QCryptographicHash::hash(data, QCryptographicHash::Sha1);
-#else
-        hash = QCryptographicHash::hash(data, QCryptographicHash::Sha512);
-#endif
+	return false;
     }
   else
     hash = data;
@@ -3610,11 +3606,7 @@ void spoton_kernel::messagingCacheAdd(const QByteArray &data,
       hash = s_crypt->keyedHash(data, &ok);
 
       if(!ok)
-#if QT_VERSION < 0x050000
-	hash = QCryptographicHash::hash(data, QCryptographicHash::Sha1);
-#else
-        hash = QCryptographicHash::hash(data, QCryptographicHash::Sha512);
-#endif
+	return;
     }
   else
     hash = data;
@@ -4437,7 +4429,7 @@ QList<QByteArray> spoton_kernel::findInstitutionKey
 	QWriteLocker locker(&s_institutionKeysMutex);
 
 	s_institutionKeys.clear();
-	s_institutionKeysMutex.unlock();
+	locker.unlock();
 
 	if(query.exec("SELECT cipher_type, hash_type, "
 		      "name, postal_address FROM institutions"))
@@ -4511,7 +4503,12 @@ void spoton_kernel::discoverAdaptiveEchoPair
 {
   QReadLocker locker(&s_adaptiveEchoPairsMutex);
 
-  if(s_adaptiveEchoPairs.isEmpty())
+  QList<QPair<QByteArray, QByteArray> > adaptiveEchoPairs
+    (s_adaptiveEchoPairs);
+
+  locker.unlock();
+
+  if(adaptiveEchoPairs.isEmpty())
     return;
 
   spoton_crypt *s_crypt = s_crypts.value("chat", 0);
@@ -4543,10 +4540,10 @@ void spoton_kernel::discoverAdaptiveEchoPair
   if(messageCode.size() < spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES)
     return;
 
-  for(int i = 0; i < s_adaptiveEchoPairs.size(); i++)
+  for(int i = 0; i < adaptiveEchoPairs.size(); i++)
     {
-      QByteArray token(s_adaptiveEchoPairs.at(i).first);
-      QByteArray tokenType(s_adaptiveEchoPairs.at(i).second);
+      QByteArray token(adaptiveEchoPairs.at(i).first);
+      QByteArray tokenType(adaptiveEchoPairs.at(i).second);
       bool ok = true;
 
       token = s_crypt->decryptedAfterAuthenticated(token, &ok);
@@ -4615,7 +4612,7 @@ void spoton_kernel::discoverAdaptiveEchoPair
 
 	  if(secsTo <= 5)
 	    {
-	      discoveredAdaptiveEchoPair = s_adaptiveEchoPairs.at(i);
+	      discoveredAdaptiveEchoPair = adaptiveEchoPairs.at(i);
 	      break;
 	    }
 	}
@@ -4726,11 +4723,7 @@ bool spoton_kernel::duplicateEmailRequests(const QByteArray &data)
   hash = s_crypt->keyedHash(data, &ok);
 
   if(!ok)
-#if QT_VERSION < 0x050000
-    hash = QCryptographicHash::hash(data, QCryptographicHash::Sha1);
-#else
-    hash = QCryptographicHash::hash(data, QCryptographicHash::Sha512);
-#endif
+    return false;
 
   QReadLocker locker(&s_emailRequestCacheMutex);
 
@@ -4751,11 +4744,7 @@ bool spoton_kernel::duplicateGeminis(const QByteArray &data)
   hash = s_crypt->keyedHash(data, &ok);
 
   if(!ok)
-#if QT_VERSION < 0x050000
-    hash = QCryptographicHash::hash(data, QCryptographicHash::Sha1);
-#else
-    hash = QCryptographicHash::hash(data, QCryptographicHash::Sha512);
-#endif
+    return false;
 
   QReadLocker locker(&s_geminisCacheMutex);
 
@@ -4775,11 +4764,7 @@ void spoton_kernel::emailRequestCacheAdd(const QByteArray &data)
   hash = s_crypt->keyedHash(data, &ok);
 
   if(!ok)
-#if QT_VERSION < 0x050000
-    hash = QCryptographicHash::hash(data, QCryptographicHash::Sha1);
-#else
-    hash = QCryptographicHash::hash(data, QCryptographicHash::Sha512);
-#endif
+    return;
 
   QWriteLocker locker(&s_emailRequestCacheMutex);
 
@@ -4800,11 +4785,7 @@ void spoton_kernel::geminisCacheAdd(const QByteArray &data)
   hash = s_crypt->keyedHash(data, &ok);
 
   if(!ok)
-#if QT_VERSION < 0x050000
-    hash = QCryptographicHash::hash(data, QCryptographicHash::Sha1);
-#else
-    hash = QCryptographicHash::hash(data, QCryptographicHash::Sha512);
-#endif
+    return;
 
   QWriteLocker locker(&s_geminisCacheMutex);
 
