@@ -183,6 +183,7 @@ class spoton_kernel: public QObject
 		  const QByteArray &timestamp,
 		  const QString &messageType);
   void updateStatistics(const QDateTime &uptime,
+			const int interfaces,
 			const int listeners,
 			const int neighbors,
 			const int starbeams);

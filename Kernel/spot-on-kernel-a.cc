@@ -802,7 +802,8 @@ void spoton_kernel::slotPollDatabase(void)
   if(m_statisticsFuture.isFinished())
     m_statisticsFuture = QtConcurrent::run
       (this, &spoton_kernel::updateStatistics,
-       m_uptime, m_activeListeners, m_activeNeighbors, m_activeStarbeams);
+       m_uptime, interfaces(), m_activeListeners, m_activeNeighbors,
+       m_activeStarbeams);
 
   checkForTermination();
 }
@@ -4164,6 +4165,7 @@ QVariant spoton_kernel::setting(const QString &name,
 }
 
 void spoton_kernel::updateStatistics(const QDateTime &uptime,
+				     const int interfaces,
 				     const int listeners,
 				     const int neighbors,
 				     const int starbeams)
@@ -4201,7 +4203,7 @@ void spoton_kernel::updateStatistics(const QDateTime &uptime,
 	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
 		      "(statistic, value) "
 		      "VALUES ('Attached User Interfaces', ?)");
-	query.bindValue(0, interfaces());
+	query.bindValue(0, interfaces);
 	query.exec();
 	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
 		      "(statistic, value) "

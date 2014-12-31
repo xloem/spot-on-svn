@@ -150,7 +150,7 @@ class spoton_neighbor: public QThread
   QHostAddress localAddress(void) const;
   QHostAddress peerAddress(void) const;
   QString transport(void) const;
-  QUuid receivedUuid(void) const;
+  QUuid receivedUuid(void);
   bool isEncrypted(void) const;
   bool writeMessage0060(const QByteArray &data);
   qint64 id(void) const;
@@ -185,6 +185,7 @@ class spoton_neighbor: public QThread
   QReadWriteLock m_bytesWrittenMutex;
   QReadWriteLock m_dataMutex;
   QReadWriteLock m_echoModeMutex;
+  QReadWriteLock m_kernelInterfacesMutex;
   QReadWriteLock m_learnedAdaptiveEchoPairsMutex;
   QReadWriteLock m_maximumBufferSizeMutex;
   QReadWriteLock m_maximumContentLengthMutex;
@@ -213,6 +214,7 @@ class spoton_neighbor: public QThread
   bool m_requireSsl;
   bool m_useAccounts;
   bool m_useSsl;
+  int m_kernelInterfaces;
   int m_keySize;
   qint64 m_id;
   qint64 m_listenerOid;
@@ -337,6 +339,7 @@ class spoton_neighbor: public QThread
   void slotSendStatus(const QByteArrayList &list);
   void slotSendUuid(void);
   void slotSslErrors(const QList<QSslError> &errors);
+  void slotStopTimer(QTimer *timer);
   void slotTimeout(void);
 
  public slots:
@@ -378,6 +381,7 @@ class spoton_neighbor: public QThread
 		      const QByteArray &sSignature);
   void statusMessageReceived(const QByteArray &publicKeyHash,
 			     const QString &status);
+  void stopTimer(QTimer *timer);
 };
 
 class spoton_neighbor_worker: public QObject

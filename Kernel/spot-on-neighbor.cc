@@ -74,6 +74,7 @@ spoton_neighbor::spoton_neighbor
  QObject *parent):QThread(parent)
 {
   m_abortThread = false;
+  m_kernelInterfaces = spoton_kernel::interfaces();
   m_sctpSocket = 0;
   m_tcpSocket = 0;
   m_udpSocket = 0;
@@ -291,6 +292,10 @@ spoton_neighbor::spoton_neighbor
 				  const QByteArray &,
 				  const QByteArray &,
 				  const QByteArray &)));
+  connect(this,
+	  SIGNAL(stopTimer(QTimer *)),
+	  this,
+	  SLOT(slotStopTimer(QTimer *)));
 
   if(m_sctpSocket)
     {
@@ -476,6 +481,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   m_id = id;
   m_ipAddress = ipAddress;
   m_isUserDefined = userDefined;
+  m_kernelInterfaces = spoton_kernel::interfaces();
   m_keySize = qAbs(keySize);
 
   if(transport == "tcp")
@@ -661,6 +667,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 				  const QByteArray &,
 				  const QByteArray &,
 				  const QByteArray &)));
+  connect(this,
+	  SIGNAL(stopTimer(QTimer *)),
+	  this,
+	  SLOT(slotStopTimer(QTimer *)));
 
   if(m_sctpSocket)
     {
@@ -1047,6 +1057,8 @@ void spoton_neighbor::slotTimeout(void)
 			   (&m_accountAuthenticated,
 			    m_accountAuthenticatedMutex))
 			  {
+			    QByteArray aName;
+			    QByteArray aPassword;
 			    QByteArray name
 			      (QByteArray::fromBase64(query.value(5).
 						      toByteArray()));
@@ -1054,15 +1066,37 @@ void spoton_neighbor::slotTimeout(void)
 			      (QByteArray::fromBase64(query.value(6).
 						      toByteArray()));
 
-			    if(!spoton_crypt::
-			       memcmp(name, m_accountName) ||
-			       !spoton_crypt::
-			       memcmp(password, m_accountPassword))
+			    {
+			      QReadLocker locker1(&m_accountNameMutex);
+
+			      aName = m_accountName;
+			      locker1.unlock();
+
+			      QReadLocker locker2(&m_accountPasswordMutex);
+
+			      aPassword = m_accountPassword;
+			      locker2.unlock();
+			    }
+
+			    if(!spoton_crypt::memcmp(name, aName) ||
+			       !spoton_crypt::memcmp(password, aPassword))
 			      {
 				bool ok = true;
 
-				m_accountName = name;
-				m_accountPassword = password;
+				{
+				  QWriteLocker locker1
+				    (&m_accountNameMutex);
+
+				  m_accountName = name;
+				  locker1.unlock();
+
+				  QWriteLocker locker2
+				    (&m_accountPasswordMutex);
+
+				  m_accountPassword = password;
+				  locker2.unlock();
+				}
+
 				name = s_crypt->decryptedAfterAuthenticated
 				  (name, &ok);
 
@@ -1146,6 +1180,11 @@ void spoton_neighbor::slotTimeout(void)
       deleteLater();
       return;
     }
+
+  QWriteLocker locker(&m_kernelInterfacesMutex);
+
+  m_kernelInterfaces = spoton_kernel::interfaces();
+  locker.unlock();
 
   if(m_isUserDefined)
     if(status == "connected")
@@ -3650,8 +3689,8 @@ void spoton_neighbor::process0050(int length, const QByteArray &dataIn)
 	{
 	  spoton_misc::setSharedResource
 	    (&m_accountAuthenticated, true, m_accountAuthenticatedMutex);
-	  m_accountTimer.stop();
-	  m_authenticationTimer.stop();
+	  emit stopTimer(&m_accountTimer);
+	  emit stopTimer(&m_authenticationTimer);
 	  emit accountAuthenticated(name, password);
 	}
       else
@@ -3783,12 +3822,21 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 	  if(s_crypt)
 	    {
 	      QByteArray hash(list.at(0));
-	      QByteArray name(m_accountName);
+	      QByteArray name;
 	      QByteArray newHash;
-	      QByteArray password(m_accountPassword);
+	      QByteArray password;
 	      QByteArray salt(list.at(1));
 	      bool ok = true;
 
+	      QReadLocker locker1(&m_accountNameMutex);
+
+	      name = m_accountName;
+	      locker1.unlock();
+
+	      QReadLocker locker2(&m_accountPasswordMutex);
+
+	      password = m_accountPassword;
+	      locker2.unlock();
 	      name = s_crypt->decryptedAfterAuthenticated(name, &ok);
 
 	      if(ok)
@@ -3809,8 +3857,8 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 		      spoton_misc::setSharedResource
 			(&m_accountAuthenticated, true,
 			 m_accountAuthenticatedMutex);
-		      m_accountTimer.stop();
-		      m_authenticationTimer.stop();
+		      emit stopTimer(&m_accountTimer);
+		      emit stopTimer(&m_authenticationTimer);
 		    }
 		  else
 		    {
@@ -3827,8 +3875,8 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 			      spoton_misc::setSharedResource
 				(&m_accountAuthenticated, true,
 				 m_accountAuthenticatedMutex);
-			      m_accountTimer.stop();
-			      m_authenticationTimer.stop();
+			      emit stopTimer(&m_accountTimer);
+			      emit stopTimer(&m_authenticationTimer);
 			    }
 			}
 		      else
@@ -4320,7 +4368,7 @@ void spoton_neighbor::slotDiscoverExternalAddress(void)
       m_externalAddress->discover();
 }
 
-QUuid spoton_neighbor::receivedUuid(void) const
+QUuid spoton_neighbor::receivedUuid(void)
 {
   QReadLocker locker(&m_receivedUuidMutex);
 
@@ -4778,7 +4826,7 @@ void spoton_neighbor::slotPublicizeListenerPlaintext(const QByteArray &data,
 	    else
 	      {
 		addToBytesWritten(message.length());
-	      spoton_kernel::messagingCacheAdd(message);
+		spoton_kernel::messagingCacheAdd(message);
 	      }
 	  }
     }
@@ -5083,8 +5131,13 @@ QString spoton_neighbor::findMessageType
 {
   QList<QByteArray> list(data.trimmed().split('\n'));
   QString type("");
-  int interfaces = spoton_kernel::interfaces();
+  int interfaces = 0;
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
+
+  QReadLocker locker(&m_kernelInterfacesMutex);
+
+  interfaces = m_kernelInterfaces;
+  locker.unlock();
 
   /*
   ** list[0]: Data
@@ -5566,10 +5619,19 @@ void spoton_neighbor::slotSendAccountInformation(void)
   if(!s_crypt)
     return;
 
-  QByteArray name(m_accountName);
-  QByteArray password(m_accountPassword);
+  QByteArray name;
+  QByteArray password;
   bool ok = true;
 
+  QReadLocker locker1(&m_accountNameMutex);
+
+  name = m_accountName;
+  locker1.unlock();
+
+  QReadLocker locker2(&m_accountPasswordMutex);
+
+  password = m_accountPassword;
+  locker2.unlock();
   name = s_crypt->decryptedAfterAuthenticated(name, &ok);
 
   if(ok)
@@ -5842,4 +5904,10 @@ void spoton_neighbor::deleteLater(void)
   locker2.unlock();
   quit();
   QObject::deleteLater();
+}
+
+void spoton_neighbor::slotStopTimer(QTimer *timer)
+{
+  if(timer)
+    timer->stop();
 }
