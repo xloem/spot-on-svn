@@ -5727,7 +5727,7 @@ void spoton::authenticationRequested(const QByteArray &data)
 	m_sb.authentication_request->setProperty
 	  ("data", data);
 	m_sb.authentication_request->
-	  setToolTip(tr("Remote user %1 is requesting authentication "
+	  setToolTip(tr("Remote peer %1 is requesting authentication "
 			"credentials.").arg(data.constData()));
 	m_sb.authentication_request->setVisible(true);
 	QTimer::singleShot(7500, m_sb.authentication_request,
