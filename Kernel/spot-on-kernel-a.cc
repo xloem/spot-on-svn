@@ -103,6 +103,7 @@ QReadWriteLock spoton_kernel::s_buzzKeysMutex;
 QReadWriteLock spoton_kernel::s_emailRequestCacheMutex;
 QReadWriteLock spoton_kernel::s_geminisCacheMutex;
 QReadWriteLock spoton_kernel::s_institutionKeysMutex;
+QReadWriteLock spoton_kernel::s_institutionLastModificationTimeMutex;
 QReadWriteLock spoton_kernel::s_messagesToProcessMutex;
 QReadWriteLock spoton_kernel::s_messagingCacheMutex;
 QReadWriteLock spoton_kernel::s_settingsMutex;
@@ -4343,7 +4344,7 @@ QList<QByteArray> spoton_kernel::findInstitutionKey
   if(fileInfo.exists())
     {
       QDateTime dateTime;
-      QReadLocker locker(&s_institutionKeysMutex);
+      QReadLocker locker(&s_institutionLastModificationTimeMutex);
 
       dateTime = s_institutionLastModificationTime;
       locker.unlock();
@@ -4402,14 +4403,14 @@ QList<QByteArray> spoton_kernel::findInstitutionKey
 	}
       else
 	{
-	  QWriteLocker locker(&s_institutionKeysMutex);
+	  QWriteLocker locker(&s_institutionLastModificationTimeMutex);
 
 	  s_institutionLastModificationTime = fileInfo.lastModified();
 	}
     }
   else
     {
-      QWriteLocker locker(&s_institutionKeysMutex);
+      QWriteLocker locker(&s_institutionLastModificationTimeMutex);
 
       s_institutionLastModificationTime = QDateTime();
     }

@@ -153,6 +153,7 @@ class spoton_kernel: public QObject
   static QReadWriteLock s_emailRequestCacheMutex;
   static QReadWriteLock s_geminisCacheMutex;
   static QReadWriteLock s_institutionKeysMutex;
+  static QReadWriteLock s_institutionLastModificationTimeMutex;
   static QReadWriteLock s_messagesToProcessMutex;
   static QReadWriteLock s_messagingCacheMutex;
   static QReadWriteLock s_settingsMutex;
