@@ -209,7 +209,14 @@ void spoton::slotPrepareUrlDatabases(void)
 				       "spot_on_keywords_%1%2 ("
 				       "keyword_hash TEXT NOT NULL, "
 				       "url_hash TEXT NOT NULL, "
-				       "PRIMARY KEY (keyword_hash, url_hash))").
+				       "PRIMARY KEY "
+				       "(keyword_hash, url_hash))").
+			       arg(c1).arg(c2)))
+		  created = false;
+
+		if(!query.exec(QString("GRANT INSERT, SELECT, UPDATE ON "
+				       "spot_on_keywords_%1%2 TO "
+				       "spot_on_user").
 			       arg(c1).arg(c2)))
 		  created = false;
 	      }
@@ -231,6 +238,12 @@ void spoton::slotPrepareUrlDatabases(void)
 				       "title BYTEA NOT NULL, "
 				       "url BYTEA NOT NULL, "
 				       "url_hash TEXT PRIMARY KEY NOT NULL)").
+			       arg(c1).arg(c2)))
+		  created = false;
+
+		if(!query.exec(QString("GRANT INSERT, SELECT, UPDATE ON "
+				       "spot_on_urls_%1%2 TO "
+				       "spot_on_user").
 			       arg(c1).arg(c2)))
 		  created = false;
 	      }

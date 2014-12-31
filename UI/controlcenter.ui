@@ -994,7 +994,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1094</width>
+             <width>1105</width>
              <height>594</height>
             </rect>
            </property>
@@ -2743,7 +2743,7 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>283</width>
+                     <width>294</width>
                      <height>1429</height>
                     </rect>
                    </property>
@@ -5095,7 +5095,10 @@
                   <bool>true</bool>
                  </property>
                  <property name="textInteractionFlags">
-                  <set>Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+                  <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+                 </property>
+                 <property name="openLinks">
+                  <bool>false</bool>
                  </property>
                 </widget>
                </item>
@@ -5177,8 +5180,8 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-606</y>
-             <width>829</width>
+             <y>0</y>
+             <width>861</width>
              <height>1073</height>
             </rect>
            </property>
@@ -6410,7 +6413,7 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-74</y>
+             <y>0</y>
              <width>758</width>
              <height>559</height>
             </rect>
@@ -7891,8 +7894,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>758</width>
-             <height>512</height>
+             <width>776</width>
+             <height>485</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
