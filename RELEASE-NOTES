@@ -2,6 +2,9 @@
 
 1.   Corrected a Qt 5.x flaw with the kernel.
 2.   Additional read and write locks.
+3.   Allow URL link interaction.
+4.   Created another PostgreSQL account. Set read and write permissions
+     for spot_on_user.
 
 0.17c (12/25/2014)
 
