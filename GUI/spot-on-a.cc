@@ -1245,7 +1245,7 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotGeneralTimerTimeout(void)));
-  connect(&m_generalTimer,
+  connect(&m_updateChatWindowsTimer,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotUpdateChatWindows(void)));
@@ -1363,6 +1363,7 @@ spoton::spoton(void):QMainWindow()
   m_ui.shareBuzzMagnet->setMenu(menu);
   m_generalTimer.start(3500);
   m_chatInactivityTimer.start(120000);
+  m_updateChatWindowsTimer.start(3500);
   m_ui.ipv4Listener->setChecked(true);
   m_ui.listenerIP->setInputMask("000.000.000.000; ");
   m_ui.addInstitutionLineEdit->setEnabled(false);
@@ -2135,6 +2136,7 @@ void spoton::cleanup(void)
   m_participantsUpdateTimer.stop();
   m_starbeamUpdateTimer.stop();
   m_tableTimer.stop();
+  m_updateChatWindowsTimer.stop();
   m_urlDatabase.close();
   m_urlDatabase = QSqlDatabase();
 

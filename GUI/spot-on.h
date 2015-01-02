@@ -151,6 +151,7 @@ class spoton: public QMainWindow
   QTimer m_participantsUpdateTimer;
   QTimer m_starbeamUpdateTimer;
   QTimer m_tableTimer;
+  QTimer m_updateChatWindowsTimer;
   QWidget *m_sbWidget;
   Ui_poptasticsettings m_poptasticSettingsUi;
   Ui_spoton_mainwindow m_ui;

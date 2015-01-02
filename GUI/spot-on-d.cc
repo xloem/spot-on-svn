@@ -151,10 +151,14 @@ void spoton::slotUpdateChatWindows(void)
 	if(item)
 	  oid = item->text();
 
-	if(!m_chatWindows.contains(oid))
-	  m_chatWindows.remove(oid);
+	if(!oid.isEmpty())
+	  {
+	    if(!m_chatWindows.contains(oid))
+	      m_chatWindows.remove(oid);
 
-	emit statusChanged(icon, name, oid);
+	    emit statusChanged(icon, name, oid);
+	  }
+
 	item = m_ui.participants->item(i, 3);
 
 	if(item)
