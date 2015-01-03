@@ -1441,6 +1441,10 @@ spoton::spoton(void):QMainWindow()
   QString str(m_settings.value("gui/tabPosition", "north").toString());
 #endif
 
+#if SPOTON_GOLDBUG == 1
+  m_ui.action_East->setChecked(true);
+  m_ui.action_East->trigger();
+#else
   if(str == "east")
     {
       m_ui.action_East->setChecked(true);
@@ -1456,6 +1460,7 @@ spoton::spoton(void):QMainWindow()
       m_ui.action_North->setChecked(true);
       m_ui.action_North->trigger();
     }
+#endif
 
   m_sb.kernelstatus->setIcon
     (QIcon(QString(":/%1/deactivate.png").
