@@ -915,10 +915,11 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
       QByteArray m;
 
       for(int i = 0; i < mList.size(); i++)
-	m.append(mList.at(i)).append("<br>"); /*
-					      ** The e-mail widget supports
-					      ** HTML.
-					      */
+	 /*
+	 ** The e-mail widget supports HTML.
+	 */
+
+	m.append(mList.at(i).trimmed()).append("<br>");
 
       m = m.trimmed();
 
