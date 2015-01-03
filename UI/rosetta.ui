@@ -297,7 +297,7 @@
           <item>
            <widget class="QPushButton" name="clearInput">
             <property name="text">
-             <string>Clear</string>
+             <string>Reset</string>
             </property>
            </widget>
           </item>
