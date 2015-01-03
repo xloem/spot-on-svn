@@ -2415,6 +2415,10 @@ void spoton_kernel::slotScramble(void)
 
 void spoton_kernel::slotRetrieveMail(void)
 {
+  if(m_poptasticPopFuture.isFinished())
+    m_poptasticPopFuture =
+      QtConcurrent::run(this, &spoton_kernel::popPoptastic);
+
   spoton_crypt *s_crypt = s_crypts.value("email-signature", 0);
 
   if(!s_crypt)

@@ -939,7 +939,7 @@ QPushButton:pressed {
              <item>
               <widget class="QPushButton" name="retrieveMail">
                <property name="toolTip">
-                <string>Request undelivered e-mail from other participants.</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Request undelivered e-mail from remote services (Echo, IMAP, POP3).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="styleSheet">
                 <string notr="true">QPushButton {
@@ -7784,7 +7784,7 @@ QPushButton:pressed {
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>822</width>
+                     <width>853</width>
                      <height>239</height>
                     </rect>
                    </property>

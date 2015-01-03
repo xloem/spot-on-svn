@@ -994,7 +994,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1105</width>
+             <width>1094</width>
              <height>594</height>
             </rect>
            </property>
@@ -1075,7 +1075,7 @@
                  </size>
                 </property>
                 <property name="toolTip">
-                 <string>Request e-mail from other participants.</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Request e-mail from remote services (Echo, IMAP, POP3).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="text">
                  <string>Retrieve</string>
@@ -2743,7 +2743,7 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>294</width>
+                     <width>283</width>
                      <height>1429</height>
                     </rect>
                    </property>
