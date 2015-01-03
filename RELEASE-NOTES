@@ -1,9 +1,11 @@
-0.18 (01/03/2015)
+0.18 (01/30/2015)
 
 1.   Additional read and write locks.
 2.   Allow URL link interaction.
 3.   Created another PostgreSQL account. Set read and write permissions
      for spot_on_user.
+4.   Modified the retrieve e-mail mechanism so that it also retrieves
+     e-mail via IMAP/POP3.
 
 0.17c (12/25/2014)
 
