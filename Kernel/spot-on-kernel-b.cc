@@ -842,6 +842,228 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
 	   2.5 * POPTASTIC_STATUS_INTERVAL, // Seconds
 	   s_crypts.value("poptastic"));
     }
+  else
+    {
+      QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
+			 "email.db");
+      qint64 maximumSize = 1048576 * setting
+	("gui/maximumEmailFileSize", 100).toLongLong();
+
+      if(fileInfo.size() >= maximumSize)
+	{
+	  spoton_misc::logError
+	    ("spoton_kernel::slotPoppedMessage(): "
+	     "email.db has exceeded the specified limit.");
+	  return;
+	}
+
+      spoton_crypt *s_crypt = s_crypts.value("poptastic", 0);
+
+      if(!s_crypt)
+	return;
+
+      /*
+      ** Some information.
+      */
+
+      QByteArray boundary;
+      QByteArray from;
+      QByteArray subject;
+      QList<QByteArray> list(message.trimmed().split('\n'));
+      QList<QByteArray> mList;
+
+      for(int i = 0; i < list.size(); i++)
+	if(list.value(i).toLower().contains("content-type: text/plain"))
+	  {
+	    if(!from.isEmpty())
+	      boundary = list.value(i).toLower();
+	  }
+	else if(list.value(i).toLower().startsWith("from:"))
+	  {
+	    if(from.isEmpty())
+	      {
+		from = list.value(i);
+		from.remove(0, static_cast<int> (qstrlen("from:")));
+		from = from.trimmed();
+	      }
+	  }
+	else if(list.value(i).toLower().startsWith("subject:"))
+	  {
+	    if(subject.isEmpty())
+	      {
+		subject = list.value(i);
+		subject.remove(0, static_cast<int> (qstrlen("subject:")));
+		subject = subject.trimmed();
+	      }
+	  }
+	else if(!boundary.isEmpty() && mList.isEmpty())
+	  {
+	    while(i < list.size())
+	      {
+		if(list.value(i).trimmed().isEmpty())
+		  {
+		    if(!mList.isEmpty() && i + 1 < list.size())
+		      mList << "\n";
+		  }
+		else
+		  mList << list.value(i).trimmed();
+
+		i += 1;
+	      }
+	  }
+
+      QByteArray m;
+
+      for(int i = 0; i < mList.size(); i++)
+	m.append(mList.at(i)).append("<br>"); /*
+					      ** The e-mail widget supports
+					      ** HTML.
+					      */
+
+      m = m.trimmed();
+
+      if(m.isEmpty())
+	/*
+	** Humans are excellent readers.
+	*/
+
+	m = message;
+
+      QString connectionName("");
+
+      {
+	QSqlDatabase db = spoton_misc::database(connectionName);
+
+	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+			   "email.db");
+
+	if(db.open())
+	  {
+	    QSqlQuery query(db);
+	    bool ok = true;
+
+	    query.prepare("INSERT INTO folders "
+			  "(date, folder_index, goldbug, hash, "
+			  "message, message_code, "
+			  "receiver_sender, receiver_sender_hash, "
+			  "status, subject, participant_oid) "
+			  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	    query.bindValue
+	      (0, s_crypt->
+	       encryptedThenHashed(QDateTime::currentDateTime().
+				   toString(Qt::ISODate).
+				   toLatin1(), &ok).toBase64());
+	    query.bindValue(1, 0); // Inbox Folder
+
+	    if(ok)
+	      query.bindValue
+		(2, s_crypt->
+		 encryptedThenHashed(QByteArray::number(0), &ok).
+		 toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(3, s_crypt->keyedHash(m + subject,
+				       &ok).toBase64());
+
+	    if(ok)
+	      if(!m.isEmpty())
+		query.bindValue
+		  (4, s_crypt->encryptedThenHashed(m,
+						   &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(5, s_crypt->encryptedThenHashed(QByteArray(), &ok).
+		 toBase64());
+
+	    if(ok)
+	      if(!from.isEmpty())
+		query.bindValue
+		  (6, s_crypt->encryptedThenHashed(from,
+						   &ok).toBase64());
+
+	    if(ok)
+	      {
+		QByteArray senderPublicKeyHash
+		  (spoton_crypt::sha512Hash(from, &ok));
+
+		if(ok)
+		  query.bindValue
+		    (7, senderPublicKeyHash.toBase64());
+	      }
+
+	    if(ok)
+	      query.bindValue
+		(8, s_crypt->
+		 encryptedThenHashed(QByteArray("Unread"), &ok).
+		 toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(9, s_crypt->encryptedThenHashed(subject, &ok).
+		 toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(10, s_crypt->
+		 encryptedThenHashed(QByteArray::number(-1), &ok).
+		 toBase64());
+
+	    if(ok)
+	      if(query.exec())
+		{
+		  QByteArray attachment;
+		  QByteArray attachmentName;
+
+		  if(!attachment.isEmpty() && !attachmentName.isEmpty())
+		    {
+		      QVariant variant(query.lastInsertId());
+		      qint64 id = query.lastInsertId().toLongLong();
+
+		      if(variant.isValid())
+			{
+			  QByteArray data;
+			  bool goldbugUsed = false;
+
+			  if(!goldbugUsed)
+			    data = qUncompress(attachment);
+			  else
+			    data = attachment;
+
+			  if(!data.isEmpty())
+			    {
+			      query.prepare
+				("INSERT INTO folders_attachment "
+				 "(data, folders_oid, name) "
+				 "VALUES (?, ?, ?)");
+			      query.bindValue
+				(0, s_crypt->
+				 encryptedThenHashed(data,
+						     &ok).toBase64());
+			      query.bindValue(1, id);
+
+			      if(ok)
+				query.bindValue
+				  (2, s_crypt->
+				   encryptedThenHashed(attachmentName,
+						       &ok).toBase64());
+
+			      if(ok)
+				query.exec();
+			    }
+			}
+		    }
+
+		  emit newEMailArrived();
+		}
+	  }
+
+	db.close();
+      }
+
+      QSqlDatabase::removeDatabase(connectionName);
+    }
 }
 
 void spoton_kernel::saveGemini(const QByteArray &publicKeyHash,
