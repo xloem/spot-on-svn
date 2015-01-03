@@ -37,6 +37,7 @@ extern "C"
 #include <iostream>
 
 #include <QProgressDialog>
+#include <QThread>
 
 #include "spot-on.h"
 #include "spot-on-defines.h"
@@ -109,6 +110,8 @@ int main(int argc, char *argv[])
 #endif
 
   QApplication qapplication(argc, argv);
+
+  QThread::currentThread()->setPriority(QThread::HighestPriority);
 
 #ifdef Q_OS_MAC
 #if QT_VERSION >= 0x050000
@@ -1891,6 +1894,12 @@ spoton::spoton(void):QMainWindow()
     m_ui.chatHorizontalSplitter->restoreState
       (m_settings.value("gui/chatHorizontalSplitter").toByteArray());
 
+#if SPOTON_GOLDBUG == 0
+  if(m_settings.contains("gui/emailSplitter"))
+    m_ui.emailSplitter->restoreState
+      (m_settings.value("gui/emailSplitter").toByteArray());
+#endif
+
   if(m_settings.contains("gui/listenersHorizontalSplitter"))
     m_ui.listenersHorizontalSplitter->restoreState
       (m_settings.value("gui/listenersHorizontalSplitter").toByteArray());
@@ -2033,6 +2042,8 @@ spoton::spoton(void):QMainWindow()
     (5, Qt::AscendingOrder);
   m_ui.urlParticipants->horizontalHeader()->setSortIndicator
     (0, Qt::AscendingOrder);
+  m_ui.emailSplitter->setStretchFactor(0, 1);
+  m_ui.emailSplitter->setStretchFactor(1, 0);
   m_ui.listenersHorizontalSplitter->setStretchFactor(0, 1);
   m_ui.listenersHorizontalSplitter->setStretchFactor(1, 0);
   m_ui.neighborsVerticalSplitter->setStretchFactor(0, 1);
@@ -4394,6 +4405,10 @@ void spoton::saveSettings(void)
   settings.setValue("gui/chatHorizontalSplitter",
 		    m_ui.chatHorizontalSplitter->saveState());
   settings.setValue("gui/currentTabIndex", m_ui.tab->currentIndex());
+#if SPOTON_GOLDBUG == 0
+  settings.setValue("gui/emailSplitter",
+		    m_ui.emailSplitter->saveState());
+#endif
   settings.setValue("gui/listenersHorizontalSplitter",
 		    m_ui.listenersHorizontalSplitter->saveState());
   settings.setValue("gui/neighborsVerticalSplitter",

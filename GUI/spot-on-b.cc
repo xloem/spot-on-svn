@@ -1659,7 +1659,9 @@ void spoton::slotAddFriendsKey(void)
   QByteArray key
     (m_ui.friendInformation->toPlainText().toLatin1());
 
-  if(key.startsWith("K") || key.startsWith("k"))
+  if(m_ui.addFriendEmail->isChecked())
+    addFriendsKey(key);
+  else if(key.startsWith("K") || key.startsWith("k"))
     {
       QList<QByteArray> list(key.split('@'));
 
@@ -1690,7 +1692,60 @@ void spoton::slotAddFriendsKey(void)
 
 void spoton::addFriendsKey(const QByteArray &key)
 {
-  if(m_ui.addFriendPublicKeyRadio->isChecked())
+  if(m_ui.addFriendEmail->isChecked())
+    {
+      if(!m_crypts.value("chat", 0))
+	{
+	  QMessageBox::critical(this, tr("%1: Error").
+				arg(SPOTON_APPLICATION_NAME),
+				tr("Invalid spoton_crypt object. This is "
+				   "a fatal flaw."));
+	  return;
+	}
+      else if(!key.contains("@"))
+	{
+	  QMessageBox::critical
+	    (this, tr("%1: Error").
+	     arg(SPOTON_APPLICATION_NAME),
+	     tr("Please provide a normal e-mail address."));
+	  return;
+	}
+      else if(key.isEmpty())
+	{
+	  QMessageBox::critical(this, tr("%1: Error").
+				arg(SPOTON_APPLICATION_NAME),
+				tr("Empty e-mail address. Really?"));
+	  return;
+	}
+
+      QByteArray keyType("poptastic");
+      QByteArray name(key.trimmed());
+      QString connectionName("");
+
+      {
+	QSqlDatabase db = spoton_misc::database(connectionName);
+
+	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+			   "friends_public_keys.db");
+
+	if(db.open())
+	  {
+	    if(spoton_misc::saveFriendshipBundle(keyType,
+						 name,
+						 name,
+						 QByteArray(),
+						 -1,
+						 db,
+						 m_crypts.value("chat", 0)))
+	      m_ui.friendInformation->selectAll();
+	  }
+
+	db.close();
+      }
+
+      QSqlDatabase::removeDatabase(connectionName);
+    }
+  else if(m_ui.addFriendPublicKeyRadio->isChecked())
     {
       if(!m_crypts.value("chat", 0) ||
 	 !m_crypts.value("email", 0) ||

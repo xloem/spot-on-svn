@@ -1200,7 +1200,7 @@
                  <number>5</number>
                 </property>
                 <item>
-                 <widget class="QSplitter" name="splitter_4">
+                 <widget class="QSplitter" name="emailSplitter">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
                   </property>
@@ -3203,7 +3203,7 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
+             <y>-155</y>
              <width>1066</width>
              <height>622</height>
             </rect>
@@ -4221,6 +4221,13 @@
                        <number>5</number>
                       </property>
                       <item>
+                       <widget class="QRadioButton" name="addFriendEmail">
+                        <property name="text">
+                         <string>&amp;E-Mail</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
                        <widget class="QRadioButton" name="addFriendPublicKeyRadio">
                         <property name="text">
                          <string>&amp;Key</string>
@@ -4334,8 +4341,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>776</width>
-             <height>485</height>
+             <width>154</width>
+             <height>305</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -4388,7 +4395,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>748</width>
+                 <width>741</width>
                  <height>627</height>
                 </rect>
                </property>
@@ -6414,7 +6421,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>758</width>
+             <width>575</width>
              <height>559</height>
             </rect>
            </property>
@@ -7412,8 +7419,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>776</width>
-             <height>485</height>
+             <width>265</width>
+             <height>412</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -7894,8 +7901,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>776</width>
-             <height>485</height>
+             <width>280</width>
+             <height>189</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -8566,6 +8573,7 @@
   <tabstop>proxyUsername</tabstop>
   <tabstop>proxyPassword</tabstop>
   <tabstop>addNeighbor</tabstop>
+  <tabstop>addFriendEmail</tabstop>
   <tabstop>addFriendPublicKeyRadio</tabstop>
   <tabstop>addFriendSymmetricBundleRadio</tabstop>
   <tabstop>friendInformation</tabstop>
