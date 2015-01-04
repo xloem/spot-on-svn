@@ -3203,7 +3203,7 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-155</y>
+             <y>0</y>
              <width>1066</width>
              <height>622</height>
             </rect>
@@ -4341,8 +4341,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>154</width>
-             <height>305</height>
+             <width>776</width>
+             <height>485</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -4395,7 +4395,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>741</width>
+                 <width>748</width>
                  <height>627</height>
                 </rect>
                </property>
@@ -5188,7 +5188,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>861</width>
+             <width>829</width>
              <height>1073</height>
             </rect>
            </property>
@@ -6421,7 +6421,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>575</width>
+             <width>758</width>
              <height>559</height>
             </rect>
            </property>
@@ -7419,8 +7419,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>265</width>
-             <height>412</height>
+             <width>776</width>
+             <height>485</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -7901,8 +7901,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>280</width>
-             <height>189</height>
+             <width>776</width>
+             <height>485</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -7917,19 +7917,6 @@
               <property name="spacing">
                <number>5</number>
               </property>
-              <item>
-               <spacer name="verticalSpacer_5">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_32">
                 <property name="spacing">
@@ -7951,13 +7938,13 @@
                 <item>
                  <widget class="QLabel" name="label_31">
                   <property name="toolTip">
-                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&amp;quot;The Dalmatian is a breed of dog, noted for its unique black- or brown-spotted coat. This dog is often used as a rescue dog, guardian, athletic partner, and, especially today, the Dalmatian remains most often an active, well-loved family member.&amp;quot; - Wikipedia.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Image copyright http://www.dragoart.com.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
                   <property name="text">
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap resource="../Icons/icons.qrc">:/Logo/spoton-dalmatinerlogo.png</pixmap>
+                   <pixmap resource="../Icons/icons.qrc">:/Logo/spoton-about-logo.png</pixmap>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
@@ -8063,74 +8050,6 @@
                 </item>
                 <item>
                  <widget class="QLineEdit" name="answer_authenticate"/>
-                </item>
-               </layout>
-              </item>
-              <item>
-               <spacer name="verticalSpacer_7">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_3">
-                <property name="spacing">
-                 <number>5</number>
-                </property>
-                <item>
-                 <spacer name="horizontalSpacer">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item>
-                 <widget class="QLabel" name="label_4">
-                  <property name="maximumSize">
-                   <size>
-                    <width>485</width>
-                    <height>240</height>
-                   </size>
-                  </property>
-                  <property name="toolTip">
-                   <string>Spot-On Graphical User Interface</string>
-                  </property>
-                  <property name="pixmap">
-                   <pixmap resource="../Icons/icons.qrc">:/Logo/spoton-logo-transparent.png</pixmap>
-                  </property>
-                  <property name="scaledContents">
-                   <bool>true</bool>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer_2">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
                 </item>
                </layout>
               </item>

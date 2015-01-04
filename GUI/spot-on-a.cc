@@ -6454,7 +6454,8 @@ void spoton::slotPopulateParticipants(void)
 		      "last_status_update, "
 		      "gemini, "
 		      "gemini_hash_key, "
-		      "key_type "
+		      "key_type, "
+		      "public_key "
 		      "FROM friends_public_keys "
 		      "WHERE key_type_hash IN (?, ?, ?, ?)");
 	query.bindValue
@@ -6475,6 +6476,7 @@ void spoton::slotPopulateParticipants(void)
 	if(ok && query.exec())
 	  while(query.next())
 	    {
+	      QByteArray publicKey;
 	      QIcon icon;
 	      QString keyType("");
 	      QString name("");
@@ -6500,11 +6502,29 @@ void spoton::slotPopulateParticipants(void)
 	      if(!ok)
 		name = "";
 
+	      publicKey = crypt->decryptedAfterAuthenticated
+		(QByteArray::fromBase64(query.value(9).toByteArray()), &ok);
+
+	      if(!ok)
+		{
+		  if(name.isEmpty())
+		    publicKey = "error";
+		  else
+		    publicKey.append(name).append("-error");
+		}
+
 	      if(!isKernelActive())
 		status = "offline";
 
 	      for(int i = 0; i < query.record().count(); i++)
 		{
+		  if(i == query.record().count() - 1)
+		    /*
+		    ** Ignore public_key.
+		    */
+
+		    continue;
+
 		  QTableWidgetItem *item = 0;
 
 		  if(keyType == "chat" || keyType == "poptastic")
@@ -6514,11 +6534,12 @@ void spoton::slotPopulateParticipants(void)
 			  /*
 			  ** Do not increase the table's row count
 			  ** if the participant is offline and the
-			  ** user wishes to hide offline participants.
+			  ** user wishes to hide offline participants or
+			  ** if this is a Poptastic key-less participant.
 			  */
 
-			  if(!(m_ui.hideOfflineParticipants->isChecked() &&
-			       status == "offline"))
+			  if(!((m_ui.hideOfflineParticipants->isChecked() &&
+				status == "offline") || (name == publicKey)))
 			    {
 			      row += 1;
 			      m_ui.participants->setRowCount(row);
@@ -6667,8 +6688,13 @@ void spoton::slotPopulateParticipants(void)
 		      ** and are not subjected to this restriction.
 		      */
 
-		      if(m_ui.hideOfflineParticipants->isChecked() &&
-			 status == "offline")
+		      if((m_ui.hideOfflineParticipants->isChecked() &&
+			  status == "offline") || (name == publicKey))
+			/*
+			** This may be a plain Poptastic participant.
+			** It will only be displayed in the E-Mail tab.
+			*/
+
 			delete item;
 		      else
 			m_ui.participants->setItem(row - 1, i, item);
