@@ -366,15 +366,8 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 
   QSettings settings;
 
-  settings.remove("kernel/ttl_0000");
-  settings.remove("kernel/ttl_0001a");
-  settings.remove("kernel/ttl_0001b");
-  settings.remove("kernel/ttl_0002");
-  settings.remove("kernel/ttl_0010");
-  settings.remove("kernel/ttl_0013");
-  settings.remove("kernel/ttl_0030");
-  settings.remove("kernel/ttl_0040a");
-  settings.remove("kernel/ttl_0040b");
+  if(!settings.contains("kernel/neighbor_thread_priority"))
+    settings.setValue("kernel/neighbor_thread_priority", 4);
 
   for(int i = 0; i < settings.allKeys().size(); i++)
     s_settings.insert(settings.allKeys().at(i),

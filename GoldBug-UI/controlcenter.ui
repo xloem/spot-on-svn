@@ -4344,6 +4344,26 @@ QPushButton#pushButtonCopytoClipboard_All:pressed {
                 </spacer>
                </item>
                <item>
+                <widget class="QRadioButton" name="addFriendEmail">
+                 <property name="text">
+                  <string>&amp;E-Mail Address</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_30">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
                 <widget class="QRadioButton" name="addFriendPublicKeyRadio">
                  <property name="text">
                   <string>&amp;Key</string>
@@ -7784,7 +7804,7 @@ QPushButton:pressed {
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>853</width>
+                     <width>822</width>
                      <height>239</height>
                     </rect>
                    </property>
@@ -11088,6 +11108,7 @@ spot-on-kernel&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; color:#666666;&quot;&
   <tabstop>transmittedActionMenu</tabstop>
   <tabstop>rewind</tabstop>
   <tabstop>toolButtonCopyToClipboard</tabstop>
+  <tabstop>addFriendEmail</tabstop>
   <tabstop>addFriendPublicKeyRadio</tabstop>
   <tabstop>addFriendSymmetricBundleRadio</tabstop>
   <tabstop>friendInformation</tabstop>

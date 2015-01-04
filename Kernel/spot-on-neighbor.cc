@@ -1374,7 +1374,10 @@ void spoton_neighbor::saveStatus(const QSqlDatabase &db,
 
 void spoton_neighbor::run(void)
 {
-  setPriority(QThread::HighPriority);
+  setPriority
+    (QThread::Priority(spoton_kernel::
+		       setting("kernel/neighbor_thread_priority",
+			       4).toInt()));
 
   spoton_neighbor_worker worker(this);
 
