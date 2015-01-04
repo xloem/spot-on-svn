@@ -1732,7 +1732,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 	  {
 	    if(spoton_misc::saveFriendshipBundle(keyType,
 						 name,
-						 name,
+						 name + "-poptastic",
 						 QByteArray(),
 						 -1,
 						 db,
@@ -2277,15 +2277,16 @@ void spoton::slotClearOutgoingMessage(int index)
 {
   if(index == 1)
     {
+      m_ui.attachment->clear();
       m_ui.clearEmail->blockSignals(true);
       m_ui.clearEmail->setCurrentIndex(0);
       m_ui.clearEmail->blockSignals(false);
-      m_ui.attachment->clear();
       m_ui.emailParticipants->selectionModel()->clear();
+      m_ui.goldbug->clear();
       m_ui.outgoingMessage->clear();
       m_ui.outgoingMessage->setCurrentCharFormat(QTextCharFormat());
       m_ui.outgoingSubject->clear();
-      m_ui.goldbug->clear();
+      m_ui.plain->setChecked(false);
       m_ui.outgoingSubject->setFocus();
     }
 }
@@ -2630,8 +2631,12 @@ void spoton::slotSendMail(void)
       return;
     }
 
-  QByteArray message
-    (m_ui.outgoingMessage->toHtml().toUtf8());
+  QByteArray message;
+
+  if(m_ui.plain->isChecked())
+    message = m_ui.outgoingMessage->toPlainText().toUtf8();
+  else
+    message = m_ui.outgoingMessage->toHtml().toUtf8();
 
   /*
   ** Bundle the love letter and send it to the email.db file. The

@@ -471,10 +471,19 @@ void spoton_kernel::postPoptastic(void)
 		(QString("Message-ID: <%1>\r\n").
 		 arg(spoton_crypt::weakRandomBytes(16).toHex().
 		     constData()).toLatin1());
-	      curl_payload_text.append
-		(QString("Subject: %1\r\n").
-		 arg(spoton_crypt::weakRandomBytes(16).toHex().
-		     constData()).toLatin1());
+
+	      if(values.size() == 3)
+		curl_payload_text.append
+		  (QString("Subject: %1\r\n").
+		   arg(spoton_crypt::weakRandomBytes(16).toHex().
+		       constData()).toLatin1());
+	      else
+		{
+		  curl_payload_text.append("Subject: ");
+		  curl_payload_text.append(values.value(2).toByteArray());
+		  curl_payload_text.append("\r\n");
+		}
+
 	      curl_payload_text.append("\r\n");
 
 	      while(!bytes.isEmpty())
@@ -511,7 +520,12 @@ void spoton_kernel::postPoptastic(void)
 
 	      if(curl_easy_perform(curl) == CURLE_OK)
 		{
-		  qint64 mailOid = values.value(2).toLongLong();
+		  qint64 mailOid = 0;
+
+		  if(values.size() == 3)
+		    mailOid = values.value(2).toLongLong();
+		  else
+		    mailOid = values.value(3).toLongLong();
 
 		  if(mailOid > -1)
 		    spoton_misc::moveSentMailToSentFolder

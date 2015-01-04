@@ -6505,14 +6505,6 @@ void spoton::slotPopulateParticipants(void)
 	      publicKey = crypt->decryptedAfterAuthenticated
 		(QByteArray::fromBase64(query.value(9).toByteArray()), &ok);
 
-	      if(!ok)
-		{
-		  if(name.isEmpty())
-		    publicKey = "error";
-		  else
-		    publicKey.append(name).append("-error");
-		}
-
 	      if(!isKernelActive())
 		status = "offline";
 
@@ -6539,7 +6531,8 @@ void spoton::slotPopulateParticipants(void)
 			  */
 
 			  if(!((m_ui.hideOfflineParticipants->isChecked() &&
-				status == "offline") || (name == publicKey)))
+				status == "offline") ||
+			       publicKey.contains("-poptastic")))
 			    {
 			      row += 1;
 			      m_ui.participants->setRowCount(row);
@@ -6689,7 +6682,8 @@ void spoton::slotPopulateParticipants(void)
 		      */
 
 		      if((m_ui.hideOfflineParticipants->isChecked() &&
-			  status == "offline") || (name == publicKey))
+			  status == "offline") ||
+			 publicKey.contains("-poptastic"))
 			/*
 			** This may be a plain Poptastic participant.
 			** It will only be displayed in the E-Mail tab.

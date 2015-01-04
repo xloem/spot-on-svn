@@ -168,6 +168,10 @@ class spoton_kernel: public QObject
   void connectSignalsToNeighbor(QPointer<spoton_neighbor> neighbor);
   void popPoptastic(void);
   void postPoptastic(void);
+  void postPoptasticMessage(const QByteArray &message,
+			    const QByteArray &name,
+			    const QByteArray &subject,
+			    const qint64 mailOid);
   void postPoptasticMessage(const QString &receiverName,
 			    const QByteArray &message);
   void postPoptasticMessage(const QString &receiverName,

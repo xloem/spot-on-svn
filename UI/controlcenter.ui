@@ -73,7 +73,7 @@
              <x>0</x>
              <y>0</y>
              <width>776</width>
-             <height>485</height>
+             <height>487</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_54">
@@ -456,8 +456,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1031</width>
-                <height>483</height>
+                <width>835</width>
+                <height>476</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -993,9 +993,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
-             <width>1094</width>
-             <height>594</height>
+             <y>-103</y>
+             <width>879</width>
+             <height>575</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -1384,6 +1384,9 @@
                     <property name="spacing">
                      <number>5</number>
                     </property>
+                    <item row="2" column="1">
+                     <widget class="QLineEdit" name="outgoingSubject"/>
+                    </item>
                     <item row="0" column="1">
                      <layout class="QHBoxLayout" name="horizontalLayout_47">
                       <property name="spacing">
@@ -1547,9 +1550,6 @@
                       </item>
                      </layout>
                     </item>
-                    <item row="2" column="1">
-                     <widget class="QLineEdit" name="outgoingSubject"/>
-                    </item>
                     <item row="4" column="0">
                      <widget class="QLabel" name="label_94">
                       <property name="text">
@@ -1637,19 +1637,6 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="3" column="0">
-                     <widget class="QLabel" name="label_26">
-                      <property name="text">
-                       <string>&amp;Message</string>
-                      </property>
-                      <property name="margin">
-                       <number>7</number>
-                      </property>
-                      <property name="buddy">
-                       <cstring>outgoingMessage</cstring>
-                      </property>
-                     </widget>
-                    </item>
                     <item row="1" column="0">
                      <widget class="QLabel" name="label_10">
                       <property name="text">
@@ -1662,6 +1649,59 @@
                        <cstring>emailParticipants</cstring>
                       </property>
                      </widget>
+                    </item>
+                    <item row="3" column="0">
+                     <layout class="QVBoxLayout" name="verticalLayout_71">
+                      <property name="spacing">
+                       <number>5</number>
+                      </property>
+                      <item>
+                       <spacer name="verticalSpacer_7">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                      <item>
+                       <widget class="QLabel" name="label_4">
+                        <property name="text">
+                         <string>&amp;Message</string>
+                        </property>
+                        <property name="margin">
+                         <number>7</number>
+                        </property>
+                        <property name="buddy">
+                         <cstring>outgoingMessage</cstring>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QCheckBox" name="plain">
+                        <property name="text">
+                         <string>&amp;Plain</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <spacer name="verticalSpacer_5">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
                     </item>
                    </layout>
                   </widget>
@@ -2083,8 +2123,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>912</width>
-             <height>467</height>
+             <width>776</width>
+             <height>487</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2743,8 +2783,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>283</width>
-                     <height>1429</height>
+                     <width>233</width>
+                     <height>1393</height>
                     </rect>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3204,8 +3244,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1066</width>
-             <height>622</height>
+             <width>855</width>
+             <height>595</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -4342,7 +4382,7 @@
              <x>0</x>
              <y>0</y>
              <width>776</width>
-             <height>485</height>
+             <height>487</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -4395,8 +4435,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>748</width>
-                 <height>627</height>
+                 <width>751</width>
+                 <height>558</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_65">
@@ -5188,8 +5228,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>829</width>
-             <height>1073</height>
+             <width>761</width>
+             <height>1047</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -6421,8 +6461,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>758</width>
-             <height>559</height>
+             <width>761</width>
+             <height>546</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -7420,7 +7460,7 @@
              <x>0</x>
              <y>0</y>
              <width>776</width>
-             <height>485</height>
+             <height>487</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -7902,7 +7942,7 @@
              <x>0</x>
              <y>0</y>
              <width>776</width>
-             <height>485</height>
+             <height>487</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -8111,7 +8151,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>25</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -8396,6 +8436,7 @@
   <tabstop>emailWriteActionMenu</tabstop>
   <tabstop>emailParticipants</tabstop>
   <tabstop>outgoingSubject</tabstop>
+  <tabstop>plain</tabstop>
   <tabstop>outgoingMessage</tabstop>
   <tabstop>attachment</tabstop>
   <tabstop>selectAttachment</tabstop>

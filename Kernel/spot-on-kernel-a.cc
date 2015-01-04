@@ -2685,6 +2685,12 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 				 const QByteArray &receiverName,
 				 const qint64 mailOid)
 {
+  if(keyType == "poptastic" && publicKey.contains("-poptastic"))
+    {
+      postPoptasticMessage(message, receiverName, subject, mailOid);
+      return;
+    }
+
   spoton_crypt *s_crypt1 = s_crypts.value(keyType, 0);
 
   if(!s_crypt1)
@@ -4981,5 +4987,29 @@ void spoton_kernel::postPoptasticMessage(const QString &receiverName,
   m_poptasticCache.enqueue(QList<QVariant> ()
 			   << receiverName
 			   << message
+			   << mailOid);
+}
+
+void spoton_kernel::postPoptasticMessage(const QByteArray &message,
+					 const QByteArray &name,
+					 const QByteArray &subject,
+					 const qint64 mailOid)
+{
+  if(setting("gui/disableSmtp", false).toBool())
+    {
+      QWriteLocker locker(&m_poptasticCacheMutex);
+
+      m_poptasticCache.clear();
+      return;
+    }
+
+  m_lastPoptasticStatus = QDateTime::currentDateTime();
+
+  QWriteLocker locker(&m_poptasticCacheMutex);
+
+  m_poptasticCache.enqueue(QList<QVariant> ()
+			   << name
+			   << message
+			   << subject
 			   << mailOid);
 }
