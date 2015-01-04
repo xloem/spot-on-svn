@@ -520,12 +520,10 @@ void spoton_kernel::postPoptastic(void)
 
 	      if(curl_easy_perform(curl) == CURLE_OK)
 		{
-		  qint64 mailOid = 0;
+		  qint64 mailOid = -1;
 
-		  if(values.size() == 3)
-		    mailOid = values.value(2).toLongLong();
-		  else
-		    mailOid = values.value(3).toLongLong();
+		  if(!values.isEmpty())
+		    mailOid = values.value(values.size() - 1).toLongLong();
 
 		  if(mailOid > -1)
 		    spoton_misc::moveSentMailToSentFolder

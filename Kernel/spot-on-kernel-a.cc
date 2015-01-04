@@ -2687,7 +2687,8 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 {
   if(keyType == "poptastic" && publicKey.contains("-poptastic"))
     {
-      postPoptasticMessage(message, receiverName, subject, mailOid);
+      postPoptasticMessage
+	(attachment, attachmentName, message, receiverName, subject, mailOid);
       return;
     }
 
@@ -4990,7 +4991,9 @@ void spoton_kernel::postPoptasticMessage(const QString &receiverName,
 			   << mailOid);
 }
 
-void spoton_kernel::postPoptasticMessage(const QByteArray &message,
+void spoton_kernel::postPoptasticMessage(const QByteArray &attachment,
+					 const QByteArray &attachmentName,
+					 const QByteArray &message,
 					 const QByteArray &name,
 					 const QByteArray &subject,
 					 const qint64 mailOid)
@@ -5011,5 +5014,7 @@ void spoton_kernel::postPoptasticMessage(const QByteArray &message,
 			   << name
 			   << message
 			   << subject
+			   << attachment
+			   << attachmentName
 			   << mailOid);
 }

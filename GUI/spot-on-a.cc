@@ -6717,7 +6717,8 @@ void spoton::slotPopulateParticipants(void)
 			  if(keyType == "poptastic")
 			    {
 			      if(publicKey.contains("-poptastic"))
-				item->setBackground(QColor("yellow"));
+				item->setBackground
+				  (QBrush(QColor(255, 255, 224)));
 			      else
 				item->setBackground
 				  (QBrush(QColor(137, 207, 240)));
