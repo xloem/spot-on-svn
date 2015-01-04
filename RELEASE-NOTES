@@ -8,7 +8,8 @@
      e-mail via IMAP/POP3.
 5.   Experimental support for IMAP/POP3/SMTP plain-text e-mail. Attachments
      are not supported.
-6.   Increased priorities of neighbor threads.
+6.   Increased priorities of neighbor threads. The setting may be adjusted
+     in the INI file.
 
 0.17c (12/25/2014)
 
