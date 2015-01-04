@@ -1092,7 +1092,7 @@ QPushButton:pressed {
               <enum>QTabWidget::North</enum>
              </property>
              <property name="currentIndex">
-              <number>0</number>
+              <number>2</number>
              </property>
              <property name="iconSize">
               <size>
@@ -1948,7 +1948,7 @@ QPushButton:pressed {
              <widget class="QWidget" name="tab_6">
               <attribute name="icon">
                <iconset resource="../Icons/icons.qrc">
-                <normaloff>:/Logo/spoton-button-32.png</normaloff>:/Logo/spoton-button-32.png</iconset>
+                <normaloff>:/Logo/goldbug.png</normaloff>:/Logo/goldbug.png</iconset>
               </attribute>
               <attribute name="title">
                <string>Set &amp;C/O</string>
@@ -6115,7 +6115,7 @@ QPushButton:pressed {
              <widget class="QWidget" name="tab_13">
               <attribute name="icon">
                <iconset resource="../Icons/icons.qrc">
-                <normaloff>:/Logo/spoton-button-32.png</normaloff>:/Logo/spoton-button-32.png</iconset>
+                <normaloff>:/Logo/goldbug.png</normaloff>:/Logo/goldbug.png</iconset>
               </attribute>
               <attribute name="title">
                <string>AE Options</string>
@@ -7804,7 +7804,7 @@ QPushButton:pressed {
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>822</width>
+                     <width>853</width>
                      <height>239</height>
                     </rect>
                    </property>
@@ -10123,7 +10123,7 @@ QPushButton:pressed {
        </property>
        <attribute name="icon">
         <iconset resource="../Icons/icons.qrc">
-         <normaloff>:/Logo/spoton-button-32.png</normaloff>:/Logo/spoton-button-32.png</iconset>
+         <normaloff>:/Logo/goldbug.png</normaloff>:/Logo/goldbug.png</iconset>
        </attribute>
        <attribute name="title">
         <string/>
