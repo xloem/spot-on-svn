@@ -1,4 +1,3 @@
-include(common.pro)
 libntru.target = libntru.so
 libntru.commands = $(MAKE) -C ../../libNTRU
 libntru.depends =
