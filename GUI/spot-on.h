@@ -377,6 +377,7 @@ class spoton: public QMainWindow
   void slotMagnetRadioToggled(bool state);
   void slotMailRetrievalIntervalChanged(int value);
   void slotMailSelected(QTableWidgetItem *item);
+  void slotMailSelected(void);
   void slotMailTabChanged(int index);
   void slotMaxMosaicSize(int value);
   void slotMaximumClientsChanged(int index);

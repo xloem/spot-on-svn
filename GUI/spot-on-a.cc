@@ -732,6 +732,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(itemClicked(QTableWidgetItem *)),
 	  this,
 	  SLOT(slotMailSelected(QTableWidgetItem *)));
+  connect(m_ui.mail,
+	  SIGNAL(itemSelectionChanged(void)),
+	  this,
+	  SLOT(slotMailSelected(void)));
   connect(m_ui.neighbors,
 	  SIGNAL(itemSelectionChanged(void)),
 	  this,

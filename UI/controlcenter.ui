@@ -1298,6 +1298,9 @@
                        <property name="alternatingRowColors">
                         <bool>true</bool>
                        </property>
+                       <property name="selectionMode">
+                        <enum>QAbstractItemView::MultiSelection</enum>
+                       </property>
                        <property name="selectionBehavior">
                         <enum>QAbstractItemView::SelectRows</enum>
                        </property>
@@ -2129,7 +2132,7 @@
              <x>0</x>
              <y>0</y>
              <width>912</width>
-             <height>414</height>
+             <height>467</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2788,7 +2791,7 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>294</width>
+                     <width>283</width>
                      <height>1429</height>
                     </rect>
                    </property>
@@ -4386,8 +4389,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>154</width>
-             <height>305</height>
+             <width>776</width>
+             <height>485</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -4440,7 +4443,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>741</width>
+                 <width>748</width>
                  <height>627</height>
                 </rect>
                </property>
@@ -5233,7 +5236,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>861</width>
+             <width>829</width>
              <height>1073</height>
             </rect>
            </property>
@@ -6466,7 +6469,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>575</width>
+             <width>758</width>
              <height>559</height>
             </rect>
            </property>
@@ -7464,8 +7467,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>265</width>
-             <height>412</height>
+             <width>776</width>
+             <height>485</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -7946,8 +7949,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>280</width>
-             <height>152</height>
+             <width>776</width>
+             <height>485</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">

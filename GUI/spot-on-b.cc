@@ -2776,10 +2776,11 @@ void spoton::slotSendMail(void)
 
 	m_ui.attachment->clear();
 	m_ui.emailParticipants->selectionModel()->clear();
+	m_ui.goldbug->clear();
 	m_ui.outgoingMessage->clear();
 	m_ui.outgoingMessage->setCurrentCharFormat(QTextCharFormat());
 	m_ui.outgoingSubject->clear();
-	m_ui.goldbug->clear();
+	m_ui.plain->setChecked(false);
 
 #if SPOTON_GOLDBUG == 1
 	QMessageBox mb(this);
@@ -3207,13 +3208,26 @@ void spoton::populateMail(void)
 
     if(db.open())
       {
+	QList<int> rows;
+	QModelIndexList list
+	  (m_ui.mail->selectionModel()->selectedRows(9)); // hash
+	QSqlQuery query(db);
+	QString html(m_ui.mailMessage->toHtml());
+	QStringList hashes;
+	int cRow = m_ui.mail->currentRow();
+
+	while(!list.isEmpty())
+	  {
+	    QVariant data(list.takeFirst().data());
+
+	    if(!data.isNull() && data.isValid())
+	      hashes.append(data.toString());
+	  }
+
 	m_ui.mail->clearContents();
 	m_ui.mail->setRowCount(0);
 	m_ui.mail->setSortingEnabled(false);
 	m_ui.mailMessage->clear();
-
-	QSqlQuery query(db);
-
 	query.setForwardOnly(true);
 
 	if(query.exec(QString("SELECT f.date, f.receiver_sender, f.status, "
@@ -3353,11 +3367,26 @@ void spoton::populateMail(void)
 		    item->setFlags
 		      (Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		    m_ui.mail->setItem(row - 1, i, item);
+
 		  }
+
+		if(hashes.contains(query.value(9).toString()))
+		  rows.append(row - 1);
 	      }
 	  }
 
 	m_ui.mail->setSortingEnabled(true);
+	m_ui.mail->setSelectionMode
+	  (QAbstractItemView::MultiSelection);
+
+	if(rows.contains(cRow))
+	  m_ui.mailMessage->setHtml(html);
+
+	while(!rows.isEmpty())
+	  m_ui.mail->selectRow(rows.takeFirst());
+
+	m_ui.mail->setSelectionMode
+	  (QAbstractItemView::ExtendedSelection);
       }
 
     db.close();
@@ -3458,10 +3487,21 @@ void spoton::slotRefreshPostOffice(void)
   QApplication::restoreOverrideCursor();
 }
 
+void spoton::slotMailSelected(void)
+{
+  if(m_ui.mail->selectedItems().isEmpty())
+    m_ui.mailMessage->clear();
+  else
+    slotMailSelected(m_ui.mail->currentItem());
+}
+
 void spoton::slotMailSelected(QTableWidgetItem *item)
 {
   if(!item)
-    return;
+    {
+      m_ui.mailMessage->clear();
+      return;
+    }
 
   int row = item->row();
 
@@ -4239,7 +4279,7 @@ void spoton::slotSetIcons(void)
 #else
   list << "chat_t.png" << "email_t.png" << "buzz_t.png"
        << "starbeam.png" << "key_t.png" << "connect_t.png"
-       << "server_t.png" << "settings_t.png" << "spoton-logo.png";
+       << "server_t.png" << "settings_t.png" << "goldbug_t.png";
 #endif
 
   for(int i = 0; i < list.size(); i++)
