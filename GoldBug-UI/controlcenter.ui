@@ -1092,7 +1092,7 @@ QPushButton:pressed {
               <enum>QTabWidget::North</enum>
              </property>
              <property name="currentIndex">
-              <number>2</number>
+              <number>0</number>
              </property>
              <property name="iconSize">
               <size>
@@ -1392,6 +1392,11 @@ QPushButton:pressed {
                    <column>
                     <property name="text">
                      <string>receiver_sender_hash</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>hash</string>
                     </property>
                    </column>
                    <column>
@@ -7804,7 +7809,7 @@ QPushButton:pressed {
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>853</width>
+                     <width>822</width>
                      <height>239</height>
                     </rect>
                    </property>

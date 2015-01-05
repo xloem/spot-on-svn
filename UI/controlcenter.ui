@@ -994,7 +994,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1105</width>
+             <width>1094</width>
              <height>594</height>
             </rect>
            </property>
@@ -1356,6 +1356,11 @@
                        <column>
                         <property name="text">
                          <string>receiver_sender_hash</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>hash</string>
                         </property>
                        </column>
                        <column>
@@ -7941,8 +7946,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>776</width>
-             <height>485</height>
+             <width>280</width>
+             <height>152</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">

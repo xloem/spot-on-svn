@@ -575,8 +575,9 @@ void spoton::slotReceivedKernelMessage(void)
 	  else if(data == "newmail")
 	    {
 	      m_sb.email->setVisible(true);
+#if SPOTON_GOLDBUG == 1
 	      populateMail();
-
+#endif
 #if SPOTON_GOLDBUG == 1
 #if QT_VERSION >= 0x050000
 	      QMediaPlayer *player = 0;
@@ -3222,6 +3223,7 @@ void spoton::populateMail(void)
 			      "f.goldbug, "
 			      "f.message, f.message_code, "
 			      "f.receiver_sender_hash, "
+			      "f.hash, "
 			      "f.OID FROM folders f WHERE "
 			      "f.folder_index = %1").
 		      arg(m_ui.folder->currentIndex())))

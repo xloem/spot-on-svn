@@ -898,6 +898,7 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
 		from = list.value(i);
 		from.remove(0, static_cast<int> (qstrlen("from:")));
 		from = from.trimmed();
+		from = from.replace("<", "").replace(">", "");
 
 		bool ok = true;
 

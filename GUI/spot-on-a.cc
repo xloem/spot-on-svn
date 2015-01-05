@@ -1991,7 +1991,8 @@ spoton::spoton(void):QMainWindow()
   m_ui.mail->setColumnHidden(6, true); // message
   m_ui.mail->setColumnHidden(7, true); // message_code
   m_ui.mail->setColumnHidden(8, true); // receiver_sender_hash
-  m_ui.mail->setColumnHidden(9, true); // OID
+  m_ui.mail->setColumnHidden(9, true); // hash
+  m_ui.mail->setColumnHidden(10, true); // OID
   m_ui.listeners->setColumnHidden(m_ui.listeners->columnCount() - 1,
 				  true); // OID
   m_ui.neighbors->setColumnHidden

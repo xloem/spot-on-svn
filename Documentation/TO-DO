@@ -159,70 +159,66 @@ Ignored Items
 21.    Enable SQLite foreign key support via PRAGMA foreign_keys = ON.
 22.    Database entries containing hashes can be maliciously twisted. Encrypt?
 23.    Artificial trust. All participants must play nicely. Zero-knowledge?
-
-Remaining Items
-
-1.     Cosmic proxy.
-2.     Sequencial encryption. Verify that the user's key is independent of
-       the random key. Separate cipher algorithms?
-3.     Country flags and names for host names
-       (spoton_misc::countryCodeFromName()).
-4.     Do something about whitespace. There are many input paths that
+24     Do something about whitespace. There are many input paths that
        ought to be considered.
-5.     Scramblers are too periodic.
-6.     Hard kernel termination. Control session separation.
-7.     Colorful HTTP headers. Custom protocol messages for rapid redeployment.
-8.     Remote kernel termination.
-9.     An interface for custom functions. Such an interface could be used
+25.    Scramblers are too periodic.
+26.    Hard kernel termination. Control session separation.
+27.    Colorful HTTP headers. Custom protocol messages for rapid redeployment.
+28.    Remote kernel termination.
+29.    An interface for custom functions. Such an interface could be used
        to transform YouTube data into MP3s.
-10.    What to do about corrupt database values?
-11.    Implement a Qt class in support of DTLS.
-12.    Limit the number of entries that are allowed to be inserted into
+30.    What to do about corrupt database values?
+31.    Implement a Qt class in support of DTLS.
+32.    Limit the number of entries that are allowed to be inserted into
        a database.
-13.    Allow pass-through flow of non-Spot-On data.
-14.    Android build.
-15.    Derive keys from master GoldBug keys.
-16.    QFSFileEngine::open: No file name specified: created from
+33.    Allow pass-through flow of non-Spot-On data.
+34.    Android build.
+35.    Derive keys from master GoldBug keys.
+36.    QFSFileEngine::open: No file name specified: created from
        e-mail.
-17.    E-mail institutions do not require dispatcher signatures.
-18.    Notify user of potential replays.
-19.    Counting users is possible. Gathering message attributes is
+37.    E-mail institutions do not require dispatcher signatures.
+38.    Notify user of potential replays.
+39.    Counting users is possible. Gathering message attributes is
        also possible. See group information in MESSAGES.
-20.    Add support for crypto++.
-21.    1-N SCTP support.
-22.    Add log filters.
-23.    Lots of kernel activity may cause libgcrypt fatigue.
-24.    There is some redundant deciphering of data: findMessageType()
+40.    Add support for crypto++.
+41.    1-N SCTP support.
+42.    Add log filters.
+43.    Lots of kernel activity may cause libgcrypt fatigue.
+44.    There is some redundant deciphering of data: findMessageType()
        followed by process() routines.
-25.    Move the kernel off of the local machine. Review all Common and
+45.    Move the kernel off of the local machine. Review all Common and
        GUI source for local database access. libspoton may require
        changes with respect to kernel presence. Or, create an access library.
        Or, PostgreSQL!
-26.    The timers that support gathering of external IP addresses burden
+46.    The timers that support gathering of external IP addresses burden
        kernel objects with unnecessary work. If the machine's external IP
        address changes while connections are already established, the
        state timers will eventually cause objects to be reset and therefore
        new attempts will be made to capture the external IP addresses. Review!
-27.    Prevent inserts of own keys in friends_public_keys.db.
-28.    Wormholes for streamed data.
-29.    Sieve machine for better congestion control and less repetitive
+47.    Prevent inserts of own keys in friends_public_keys.db.
+48.    Wormholes for streamed data.
+49.    Sieve machine for better congestion control and less repetitive
        work.
-30.    User configuration files are not encrypted.
-31.    Artificial pauses. Suppose an inbound packet requires t0 time to
+50.    User configuration files are not encrypted.
+51.    Artificial pauses. Suppose an inbound packet requires t0 time to
        process. Pause the current thread for T - t0 seconds, where T is some
        reasonable time.
-32.    The libgcrypt library supports GCRY_KDF_SCRYPT.
-33.    Weather feeds.
-34.    Create a user's configuration database. Store key types too.
-35.    Hybrid group communications based on deterministic key pairs.
-36.    The data stored in shared.db is not authenticated. Uniqueness
+52.    The libgcrypt library supports GCRY_KDF_SCRYPT.
+53.    Weather feeds.
+54.    Create a user's configuration database. Store key types too.
+55.    Hybrid group communications based on deterministic key pairs.
+56.    The data stored in shared.db is not authenticated. Uniqueness
        is not properly defined.
-37.    Provide GCM mode. libgcrypt 1.6.x is required.
-38.    Allow user to bookmark search results. Also allow searching of
+57.    Provide GCM mode. libgcrypt 1.6.x is required.
+58.    Allow user to bookmark search results. Also allow searching of
        bookmarked entries. Perhaps provide a means of searching the
        global databases as well as bookmarked entries.
-39.    Allow programs such as netcat to feed data to Spot-On. Specific
+59.    Allow programs such as netcat to feed data to Spot-On. Specific
        private listeners would be capable of transforming the data
        into StarBeam pulses.
-40.    Create a commanding language. The language could be used to
+60.    Create a commanding language. The language could be used to
        navigate private Spot-On nodes remotely.
+
+Remaining Items
+
+1.     None.
