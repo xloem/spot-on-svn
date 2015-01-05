@@ -454,7 +454,7 @@
              <widget class="QWidget" name="scrollAreaWidgetContents_2">
               <property name="geometry">
                <rect>
-                <x>0</x>
+                <x>-283</x>
                 <y>0</y>
                 <width>1031</width>
                 <height>483</height>
@@ -733,6 +733,20 @@
                         <widget class="QPushButton" name="chatActionMenu">
                          <property name="text">
                           <string>Context Menu Reflection</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="label_101">
+                         <property name="styleSheet">
+                          <string notr="true">QLabel { background-color : rgb(137, 207, 240);}
+</string>
+                         </property>
+                         <property name="frameShape">
+                          <enum>QFrame::StyledPanel</enum>
+                         </property>
+                         <property name="text">
+                          <string>Poptastic participants.</string>
                          </property>
                         </widget>
                        </item>
@@ -1199,6 +1213,54 @@
                 <property name="margin">
                  <number>5</number>
                 </property>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_3">
+                  <property name="spacing">
+                   <number>5</number>
+                  </property>
+                  <item>
+                   <widget class="QLabel" name="label_99">
+                    <property name="styleSheet">
+                     <string notr="true">QLabel { background-color : rgb(137, 207, 240);}
+</string>
+                    </property>
+                    <property name="frameShape">
+                     <enum>QFrame::StyledPanel</enum>
+                    </property>
+                    <property name="text">
+                     <string>Poptastic participants with public key pairs.</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="label_26">
+                    <property name="styleSheet">
+                     <string notr="true">QLabel { background-color : rgb(255, 255, 224);}
+</string>
+                    </property>
+                    <property name="frameShape">
+                     <enum>QFrame::StyledPanel</enum>
+                    </property>
+                    <property name="text">
+                     <string>Poptastic participants without public key pairs.</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
                 <item>
                  <widget class="QSplitter" name="emailSplitter">
                   <property name="orientation">

@@ -744,6 +744,26 @@ QPushButton:pressed {
                 </widget>
                </item>
                <item>
+                <widget class="QLabel" name="label_120">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">QLabel { background-color : rgb(137, 207, 240);}
+</string>
+                 </property>
+                 <property name="frameShape">
+                  <enum>QFrame::StyledPanel</enum>
+                 </property>
+                 <property name="text">
+                  <string>Poptastic participants.</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
                 <widget class="QPushButton" name="chatActionMenu">
                  <property name="toolTip">
                   <string>Right-mouse context menu as a button for tablets.</string>
@@ -1439,6 +1459,34 @@ QPushButton:pressed {
                <property name="bottomMargin">
                 <number>1</number>
                </property>
+               <item>
+                <widget class="QLabel" name="label_102">
+                 <property name="styleSheet">
+                  <string notr="true">QLabel { background-color : rgb(137, 207, 240);}
+</string>
+                 </property>
+                 <property name="frameShape">
+                  <enum>QFrame::StyledPanel</enum>
+                 </property>
+                 <property name="text">
+                  <string>Poptastic participants with public key pairs.</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_117">
+                 <property name="styleSheet">
+                  <string notr="true">QLabel { background-color : rgb(255, 255, 224);}
+</string>
+                 </property>
+                 <property name="frameShape">
+                  <enum>QFrame::StyledPanel</enum>
+                 </property>
+                 <property name="text">
+                  <string>Poptastic participants without public key pairs.</string>
+                 </property>
+                </widget>
+               </item>
                <item>
                 <layout class="QGridLayout" name="gridLayout_4">
                  <property name="topMargin">
