@@ -475,7 +475,7 @@ void spoton_kernel::postPoptastic(void)
 	      if(values.size() == 3)
 		curl_payload_text.append
 		  (QString("Subject: %1\r\n").
-		   arg(spoton_crypt::weakRandomBytes(16).toHex().
+		   arg(spoton_crypt::sha512Hash(bytes, &ok).toHex().
 		       constData()).toLatin1());
 	      else
 		{
@@ -544,11 +544,11 @@ void spoton_kernel::postPoptastic(void)
 void spoton_kernel::slotPoppedMessage(const QByteArray &message)
 {
   QByteArray data
-    (message.
-     mid(message.indexOf("content=") +
-	 static_cast<int> (qstrlen("content=")),
-	 message.indexOf(spoton_send::EOM) + spoton_send::EOM.length()).
-     trimmed());
+    (message.mid(message.indexOf("content=") +
+		 static_cast<int> (qstrlen("content="))));
+
+  data = data.mid
+    (0, data.indexOf(spoton_send::EOM)).trimmed();
 
   if(data.isEmpty())
     return;
@@ -856,6 +856,27 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
     }
   else
     {
+      QByteArray data(message.mid(message.indexOf("content=")));
+      QByteArray hash;
+      QByteArray subject;
+      bool ok = true;
+
+      data = data.mid
+	(0, data.indexOf(spoton_send::EOM));
+      hash = spoton_crypt::sha512Hash(data, &ok).toHex();
+      subject = message.
+	mid(message.indexOf("Subject: ") +
+	    static_cast<int> (qstrlen("Subject: ")));
+      subject = subject.mid(0, subject.indexOf("\r\n")).trimmed();
+
+      if(hash == subject)
+	/*
+	** Ignore messages that we believe to be created by other
+	** Spot-On participants.
+	*/
+
+	return;
+
       QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
 			 "email.db");
       qint64 maximumSize = 1048576 * setting
@@ -880,9 +901,10 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
 
       QByteArray boundary;
       QByteArray from;
-      QByteArray subject;
       QList<QByteArray> list(message.trimmed().split('\n'));
       QList<QByteArray> mList;
+
+      subject.clear();
 
       for(int i = 0; i < list.size(); i++)
 	if(list.value(i).toLower().contains("content-type: text/plain"))
