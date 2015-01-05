@@ -267,6 +267,7 @@
 	<file>everaldo/full-trash.png</file>
 	<file>everaldo/gemini.png</file>
 	<file>everaldo/goldbug.png</file>
+	<file>everaldo/goldbug_t.png</file>
 	<file>everaldo/heart.png</file>
 	<file>everaldo/icons.png</file>
 	<file>everaldo/inbox.png</file>
@@ -335,6 +336,7 @@
 	<file>nouve/full-trash.png</file>
 	<file>nouve/gemini.png</file>
 	<file>nouve/goldbug.png</file>
+	<file>nouve/goldbug_t.png</file>
 	<file>nouve/heart.png</file>
 	<file>nouve/icons.png</file>
 	<file>nouve/inbox.png</file>
@@ -397,6 +399,7 @@
 	<file>nuvola/full-trash.png</file>
 	<file>nuvola/gemini.png</file>
 	<file>nuvola/goldbug.png</file>
+	<file>nuvola/goldbug_t.png</file>
 	<file>nuvola/heart.png</file>
 	<file>nuvola/icons.png</file>
 	<file>nuvola/inbox.png</file>
