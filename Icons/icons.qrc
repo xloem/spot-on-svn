@@ -210,8 +210,8 @@
 	<file>Logo/goldbug.png</file>
 	<file>Logo/goldbug-neuland.png</file>
 	<file>Logo/poptastic.png</file>
-	<file>Logo/spoton-logo.png</file>
-	<file>Resources/spoton-logo.ico</file>
+	<file>Logo/spot-on-logo.png</file>
+	<file>Resources/spot-on-logo.ico</file>
 	<file>emoticons/angel.png</file>
 	<file>emoticons/angry.png</file>
 	<file>emoticons/bad.png</file>
@@ -297,7 +297,7 @@
 	<file>everaldo/settings.png</file>
 	<file>everaldo/settings_t.png</file>
 	<file>everaldo/share.png</file>
-	<file>everaldo/spoton-logo.png</file>
+	<file>everaldo/spot-on-logo.png</file>
 	<file>everaldo/starbeam.png</file>
 	<file>everaldo/starbeam_t.png</file>
 	<file>everaldo/status-offline.png</file>
@@ -366,7 +366,7 @@
 	<file>nouve/settings.png</file>
 	<file>nouve/settings_t.png</file>
 	<file>nouve/share.png</file>
-	<file>nouve/spoton-logo.png</file>
+	<file>nouve/spot-on-logo.png</file>
 	<file>nouve/starbeam.png</file>
 	<file>nouve/starbeam_t.png</file>
 	<file>nouve/status-offline.png</file>
@@ -429,7 +429,7 @@
 	<file>nuvola/settings.png</file>
 	<file>nuvola/settings_t.png</file>
 	<file>nuvola/share.png</file>
-	<file>nuvola/spoton-logo.png</file>
+	<file>nuvola/spot-on-logo.png</file>
 	<file>nuvola/starbeam.png</file>
 	<file>nuvola/starbeam_t.png</file>
 	<file>nuvola/status-offline.png</file>

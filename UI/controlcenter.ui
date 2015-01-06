@@ -12,7 +12,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../Icons/icons.qrc">
-    <normaloff>:/Logo/spoton-logo.png</normaloff>:/Logo/spoton-logo.png</iconset>
+    <normaloff>:/Logo/spot-on-logo.png</normaloff>:/Logo/spot-on-logo.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -7995,7 +7995,7 @@
       <widget class="QWidget" name="tab_login">
        <attribute name="icon">
         <iconset resource="../Icons/icons.qrc">
-         <normaloff>:/Logo/spoton-logo.png</normaloff>:/Logo/spoton-logo.png</iconset>
+         <normaloff>:/Logo/spot-on-logo.png</normaloff>:/Logo/spot-on-logo.png</iconset>
        </attribute>
        <attribute name="title">
         <string/>
@@ -8066,7 +8066,7 @@
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap resource="../Icons/icons.qrc">:/Logo/spoton-logo.png</pixmap>
+                   <pixmap resource="../Icons/icons.qrc">:/Logo/spot-on-logo.png</pixmap>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
