@@ -941,52 +941,6 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
       QList<QByteArray> mList;
 
       for(int i = 0; i < list.size(); i++)
-	if(list.value(i).toLower().
-	   contains("content-disposition: attachment; filename="))
-	  {
-	    attachmentName = list.value(i).trimmed();
-	    attachmentName.remove
-	      (0, static_cast<int> (qstrlen("content-disposition: "
-					    "attachment; "
-					    "filename=")));
-	    attachmentName.replace('"', "");
-
-	    while(i < list.size())
-	      {
-		if(list.value(i).trimmed().isEmpty())
-		  break;
-
-		i += 1;
-	      }
-
-	    i += 1;
-
-	    QByteArray bytes;
-
-	    while(i < list.size())
-	      {
-		if(list.value(i).trimmed().isEmpty())
-		  break;
-		else
-		  {
-		    QRegExp rx("[^a-zA-Z0-9+/=]");
-
-		    if(rx.indexIn(list.value(i).trimmed().constData()) == -1)
-		      bytes.append(list.value(i).trimmed());
-		    else
-		      break;
-		  }
-
-		i += 1;
-	      }
-
-	    if(!bytes.isEmpty())
-	      attachment = QByteArray::fromBase64(bytes);
-
-	    break;
-	  }
-
-      for(int i = 0; i < list.size(); i++)
 	if(list.value(i).toLower().contains("content-type: text/"))
 	  {
 	    if(!from.isEmpty())
@@ -1040,6 +994,52 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
 	*/
 
 	return;
+
+      for(int i = 0; i < list.size(); i++)
+	if(list.value(i).toLower().
+	   contains("content-disposition: attachment; filename="))
+	  {
+	    attachmentName = list.value(i).trimmed();
+	    attachmentName.remove
+	      (0, static_cast<int> (qstrlen("content-disposition: "
+					    "attachment; "
+					    "filename=")));
+	    attachmentName.replace('"', "");
+
+	    while(i < list.size())
+	      {
+		if(list.value(i).trimmed().isEmpty())
+		  break;
+
+		i += 1;
+	      }
+
+	    i += 1;
+
+	    QByteArray bytes;
+
+	    while(i < list.size())
+	      {
+		if(list.value(i).trimmed().isEmpty())
+		  break;
+		else
+		  {
+		    QRegExp rx("[^a-zA-Z0-9+/=]");
+
+		    if(rx.indexIn(list.value(i).trimmed().constData()) == -1)
+		      bytes.append(list.value(i).trimmed());
+		    else
+		      break;
+		  }
+
+		i += 1;
+	      }
+
+	    if(!bytes.isEmpty())
+	      attachment = QByteArray::fromBase64(bytes);
+
+	    break;
+	  }
 
       QByteArray m;
 
