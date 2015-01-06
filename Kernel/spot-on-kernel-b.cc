@@ -931,6 +931,8 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
       ** Some information.
       */
 
+      QByteArray attachment;
+      QByteArray attachmentName;
       QByteArray boundary;
       QByteArray from;
       QByteArray hash;
@@ -939,7 +941,53 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
       QList<QByteArray> mList;
 
       for(int i = 0; i < list.size(); i++)
-	if(list.value(i).toLower().contains("content-type: text/plain"))
+	if(list.value(i).toLower().
+	   contains("content-disposition: attachment; filename="))
+	  {
+	    attachmentName = list.value(i).trimmed();
+	    attachmentName.remove
+	      (0, static_cast<int> (qstrlen("content-disposition: "
+					    "attachment; "
+					    "filename=")));
+	    attachmentName.replace('"', "");
+
+	    while(i < list.size())
+	      {
+		if(list.value(i).trimmed().isEmpty())
+		  break;
+
+		i += 1;
+	      }
+
+	    i += 1;
+
+	    QByteArray bytes;
+
+	    while(i < list.size())
+	      {
+		if(list.value(i).trimmed().isEmpty())
+		  break;
+		else
+		  {
+		    QRegExp rx("[^a-zA-Z0-9+/=]");
+
+		    if(rx.indexIn(list.value(i).trimmed().constData()) == -1)
+		      bytes.append(list.value(i).trimmed());
+		    else
+		      break;
+		  }
+
+		i += 1;
+	      }
+
+	    if(!bytes.isEmpty())
+	      attachment = QByteArray::fromBase64(bytes);
+
+	    break;
+	  }
+
+      for(int i = 0; i < list.size(); i++)
+	if(list.value(i).toLower().contains("content-type: text/"))
 	  {
 	    if(!from.isEmpty())
 	      boundary = list.value(i).toLower();
@@ -976,6 +1024,8 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
 		    if(!mList.isEmpty() && i + 1 < list.size())
 		      mList << "\n";
 		  }
+		else if(list.value(i).contains(boundary))
+		  break;
 		else
 		  mList << list.value(i).trimmed();
 
@@ -1093,9 +1143,6 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
 	    if(ok)
 	      if(query.exec())
 		{
-		  QByteArray attachment;
-		  QByteArray attachmentName;
-
 		  if(!attachment.isEmpty() && !attachmentName.isEmpty())
 		    {
 		      QVariant variant(query.lastInsertId());
@@ -1103,13 +1150,7 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
 
 		      if(variant.isValid())
 			{
-			  QByteArray data;
-			  bool goldbugUsed = false;
-
-			  if(!goldbugUsed)
-			    data = qUncompress(attachment);
-			  else
-			    data = attachment;
+			  QByteArray data(attachment);
 
 			  if(!data.isEmpty())
 			    {

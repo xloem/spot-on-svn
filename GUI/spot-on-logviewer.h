@@ -28,6 +28,7 @@
 #ifndef _spoton_logviewer_h_
 #define _spoton_logviewer_h_
 
+#include <QDateTime>
 #include <QMainWindow>
 #include <QTimer>
 
@@ -45,6 +46,7 @@ class spoton_logviewer: public QMainWindow
   void show(QWidget *parent);
 
  private:
+  QDateTime m_lastModificationTime;
   QTimer m_timer;
   Ui_spoton_logviewer ui;
 #ifdef Q_OS_MAC

@@ -77,6 +77,7 @@ spoton_logviewer::spoton_logviewer(void):QMainWindow()
   spoton_misc::enableLog(ui.actionEnable_Log->isChecked());
   m_timer.setInterval(2500);
   slotSetIcons();
+  m_lastModificationTime = QDateTime();
 }
 
 spoton_logviewer::~spoton_logviewer()
@@ -120,13 +121,26 @@ void spoton_logviewer::show(QWidget *parent)
 
   QMainWindow::show();
   raise();
+  m_lastModificationTime = QDateTime();
   m_timer.start();
 }
 
 void spoton_logviewer::slotTimeout(void)
 {
-  QFile file
-    (spoton_misc::homePath() + QDir::separator() + "error_log.dat");
+  QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
+		     "error_log.dat");
+
+  if(fileInfo.exists())
+    {
+      if(fileInfo.lastModified() <= m_lastModificationTime)
+	return;
+      else
+	m_lastModificationTime = fileInfo.lastModified();
+    }
+  else
+    m_lastModificationTime = QDateTime();
+
+  QFile file(fileInfo.absoluteFilePath());
 
   if(file.open(QIODevice::ReadOnly))
     {
