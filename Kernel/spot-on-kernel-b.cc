@@ -486,11 +486,64 @@ void spoton_kernel::postPoptastic(void)
 
 	      curl_payload_text.append("\r\n");
 
-	      while(!bytes.isEmpty())
+	      QByteArray attachment(values.value(3).toByteArray());
+	      QByteArray attachmentName(values.value(4).toByteArray());
+
+	      if(attachment.isEmpty() || attachmentName.isEmpty() ||
+		 values.size() == 3)
 		{
-		  count += 1;
-		  curl_payload_text.append(bytes.mid(0, CURL_MAX_WRITE_SIZE));
-		  bytes.remove(0, CURL_MAX_WRITE_SIZE);
+		  while(!bytes.isEmpty())
+		    {
+		      count += 1;
+		      curl_payload_text.append
+			(bytes.mid(0, CURL_MAX_WRITE_SIZE));
+		      bytes.remove(0, CURL_MAX_WRITE_SIZE);
+		    }
+		}
+	      else if(!attachment.isEmpty() && !attachmentName.isEmpty())
+		{
+		  QByteArray bytes;
+		  QByteArray r1(spoton_crypt::weakRandomBytes(8).toHex());
+		  QByteArray r2(spoton_crypt::weakRandomBytes(8).toHex());
+
+		  bytes.append
+		    ("Content-Type: multipart/mixed\r\n"
+		     "Mime-version 1.0\r\n\r\n");
+		  bytes.append("--");
+		  bytes.append(r1);
+		  bytes.append("\r\n");
+		  bytes.append
+		    ("Content-Type: text/html; charset=UTF-8\r\n\r\n");
+		  bytes.append(values.value(1).toByteArray());
+		  bytes.append("\r\n\r\n");
+		  bytes.append("--");
+		  bytes.append(r1);
+		  bytes.append("--\r\n");
+		  bytes.append("--");
+		  bytes.append(r2);
+		  bytes.append("\r\n"
+			       "Content-Type: application/octet-stream; "
+			       "name=");
+		  bytes.append(attachmentName);
+		  bytes.append
+		    ("\r\n"
+		     "Content-Transfer-Encoding: base64\r\n"
+		     "Content-Disposition: attachment; filename=");
+		  bytes.append(attachmentName);
+		  bytes.append("\r\n\r\n");
+		  bytes.append(attachment.toBase64());
+		  bytes.append("\r\n\r\n");
+		  bytes.append("--");
+		  bytes.append(r2);
+		  bytes.append("--");
+
+		  while(!bytes.isEmpty())
+		    {
+		      count += 1;
+		      curl_payload_text.append
+			(bytes.mid(0, CURL_MAX_WRITE_SIZE));
+		      bytes.remove(0, CURL_MAX_WRITE_SIZE);
+		    }
 		}
 
 	      curl_payload_text.append("\r\n");
