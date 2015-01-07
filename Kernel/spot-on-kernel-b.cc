@@ -501,18 +501,19 @@ void spoton_kernel::postPoptastic(void)
 		     constData()).toLatin1());
 
 	      if(values.size() == 3)
-		curl_payload_text.append
-		  (QString("Subject: %1\r\n").
-		   arg(spoton_crypt::sha512Hash(from.toLatin1(), &ok).toHex().
-		       constData()).toLatin1());
+		{
+		  curl_payload_text.append
+		    (QString("Subject: %1\r\n").
+		     arg(spoton_crypt::sha512Hash(from.toLatin1(), &ok).toHex().
+			 constData()).toLatin1());
+		  curl_payload_text.append("\r\n");
+		}
 	      else
 		{
 		  curl_payload_text.append("Subject: ");
 		  curl_payload_text.append(values.value(2).toByteArray());
 		  curl_payload_text.append("\r\n");
 		}
-
-	      curl_payload_text.append("\r\n");
 
 	      QByteArray attachment(values.value(3).toByteArray());
 	      QByteArray attachmentName(values.value(4).toByteArray());
@@ -530,40 +531,48 @@ void spoton_kernel::postPoptastic(void)
 		}
 	      else if(!attachment.isEmpty() && !attachmentName.isEmpty())
 		{
+		  QByteArray a(attachment.toBase64());
 		  QByteArray bytes;
 		  QByteArray r1(spoton_crypt::weakRandomBytes(8).toHex());
 		  QByteArray r2(spoton_crypt::weakRandomBytes(8).toHex());
+		  QString str("");
 
-		  bytes.append
-		    ("Content-Type: multipart/mixed\r\n"
-		     "Mime-version 1.0\r\n\r\n");
-		  bytes.append("--");
-		  bytes.append(r1);
-		  bytes.append("\r\n");
-		  bytes.append
-		    ("Content-Type: text/html; charset=UTF-8\r\n\r\n");
-		  bytes.append(values.value(1).toByteArray());
-		  bytes.append("\r\n\r\n");
+		  str.append
+		    (QString("Content-Type: multipart/mixed; "
+			     "boundary=%1\r\n"
+			     "\r\n"
+			     "--%1\r\n"
+			     "Content-Type: multipart/alternative; "
+			     "boundary=%2\r\n"
+			     "\r\n"
+			     "--%2\r\n"
+			     "Content-Type: text/html; charset=UTF-8\r\n"
+			     "\r\n"
+			     "%3\r\n"
+			     "\r\n"
+			     "--%2--\r\n"
+			     "--%1\r\n"
+			     "Content-Type: application/octet-stream; name="
+			     "\"%4\"\r\n"
+			     "Content-Disposition: attachment; filename="
+			     "\"%4\"\r\n"
+			     "Content-Transfer-Encoding: base64\r\n\r\n").
+		     arg(r1.constData()).
+		     arg(r2.constData()).
+		     arg(values.value(1).toByteArray().constData()).
+		     arg(attachmentName.constData()));
+		  bytes.append(str);
+
+		  while(!a.isEmpty())
+		    {
+		      bytes.append(a.mid(0, 76));
+		      a.remove(0, 76);
+		      bytes.append("\r\n");
+		    }
+
 		  bytes.append("--");
 		  bytes.append(r1);
 		  bytes.append("--\r\n");
-		  bytes.append("--");
-		  bytes.append(r2);
-		  bytes.append("\r\n"
-			       "Content-Type: application/octet-stream; "
-			       "name=\"");
-		  bytes.append(attachmentName);
-		  bytes.append
-		    ("\"\r\n"
-		     "Content-Transfer-Encoding: base64\r\n"
-		     "Content-Disposition: attachment; filename=\"");
-		  bytes.append(attachmentName);
-		  bytes.append("\"\r\n\r\n");
-		  bytes.append(attachment.toBase64());
-		  bytes.append("\r\n\r\n");
-		  bytes.append("--");
-		  bytes.append(r2);
-		  bytes.append("--");
 
 		  while(!bytes.isEmpty())
 		    {
@@ -572,6 +581,10 @@ void spoton_kernel::postPoptastic(void)
 			(bytes.mid(0, CURL_MAX_WRITE_SIZE));
 		      bytes.remove(0, CURL_MAX_WRITE_SIZE);
 		    }
+
+		  curl_easy_setopt
+		    (curl, CURLOPT_INFILESIZE,
+		     static_cast<size_t> (attachment.toBase64().length()));
 		}
 
 	      curl_payload_text.append("\r\n");
