@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>750</width>
-    <height>576</height>
+    <height>610</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -217,6 +217,33 @@
       </item>
      </layout>
     </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_6">
+     <property name="spacing">
+      <number>5</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="label_17">
+       <property name="text">
+        <string>&amp;Certificate Authority Path</string>
+       </property>
+       <property name="buddy">
+        <cstring>capath</cstring>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="capath"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="selectcapath">
+       <property name="text">
+        <string>Select</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -673,6 +700,8 @@
   <tabstop>proxy_type</tabstop>
   <tabstop>proxy_username</tabstop>
   <tabstop>proxy_password</tabstop>
+  <tabstop>capath</tabstop>
+  <tabstop>selectcapath</tabstop>
   <tabstop>in_method</tabstop>
   <tabstop>in_server_address</tabstop>
   <tabstop>in_server_port</tabstop>

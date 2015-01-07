@@ -79,6 +79,19 @@ void spoton::slotConfigurePoptastic(void)
 	  this,
 	  SLOT(slotPoptasticSettingsReset(void)),
 	  Qt::UniqueConnection);
+  connect(m_poptasticSettingsUi.capath,
+	  SIGNAL(returnPressed(void)),
+	  this,
+	  SLOT(slotSetCAPath(void)));
+  connect(m_ui.passphrase2,
+	  SIGNAL(returnPressed(void)),
+	  this,
+	  SLOT(slotSetPassphrase(void)));
+  connect(m_poptasticSettingsUi.selectcapath,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotSelectCAPath(void)),
+	  Qt::UniqueConnection);
   connect(m_poptasticSettingsUi.proxy,
 	  SIGNAL(clicked(bool)),
 	  this,
@@ -100,6 +113,8 @@ void spoton::slotConfigurePoptastic(void)
 #ifdef Q_OS_MAC
   m_poptasticDialog->setAttribute(Qt::WA_MacMetalStyle, false);
 #endif
+  m_poptasticSettingsUi.capath->setText
+    (m_settings.value("gui/poptasticCAPath", "").toString());
   m_poptasticSettingsUi.poptasticRefresh->setValue
     (m_settings.value("gui/poptasticRefreshInterval", 5.00).toDouble());
 
@@ -219,6 +234,8 @@ void spoton::slotConfigurePoptastic(void)
 	m_poptasticSettingsUi.in_method->currentIndex() == 0 ? true : false;
       m_settings["gui/disableSmtp"] =
 	m_poptasticSettingsUi.out_method->currentIndex() == 0 ? true : false;
+      m_settings["gui/poptasticCAPath"] =
+	m_poptasticSettingsUi.capath->text();
       m_settings["gui/poptasticName"] =
 	m_poptasticSettingsUi.in_username->text().toUtf8();
       m_settings["gui/poptasticRefreshInterval"] =
@@ -233,6 +250,9 @@ void spoton::slotConfigurePoptastic(void)
       settings.setValue("gui/disableSmtp",
 			m_poptasticSettingsUi.out_method->
 			currentIndex() == 0 ? true : false);
+      settings.setValue
+	("gui/poptasticCAPath",
+	 m_poptasticSettingsUi.capath->text());
       settings.setValue
 	("gui/poptasticRefreshInterval",
 	 m_poptasticSettingsUi.poptasticRefresh->value());
@@ -475,7 +495,11 @@ void spoton::slotTestPoptasticPop3Settings(void)
 	  long verify = static_cast<long>
 	    (m_poptasticSettingsUi.in_verify->isChecked());
 
-	  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, verify);
+	  if(verify)
+	    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 2L);
+	  else
+	    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
+
 	  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, verify);
 
 	  if(index == 2) // TLS
@@ -591,7 +615,11 @@ void spoton::slotTestPoptasticSmtpSettings(void)
 	  long verify = static_cast<long>
 	    (m_poptasticSettingsUi.out_verify->isChecked());
 
-	  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, verify);
+	  if(verify)
+	    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 2L);
+	  else
+	    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
+
 	  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, verify);
 
 	  if(index == 2) // TLS
@@ -644,6 +672,7 @@ void spoton::slotPoptasticSettingsReset(bool state)
 
 void spoton::slotPoptasticSettingsReset(void)
 {
+  m_poptasticSettingsUi.capath->clear();
   m_poptasticSettingsUi.in_method->setCurrentIndex(2);
   m_poptasticSettingsUi.in_password->clear();
   m_poptasticSettingsUi.in_server_address->clear();
@@ -665,4 +694,36 @@ void spoton::slotPoptasticSettingsReset(void)
   m_poptasticSettingsUi.proxy_server_port->setValue(1);
   m_poptasticSettingsUi.proxy_type->setCurrentIndex(0);
   m_poptasticSettingsUi.proxy_username->clear();
+}
+
+void spoton::slotSelectCAPath(void)
+{
+  QString fileName("");
+
+  if(m_poptasticSettingsUi.selectcapath == sender())
+    {
+      QFileDialog dialog(this);
+
+      dialog.setWindowTitle
+	(tr("%1: Select CA File").
+	 arg(SPOTON_APPLICATION_NAME));
+      dialog.setFileMode(QFileDialog::ExistingFile);
+      dialog.setDirectory(QDir::homePath());
+      dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
+      dialog.setAcceptMode(QFileDialog::AcceptOpen);
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+      dialog.setAttribute(Qt::WA_MacMetalStyle, false);
+#endif
+#endif
+
+      if(dialog.exec() == QDialog::Accepted)
+	{
+	  fileName = dialog.selectedFiles().value(0);
+	  m_poptasticSettingsUi.capath->setText
+	    (dialog.selectedFiles().value(0));
+	}
+    }
+  else
+    fileName = m_poptasticSettingsUi.capath->text();
 }

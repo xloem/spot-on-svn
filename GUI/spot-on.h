@@ -447,6 +447,7 @@ class spoton: public QMainWindow
   void slotSaveUrlName(void);
   void slotScramble(bool state);
   void slotSecureMemoryPoolChanged(int value);
+  void slotSelectCAPath(void);
   void slotSelectDestination(void);
   void slotSelectGeoIPPath(void);
   void slotSelectKernelPath(void);

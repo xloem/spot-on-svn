@@ -202,11 +202,25 @@ void spoton_kernel::popPoptastic(void)
 	  long verify = static_cast<long>
 	    (setting("gui/poptasticVerifyPopHostPeer", 0).toInt());
 
-	  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, verify);
+	  if(verify)
+	    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 2L);
+	  else
+	    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
+
 	  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, verify);
 
 	  if(ssltls == "TLS")
-	    curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_ALL);
+	    {
+	      QFileInfo fileInfo
+		(setting("gui/poptasticCAPath", "").toString());
+
+	      if(fileInfo.isReadable())
+		curl_easy_setopt
+		  (curl, CURLOPT_CAINFO,
+		   fileInfo.absoluteFilePath().toUtf8().constData());
+
+	      curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_ALL);
+	    }
 	}
       else
 	{
@@ -418,11 +432,25 @@ void spoton_kernel::postPoptastic(void)
 	      long verify = static_cast<long>
 		(setting("gui/poptasticVerifySmtpHostPeer", 0).toInt());
 
-	      curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, verify);
+	      if(verify)
+		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 2L);
+	      else
+		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
+
 	      curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, verify);
 
 	      if(ssltls == "TLS")
-		curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_ALL);
+		{
+		  QFileInfo fileInfo
+		    (setting("gui/poptasticCAPath", "").toString());
+
+		  if(fileInfo.isReadable())
+		    curl_easy_setopt
+		      (curl, CURLOPT_CAINFO,
+		       fileInfo.absoluteFilePath().toUtf8().constData());
+
+		  curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_ALL);
+		}
 	    }
 	  else
 	    url = QString("smtp://%1:%2/").

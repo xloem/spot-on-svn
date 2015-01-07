@@ -921,6 +921,15 @@ void spoton::highlightPaths(void)
   QFileInfo fileInfo;
   QPalette palette;
 
+  fileInfo.setFile(m_poptasticSettingsUi.capath->text());
+
+  if(fileInfo.isReadable())
+    color = QColor(144, 238, 144);
+  else
+    color = QColor(240, 128, 128); // Light coral!
+
+  palette.setColor(m_poptasticSettingsUi.capath->backgroundRole(), color);
+  m_poptasticSettingsUi.capath->setPalette(palette);
   fileInfo.setFile(m_ui.destination->text());
 
   if(fileInfo.isReadable() && fileInfo.isWritable())
