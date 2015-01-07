@@ -2730,34 +2730,34 @@ SSL Control String: %24</source>
         <location filename="../UI/controlcenter.ui" line="243"/>
         <location filename="../UI/controlcenter.ui" line="382"/>
         <location filename="../UI/controlcenter.ui" line="632"/>
-        <location filename="../UI/controlcenter.ui" line="4406"/>
-        <location filename="../UI/controlcenter.ui" line="6763"/>
+        <location filename="../UI/controlcenter.ui" line="4426"/>
+        <location filename="../UI/controlcenter.ui" line="6783"/>
         <source>Clear</source>
         <translation type="unfinished">Borrar</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="186"/>
         <location filename="../UI/controlcenter.ui" line="685"/>
-        <location filename="../UI/controlcenter.ui" line="1483"/>
-        <location filename="../UI/controlcenter.ui" line="3279"/>
-        <location filename="../UI/controlcenter.ui" line="4816"/>
-        <location filename="../UI/controlcenter.ui" line="5111"/>
-        <location filename="../UI/controlcenter.ui" line="5478"/>
-        <location filename="../UI/controlcenter.ui" line="6222"/>
-        <location filename="../UI/controlcenter.ui" line="7619"/>
+        <location filename="../UI/controlcenter.ui" line="1503"/>
+        <location filename="../UI/controlcenter.ui" line="3299"/>
+        <location filename="../UI/controlcenter.ui" line="4836"/>
+        <location filename="../UI/controlcenter.ui" line="5131"/>
+        <location filename="../UI/controlcenter.ui" line="5498"/>
+        <location filename="../UI/controlcenter.ui" line="6242"/>
+        <location filename="../UI/controlcenter.ui" line="7639"/>
         <source>Save</source>
         <translation type="unfinished">Guardar</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="808"/>
-        <location filename="../UI/controlcenter.ui" line="1705"/>
-        <location filename="../UI/controlcenter.ui" line="7705"/>
+        <location filename="../UI/controlcenter.ui" line="828"/>
+        <location filename="../UI/controlcenter.ui" line="1725"/>
+        <location filename="../UI/controlcenter.ui" line="7725"/>
         <source>public_key_hash</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="965"/>
-        <location filename="../UI/controlcenter.ui" line="1629"/>
+        <location filename="../UI/controlcenter.ui" line="985"/>
+        <location filename="../UI/controlcenter.ui" line="1649"/>
         <source>Send</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2770,33 +2770,33 @@ SSL Control String: %24</source>
         <translation type="obsolete">Fecha de recepción</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1410"/>
+        <location filename="../UI/controlcenter.ui" line="1430"/>
         <source>Subject</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2006"/>
-        <location filename="../UI/controlcenter.ui" line="2989"/>
-        <location filename="../UI/controlcenter.ui" line="3162"/>
-        <location filename="../UI/controlcenter.ui" line="3234"/>
-        <location filename="../UI/controlcenter.ui" line="6990"/>
-        <location filename="../UI/controlcenter.ui" line="7815"/>
-        <location filename="../UI/controlcenter.ui" line="7941"/>
+        <location filename="../UI/controlcenter.ui" line="2026"/>
+        <location filename="../UI/controlcenter.ui" line="3009"/>
+        <location filename="../UI/controlcenter.ui" line="3182"/>
+        <location filename="../UI/controlcenter.ui" line="3254"/>
+        <location filename="../UI/controlcenter.ui" line="7010"/>
+        <location filename="../UI/controlcenter.ui" line="7835"/>
+        <location filename="../UI/controlcenter.ui" line="7961"/>
         <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1095"/>
+        <location filename="../UI/controlcenter.ui" line="1115"/>
         <source>Retrieve</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1512"/>
+        <location filename="../UI/controlcenter.ui" line="1532"/>
         <source>&amp;Subject</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1756"/>
+        <location filename="../UI/controlcenter.ui" line="1776"/>
         <source>&amp;Message</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2817,20 +2817,20 @@ SSL Control String: %24</source>
         <translation type="obsolete">Compartir clave</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2391"/>
-        <location filename="../UI/controlcenter.ui" line="3604"/>
+        <location filename="../UI/controlcenter.ui" line="2411"/>
+        <location filename="../UI/controlcenter.ui" line="3624"/>
         <source>Local IP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2396"/>
-        <location filename="../UI/controlcenter.ui" line="3609"/>
+        <location filename="../UI/controlcenter.ui" line="2416"/>
+        <location filename="../UI/controlcenter.ui" line="3629"/>
         <source>Local Port</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2406"/>
-        <location filename="../UI/controlcenter.ui" line="3644"/>
+        <location filename="../UI/controlcenter.ui" line="2426"/>
+        <location filename="../UI/controlcenter.ui" line="3664"/>
         <source>Protocol</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2839,52 +2839,52 @@ SSL Control String: %24</source>
         <translation type="obsolete">Documentación</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8129"/>
+        <location filename="../UI/controlcenter.ui" line="8149"/>
         <source>Authenticate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3629"/>
+        <location filename="../UI/controlcenter.ui" line="3649"/>
         <source>Remote IP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3634"/>
+        <location filename="../UI/controlcenter.ui" line="3654"/>
         <source>Remote Port</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3791"/>
+        <location filename="../UI/controlcenter.ui" line="3811"/>
         <source>Add Neighbor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3579"/>
+        <location filename="../UI/controlcenter.ui" line="3599"/>
         <source>Sticky</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2511"/>
-        <location filename="../UI/controlcenter.ui" line="3885"/>
+        <location filename="../UI/controlcenter.ui" line="2531"/>
+        <location filename="../UI/controlcenter.ui" line="3905"/>
         <source>&amp;Scope ID</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2558"/>
-        <location filename="../UI/controlcenter.ui" line="3875"/>
-        <location filename="../UI/controlcenter.ui" line="4275"/>
+        <location filename="../UI/controlcenter.ui" line="2578"/>
+        <location filename="../UI/controlcenter.ui" line="3895"/>
+        <location filename="../UI/controlcenter.ui" line="4295"/>
         <source>&amp;Port</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2584"/>
-        <location filename="../UI/controlcenter.ui" line="3856"/>
+        <location filename="../UI/controlcenter.ui" line="2604"/>
+        <location filename="../UI/controlcenter.ui" line="3876"/>
         <source>IPv&amp;4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2600"/>
-        <location filename="../UI/controlcenter.ui" line="3901"/>
+        <location filename="../UI/controlcenter.ui" line="2620"/>
+        <location filename="../UI/controlcenter.ui" line="3921"/>
         <source>IPv&amp;6</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2893,12 +2893,12 @@ SSL Control String: %24</source>
         <translation type="obsolete">Método preferido</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="918"/>
+        <location filename="../UI/controlcenter.ui" line="938"/>
         <source>Artificial GET</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="913"/>
+        <location filename="../UI/controlcenter.ui" line="933"/>
         <source>Normal POST</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2907,29 +2907,29 @@ SSL Control String: %24</source>
         <translation type="obsolete">Mostrar sólo los vecinos conectados</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3584"/>
+        <location filename="../UI/controlcenter.ui" line="3604"/>
         <source>UUID</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2411"/>
-        <location filename="../UI/controlcenter.ui" line="3614"/>
+        <location filename="../UI/controlcenter.ui" line="2431"/>
+        <location filename="../UI/controlcenter.ui" line="3634"/>
         <source>External IP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="173"/>
         <location filename="../UI/controlcenter.ui" line="672"/>
-        <location filename="../UI/controlcenter.ui" line="2083"/>
-        <location filename="../UI/controlcenter.ui" line="2922"/>
-        <location filename="../UI/controlcenter.ui" line="6166"/>
-        <location filename="../UI/controlcenter.ui" line="7606"/>
+        <location filename="../UI/controlcenter.ui" line="2103"/>
+        <location filename="../UI/controlcenter.ui" line="2942"/>
+        <location filename="../UI/controlcenter.ui" line="6186"/>
+        <location filename="../UI/controlcenter.ui" line="7626"/>
         <source>&amp;Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="348"/>
-        <location filename="../UI/controlcenter.ui" line="6828"/>
+        <location filename="../UI/controlcenter.ui" line="6848"/>
         <source>Hash &amp;Key</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2960,110 +2960,110 @@ SSL Control String: %24</source>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="735"/>
-        <location filename="../UI/controlcenter.ui" line="1490"/>
-        <location filename="../UI/controlcenter.ui" line="2237"/>
-        <location filename="../UI/controlcenter.ui" line="3358"/>
-        <location filename="../UI/controlcenter.ui" line="6634"/>
-        <location filename="../UI/controlcenter.ui" line="7076"/>
-        <location filename="../UI/controlcenter.ui" line="7193"/>
-        <location filename="../UI/controlcenter.ui" line="7646"/>
+        <location filename="../UI/controlcenter.ui" line="1510"/>
+        <location filename="../UI/controlcenter.ui" line="2257"/>
+        <location filename="../UI/controlcenter.ui" line="3378"/>
+        <location filename="../UI/controlcenter.ui" line="6654"/>
+        <location filename="../UI/controlcenter.ui" line="7096"/>
+        <location filename="../UI/controlcenter.ui" line="7213"/>
+        <location filename="../UI/controlcenter.ui" line="7666"/>
         <source>Context Menu Reflection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="818"/>
+        <location filename="../UI/controlcenter.ui" line="838"/>
         <source>Last Status Change</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="893"/>
+        <location filename="../UI/controlcenter.ui" line="913"/>
         <source>&amp;Preferred Method</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1066"/>
+        <location filename="../UI/controlcenter.ui" line="1086"/>
         <source>Empty Trash</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1079"/>
+        <location filename="../UI/controlcenter.ui" line="1099"/>
         <source>Refresh</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1165"/>
+        <location filename="../UI/controlcenter.ui" line="1185"/>
         <source>&amp;Retrieve e-mail every</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1298"/>
+        <location filename="../UI/controlcenter.ui" line="1318"/>
         <source>Inbox</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1303"/>
+        <location filename="../UI/controlcenter.ui" line="1323"/>
         <source>Sent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1308"/>
+        <location filename="../UI/controlcenter.ui" line="1328"/>
         <source>Trash</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1333"/>
+        <location filename="../UI/controlcenter.ui" line="1353"/>
         <source>Reply</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1340"/>
+        <location filename="../UI/controlcenter.ui" line="1360"/>
         <source>Resend</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1395"/>
-        <location filename="../UI/controlcenter.ui" line="1867"/>
+        <location filename="../UI/controlcenter.ui" line="1415"/>
+        <location filename="../UI/controlcenter.ui" line="1887"/>
         <source>Date</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1400"/>
+        <location filename="../UI/controlcenter.ui" line="1420"/>
         <source>From</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1420"/>
+        <location filename="../UI/controlcenter.ui" line="1440"/>
         <source>goldbug</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1425"/>
+        <location filename="../UI/controlcenter.ui" line="1445"/>
         <source>message</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1430"/>
+        <location filename="../UI/controlcenter.ui" line="1450"/>
         <source>message_digest</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1435"/>
+        <location filename="../UI/controlcenter.ui" line="1455"/>
         <source>receiver_sender_hash</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1725"/>
+        <location filename="../UI/controlcenter.ui" line="1745"/>
         <source>&amp;To</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1562"/>
+        <location filename="../UI/controlcenter.ui" line="1582"/>
         <source>&amp;Optional</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="222"/>
-        <location filename="../UI/controlcenter.ui" line="3128"/>
+        <location filename="../UI/controlcenter.ui" line="3148"/>
         <source>&amp;Magnet</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3084,8 +3084,8 @@ SSL Control String: %24</source>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="483"/>
-        <location filename="../UI/controlcenter.ui" line="1132"/>
-        <location filename="../UI/controlcenter.ui" line="7563"/>
+        <location filename="../UI/controlcenter.ui" line="1152"/>
+        <location filename="../UI/controlcenter.ui" line="7583"/>
         <source>Accept shared public &amp;keys.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3095,12 +3095,12 @@ SSL Control String: %24</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1971"/>
+        <location filename="../UI/controlcenter.ui" line="1991"/>
         <source>Institution</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1583"/>
+        <location filename="../UI/controlcenter.ui" line="1603"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Bundle the e-mail in an additional layer of AES-256 encryption. Do remember to notify all recipients of the key.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3116,616 +3116,616 @@ SSL Control String: %24</source>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="550"/>
-        <location filename="../UI/controlcenter.ui" line="2307"/>
-        <location filename="../UI/controlcenter.ui" line="3505"/>
-        <location filename="../UI/controlcenter.ui" line="5926"/>
-        <location filename="../UI/controlcenter.ui" line="6572"/>
+        <location filename="../UI/controlcenter.ui" line="2327"/>
+        <location filename="../UI/controlcenter.ui" line="3525"/>
+        <location filename="../UI/controlcenter.ui" line="5946"/>
+        <location filename="../UI/controlcenter.ui" line="6592"/>
         <source>&amp;Repaint every</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1139"/>
+        <location filename="../UI/controlcenter.ui" line="1159"/>
         <source>&amp;Limit the size of email.db to</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1360"/>
+        <location filename="../UI/controlcenter.ui" line="1380"/>
         <source>Save Attachment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1415"/>
+        <location filename="../UI/controlcenter.ui" line="1435"/>
         <source>Attachment(s)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1586"/>
+        <location filename="../UI/controlcenter.ui" line="1606"/>
         <source>Gold Bug</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1616"/>
+        <location filename="../UI/controlcenter.ui" line="1636"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The kernel is responsible for signing messages. Because messages are queued, please avoid toggling this checkbox until queued messages have been processed by the kernel.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1619"/>
+        <location filename="../UI/controlcenter.ui" line="1639"/>
         <source>Sign &amp;messages.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1638"/>
+        <location filename="../UI/controlcenter.ui" line="1658"/>
         <source>&amp;Attachment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1533"/>
+        <location filename="../UI/controlcenter.ui" line="1553"/>
         <source>Maximum 10 MiB, please.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1047"/>
+        <location filename="../UI/controlcenter.ui" line="1067"/>
         <source>Clear E-Mail Messages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1052"/>
+        <location filename="../UI/controlcenter.ui" line="1072"/>
         <source>Clear Outgoing Message</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1149"/>
+        <location filename="../UI/controlcenter.ui" line="1169"/>
         <source> MiB.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1172"/>
+        <location filename="../UI/controlcenter.ui" line="1192"/>
         <source> minutes.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1207"/>
+        <location filename="../UI/controlcenter.ui" line="1227"/>
         <source>&amp;Read / &amp;Write</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1796"/>
+        <location filename="../UI/controlcenter.ui" line="1816"/>
         <source>&amp;C/O</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1872"/>
+        <location filename="../UI/controlcenter.ui" line="1892"/>
         <source>Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1890"/>
+        <location filename="../UI/controlcenter.ui" line="1910"/>
         <source>Data that has not been processed in more than</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1907"/>
+        <location filename="../UI/controlcenter.ui" line="1927"/>
         <source>&amp;day(s) will be purged automatically.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2030"/>
+        <location filename="../UI/controlcenter.ui" line="2050"/>
         <source>Add Institution</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2096"/>
+        <location filename="../UI/controlcenter.ui" line="2116"/>
         <source>&amp;Postal Address</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2254"/>
+        <location filename="../UI/controlcenter.ui" line="2274"/>
         <source>Limit the number of connections per client IP address.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2270"/>
+        <location filename="../UI/controlcenter.ui" line="2290"/>
         <source>clients.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="560"/>
-        <location filename="../UI/controlcenter.ui" line="2317"/>
-        <location filename="../UI/controlcenter.ui" line="3515"/>
-        <location filename="../UI/controlcenter.ui" line="5936"/>
-        <location filename="../UI/controlcenter.ui" line="6582"/>
+        <location filename="../UI/controlcenter.ui" line="2337"/>
+        <location filename="../UI/controlcenter.ui" line="3535"/>
+        <location filename="../UI/controlcenter.ui" line="5956"/>
+        <location filename="../UI/controlcenter.ui" line="6602"/>
         <source> seconds.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="749"/>
+        <location filename="../UI/controlcenter.ui" line="769"/>
         <source>Poptastic participants.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1092"/>
+        <location filename="../UI/controlcenter.ui" line="1112"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Request e-mail from remote services (Echo, IMAP, POP3).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1237"/>
+        <location filename="../UI/controlcenter.ui" line="1257"/>
         <source>Poptastic participants with public key pairs.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1257"/>
+        <location filename="../UI/controlcenter.ui" line="1277"/>
         <source>Poptastic participants without public key pairs.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1440"/>
+        <location filename="../UI/controlcenter.ui" line="1460"/>
         <source>hash</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1769"/>
+        <location filename="../UI/controlcenter.ui" line="1789"/>
         <source>&amp;Plain</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2451"/>
-        <location filename="../UI/controlcenter.ui" line="3714"/>
+        <location filename="../UI/controlcenter.ui" line="2471"/>
+        <location filename="../UI/controlcenter.ui" line="3734"/>
         <source>Transport</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2456"/>
+        <location filename="../UI/controlcenter.ui" line="2476"/>
         <source>Share Address</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2466"/>
-        <location filename="../UI/controlcenter.ui" line="2796"/>
-        <location filename="../UI/controlcenter.ui" line="3719"/>
-        <location filename="../UI/controlcenter.ui" line="4090"/>
+        <location filename="../UI/controlcenter.ui" line="2486"/>
+        <location filename="../UI/controlcenter.ui" line="2816"/>
+        <location filename="../UI/controlcenter.ui" line="3739"/>
+        <location filename="../UI/controlcenter.ui" line="4110"/>
         <source>Orientation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2471"/>
-        <location filename="../UI/controlcenter.ui" line="3749"/>
+        <location filename="../UI/controlcenter.ui" line="2491"/>
+        <location filename="../UI/controlcenter.ui" line="3769"/>
         <source>SSL Control String</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2496"/>
+        <location filename="../UI/controlcenter.ui" line="2516"/>
         <source>The uniqueness of a listener is defined by the local IP, the local port, the scope ID, and the transport.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2607"/>
-        <location filename="../UI/controlcenter.ui" line="3918"/>
+        <location filename="../UI/controlcenter.ui" line="2627"/>
+        <location filename="../UI/controlcenter.ui" line="3938"/>
         <source>&amp;Transport</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2621"/>
-        <location filename="../UI/controlcenter.ui" line="3937"/>
+        <location filename="../UI/controlcenter.ui" line="2641"/>
+        <location filename="../UI/controlcenter.ui" line="3957"/>
         <source>TCP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2626"/>
-        <location filename="../UI/controlcenter.ui" line="3942"/>
+        <location filename="../UI/controlcenter.ui" line="2646"/>
+        <location filename="../UI/controlcenter.ui" line="3962"/>
         <source>UDP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2639"/>
+        <location filename="../UI/controlcenter.ui" line="2659"/>
         <source>&amp;Share Address</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2744"/>
-        <location filename="../UI/controlcenter.ui" line="3467"/>
-        <location filename="../UI/controlcenter.ui" line="4051"/>
-        <location filename="../UI/controlcenter.ui" line="5823"/>
-        <location filename="../UI/controlcenter.ui" line="6293"/>
-        <location filename="../UI/controlcenter.ui" line="6366"/>
+        <location filename="../UI/controlcenter.ui" line="2764"/>
+        <location filename="../UI/controlcenter.ui" line="3487"/>
+        <location filename="../UI/controlcenter.ui" line="4071"/>
+        <location filename="../UI/controlcenter.ui" line="5843"/>
+        <location filename="../UI/controlcenter.ui" line="6313"/>
+        <location filename="../UI/controlcenter.ui" line="6386"/>
         <source>8192</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2782"/>
-        <location filename="../UI/controlcenter.ui" line="4076"/>
-        <location filename="../UI/controlcenter.ui" line="5471"/>
+        <location filename="../UI/controlcenter.ui" line="2802"/>
+        <location filename="../UI/controlcenter.ui" line="4096"/>
+        <location filename="../UI/controlcenter.ui" line="5491"/>
         <source>HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2807"/>
-        <location filename="../UI/controlcenter.ui" line="4101"/>
+        <location filename="../UI/controlcenter.ui" line="2827"/>
+        <location filename="../UI/controlcenter.ui" line="4121"/>
         <source>Packet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2812"/>
-        <location filename="../UI/controlcenter.ui" line="4106"/>
+        <location filename="../UI/controlcenter.ui" line="2832"/>
+        <location filename="../UI/controlcenter.ui" line="4126"/>
         <source>Stream</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3001"/>
+        <location filename="../UI/controlcenter.ui" line="3021"/>
         <source>Adaptive Echo Tokens</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3048"/>
+        <location filename="../UI/controlcenter.ui" line="3068"/>
         <source>Token</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3084"/>
+        <location filename="../UI/controlcenter.ui" line="3104"/>
         <source>&amp;Token</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3094"/>
+        <location filename="../UI/controlcenter.ui" line="3114"/>
         <source>&amp;Encryption Token Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3111"/>
+        <location filename="../UI/controlcenter.ui" line="3131"/>
         <source>&amp;Hash Token Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3202"/>
+        <location filename="../UI/controlcenter.ui" line="3222"/>
         <source>The keyword Any is supported.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3246"/>
-        <location filename="../UI/controlcenter.ui" line="3724"/>
+        <location filename="../UI/controlcenter.ui" line="3266"/>
+        <location filename="../UI/controlcenter.ui" line="3744"/>
         <source>Message of the Day</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3368"/>
+        <location filename="../UI/controlcenter.ui" line="3388"/>
         <source>Copy Public Keys</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3375"/>
+        <location filename="../UI/controlcenter.ui" line="3395"/>
         <source>Share Buzz Magnet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3729"/>
+        <location filename="../UI/controlcenter.ui" line="3749"/>
         <source>Encrypted</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3734"/>
+        <location filename="../UI/controlcenter.ui" line="3754"/>
         <source>certificate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3739"/>
+        <location filename="../UI/controlcenter.ui" line="3759"/>
         <source>Adaptive Echo Token</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3744"/>
+        <location filename="../UI/controlcenter.ui" line="3764"/>
         <source>Adaptive Echo Token Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3803"/>
+        <location filename="../UI/controlcenter.ui" line="3823"/>
         <source>The uniqueness of a neighbor is defined by the proxy hostname, the proxy port, the remote IP, the remote port, the scope ID, and the transport.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4009"/>
+        <location filename="../UI/controlcenter.ui" line="4029"/>
         <source>Require secure connections.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4348"/>
+        <location filename="../UI/controlcenter.ui" line="4368"/>
         <source>&amp;E-Mail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4534"/>
+        <location filename="../UI/controlcenter.ui" line="4554"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please consider installing PostgreSQL. Although SQLite is fully supported, PostgreSQL offers improved performance as well as networking capabilities. Please visit &lt;a href=&quot;http://www.postgresql.org/download&quot;&gt;http://www.postgresql.org/download&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4547"/>
+        <location filename="../UI/controlcenter.ui" line="4567"/>
         <source>Database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4567"/>
+        <location filename="../UI/controlcenter.ui" line="4587"/>
         <source>1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4574"/>
+        <location filename="../UI/controlcenter.ui" line="4594"/>
         <source>&amp;SQLite</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4587"/>
+        <location filename="../UI/controlcenter.ui" line="4607"/>
         <source>PostgreSQL Connect</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4602"/>
+        <location filename="../UI/controlcenter.ui" line="4622"/>
         <source>2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4609"/>
+        <location filename="../UI/controlcenter.ui" line="4629"/>
         <source>Prepare Databases</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4629"/>
+        <location filename="../UI/controlcenter.ui" line="4649"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Delete all information relevant to URLs.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4632"/>
+        <location filename="../UI/controlcenter.ui" line="4652"/>
         <source>Vacuum Databases</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4642"/>
+        <location filename="../UI/controlcenter.ui" line="4662"/>
         <source>Common Credentials</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4660"/>
+        <location filename="../UI/controlcenter.ui" line="4680"/>
         <source>Common credentials have not been set.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4686"/>
+        <location filename="../UI/controlcenter.ui" line="4706"/>
         <source>3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4710"/>
+        <location filename="../UI/controlcenter.ui" line="4730"/>
         <source>&amp;Secret</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4723"/>
+        <location filename="../UI/controlcenter.ui" line="4743"/>
         <source>P&amp;IN</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4777"/>
-        <location filename="../UI/controlcenter.ui" line="4955"/>
+        <location filename="../UI/controlcenter.ui" line="4797"/>
+        <location filename="../UI/controlcenter.ui" line="4975"/>
         <source>Iteraction &amp;Count</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4813"/>
+        <location filename="../UI/controlcenter.ui" line="4833"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generate encryption and hash keys and save the results along with relevant information.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4832"/>
+        <location filename="../UI/controlcenter.ui" line="4852"/>
         <source>Import Information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4850"/>
+        <location filename="../UI/controlcenter.ui" line="4870"/>
         <source>Import credentials have not been set.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4872"/>
+        <location filename="../UI/controlcenter.ui" line="4892"/>
         <source>&amp;INI Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4893"/>
+        <location filename="../UI/controlcenter.ui" line="4913"/>
         <source>4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4900"/>
+        <location filename="../UI/controlcenter.ui" line="4920"/>
         <source>Reload</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4998"/>
+        <location filename="../UI/controlcenter.ui" line="5018"/>
         <source>&amp;Passphrase</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5022"/>
+        <location filename="../UI/controlcenter.ui" line="5042"/>
         <source>Hash (Hex)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5035"/>
+        <location filename="../UI/controlcenter.ui" line="5055"/>
         <source>&amp;Salt (Hex)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5076"/>
+        <location filename="../UI/controlcenter.ui" line="5096"/>
         <source>5</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5083"/>
+        <location filename="../UI/controlcenter.ui" line="5103"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Compute a salted hash of the provided passphrase and compare the result with the hash contained within the specified INI file.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5086"/>
+        <location filename="../UI/controlcenter.ui" line="5106"/>
         <source>Verify</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5101"/>
+        <location filename="../UI/controlcenter.ui" line="5121"/>
         <source>6</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5108"/>
+        <location filename="../UI/controlcenter.ui" line="5128"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generate an encryption key and save the result along with relevant information.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5126"/>
+        <location filename="../UI/controlcenter.ui" line="5146"/>
         <source>7</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5133"/>
+        <location filename="../UI/controlcenter.ui" line="5153"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Import URL data from the shared.db database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5136"/>
+        <location filename="../UI/controlcenter.ui" line="5156"/>
         <source>Import URLs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5202"/>
+        <location filename="../UI/controlcenter.ui" line="5222"/>
         <source>Discover!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5255"/>
+        <location filename="../UI/controlcenter.ui" line="5275"/>
         <source>&lt; 1 &gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5332"/>
-        <location filename="../UI/controlcenter.ui" line="5519"/>
+        <location filename="../UI/controlcenter.ui" line="5352"/>
+        <location filename="../UI/controlcenter.ui" line="5539"/>
         <source>&amp;External IP Retrieval Interval</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5349"/>
-        <location filename="../UI/controlcenter.ui" line="5536"/>
+        <location filename="../UI/controlcenter.ui" line="5369"/>
+        <location filename="../UI/controlcenter.ui" line="5556"/>
         <source>30 Seconds</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5354"/>
-        <location filename="../UI/controlcenter.ui" line="5541"/>
+        <location filename="../UI/controlcenter.ui" line="5374"/>
+        <location filename="../UI/controlcenter.ui" line="5561"/>
         <source>60 Seconds</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5359"/>
-        <location filename="../UI/controlcenter.ui" line="5546"/>
+        <location filename="../UI/controlcenter.ui" line="5379"/>
+        <location filename="../UI/controlcenter.ui" line="5566"/>
         <source>Never</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5367"/>
-        <location filename="../UI/controlcenter.ui" line="5554"/>
+        <location filename="../UI/controlcenter.ui" line="5387"/>
+        <location filename="../UI/controlcenter.ui" line="5574"/>
         <source>&amp;Secure Memory Pool</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5407"/>
+        <location filename="../UI/controlcenter.ui" line="5427"/>
         <source>&amp;GeoIP Data Path IPv4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5434"/>
+        <location filename="../UI/controlcenter.ui" line="5454"/>
         <source>&amp;GeoIP Data Path IPv6</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5624"/>
+        <location filename="../UI/controlcenter.ui" line="5644"/>
         <source>&amp;Force Registration</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5751"/>
+        <location filename="../UI/controlcenter.ui" line="5771"/>
         <source>&amp;Congestion Cost</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6246"/>
+        <location filename="../UI/controlcenter.ui" line="6266"/>
         <source>Information goes here.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8063"/>
+        <location filename="../UI/controlcenter.ui" line="8083"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Image copyright http://www.dragoart.com.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8181"/>
+        <location filename="../UI/controlcenter.ui" line="8201"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;http://sourceforge.net/p/spot-on/code/HEAD/tree/branches/Documentation/RELEASE-NOTES&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Version 0.18&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8435"/>
+        <location filename="../UI/controlcenter.ui" line="8455"/>
         <source>Clear Clipboard &amp;Buffer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8438"/>
+        <location filename="../UI/controlcenter.ui" line="8458"/>
         <source>Ctrl+B</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8443"/>
+        <location filename="../UI/controlcenter.ui" line="8463"/>
         <source>&amp;Poptastic Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5884"/>
-        <location filename="../UI/controlcenter.ui" line="5909"/>
+        <location filename="../UI/controlcenter.ui" line="5904"/>
+        <location filename="../UI/controlcenter.ui" line="5929"/>
         <source>Statistics</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5992"/>
+        <location filename="../UI/controlcenter.ui" line="6012"/>
         <source>Statistic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5997"/>
+        <location filename="../UI/controlcenter.ui" line="6017"/>
         <source>Value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6189"/>
+        <location filename="../UI/controlcenter.ui" line="6209"/>
         <source>&amp;Question/Answer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6196"/>
-        <location filename="../UI/controlcenter.ui" line="8156"/>
+        <location filename="../UI/controlcenter.ui" line="6216"/>
+        <location filename="../UI/controlcenter.ui" line="8176"/>
         <source>&amp;Question</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6209"/>
-        <location filename="../UI/controlcenter.ui" line="8166"/>
+        <location filename="../UI/controlcenter.ui" line="6229"/>
+        <location filename="../UI/controlcenter.ui" line="8186"/>
         <source>&amp;Answer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6443"/>
+        <location filename="../UI/controlcenter.ui" line="6463"/>
         <source>NTRU</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6466"/>
+        <location filename="../UI/controlcenter.ui" line="6486"/>
         <source>Create</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6421"/>
+        <location filename="../UI/controlcenter.ui" line="6441"/>
         <source>Key &amp;Type</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3735,290 +3735,290 @@ SSL Control String: %24</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="989"/>
+        <location filename="../UI/controlcenter.ui" line="1009"/>
         <source>E-Mail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6617"/>
+        <location filename="../UI/controlcenter.ui" line="6637"/>
         <source>&amp;Magnets</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6681"/>
+        <location filename="../UI/controlcenter.ui" line="6701"/>
         <source>One-Time-Magnet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8417"/>
+        <location filename="../UI/controlcenter.ui" line="8437"/>
         <source>&amp;Minimal Display</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8425"/>
+        <location filename="../UI/controlcenter.ui" line="8445"/>
         <source>Everaldo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2047"/>
-        <location filename="../UI/controlcenter.ui" line="6716"/>
+        <location filename="../UI/controlcenter.ui" line="2067"/>
+        <location filename="../UI/controlcenter.ui" line="6736"/>
         <source>&amp;Add</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6473"/>
+        <location filename="../UI/controlcenter.ui" line="6493"/>
         <source>If checked, new key pairs will be generated whenever the passphrase or question/answer is/are updated.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6565"/>
+        <location filename="../UI/controlcenter.ui" line="6585"/>
         <source>Automatically accept shared &amp;magnets.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6749"/>
+        <location filename="../UI/controlcenter.ui" line="6769"/>
         <source>&amp;Create</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6848"/>
+        <location filename="../UI/controlcenter.ui" line="6868"/>
         <source>Encryption &amp;Key</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6914"/>
+        <location filename="../UI/controlcenter.ui" line="6934"/>
         <source>&amp;Received</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="7000"/>
+        <location filename="../UI/controlcenter.ui" line="7020"/>
         <source>Received</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="7023"/>
+        <location filename="../UI/controlcenter.ui" line="7043"/>
         <source>&amp;Destination Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="7098"/>
+        <location filename="../UI/controlcenter.ui" line="7118"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;A lock request may not be immediate because of the asynchronous nature of Spot-On. If a file is locked, its write permissions will be revoked.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="7133"/>
+        <location filename="../UI/controlcenter.ui" line="7153"/>
         <source>Locked</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="7138"/>
+        <location filename="../UI/controlcenter.ui" line="7158"/>
         <source>Percent Received</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="7148"/>
-        <location filename="../UI/controlcenter.ui" line="7269"/>
+        <location filename="../UI/controlcenter.ui" line="7168"/>
+        <location filename="../UI/controlcenter.ui" line="7289"/>
         <source>Total Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="7158"/>
-        <location filename="../UI/controlcenter.ui" line="7289"/>
+        <location filename="../UI/controlcenter.ui" line="7178"/>
+        <location filename="../UI/controlcenter.ui" line="7309"/>
         <source>SHA-1 Hash</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="7284"/>
+        <location filename="../UI/controlcenter.ui" line="7304"/>
         <source>Mosaic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="7522"/>
+        <location filename="../UI/controlcenter.ui" line="7542"/>
         <source>URLs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8004"/>
+        <location filename="../UI/controlcenter.ui" line="8024"/>
         <source>About</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8404"/>
+        <location filename="../UI/controlcenter.ui" line="8424"/>
         <source>&amp;Import Neighbors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8409"/>
+        <location filename="../UI/controlcenter.ui" line="8429"/>
         <source>&amp;StarBeam Analyzer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8291"/>
+        <location filename="../UI/controlcenter.ui" line="8311"/>
         <source>&amp;Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="7410"/>
+        <location filename="../UI/controlcenter.ui" line="7430"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Place each pulse in an encrypted envelope. Please remember to notify all recipients of the key information.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="7427"/>
+        <location filename="../UI/controlcenter.ui" line="7447"/>
         <source>&amp;Missing Links Magnet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8368"/>
+        <location filename="../UI/controlcenter.ui" line="8388"/>
         <source>&amp;Rosetta</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8373"/>
+        <location filename="../UI/controlcenter.ui" line="8393"/>
         <source>&amp;Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8376"/>
+        <location filename="../UI/controlcenter.ui" line="8396"/>
         <source>Ctrl+C</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8381"/>
+        <location filename="../UI/controlcenter.ui" line="8401"/>
         <source>&amp;Paste</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8384"/>
+        <location filename="../UI/controlcenter.ui" line="8404"/>
         <source>Ctrl+V</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8389"/>
+        <location filename="../UI/controlcenter.ui" line="8409"/>
         <source>&amp;Export Public Keys</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8394"/>
+        <location filename="../UI/controlcenter.ui" line="8414"/>
         <source>&amp;Import Public Keys</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8399"/>
+        <location filename="../UI/controlcenter.ui" line="8419"/>
         <source>&amp;Export Listeners</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6773"/>
+        <location filename="../UI/controlcenter.ui" line="6793"/>
         <source>Generate Encryption Key</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6778"/>
+        <location filename="../UI/controlcenter.ui" line="6798"/>
         <source>Generate MAC Key</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2126"/>
-        <location filename="../UI/controlcenter.ui" line="4760"/>
-        <location filename="../UI/controlcenter.ui" line="4938"/>
-        <location filename="../UI/controlcenter.ui" line="5714"/>
-        <location filename="../UI/controlcenter.ui" line="6045"/>
-        <location filename="../UI/controlcenter.ui" line="6861"/>
+        <location filename="../UI/controlcenter.ui" line="2146"/>
+        <location filename="../UI/controlcenter.ui" line="4780"/>
+        <location filename="../UI/controlcenter.ui" line="4958"/>
+        <location filename="../UI/controlcenter.ui" line="5734"/>
+        <location filename="../UI/controlcenter.ui" line="6065"/>
+        <location filename="../UI/controlcenter.ui" line="6881"/>
         <source>&amp;Hash Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2116"/>
-        <location filename="../UI/controlcenter.ui" line="4743"/>
-        <location filename="../UI/controlcenter.ui" line="4921"/>
-        <location filename="../UI/controlcenter.ui" line="5697"/>
-        <location filename="../UI/controlcenter.ui" line="6028"/>
-        <location filename="../UI/controlcenter.ui" line="6818"/>
+        <location filename="../UI/controlcenter.ui" line="2136"/>
+        <location filename="../UI/controlcenter.ui" line="4763"/>
+        <location filename="../UI/controlcenter.ui" line="4941"/>
+        <location filename="../UI/controlcenter.ui" line="5717"/>
+        <location filename="../UI/controlcenter.ui" line="6048"/>
+        <location filename="../UI/controlcenter.ui" line="6838"/>
         <source>&amp;Cipher Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="7481"/>
+        <location filename="../UI/controlcenter.ui" line="7501"/>
         <source> Bytes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="7176"/>
+        <location filename="../UI/controlcenter.ui" line="7196"/>
         <source>&amp;Transmitted</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2386"/>
-        <location filename="../UI/controlcenter.ui" line="3594"/>
+        <location filename="../UI/controlcenter.ui" line="2406"/>
+        <location filename="../UI/controlcenter.ui" line="3614"/>
         <source>SSL Key Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2416"/>
-        <location filename="../UI/controlcenter.ui" line="3619"/>
+        <location filename="../UI/controlcenter.ui" line="2436"/>
+        <location filename="../UI/controlcenter.ui" line="3639"/>
         <source>External Port</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2431"/>
-        <location filename="../UI/controlcenter.ui" line="3669"/>
+        <location filename="../UI/controlcenter.ui" line="2451"/>
+        <location filename="../UI/controlcenter.ui" line="3689"/>
         <source>Echo Mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2436"/>
+        <location filename="../UI/controlcenter.ui" line="2456"/>
         <source>Use Accounts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2484"/>
+        <location filename="../UI/controlcenter.ui" line="2504"/>
         <source>Add Listener</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2695"/>
+        <location filename="../UI/controlcenter.ui" line="2715"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Record the current external IP address in the listener&apos;s certificate. Please do not use this option if you have a dynamic IP address.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2698"/>
+        <location filename="../UI/controlcenter.ui" line="2718"/>
         <source>&amp;Ip Address</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2705"/>
+        <location filename="../UI/controlcenter.ui" line="2725"/>
         <source>&amp;Permanent Certificate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2715"/>
-        <location filename="../UI/controlcenter.ui" line="3435"/>
-        <location filename="../UI/controlcenter.ui" line="4022"/>
-        <location filename="../UI/controlcenter.ui" line="5791"/>
+        <location filename="../UI/controlcenter.ui" line="2735"/>
+        <location filename="../UI/controlcenter.ui" line="3455"/>
+        <location filename="../UI/controlcenter.ui" line="4042"/>
+        <location filename="../UI/controlcenter.ui" line="5811"/>
         <source>&amp;SSL Key Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2729"/>
-        <location filename="../UI/controlcenter.ui" line="3452"/>
-        <location filename="../UI/controlcenter.ui" line="4036"/>
-        <location filename="../UI/controlcenter.ui" line="5808"/>
+        <location filename="../UI/controlcenter.ui" line="2749"/>
+        <location filename="../UI/controlcenter.ui" line="3472"/>
+        <location filename="../UI/controlcenter.ui" line="4056"/>
+        <location filename="../UI/controlcenter.ui" line="5828"/>
         <source>2048</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2739"/>
-        <location filename="../UI/controlcenter.ui" line="3462"/>
-        <location filename="../UI/controlcenter.ui" line="4046"/>
-        <location filename="../UI/controlcenter.ui" line="5818"/>
-        <location filename="../UI/controlcenter.ui" line="6283"/>
-        <location filename="../UI/controlcenter.ui" line="6356"/>
+        <location filename="../UI/controlcenter.ui" line="2759"/>
+        <location filename="../UI/controlcenter.ui" line="3482"/>
+        <location filename="../UI/controlcenter.ui" line="4066"/>
+        <location filename="../UI/controlcenter.ui" line="5838"/>
+        <location filename="../UI/controlcenter.ui" line="6303"/>
+        <location filename="../UI/controlcenter.ui" line="6376"/>
         <source>4096</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2668"/>
-        <location filename="../UI/controlcenter.ui" line="3972"/>
+        <location filename="../UI/controlcenter.ui" line="2688"/>
+        <location filename="../UI/controlcenter.ui" line="3992"/>
         <source>&amp;Echo Mode</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4048,350 +4048,350 @@ SSL Control String: %24</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="7060"/>
+        <location filename="../UI/controlcenter.ui" line="7080"/>
         <source> MiB</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1820"/>
+        <location filename="../UI/controlcenter.ui" line="1840"/>
         <source>&amp;Reject messages without signatures. The setting does not apply to data destined for institutions.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1932"/>
+        <location filename="../UI/controlcenter.ui" line="1952"/>
         <source>Institutions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1976"/>
+        <location filename="../UI/controlcenter.ui" line="1996"/>
         <source>Cipher Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1981"/>
+        <location filename="../UI/controlcenter.ui" line="2001"/>
         <source>Postal Address</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1986"/>
+        <location filename="../UI/controlcenter.ui" line="2006"/>
         <source>Hash Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1999"/>
+        <location filename="../UI/controlcenter.ui" line="2019"/>
         <source>Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2186"/>
+        <location filename="../UI/controlcenter.ui" line="2206"/>
         <source>Listeners</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2244"/>
+        <location filename="../UI/controlcenter.ui" line="2264"/>
         <source>&amp;Limit connections to</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2277"/>
+        <location filename="../UI/controlcenter.ui" line="2297"/>
         <source>External IP information is required.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2280"/>
+        <location filename="../UI/controlcenter.ui" line="2300"/>
         <source>Periodically p&amp;ublish plaintext information.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2682"/>
-        <location filename="../UI/controlcenter.ui" line="3986"/>
+        <location filename="../UI/controlcenter.ui" line="2702"/>
+        <location filename="../UI/controlcenter.ui" line="4006"/>
         <source>Full Echo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2687"/>
-        <location filename="../UI/controlcenter.ui" line="3991"/>
+        <location filename="../UI/controlcenter.ui" line="2707"/>
+        <location filename="../UI/controlcenter.ui" line="4011"/>
         <source>Half Echo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2882"/>
+        <location filename="../UI/controlcenter.ui" line="2902"/>
         <source>Accounts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2907"/>
+        <location filename="../UI/controlcenter.ui" line="2927"/>
         <source>The account name and the account password must contain at least thirty-two characters each.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2955"/>
+        <location filename="../UI/controlcenter.ui" line="2975"/>
         <source>&amp;One-Time Account</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3013"/>
+        <location filename="../UI/controlcenter.ui" line="3033"/>
         <source>Adaptive echo tokens are applied to all defined listeners.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3053"/>
+        <location filename="../UI/controlcenter.ui" line="3073"/>
         <source>Token Encryption Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3058"/>
+        <location filename="../UI/controlcenter.ui" line="3078"/>
         <source>Token Hash Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3066"/>
+        <location filename="../UI/controlcenter.ui" line="3086"/>
         <source>The token must contain at least ninety-six characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3307"/>
+        <location filename="../UI/controlcenter.ui" line="3327"/>
         <source>Neighbors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3402"/>
+        <location filename="../UI/controlcenter.ui" line="3422"/>
         <source>Select this option if you would like to accept and connect to published listeners.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3412"/>
+        <location filename="../UI/controlcenter.ui" line="3432"/>
         <source>Select this option if you would like to accept published listeners.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3599"/>
+        <location filename="../UI/controlcenter.ui" line="3619"/>
         <source>Status Control</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3624"/>
+        <location filename="../UI/controlcenter.ui" line="3644"/>
         <source>Country</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3649"/>
+        <location filename="../UI/controlcenter.ui" line="3669"/>
         <source>Proxy Hostname</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3654"/>
+        <location filename="../UI/controlcenter.ui" line="3674"/>
         <source>Proxy Port</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3679"/>
+        <location filename="../UI/controlcenter.ui" line="3699"/>
         <source>Allow Certificate Exceptions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3689"/>
+        <location filename="../UI/controlcenter.ui" line="3709"/>
         <source>Bytes Read</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3694"/>
+        <location filename="../UI/controlcenter.ui" line="3714"/>
         <source>Bytes Written</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3699"/>
+        <location filename="../UI/controlcenter.ui" line="3719"/>
         <source>SSL Session Cipher</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3704"/>
+        <location filename="../UI/controlcenter.ui" line="3724"/>
         <source>Account Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3709"/>
+        <location filename="../UI/controlcenter.ui" line="3729"/>
         <source>Account Authenticated</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3908"/>
+        <location filename="../UI/controlcenter.ui" line="3928"/>
         <source>Dynamic DNS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3911"/>
+        <location filename="../UI/controlcenter.ui" line="3931"/>
         <source>&amp;DDNS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3999"/>
+        <location filename="../UI/controlcenter.ui" line="4019"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Spot-On will record peer certificates during initial connections. Subsequent connections will cause Spot-On to inspect peer certificates. If there are discrepancies between recorded certificates and transmitted certificates, Spot-On will sever the connections. Enable this option if you would like Spot-On to ignore discrepancies.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4012"/>
+        <location filename="../UI/controlcenter.ui" line="4032"/>
         <source>&amp;Require SSL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4485"/>
-        <location filename="../UI/controlcenter.ui" line="5291"/>
+        <location filename="../UI/controlcenter.ui" line="4505"/>
+        <location filename="../UI/controlcenter.ui" line="5311"/>
         <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4693"/>
+        <location filename="../UI/controlcenter.ui" line="4713"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;You may access the PostgreSQL URL database from multiple devices if common credentials are prepared. The credentials are stored in an SQLite database. The vacuum process will remove the credentials.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4857"/>
+        <location filename="../UI/controlcenter.ui" line="4877"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The INI path may reference the absolute path of the Dooble.ini file. On Unix systems, this file usually resides in ~/.dooble. On Windows systems, the Dooble.ini file usually resides in the directory that also houses the Dooble.exe file. The credentials are stored in an SQLite database. The vacuum process will remove the credentials.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5485"/>
+        <location filename="../UI/controlcenter.ui" line="5505"/>
         <source>Display a list of ciphers produced by the provided SSL Control String.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5488"/>
+        <location filename="../UI/controlcenter.ui" line="5508"/>
         <source>Test</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5781"/>
+        <location filename="../UI/controlcenter.ui" line="5801"/>
         <source>Please note that this option will advertise your presence.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5831"/>
+        <location filename="../UI/controlcenter.ui" line="5851"/>
         <source>&amp;Super Echo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5841"/>
+        <location filename="../UI/controlcenter.ui" line="5861"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If enabled, messages that are interpreted correctly will be echoed. Please note that this option will advertise your presence. This option does not supersede a half-echo agreement.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5851"/>
+        <location filename="../UI/controlcenter.ui" line="5871"/>
         <source>Complete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5856"/>
+        <location filename="../UI/controlcenter.ui" line="5876"/>
         <source>Disabled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6261"/>
-        <location filename="../UI/controlcenter.ui" line="6476"/>
+        <location filename="../UI/controlcenter.ui" line="6281"/>
+        <location filename="../UI/controlcenter.ui" line="6496"/>
         <source>&amp;Key Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6318"/>
+        <location filename="../UI/controlcenter.ui" line="6338"/>
         <source>ECDSA</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6323"/>
+        <location filename="../UI/controlcenter.ui" line="6343"/>
         <source>EdDSA</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6456"/>
+        <location filename="../UI/controlcenter.ui" line="6476"/>
         <source>&amp;Encryption</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8430"/>
+        <location filename="../UI/controlcenter.ui" line="8450"/>
         <source>&amp;File Encryption</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6328"/>
-        <location filename="../UI/controlcenter.ui" line="6438"/>
+        <location filename="../UI/controlcenter.ui" line="6348"/>
+        <location filename="../UI/controlcenter.ui" line="6458"/>
         <source>ElGamal</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6333"/>
-        <location filename="../UI/controlcenter.ui" line="6448"/>
+        <location filename="../UI/controlcenter.ui" line="6353"/>
+        <location filename="../UI/controlcenter.ui" line="6468"/>
         <source>RSA</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6379"/>
+        <location filename="../UI/controlcenter.ui" line="6399"/>
         <source>&amp;Signature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6313"/>
+        <location filename="../UI/controlcenter.ui" line="6333"/>
         <source>DSA</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6524"/>
+        <location filename="../UI/controlcenter.ui" line="6544"/>
         <source>StarBeam</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6930"/>
+        <location filename="../UI/controlcenter.ui" line="6950"/>
         <source>Novas</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6955"/>
-        <location filename="../UI/controlcenter.ui" line="7395"/>
+        <location filename="../UI/controlcenter.ui" line="6975"/>
+        <location filename="../UI/controlcenter.ui" line="7415"/>
         <source>Novas must contain at least forty-eight characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="7254"/>
+        <location filename="../UI/controlcenter.ui" line="7274"/>
         <source>Paused</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="7143"/>
-        <location filename="../UI/controlcenter.ui" line="7264"/>
+        <location filename="../UI/controlcenter.ui" line="7163"/>
+        <location filename="../UI/controlcenter.ui" line="7284"/>
         <source>Pulse Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="7320"/>
+        <location filename="../UI/controlcenter.ui" line="7340"/>
         <source>Rewind</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="7471"/>
+        <location filename="../UI/controlcenter.ui" line="7491"/>
         <source>&amp;Pulse Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="7717"/>
+        <location filename="../UI/controlcenter.ui" line="7737"/>
         <source>URL Polarizers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8344"/>
+        <location filename="../UI/controlcenter.ui" line="8364"/>
         <source>&amp;East</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8355"/>
+        <location filename="../UI/controlcenter.ui" line="8375"/>
         <source>&amp;North</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8363"/>
+        <location filename="../UI/controlcenter.ui" line="8383"/>
         <source>&amp;West</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4239"/>
+        <location filename="../UI/controlcenter.ui" line="4259"/>
         <source>&amp;Type</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4401,53 +4401,53 @@ SSL Control String: %24</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4129"/>
+        <location filename="../UI/controlcenter.ui" line="4149"/>
         <source>Pro&amp;xy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4147"/>
+        <location filename="../UI/controlcenter.ui" line="4167"/>
         <source>&amp;Hostname</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4157"/>
+        <location filename="../UI/controlcenter.ui" line="4177"/>
         <source>&amp;Username</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2932"/>
-        <location filename="../UI/controlcenter.ui" line="4262"/>
+        <location filename="../UI/controlcenter.ui" line="2952"/>
+        <location filename="../UI/controlcenter.ui" line="4282"/>
         <source>&amp;Password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2952"/>
+        <location filename="../UI/controlcenter.ui" line="2972"/>
         <source>If checked, the account will be removed after a client successfully authenticates itself.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3174"/>
+        <location filename="../UI/controlcenter.ui" line="3194"/>
         <source>Allowed IP Addresses</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3365"/>
+        <location filename="../UI/controlcenter.ui" line="3385"/>
         <source>Copy your public key pairs to the clipboard buffer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4206"/>
+        <location filename="../UI/controlcenter.ui" line="4226"/>
         <source>HTTP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4211"/>
+        <location filename="../UI/controlcenter.ui" line="4231"/>
         <source>Socks5</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4216"/>
+        <location filename="../UI/controlcenter.ui" line="4236"/>
         <source>System</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4456,89 +4456,89 @@ SSL Control String: %24</source>
         <translation type="obsolete">Buscar</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5502"/>
+        <location filename="../UI/controlcenter.ui" line="5522"/>
         <source>Kernel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5621"/>
+        <location filename="../UI/controlcenter.ui" line="5641"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please enable this option if you would like to force kernel registration. By forcing kernel registration, an existing kernel process that Spot-On is aware of will be deactivated. You may wish to use this option if a kernel was not deactivated properly.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5647"/>
+        <location filename="../UI/controlcenter.ui" line="5667"/>
         <source>PID</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5660"/>
+        <location filename="../UI/controlcenter.ui" line="5680"/>
         <source>0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5594"/>
+        <location filename="../UI/controlcenter.ui" line="5614"/>
         <source>Spot-On-Kernel &amp;Executable</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6234"/>
+        <location filename="../UI/controlcenter.ui" line="6254"/>
         <source>Public Keys</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6142"/>
+        <location filename="../UI/controlcenter.ui" line="6162"/>
         <source>P&amp;assphrase Confirmation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8315"/>
+        <location filename="../UI/controlcenter.ui" line="8335"/>
         <source>Nuvola</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8323"/>
+        <location filename="../UI/controlcenter.ui" line="8343"/>
         <source>Nouve</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8331"/>
+        <location filename="../UI/controlcenter.ui" line="8351"/>
         <source>Ctrl+L</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8336"/>
+        <location filename="../UI/controlcenter.ui" line="8356"/>
         <source>&amp;Reset Spot-On</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8328"/>
+        <location filename="../UI/controlcenter.ui" line="8348"/>
         <source>&amp;Log Viewer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2376"/>
-        <location filename="../UI/controlcenter.ui" line="5634"/>
+        <location filename="../UI/controlcenter.ui" line="2396"/>
+        <location filename="../UI/controlcenter.ui" line="5654"/>
         <source>Activate</source>
         <translation type="unfinished">Activar</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="813"/>
-        <location filename="../UI/controlcenter.ui" line="1405"/>
-        <location filename="../UI/controlcenter.ui" line="2381"/>
-        <location filename="../UI/controlcenter.ui" line="3589"/>
-        <location filename="../UI/controlcenter.ui" line="7274"/>
+        <location filename="../UI/controlcenter.ui" line="833"/>
+        <location filename="../UI/controlcenter.ui" line="1425"/>
+        <location filename="../UI/controlcenter.ui" line="2401"/>
+        <location filename="../UI/controlcenter.ui" line="3609"/>
+        <location filename="../UI/controlcenter.ui" line="7294"/>
         <source>Status</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2401"/>
-        <location filename="../UI/controlcenter.ui" line="3639"/>
+        <location filename="../UI/controlcenter.ui" line="2421"/>
+        <location filename="../UI/controlcenter.ui" line="3659"/>
         <source>Scope ID</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2524"/>
-        <location filename="../UI/controlcenter.ui" line="3830"/>
+        <location filename="../UI/controlcenter.ui" line="2544"/>
+        <location filename="../UI/controlcenter.ui" line="3850"/>
         <source>&amp;IP</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4558,16 +4558,16 @@ SSL Control String: %24</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="793"/>
-        <location filename="../UI/controlcenter.ui" line="1690"/>
-        <location filename="../UI/controlcenter.ui" line="7690"/>
+        <location filename="../UI/controlcenter.ui" line="813"/>
+        <location filename="../UI/controlcenter.ui" line="1710"/>
+        <location filename="../UI/controlcenter.ui" line="7710"/>
         <source>Participant</source>
         <translation type="unfinished">Partícipe</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="803"/>
-        <location filename="../UI/controlcenter.ui" line="1700"/>
-        <location filename="../UI/controlcenter.ui" line="7700"/>
+        <location filename="../UI/controlcenter.ui" line="823"/>
+        <location filename="../UI/controlcenter.ui" line="1720"/>
+        <location filename="../UI/controlcenter.ui" line="7720"/>
         <source>neighbor_oid</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4576,107 +4576,107 @@ SSL Control String: %24</source>
         <translation type="obsolete">Ruta de ejecutable Spot-On-Kernel</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2426"/>
+        <location filename="../UI/controlcenter.ui" line="2446"/>
         <source>Max. Conn.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2538"/>
+        <location filename="../UI/controlcenter.ui" line="2558"/>
         <source>Custom</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2159"/>
-        <location filename="../UI/controlcenter.ui" line="2833"/>
-        <location filename="../UI/controlcenter.ui" line="2982"/>
-        <location filename="../UI/controlcenter.ui" line="3155"/>
-        <location filename="../UI/controlcenter.ui" line="3227"/>
-        <location filename="../UI/controlcenter.ui" line="4306"/>
-        <location filename="../UI/controlcenter.ui" line="4399"/>
-        <location filename="../UI/controlcenter.ui" line="6904"/>
-        <location filename="../UI/controlcenter.ui" line="6983"/>
-        <location filename="../UI/controlcenter.ui" line="7808"/>
-        <location filename="../UI/controlcenter.ui" line="7934"/>
+        <location filename="../UI/controlcenter.ui" line="2179"/>
+        <location filename="../UI/controlcenter.ui" line="2853"/>
+        <location filename="../UI/controlcenter.ui" line="3002"/>
+        <location filename="../UI/controlcenter.ui" line="3175"/>
+        <location filename="../UI/controlcenter.ui" line="3247"/>
+        <location filename="../UI/controlcenter.ui" line="4326"/>
+        <location filename="../UI/controlcenter.ui" line="4419"/>
+        <location filename="../UI/controlcenter.ui" line="6924"/>
+        <location filename="../UI/controlcenter.ui" line="7003"/>
+        <location filename="../UI/controlcenter.ui" line="7828"/>
+        <location filename="../UI/controlcenter.ui" line="7954"/>
         <source>Add</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4331"/>
+        <location filename="../UI/controlcenter.ui" line="4351"/>
         <source>Add Participant</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4355"/>
+        <location filename="../UI/controlcenter.ui" line="4375"/>
         <source>&amp;Key</source>
         <translation type="unfinished">Clave</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4365"/>
+        <location filename="../UI/controlcenter.ui" line="4385"/>
         <source>&amp;Repleo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4444"/>
+        <location filename="../UI/controlcenter.ui" line="4464"/>
         <source>Search</source>
         <translation type="unfinished">Buscar</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5670"/>
+        <location filename="../UI/controlcenter.ui" line="5690"/>
         <source>Deactivate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1540"/>
-        <location filename="../UI/controlcenter.ui" line="4907"/>
-        <location filename="../UI/controlcenter.ui" line="5420"/>
-        <location filename="../UI/controlcenter.ui" line="5447"/>
-        <location filename="../UI/controlcenter.ui" line="5607"/>
-        <location filename="../UI/controlcenter.ui" line="7036"/>
-        <location filename="../UI/controlcenter.ui" line="7464"/>
+        <location filename="../UI/controlcenter.ui" line="1560"/>
+        <location filename="../UI/controlcenter.ui" line="4927"/>
+        <location filename="../UI/controlcenter.ui" line="5440"/>
+        <location filename="../UI/controlcenter.ui" line="5467"/>
+        <location filename="../UI/controlcenter.ui" line="5627"/>
+        <location filename="../UI/controlcenter.ui" line="7056"/>
+        <location filename="../UI/controlcenter.ui" line="7484"/>
         <source>Select</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6062"/>
+        <location filename="../UI/controlcenter.ui" line="6082"/>
         <source>Iteration &amp;Count</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2734"/>
-        <location filename="../UI/controlcenter.ui" line="3457"/>
-        <location filename="../UI/controlcenter.ui" line="4041"/>
-        <location filename="../UI/controlcenter.ui" line="5813"/>
-        <location filename="../UI/controlcenter.ui" line="6278"/>
-        <location filename="../UI/controlcenter.ui" line="6351"/>
+        <location filename="../UI/controlcenter.ui" line="2754"/>
+        <location filename="../UI/controlcenter.ui" line="3477"/>
+        <location filename="../UI/controlcenter.ui" line="4061"/>
+        <location filename="../UI/controlcenter.ui" line="5833"/>
+        <location filename="../UI/controlcenter.ui" line="6298"/>
+        <location filename="../UI/controlcenter.ui" line="6371"/>
         <source>3072</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6288"/>
-        <location filename="../UI/controlcenter.ui" line="6361"/>
+        <location filename="../UI/controlcenter.ui" line="6308"/>
+        <location filename="../UI/controlcenter.ui" line="6381"/>
         <source>7680</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6298"/>
-        <location filename="../UI/controlcenter.ui" line="6371"/>
+        <location filename="../UI/controlcenter.ui" line="6318"/>
+        <location filename="../UI/controlcenter.ui" line="6391"/>
         <source>15360</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6085"/>
+        <location filename="../UI/controlcenter.ui" line="6105"/>
         <source>Salt &amp;Length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6125"/>
-        <location filename="../UI/controlcenter.ui" line="6176"/>
-        <location filename="../UI/controlcenter.ui" line="8112"/>
+        <location filename="../UI/controlcenter.ui" line="6145"/>
+        <location filename="../UI/controlcenter.ui" line="6196"/>
+        <location filename="../UI/controlcenter.ui" line="8132"/>
         <source>P&amp;assphrase</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6152"/>
+        <location filename="../UI/controlcenter.ui" line="6172"/>
         <source>Minimum of 16 characters.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4685,30 +4685,30 @@ SSL Control String: %24</source>
         <translation type="obsolete">URL Cultivación</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="7733"/>
+        <location filename="../UI/controlcenter.ui" line="7753"/>
         <source>&amp;Download</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="7763"/>
-        <location filename="../UI/controlcenter.ui" line="7889"/>
+        <location filename="../UI/controlcenter.ui" line="7783"/>
+        <location filename="../UI/controlcenter.ui" line="7909"/>
         <source>&amp;Accept List</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="7773"/>
-        <location filename="../UI/controlcenter.ui" line="7899"/>
+        <location filename="../UI/controlcenter.ui" line="7793"/>
+        <location filename="../UI/controlcenter.ui" line="7919"/>
         <source>&amp;Deny List</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="7859"/>
+        <location filename="../UI/controlcenter.ui" line="7879"/>
         <source>&amp;Upload</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="248"/>
-        <location filename="../UI/controlcenter.ui" line="7437"/>
+        <location filename="../UI/controlcenter.ui" line="7457"/>
         <source>Demagnetize</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4734,7 +4734,7 @@ SSL Control String: %24</source>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="490"/>
-        <location filename="../UI/controlcenter.ui" line="1122"/>
+        <location filename="../UI/controlcenter.ui" line="1142"/>
         <source>&amp;Accept only signed messages.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4750,214 +4750,214 @@ SSL Control String: %24</source>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="655"/>
-        <location filename="../UI/controlcenter.ui" line="7589"/>
+        <location filename="../UI/controlcenter.ui" line="7609"/>
         <source>Participants</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="798"/>
-        <location filename="../UI/controlcenter.ui" line="1445"/>
-        <location filename="../UI/controlcenter.ui" line="1695"/>
-        <location filename="../UI/controlcenter.ui" line="2476"/>
-        <location filename="../UI/controlcenter.ui" line="3754"/>
-        <location filename="../UI/controlcenter.ui" line="6691"/>
-        <location filename="../UI/controlcenter.ui" line="7163"/>
-        <location filename="../UI/controlcenter.ui" line="7294"/>
-        <location filename="../UI/controlcenter.ui" line="7387"/>
-        <location filename="../UI/controlcenter.ui" line="7695"/>
+        <location filename="../UI/controlcenter.ui" line="818"/>
+        <location filename="../UI/controlcenter.ui" line="1465"/>
+        <location filename="../UI/controlcenter.ui" line="1715"/>
+        <location filename="../UI/controlcenter.ui" line="2496"/>
+        <location filename="../UI/controlcenter.ui" line="3774"/>
+        <location filename="../UI/controlcenter.ui" line="6711"/>
+        <location filename="../UI/controlcenter.ui" line="7183"/>
+        <location filename="../UI/controlcenter.ui" line="7314"/>
+        <location filename="../UI/controlcenter.ui" line="7407"/>
+        <location filename="../UI/controlcenter.ui" line="7715"/>
         <source>OID</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="823"/>
+        <location filename="../UI/controlcenter.ui" line="843"/>
         <source>Gemini AES-256 Encryption Key</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="828"/>
+        <location filename="../UI/controlcenter.ui" line="848"/>
         <source>Gemini SHA-512 Hash Key</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="841"/>
+        <location filename="../UI/controlcenter.ui" line="861"/>
         <source>&amp;Hide offline participants.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1606"/>
+        <location filename="../UI/controlcenter.ui" line="1626"/>
         <source>&amp;Save copies.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1549"/>
+        <location filename="../UI/controlcenter.ui" line="1569"/>
         <source>&amp;From</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1813"/>
+        <location filename="../UI/controlcenter.ui" line="1833"/>
         <source>&amp;Enable C/O service.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1877"/>
+        <location filename="../UI/controlcenter.ui" line="1897"/>
         <source>Recipient SHA-512 Hash</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2461"/>
-        <location filename="../UI/controlcenter.ui" line="3684"/>
+        <location filename="../UI/controlcenter.ui" line="2481"/>
+        <location filename="../UI/controlcenter.ui" line="3704"/>
         <source>Certificate SHA-512 Hash</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6686"/>
-        <location filename="../UI/controlcenter.ui" line="7382"/>
+        <location filename="../UI/controlcenter.ui" line="6706"/>
+        <location filename="../UI/controlcenter.ui" line="7402"/>
         <source>Magnet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6768"/>
+        <location filename="../UI/controlcenter.ui" line="6788"/>
         <source>Generate Key Pair</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="7050"/>
+        <location filename="../UI/controlcenter.ui" line="7070"/>
         <source>&amp;Maximum Mosaic Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="7259"/>
+        <location filename="../UI/controlcenter.ui" line="7279"/>
         <source>Percent Transmitted</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="7153"/>
-        <location filename="../UI/controlcenter.ui" line="7279"/>
+        <location filename="../UI/controlcenter.ui" line="7173"/>
+        <location filename="../UI/controlcenter.ui" line="7299"/>
         <source>File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="7497"/>
+        <location filename="../UI/controlcenter.ui" line="7517"/>
         <source>Transmit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2421"/>
+        <location filename="../UI/controlcenter.ui" line="2441"/>
         <source>Connections</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3405"/>
+        <location filename="../UI/controlcenter.ui" line="3425"/>
         <source>&amp;Accept published listeners (connected).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3415"/>
+        <location filename="../UI/controlcenter.ui" line="3435"/>
         <source>&amp;Accept published listeners (disconnected).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3425"/>
+        <location filename="../UI/controlcenter.ui" line="3445"/>
         <source>&amp;Ignore published listeners.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3495"/>
+        <location filename="../UI/controlcenter.ui" line="3515"/>
         <source>&amp;Keep only user-defined neighbors.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2441"/>
-        <location filename="../UI/controlcenter.ui" line="3659"/>
+        <location filename="../UI/controlcenter.ui" line="2461"/>
+        <location filename="../UI/controlcenter.ui" line="3679"/>
         <source>Max. Buffer Size (Bytes)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2446"/>
-        <location filename="../UI/controlcenter.ui" line="3664"/>
+        <location filename="../UI/controlcenter.ui" line="2466"/>
+        <location filename="../UI/controlcenter.ui" line="3684"/>
         <source>Max. Content Length (Bytes)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3674"/>
+        <location filename="../UI/controlcenter.ui" line="3694"/>
         <source>Uptime (Seconds)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4002"/>
+        <location filename="../UI/controlcenter.ui" line="4022"/>
         <source>&amp;Allow Exceptions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5774"/>
+        <location filename="../UI/controlcenter.ui" line="5794"/>
         <source>&amp;Log Events</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5784"/>
+        <location filename="../UI/controlcenter.ui" line="5804"/>
         <source>&amp;Scrambler</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6011"/>
+        <location filename="../UI/controlcenter.ui" line="6031"/>
         <source>Passphrase</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2772"/>
-        <location filename="../UI/controlcenter.ui" line="4066"/>
-        <location filename="../UI/controlcenter.ui" line="5461"/>
+        <location filename="../UI/controlcenter.ui" line="2792"/>
+        <location filename="../UI/controlcenter.ui" line="4086"/>
+        <location filename="../UI/controlcenter.ui" line="5481"/>
         <source>&amp;SSL Control String</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="7345"/>
+        <location filename="../UI/controlcenter.ui" line="7365"/>
         <source>Add Mosaic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="7413"/>
+        <location filename="../UI/controlcenter.ui" line="7433"/>
         <source>Nova</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8197"/>
+        <location filename="../UI/controlcenter.ui" line="8217"/>
         <source>Build Information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="7451"/>
-        <location filename="../UI/controlcenter.ui" line="8241"/>
+        <location filename="../UI/controlcenter.ui" line="7471"/>
+        <location filename="../UI/controlcenter.ui" line="8261"/>
         <source>&amp;File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8249"/>
+        <location filename="../UI/controlcenter.ui" line="8269"/>
         <source>&amp;View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8253"/>
+        <location filename="../UI/controlcenter.ui" line="8273"/>
         <source>&amp;Icons</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8261"/>
+        <location filename="../UI/controlcenter.ui" line="8281"/>
         <source>&amp;Tab Position</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8275"/>
+        <location filename="../UI/controlcenter.ui" line="8295"/>
         <source>&amp;Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8304"/>
+        <location filename="../UI/controlcenter.ui" line="8324"/>
         <source>&amp;Quit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="8307"/>
+        <location filename="../UI/controlcenter.ui" line="8327"/>
         <source>Ctrl+Q</source>
         <translation type="unfinished"></translation>
     </message>

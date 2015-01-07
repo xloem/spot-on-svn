@@ -72,8 +72,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>776</width>
-             <height>485</height>
+             <width>774</width>
+             <height>498</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_54">
@@ -454,10 +454,10 @@
              <widget class="QWidget" name="scrollAreaWidgetContents_2">
               <property name="geometry">
                <rect>
-                <x>0</x>
+                <x>-114</x>
                 <y>0</y>
-                <width>1031</width>
-                <height>483</height>
+                <width>863</width>
+                <height>521</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -737,6 +737,26 @@
                         </widget>
                        </item>
                        <item>
+                        <spacer name="horizontalSpacer_70">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>40</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                      </layout>
+                     </item>
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_70">
+                       <property name="spacing">
+                        <number>5</number>
+                       </property>
+                       <item>
                         <widget class="QLabel" name="label_101">
                          <property name="styleSheet">
                           <string notr="true">QLabel { background-color : rgb(137, 207, 240);}
@@ -751,7 +771,7 @@
                         </widget>
                        </item>
                        <item>
-                        <spacer name="horizontalSpacer_70">
+                        <spacer name="horizontalSpacer_2">
                          <property name="orientation">
                           <enum>Qt::Horizontal</enum>
                          </property>
@@ -1008,8 +1028,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1094</width>
-             <height>594</height>
+             <width>951</width>
+             <height>578</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -2205,8 +2225,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>912</width>
-             <height>414</height>
+             <width>843</width>
+             <height>483</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2865,8 +2885,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>294</width>
-                     <height>1429</height>
+                     <width>291</width>
+                     <height>1384</height>
                     </rect>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3326,8 +3346,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1066</width>
-             <height>622</height>
+             <width>961</width>
+             <height>594</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -4463,8 +4483,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>154</width>
-             <height>305</height>
+             <width>774</width>
+             <height>498</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -4517,8 +4537,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>741</width>
-                 <height>627</height>
+                 <width>749</width>
+                 <height>588</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_65">
@@ -5310,8 +5330,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>861</width>
-             <height>1073</height>
+             <width>794</width>
+             <height>1058</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -6543,8 +6563,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>575</width>
-             <height>559</height>
+             <width>759</width>
+             <height>546</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -7541,8 +7561,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>265</width>
-             <height>412</height>
+             <width>774</width>
+             <height>498</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -8023,8 +8043,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>280</width>
-             <height>152</height>
+             <width>774</width>
+             <height>498</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -8233,7 +8253,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
