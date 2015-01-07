@@ -523,14 +523,14 @@ void spoton_kernel::postPoptastic(void)
 		  bytes.append(r2);
 		  bytes.append("\r\n"
 			       "Content-Type: application/octet-stream; "
-			       "name=");
+			       "name=\"");
 		  bytes.append(attachmentName);
 		  bytes.append
-		    ("\r\n"
+		    ("\"\r\n"
 		     "Content-Transfer-Encoding: base64\r\n"
-		     "Content-Disposition: attachment; filename=");
+		     "Content-Disposition: attachment; filename=\"");
 		  bytes.append(attachmentName);
-		  bytes.append("\r\n\r\n");
+		  bytes.append("\"\r\n\r\n");
 		  bytes.append(attachment.toBase64());
 		  bytes.append("\r\n\r\n");
 		  bytes.append("--");
@@ -927,12 +927,6 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
       if(!s_crypt)
 	return;
 
-      /*
-      ** Some information.
-      */
-
-      QByteArray attachment;
-      QByteArray attachmentName;
       QByteArray boundary;
       QByteArray from;
       QByteArray hash;
@@ -994,6 +988,9 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
 	*/
 
 	return;
+
+      QByteArray attachment;
+      QByteArray attachmentName;
 
       for(int i = 0; i < list.size(); i++)
 	if(list.value(i).toLower().
