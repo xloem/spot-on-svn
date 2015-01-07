@@ -36,7 +36,7 @@ QMAKE_LFLAGS_RELEASE =
 QMAKE_LFLAGS_RPATH =
 INCLUDEPATH	+= . ../../. GUI ../../libGeoIP/Include.osx64 \
                    /usr/local/include /usr/local/opt
-ICON		= Icons/Logo/spoton-logo.icns
+ICON		= Icons/Logo/spot-on-logo.icns
 LIBS		+= -L../../libGeoIP/Libraries.osx64 -lGeoIP \
                    -L../../libNTRU -lntru \
                    -L../../libSpotOn -lspoton \
