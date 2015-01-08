@@ -16,6 +16,7 @@
      defaults to a value of 2. Corrected.
 9.   Allow setting of the CA path in the Poptastic settings.
 10.  Deactivate Poptastic timers if instructed to do so.
+11.  Initialize m_readBufferSize in spoton_sctp_socket to some size.
 
 0.17c (12/25/2014)
 
