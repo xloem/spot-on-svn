@@ -2047,8 +2047,10 @@ spoton::spoton(void):QMainWindow()
     (5, Qt::AscendingOrder);
   m_ui.urlParticipants->horizontalHeader()->setSortIndicator
     (0, Qt::AscendingOrder);
+#if SPOTON_GOLDBUG == 0
   m_ui.emailSplitter->setStretchFactor(0, 1);
   m_ui.emailSplitter->setStretchFactor(1, 0);
+#endif
   m_ui.listenersHorizontalSplitter->setStretchFactor(0, 1);
   m_ui.listenersHorizontalSplitter->setStretchFactor(1, 0);
   m_ui.neighborsVerticalSplitter->setStretchFactor(0, 1);
