@@ -82,7 +82,7 @@ spoton_sctp_socket::spoton_sctp_socket(QObject *parent):QObject(parent)
   m_bufferSize = m_writeBufferSize = 65535;
   m_connectToPeerPort = 0;
   m_hostLookupId = -1;
-  m_readBufferSize = 0;
+  m_readBufferSize = spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE;
   m_socketDescriptor = -1;
   m_state = UnconnectedState;
   m_timer.setInterval(100);
