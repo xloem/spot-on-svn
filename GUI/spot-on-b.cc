@@ -4649,8 +4649,14 @@ void spoton::slotReply(void)
 
   QString subject(item->text());
 
-  message = "<br><span style=\"font-size:large;\">" + message + "</span>";
-  m_ui.outgoingMessage->setHtml(message);
+  if(!m_ui.plain->isChecked())
+    {
+      message = "<br><span style=\"font-size:large;\">" + message + "</span>";
+      m_ui.outgoingMessage->setHtml(message);
+    }
+  else
+    m_ui.outgoingMessage->setPlainText("\n" + message);
+
   m_ui.outgoingSubject->setText(tr("Re: ") + subject);
 
   /*

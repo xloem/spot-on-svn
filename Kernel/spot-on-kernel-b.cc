@@ -990,6 +990,12 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
 		from = from.trimmed();
 		from = from.replace("<", "").replace(">", "");
 
+		if(from.contains(" "))
+		  {
+		    from = from.mid(from.lastIndexOf(" "));
+		    from = from.trimmed();
+		  }
+
 		bool ok = true;
 
 		hash = spoton_crypt::sha512Hash(from, &ok).toHex();
