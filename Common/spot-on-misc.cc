@@ -1926,7 +1926,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
 
   if(!ok)
     integer = 10;
-  else if(integer == 0 || integer > 50)
+  else if(integer <= 0 || integer > 50)
     integer = 10;
 
   settings.insert("gui/limitConnections", integer);
@@ -1985,7 +1985,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
 
   if(!ok)
     integer = 4;
-  else if(integer > 7)
+  else if(integer < 0 || integer > 7)
     integer = 4;
 
   settings.insert("kernel/neighbor_thread_priority", integer);
