@@ -548,12 +548,17 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   m_controlDatabaseTimer.start(2500);
   m_impersonateTimer.setInterval(2500);
   m_messagingCachePurgeTimer.setInterval(15000);
-  m_poptasticPopTimer.start
-    (static_cast<int> (1000 * setting("gui/poptasticRefreshInterval",
-				      5.00).toDouble()));
-  m_poptasticPostTimer.start
-    (static_cast<int> (1000 * setting("gui/poptasticRefreshInterval",
-				      5.00).toDouble()));
+
+  if(!setting("gui/disablePop3", false).toBool())
+    m_poptasticPopTimer.start
+      (static_cast<int> (1000 * setting("gui/poptasticRefreshInterval",
+					5.00).toDouble()));
+
+  if(!setting("gui/disableSmtp", false).toBool())
+    m_poptasticPostTimer.start
+      (static_cast<int> (1000 * setting("gui/poptasticRefreshInterval",
+					5.00).toDouble()));
+
   m_processReceivedMessagesTimer.start(100);
   m_publishAllListenersPlaintextTimer.setInterval(10 * 60 * 1000);
   m_settingsTimer.setInterval(1500);
@@ -1863,12 +1868,34 @@ void spoton_kernel::slotUpdateSettings(void)
   else
     m_impersonateTimer.stop();
 
-  m_poptasticPopTimer.setInterval
-    (static_cast<int> (1000 * setting("gui/poptasticRefreshInterval",
-				      5.00).toDouble()));
-  m_poptasticPostTimer.setInterval
-    (static_cast<int> (1000 * setting("gui/poptasticRefreshInterval",
-				      5.00).toDouble()));
+  int integer = static_cast<int>
+    (1000 * setting("gui/poptasticRefreshInterval", 5.00).toDouble());
+
+  if(!setting("gui/disablePop3", false).toBool())
+    {
+      if(!m_poptasticPopTimer.isActive())
+	m_poptasticPopTimer.start(integer);
+      else if(integer != m_poptasticPopTimer.interval())
+	m_poptasticPopTimer.start(integer);
+    }
+  else
+    m_poptasticPopTimer.stop();
+
+  if(!setting("gui/disableSmtp", false).toBool())
+    {
+      if(!m_poptasticPostTimer.isActive())
+	m_poptasticPostTimer.start(integer);
+      else if(integer != m_poptasticPostTimer.interval())
+	m_poptasticPostTimer.start(integer);
+    }
+  else
+    {
+      m_poptasticPostTimer.stop();
+
+      QWriteLocker locker(&m_poptasticCacheMutex);
+
+      m_poptasticCache.clear();
+    }
 
   if(setting("gui/publishPeriodically", false).toBool())
     {
