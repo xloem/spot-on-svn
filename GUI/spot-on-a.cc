@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
 
   QApplication qapplication(argc, argv);
 
-  QThread::currentThread()->setPriority(QThread::HighestPriority);
+  QThread::currentThread()->setPriority(QThread::HighPriority);
 
 #ifdef Q_OS_MAC
 #if QT_VERSION >= 0x050000
