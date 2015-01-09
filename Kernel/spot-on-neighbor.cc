@@ -1374,11 +1374,6 @@ void spoton_neighbor::saveStatus(const QSqlDatabase &db,
 
 void spoton_neighbor::run(void)
 {
-  setPriority
-    (QThread::Priority(spoton_kernel::
-		       setting("kernel/neighbor_thread_priority",
-			       4).toInt()));
-
   spoton_neighbor_worker worker(this);
 
   connect(this,
@@ -1434,6 +1429,11 @@ void spoton_neighbor::slotReadyRead(void)
 
 void spoton_neighbor::processData(void)
 {
+  setPriority
+    (QThread::Priority(spoton_kernel::
+		       setting("kernel/neighbor_thread_priority",
+			       4).toInt()));
+
   QByteArray data;
 
   {
