@@ -1700,8 +1700,10 @@ void spoton::slotAddFriendsKey(void)
     addFriendsKey(key);
 }
 
-void spoton::addFriendsKey(const QByteArray &key)
+void spoton::addFriendsKey(const QByteArray &k)
 {
+  QByteArray key(k.trimmed());
+
   if(m_ui.addFriendEmail->isChecked())
     {
       if(!m_crypts.value("chat", 0))
@@ -4651,11 +4653,12 @@ void spoton::slotReply(void)
 
   if(!m_ui.plain->isChecked())
     {
-      message = "<br><span style=\"font-size:large;\">" + message + "</span>";
+      message = "<br><br><span style=\"font-size:large;\">" +
+	message + "</span>";
       m_ui.outgoingMessage->setHtml(message);
     }
   else
-    m_ui.outgoingMessage->setPlainText("\n" + message);
+    m_ui.outgoingMessage->setPlainText("\n\n" + message);
 
   m_ui.outgoingSubject->setText(tr("Re: ") + subject);
 

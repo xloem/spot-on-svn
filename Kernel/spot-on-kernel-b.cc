@@ -1160,7 +1160,7 @@ void spoton_kernel::slotPoppedMessage(const QByteArray &message)
 	    if(ok)
 	      {
 		QByteArray senderPublicKeyHash
-		  (spoton_crypt::sha512Hash(from, &ok));
+		  (spoton_crypt::sha512Hash(from + "-poptastic", &ok));
 
 		if(ok)
 		  query.bindValue
