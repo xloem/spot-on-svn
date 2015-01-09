@@ -10,7 +10,7 @@
      attachments are supported. Please note that deep e-mail parsing
      is not provided.
 6.   Increased priorities of neighbor threads. The setting may be adjusted
-     in the INI file.
+     in the INI file. A default of high is used.
 7.   Maintain list of selected e-mail entries.
 8.   CURLOPT_SSL_VERIFYHOST documentation specifies that the verify option
      defaults to a value of 2. Corrected.
