@@ -38,6 +38,7 @@
 #include <QStandardPaths>
 #endif
 #include <QTableWidgetItem>
+#include <QThread>
 
 void spoton::slotGenerateEtpKeys(int index)
 {
@@ -2696,6 +2697,46 @@ void spoton::prepareContextMenuMirrors(void)
       menu->addSeparator();
       menu->addAction(tr("Set &SSL Control String"),
 		      this, SLOT(slotSetNeighborSSLControlString(void)));
+      menu->addSeparator();
+
+      QList<QPair<QString, QThread::Priority> > list;
+      QMenu *subMenu = menu->addMenu(tr("Priority"));
+      QPair<QString, QThread::Priority> pair;
+
+      pair.first = tr("High Priority");
+      pair.second = QThread::HighPriority;
+      list << pair;
+      pair.first = tr("Highest Priority");
+      pair.second = QThread::HighestPriority;
+      list << pair;
+      pair.first = tr("Idle Priority");
+      pair.second = QThread::IdlePriority;
+      list << pair;
+      pair.first = tr("Inherit Priority");
+      pair.second = QThread::InheritPriority;
+      list << pair;
+      pair.first = tr("Low Priority");
+      pair.second = QThread::LowPriority;
+      list << pair;
+      pair.first = tr("Lowest Priority");
+      pair.second = QThread::LowestPriority;
+      list << pair;
+      pair.first = tr("Normal Priority");
+      pair.second = QThread::NormalPriority;
+      list << pair;
+      pair.first = tr("Time-Critical Priority");
+      pair.second = QThread::TimeCriticalPriority;
+      list << pair;
+
+      for(int i = 0; i < list.size(); i++)
+	{
+	  action = subMenu->addAction
+	    (list.at(i).first,
+	     this,
+	     SLOT(slotSetNeighborPriority(void)));
+	  action->setProperty("priority", list.at(i).second);
+	}
+
       m_ui.neighborsActionMenu->setMenu(menu);
     }
 

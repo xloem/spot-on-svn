@@ -2001,10 +2001,8 @@ spoton::spoton(void):QMainWindow()
 				  true); // OID
   m_ui.neighbors->setColumnHidden
     (m_ui.neighbors->columnCount() - 1, true); // OID
-  m_ui.neighbors->setColumnHidden
-    (m_ui.neighbors->columnCount() - 5, true); // certificate
-  m_ui.neighbors->setColumnHidden
-    (m_ui.neighbors->columnCount() - 7, true); // motd
+  m_ui.neighbors->setColumnHidden(29, true); // Message of the Day
+  m_ui.neighbors->setColumnHidden(31, true); // certificate
   m_ui.participants->setColumnHidden(1, true); // OID
   m_ui.participants->setColumnHidden(2, true); // neighbor_oid
   m_ui.participants->setColumnHidden(3, true); // public_key_hash
@@ -3602,6 +3600,7 @@ void spoton::slotPopulateNeighbors(void)
 		      "ae_token, "
 		      "ae_token_type, "
 		      "ssl_control_string, "
+		      "priority, "
 		      "OID "
 		      "FROM neighbors WHERE status_control <> 'deleted'"))
 	  {
@@ -3617,6 +3616,7 @@ void spoton::slotPopulateNeighbors(void)
 		QByteArray certificate;
 		QByteArray certificateDigest;
 		QByteArray sslSessionCipher;
+		QString priority("");
 		QString tooltip("");
 		bool isEncrypted = query.value
 		  (query.record().indexOf("is_encrypted")).toBool();
@@ -3667,6 +3667,27 @@ void spoton::slotPopulateNeighbors(void)
 		      }
 		  }
 
+		priority = query.value(35).toString().trimmed();
+
+		if(priority.toInt() == 0)
+		  priority = "Idle Priority";
+		else if(priority.toInt() == 1)
+		  priority = "Lowest Priority";
+		else if(priority.toInt() == 2)
+		  priority = "Low Priority";
+		else if(priority.toInt() == 3)
+		  priority = "Normal Priority";
+		else if(priority.toInt() == 4)
+		  priority = "High Priority";
+		else if(priority.toInt() == 5)
+		  priority = "Highest Priority";
+		else if(priority.toInt() == 6)
+		  priority = "Time-Critical Priority";
+		else if(priority.toInt() == 7)
+		  priority = "Inherit Priority";
+		else
+		  priority = "High Priority";
+
 		tooltip =
 		  (tr("UUID: %1\n"
 		      "Status: %2\n"
@@ -3687,7 +3708,8 @@ void spoton::slotPopulateNeighbors(void)
 		      "Account Authenticated: %21\n"
 		      "Transport: %22\n"
 		      "Orientation: %23\n"
-		      "SSL Control String: %24")).
+		      "SSL Control String: %24\n"
+		      "Priority: %25")).
 		  arg(crypt->
 		      decryptedAfterAuthenticated(QByteArray::
 						  fromBase64(query.
@@ -3793,7 +3815,8 @@ void spoton::slotPopulateNeighbors(void)
 							     toByteArray()),
 						  &ok).
 		      constData()).
-		  arg(query.value(34).toString());
+		  arg(query.value(34).toString()).
+		  arg(priority);
 
 		QCheckBox *check = 0;
 
@@ -3961,6 +3984,8 @@ void spoton::slotPopulateNeighbors(void)
 			(query.value(i).toString().trimmed());
 		    else if(i == 31) // Certificate
 		      item = new QTableWidgetItem(certificate.constData());
+		    else if(i == 35) // Priority
+		      item = new QTableWidgetItem(priority);
 		    else
 		      item = new QTableWidgetItem
 			(query.value(i).toString());
@@ -5733,6 +5758,46 @@ void spoton::slotShowContextMenu(const QPoint &point)
       menu.addSeparator();
       menu.addAction(tr("Set &SSL Control String"),
 		     this, SLOT(slotSetNeighborSSLControlString(void)));
+      menu.addSeparator();
+
+      QList<QPair<QString, QThread::Priority> > list;
+      QMenu *subMenu = menu.addMenu(tr("Priority"));
+      QPair<QString, QThread::Priority> pair;
+
+      pair.first = tr("High Priority");
+      pair.second = QThread::HighPriority;
+      list << pair;
+      pair.first = tr("Highest Priority");
+      pair.second = QThread::HighestPriority;
+      list << pair;
+      pair.first = tr("Idle Priority");
+      pair.second = QThread::IdlePriority;
+      list << pair;
+      pair.first = tr("Inherit Priority");
+      pair.second = QThread::InheritPriority;
+      list << pair;
+      pair.first = tr("Low Priority");
+      pair.second = QThread::LowPriority;
+      list << pair;
+      pair.first = tr("Lowest Priority");
+      pair.second = QThread::LowestPriority;
+      list << pair;
+      pair.first = tr("Normal Priority");
+      pair.second = QThread::NormalPriority;
+      list << pair;
+      pair.first = tr("Time-Critical Priority");
+      pair.second = QThread::TimeCriticalPriority;
+      list << pair;
+
+      for(int i = 0; i < list.size(); i++)
+	{
+	  action = subMenu->addAction
+	    (list.at(i).first,
+	     this,
+	     SLOT(slotSetNeighborPriority(void)));
+	  action->setProperty("priority", list.at(i).second);
+	}
+
       menu.exec(m_ui.neighbors->mapToGlobal(point));
     }
   else if(m_ui.participants == sender())
@@ -7512,7 +7577,7 @@ void spoton::slotNeighborSelected(void)
       QString label("");
       int row = item->row();
 
-      if(m_ui.neighbors->item(row, 31)) // Certificate
+      if(m_ui.neighbors->item(row, 31)) // certificate
 	certificate = QSslCertificate
 	  (QByteArray::fromBase64(m_ui.neighbors->
 				  item(row, 31)->text().toLatin1()));

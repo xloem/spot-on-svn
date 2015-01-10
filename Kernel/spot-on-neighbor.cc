@@ -71,10 +71,17 @@ spoton_neighbor::spoton_neighbor
  const QString &orientation,
  const QString &motd,
  const QString &sslControlString,
+ const Priority priority,
  QObject *parent):QThread(parent)
 {
   m_abortThread = false;
   m_kernelInterfaces = spoton_kernel::interfaces();
+
+  if(priority >= 0 && priority <= 7)
+    m_priority = priority;
+  else
+    m_priority = HighPriority;
+
   m_sctpSocket = 0;
   m_tcpSocket = 0;
   m_udpSocket = 0;
@@ -466,6 +473,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 				 const QString &motd,
 				 const QString &statusControl,
 				 const QString &sslControlString,
+				 const Priority priority,
 				 QObject *parent):QThread(parent)
 {
   m_abortThread = false;
@@ -504,6 +512,12 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   m_orientation = orientation;
   m_peerCertificate = QSslCertificate(peerCertificate);
   m_port = port.toUShort();
+
+  if(priority >= 0 && priority <= 7)
+    m_priority = priority;
+  else
+    m_priority = HighPriority;
+
   m_protocol = protocol;
   m_receivedUuid = "{00000000-0000-0000-0000-000000000000}";
   m_requireSsl = requireSsl;
@@ -999,7 +1013,8 @@ void spoton_neighbor::slotTimeout(void)
 		      "account_password, "
 		      "ae_token, "
 		      "ae_token_type, "
-		      "ssl_control_string "
+		      "ssl_control_string, "
+		      "priority "
 		      "FROM neighbors WHERE OID = ?");
 	query.bindValue(0, m_id);
 
@@ -1146,6 +1161,16 @@ void spoton_neighbor::slotTimeout(void)
 			     query.value(4).toLongLong(),
 			     spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
 		    locker2.unlock();
+
+		    QWriteLocker locker3(&m_priorityMutex);
+
+		    m_priority = Priority(query.value(10).toInt());
+
+		    if(m_priority < 0 || m_priority > 7)
+		      m_priority = HighPriority;
+
+		    setPriority(m_priority);
+		    locker3.unlock();
 		    m_sslControlString = query.value(9).toString();
 
 		    if(m_sslControlString.isEmpty())
@@ -1374,6 +1399,8 @@ void spoton_neighbor::saveStatus(const QSqlDatabase &db,
 
 void spoton_neighbor::run(void)
 {
+  setPriority(m_priority);
+
   spoton_neighbor_worker worker(this);
 
   connect(this,
@@ -1429,10 +1456,11 @@ void spoton_neighbor::slotReadyRead(void)
 
 void spoton_neighbor::processData(void)
 {
-  setPriority
-    (QThread::Priority(spoton_kernel::
-		       setting("kernel/neighbor_thread_priority",
-			       4).toInt()));
+  {
+    QReadLocker locker(&m_priorityMutex);
+
+    setPriority(m_priority);
+  }
 
   QByteArray data;
 

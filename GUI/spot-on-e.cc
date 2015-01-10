@@ -30,6 +30,8 @@ extern "C"
 #include <curl/curl.h>
 }
 
+#include <QThread>
+
 #include "spot-on.h"
 #include "spot-on-defines.h"
 
@@ -726,4 +728,51 @@ void spoton::slotSelectCAPath(void)
     }
   else
     fileName = m_poptasticSettingsUi.capath->text();
+}
+
+void spoton::slotSetNeighborPriority(void)
+{
+  QAction *action = qobject_cast<QAction *> (sender());
+  QThread::Priority priority = QThread::HighPriority;
+
+  if(!action)
+    return;
+  else
+    priority = QThread::Priority(action->property("priority").toInt());
+
+  QModelIndexList list;
+
+  list = m_ui.neighbors->selectionModel()->selectedRows
+    (m_ui.neighbors->columnCount() - 1); // OID
+
+  if(list.isEmpty())
+    return;
+
+  QString connectionName("");
+
+  if(priority < 0 || priority > 7)
+    priority = QThread::HighPriority;
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "neighbors.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.prepare("UPDATE neighbors SET "
+		      "priority = ? "
+		      "WHERE OID = ?");
+	query.bindValue(0, priority);
+	query.bindValue(1, list.at(0).data());
+	query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
 }

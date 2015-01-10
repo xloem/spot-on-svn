@@ -427,13 +427,20 @@ void spoton_misc::prepareDatabases(void)
 				     ** for violating some
 				     ** database principles.
 				     */
-		   "ae_token_type TEXT)"). /*
-					   ** The ae_token_type contains
-					   ** both cipher and hash
-					   ** algorithm information.
-					   */
+		   "ae_token_type TEXT, " /*
+					  ** The ae_token_type contains
+					  ** both cipher and hash
+					  ** algorithm information.
+					  */
+		   "priority INTEGER NOT NULL DEFAULT 4)"). /*
+							    ** High
+							    ** priority.
+							    */
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE).
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH));
+	query.exec
+	  ("ALTER TABLE neighbors ADD COLUMN priority "
+	   "INTEGER NOT NULL DEFAULT 4");
       }
 
     db.close();
@@ -1980,15 +1987,6 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
     integer = 65536;
 
   settings.insert("kernel/gcryctl_init_secmem", integer);
-  integer = qAbs(settings.value("kernel/neighbor_thread_priority",
-				4).toInt(&ok));
-
-  if(!ok)
-    integer = 4;
-  else if(integer < 0 || integer > 7)
-    integer = 4;
-
-  settings.insert("kernel/neighbor_thread_priority", integer);
   integer = qAbs
     (settings.value("kernel/server_account_verification_window_msecs",
 		    15000).toInt(&ok));

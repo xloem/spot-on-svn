@@ -702,6 +702,7 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
 	     m_orientation,
 	     m_motd,
 	     m_sslControlString,
+	     QThread::HighPriority,
 	     this);
 	}
       catch(std::bad_alloc &exception)

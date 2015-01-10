@@ -2672,8 +2672,7 @@ void spoton::slotSetNeighborSSLControlString(void)
       if(item)
 	oid = item->text();
 
-      item = m_ui.neighbors->item
-	(row, m_ui.neighbors->columnCount() - 2); // SSL Control String
+      item = m_ui.neighbors->item(row, 34); // SSL Control String
 
       if(item)
 	sslCS = item->text();

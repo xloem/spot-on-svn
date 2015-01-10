@@ -366,8 +366,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 
   QSettings settings;
 
-  if(!settings.contains("kernel/neighbor_thread_priority"))
-    settings.setValue("kernel/neighbor_thread_priority", 4);
+  settings.remove("kernel/neighbor_thread_priority");
 
   for(int i = 0; i < settings.allKeys().size(); i++)
     s_settings.insert(settings.allKeys().at(i),
@@ -1129,6 +1128,7 @@ void spoton_kernel::prepareNeighbors(void)
 		      "orientation, "
 		      "motd, "
 		      "ssl_control_string, "
+		      "priority, "
 		      "OID FROM neighbors"))
 	  while(query.next())
 	    {
@@ -1168,6 +1168,8 @@ void spoton_kernel::prepareNeighbors(void)
 			  list.append(query.value(i).toString());
 			else if(i == 23) // ssl_control_string
 			  list.append(query.value(i).toString());
+			else if(i == 24) // priority
+			  list.append(query.value(i).toInt());
 			else
 			  {
 			    QByteArray bytes;
@@ -1275,6 +1277,7 @@ void spoton_kernel::prepareNeighbors(void)
 				 list.value(22).toString(),
 				 list.value(3).toString(),
 				 list.value(23).toString(),
+				 QThread::Priority(list.value(24).toInt()),
 				 this);
 			    }
 			  catch(std::bad_alloc &exception)
