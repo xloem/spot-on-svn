@@ -4653,7 +4653,7 @@ void spoton::slotReply(void)
 
   if(!m_ui.plain->isChecked())
     {
-      message = "<br><br><span style=\"font-size:large;\">" +
+      message = "<br><span style=\"font-size:large;\">" +
 	message + "</span>";
       m_ui.outgoingMessage->setHtml(message);
     }
