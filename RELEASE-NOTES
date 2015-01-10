@@ -1,6 +1,6 @@
 0.18 (01/30/2015)
 
-1.   Additional read and write locks.
+1.   Additional read and write locks. Protect the kernel.
 2.   Allow URL link interaction from the user interface.
 3.   Created another PostgreSQL account. Set read and write permissions
      for spot_on_user.
@@ -9,15 +9,15 @@
 5.   Experimental support for IMAP/POP3/SMTP plain-text e-mail. Single
      attachments are supported. Please note that deep e-mail parsing
      is not provided.
-6.   Increased priorities of neighbor threads. The setting may be adjusted
-     in the INI file. A default of high is used. The UI assumes a high
-     rigid priority.
-7.   Maintain list of selected e-mail entries.
-8.   CURLOPT_SSL_VERIFYHOST documentation specifies that the verify option
+6.   Allow control of neighbors priorities.
+7.   Maintain a list of selected e-mail entries for a splendid user
+     experience.
+8.   CURLOPT_SSL_VERIFYHOST documentation specifies that the verify parameter
      defaults to a value of 2. Corrected.
 9.   Allow setting of the CA path in the Poptastic settings.
 10.  Deactivate Poptastic timers if instructed to do so.
-11.  Initialize m_readBufferSize in spoton_sctp_socket to some size.
+11.  Initialize m_readBufferSize in spoton_sctp_socket to a reasonable
+     value.
 
 0.17c (12/25/2014)
 
