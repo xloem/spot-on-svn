@@ -910,8 +910,8 @@ If not checked, the neighbor will be terminated after some internal timer expire
         <location filename="../GUI/spot-on-urls.cc" line="486"/>
         <location filename="../GUI/spot-on-urls.cc" line="540"/>
         <location filename="../GUI/spot-on-urls.cc" line="832"/>
-        <location filename="../GUI/spot-on-urls.cc" line="1012"/>
-        <location filename="../GUI/spot-on-urls.cc" line="1113"/>
+        <location filename="../GUI/spot-on-urls.cc" line="1023"/>
+        <location filename="../GUI/spot-on-urls.cc" line="1131"/>
         <source>%1: Error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1457,7 +1457,7 @@ SSL Control String: %13</source>
         <location filename="../GUI/spot-on-e.cc" line="57"/>
         <location filename="../GUI/spot-on-urls.cc" line="478"/>
         <location filename="../GUI/spot-on-urls.cc" line="764"/>
-        <location filename="../GUI/spot-on-urls.cc" line="1033"/>
+        <location filename="../GUI/spot-on-urls.cc" line="1051"/>
         <source>Invalid spoton_crypt object. This is a fatal flaw.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2287,25 +2287,25 @@ SSL Control String: %13</source>
     </message>
     <message>
         <location filename="../GUI/spot-on-urls.cc" line="811"/>
-        <location filename="../GUI/spot-on-urls.cc" line="1092"/>
+        <location filename="../GUI/spot-on-urls.cc" line="1110"/>
         <source>Database write error.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-urls.cc" line="814"/>
-        <location filename="../GUI/spot-on-urls.cc" line="1095"/>
+        <location filename="../GUI/spot-on-urls.cc" line="1113"/>
         <source>An error occurred with spoton_crypt::encryptedThenHashed().</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-urls.cc" line="818"/>
-        <location filename="../GUI/spot-on-urls.cc" line="1099"/>
+        <location filename="../GUI/spot-on-urls.cc" line="1117"/>
         <source>Unable to access urls_key_information.db.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-urls.cc" line="826"/>
-        <location filename="../GUI/spot-on-urls.cc" line="1107"/>
+        <location filename="../GUI/spot-on-urls.cc" line="1125"/>
         <source>Key generation failure.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2316,17 +2316,17 @@ SSL Control String: %13</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-urls.cc" line="975"/>
+        <location filename="../GUI/spot-on-urls.cc" line="976"/>
         <source>%1: PostgreSQL Connect</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-urls.cc" line="1014"/>
+        <location filename="../GUI/spot-on-urls.cc" line="1025"/>
         <source>Could not open (%1) a database connection.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-urls.cc" line="1020"/>
+        <location filename="../GUI/spot-on-urls.cc" line="1031"/>
         <source>PostgreSQL Disconnect</source>
         <translation type="unfinished"></translation>
     </message>
