@@ -968,6 +968,7 @@ void spoton::slotPostgreSQLConnect(void)
     }
 
   QDialog dialog(this);
+  QSettings settings;
   Ui_postgresqlconnect ui;
 
   ui.setupUi(&dialog);
@@ -977,6 +978,16 @@ void spoton::slotPostgreSQLConnect(void)
 #ifdef Q_OS_MAC
   dialog.setAttribute(Qt::WA_MacMetalStyle, false);
 #endif
+  ui.database->setText(settings.value("gui/postgresql_database", "").
+		       toString().trimmed());
+  ui.host->setText(settings.value("gui/postgresql_host", "localhost").
+		   toString().trimmed());
+  ui.name->setText(settings.value("gui/postgresql_name", "").toString().
+		   trimmed());
+  ui.port->setValue(settings.value("gui/postgresql_port", 5432).
+		    toInt());
+  ui.ssltls->setChecked(settings.value("gui/postgresql_ssltls", false).
+			toBool());
 
   if(dialog.exec() == QDialog::Accepted)
     {
@@ -988,7 +999,7 @@ void spoton::slotPostgreSQLConnect(void)
 
       m_urlDatabase = QSqlDatabase::addDatabase("QPSQL", "URLDatabase");
 
-      QString str("connect_timeout=10;keepalives_idle=10");
+      QString str("connect_timeout=10");
 
       if(ui.ssltls->isChecked())
 	str.append(";requiressl=1");
@@ -1018,6 +1029,13 @@ void spoton::slotPostgreSQLConnect(void)
 	{
 	  m_ui.postgresqlConnect->setProperty("user_text", "disconnect");
 	  m_ui.postgresqlConnect->setText(tr("PostgreSQL Disconnect"));
+	  settings.setValue("gui/postgresql_database",
+			    ui.database->text());
+	  settings.setValue("gui/postgresql_host",
+			    ui.host->text());
+	  settings.setValue("gui/postgresql_name", ui.name->text());
+	  settings.setValue("gui/postgresql_port", ui.port->value());
+	  settings.setValue("gui/postgresql_ssltls", ui.ssltls->isChecked());
 	}
     }
 }
