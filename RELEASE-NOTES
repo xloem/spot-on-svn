@@ -18,6 +18,8 @@
 10.  Deactivate Poptastic timers if instructed to do so.
 11.  Initialize m_readBufferSize in spoton_sctp_socket to a reasonable
      value.
+12.  Store PostgreSQL connection information in the INI file.
+13.  Removed keepalives_idle=10 in support of legacy PostgreSQL databases.
 
 0.17c (12/25/2014)
 
