@@ -2122,6 +2122,7 @@ spoton::spoton(void):QMainWindow()
   m_sb.status->setText(tr("Preparing databases. Please be patient."));
   m_sb.status->repaint();
   spoton_misc::prepareDatabases();
+  spoton_misc::prepareUrlKeysDatabase();
   m_sb.status->clear();
   QApplication::restoreOverrideCursor();
 }

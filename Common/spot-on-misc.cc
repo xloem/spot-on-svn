@@ -3190,7 +3190,7 @@ void spoton_misc::saveParticipantStatus(const QByteArray &name,
 
   if(!dateTime.isValid())
     {
-      spoton_misc::logError
+      logError
 	("spoton_misc(): saveParticipantStatus(): "
 	 "invalid date-time object.");
       return;
@@ -3205,7 +3205,7 @@ void spoton_misc::saveParticipantStatus(const QByteArray &name,
 
   if(!(secsTo <= seconds))
     {
-      spoton_misc::logError
+      logError
 	(QString("spoton_misc::saveParticipantStatus(): "
 		 "large time delta (%1).").arg(secsTo));
       return;
@@ -3214,11 +3214,10 @@ void spoton_misc::saveParticipantStatus(const QByteArray &name,
   QString connectionName("");
 
   {
-    QSqlDatabase db = spoton_misc::database(connectionName);
+    QSqlDatabase db = database(connectionName);
 
     db.setDatabaseName
-      (spoton_misc::homePath() + QDir::separator() +
-       "friends_public_keys.db");
+      (homePath() + QDir::separator() + "friends_public_keys.db");
 
     if(db.open())
       {
@@ -3347,4 +3346,57 @@ void spoton_misc::saveParticipantStatus(const QByteArray &name,
   }
 
   QSqlDatabase::removeDatabase(connectionName);
+}
+
+bool spoton_misc::prepareUrlKeysDatabase(void)
+{
+  QString connectionName("");
+  bool ok = false;
+
+  {
+    QSqlDatabase db = database(connectionName);
+
+    db.setDatabaseName
+      (homePath() + QDir::separator() + "urls_key_information.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	if(!query.exec("CREATE TABLE IF NOT EXISTS import_key_information ("
+		       "cipher_type TEXT NOT NULL, "
+		       "symmetric_key TEXT NOT NULL)"))
+	  ok = false;
+
+	if(!query.exec("CREATE TRIGGER IF NOT EXISTS "
+		       "import_key_information_trigger "
+		       "BEFORE INSERT ON import_key_information "
+		       "BEGIN "
+		       "DELETE FROM import_key_information; "
+		       "END"))
+	  ok = false;
+
+	if(!query.exec("CREATE TABLE IF NOT EXISTS remote_key_information ("
+		       "cipher_type TEXT NOT NULL, "
+		       "encryption_key TEXT NOT NULL, "
+		       "hash_key TEXT NOT NULL, "
+		       "hash_type TEXT NOT NULL)"))
+	  ok = false;
+
+	if(!query.exec("CREATE TRIGGER IF NOT EXISTS "
+		       "remote_key_information_trigger "
+		       "BEFORE INSERT ON remote_key_information "
+		       "BEGIN "
+		       "DELETE FROM remote_key_information; "
+		       "END"))
+	  ok = false;
+      }
+    else
+      ok = false;
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+  return ok;
 }

@@ -131,54 +131,7 @@ void spoton::slotPrepareUrlDatabases(void)
   if(m_ui.sqlite->isChecked())
     slotPostgreSQLDisconnect(true);
 
-  QString connectionName("");
-
-  {
-    QSqlDatabase db = spoton_misc::database(connectionName);
-
-    db.setDatabaseName
-      (spoton_misc::homePath() + QDir::separator() +
-       "urls_key_information.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-
-	if(!query.exec("CREATE TABLE IF NOT EXISTS import_key_information ("
-		       "cipher_type TEXT NOT NULL, "
-		       "symmetric_key TEXT NOT NULL)"))
-	  created = false;
-
-	if(!query.exec("CREATE TRIGGER IF NOT EXISTS "
-		       "import_key_information_trigger "
-		       "BEFORE INSERT ON import_key_information "
-		       "BEGIN "
-		       "DELETE FROM import_key_information; "
-		       "END"))
-	  created = false;
-
-	if(!query.exec("CREATE TABLE IF NOT EXISTS remote_key_information ("
-		       "cipher_type TEXT NOT NULL, "
-		       "encryption_key TEXT NOT NULL, "
-		       "hash_key TEXT NOT NULL, "
-		       "hash_type TEXT NOT NULL)"))
-	  created = false;
-
-	if(!query.exec("CREATE TRIGGER IF NOT EXISTS "
-		       "remote_key_information_trigger "
-		       "BEFORE INSERT ON remote_key_information "
-		       "BEGIN "
-		       "DELETE FROM remote_key_information; "
-		       "END"))
-	  created = false;
-      }
-    else
-      created = false;
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase(connectionName);
+  created = spoton_misc::prepareUrlKeysDatabase();
   progress.update();
 
   for(int i = 0, processed = 0; i < 10 + 6 && !progress.wasCanceled(); i++)
