@@ -23,6 +23,8 @@
 14.  Updated NTRU files to 8e2f467982d329c61a921ecaac6e58e3fd85338c.
 15.  The urls_key_information.db must be created during the initialization
      of the user interface.
+16.  Updated Qt to version 5.4.0 on Windows.
+17.  Updated OpenSSL libraries to version 1.0.1k.
 
 0.17c (12/25/2014)
 
