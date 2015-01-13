@@ -20,6 +20,9 @@
      value.
 12.  Store PostgreSQL connection information in the INI file.
 13.  Removed keepalives_idle=10 in support of legacy PostgreSQL databases.
+14.  Updated NTRU files to 8e2f467982d329c61a921ecaac6e58e3fd85338c.
+15.  The urls_key_information.db must be created during the initialization
+     of the user interface.
 
 0.17c (12/25/2014)
 
