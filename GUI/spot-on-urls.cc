@@ -761,7 +761,9 @@ void spoton::slotSaveUrlCredentials(void)
 	    if(ok)
 	      {
 		if(!query.exec())
-		  error = tr("Database write error.");
+		  error = tr
+		    ("Database write error. "
+		     "Is urls_key_information.db properly defined?");
 	      }
 	    else
 	      error = tr("An error occurred with "
@@ -1060,7 +1062,9 @@ void spoton::slotSaveCommonUrlCredentials(void)
 	    if(ok)
 	      {
 		if(!query.exec())
-		  error = tr("Database write error.");
+		  error = tr
+		    ("Database write error. Is urls_key_information.db "
+		     "properly defined?");
 	      }
 	    else
 	      error = tr("An error occurred with "
