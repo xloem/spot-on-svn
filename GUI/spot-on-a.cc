@@ -231,7 +231,9 @@ spoton::spoton(void):QMainWindow()
      arg(curl_version()).
      arg(GCRYPT_VERSION));
   m_ui.statisticsBox->setVisible(false);
-  m_ui.urlSettings->setVisible(false);
+  m_ui.urlSettings->setVisible(true);
+  m_ui.urlsBox->setVisible(false);
+  m_ui.showUrlSettings->setChecked(true);
   m_ui.postgresqlConnect->setEnabled(false);
 
   foreach(QString driver, QSqlDatabase::drivers())

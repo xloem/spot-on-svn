@@ -601,6 +601,13 @@ void spoton::slotShowUrlSettings(void)
 {
   m_ui.urlSettings->setVisible(!m_ui.urlSettings->isVisible());
   m_ui.urlsBox->setVisible(!m_ui.urlSettings->isVisible());
+
+#if SPOTON_GOLDBUG == 0
+  if(m_ui.urlsBox->isVisible())
+    m_ui.urls_settings_layout->addWidget(m_ui.importUrls);
+  else
+    m_ui.urls_import_layout->addWidget(m_ui.importUrls);
+#endif
 }
 
 void spoton::slotSelectUrlIniPath(void)
