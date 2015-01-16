@@ -1,9 +1,11 @@
 0.18 (01/30/2015)
 
-1.   Additional read and write locks. Protect the kernel.
+1.   Additional read and write locks. Protect the kernel and sensitive
+     data.
 2.   Allow URL link interaction from the user interface.
 3.   Created another PostgreSQL account. Set read and write permissions
-     for spot_on_user.
+     for spot_on_user. The spot_on_user should not be allowed to
+     delete database entries.
 4.   Modified the retrieve e-mail mechanism so that it also retrieves
      e-mail via IMAP/POP3.
 5.   Experimental support for IMAP/POP3/SMTP plain-text e-mail. Single
@@ -24,7 +26,8 @@
 15.  The urls_key_information.db must be created during the initialization
      of the user interface.
 16.  Updated Qt to version 5.4.0 on Windows.
-17.  Updated OpenSSL libraries to version 1.0.1k.
+17.  Updated OpenSSL libraries to version 1.0.1k on Windows.
+18.  Allow the user to accept or deny gemini keys.
 
 0.17c (12/25/2014)
 
