@@ -5416,6 +5416,9 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 				 const QByteArray &timestamp,
 				 const QString &messageType)
 {
+  if(!spoton_kernel::setting("gui/acceptGeminis", true).toBool())
+    return;
+
   QDateTime dateTime
     (QDateTime::fromString(timestamp.constData(), "MMddyyyyhhmmss"));
 

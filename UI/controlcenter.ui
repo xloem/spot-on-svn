@@ -73,7 +73,7 @@
              <x>0</x>
              <y>0</y>
              <width>776</width>
-             <height>485</height>
+             <height>487</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_54">
@@ -456,8 +456,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1031</width>
-                <height>510</height>
+                <width>751</width>
+                <height>503</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -485,9 +485,9 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QCheckBox" name="chatAcceptSigned">
+                    <widget class="QCheckBox" name="acceptGeminis">
                      <property name="text">
-                      <string>&amp;Accept only signed messages.</string>
+                      <string>Accept &amp;geminis.</string>
                      </property>
                      <property name="checked">
                       <bool>true</bool>
@@ -495,9 +495,9 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QCheckBox" name="displayPopups">
+                    <widget class="QCheckBox" name="chatAcceptSigned">
                      <property name="text">
-                      <string>&amp;Display popups automatically.</string>
+                      <string>&amp;Accept only signed messages.</string>
                      </property>
                      <property name="checked">
                       <bool>true</bool>
@@ -511,16 +511,6 @@
                      </property>
                      <property name="text">
                       <string>&amp;Impersonate me.</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QCheckBox" name="chatSignMessages">
-                     <property name="text">
-                      <string>&amp;Sign messages.</string>
-                     </property>
-                     <property name="checked">
-                      <bool>true</bool>
                      </property>
                     </widget>
                    </item>
@@ -545,6 +535,16 @@
                     <number>5</number>
                    </property>
                    <item>
+                    <widget class="QCheckBox" name="displayPopups">
+                     <property name="text">
+                      <string>&amp;Display popups automatically.</string>
+                     </property>
+                     <property name="checked">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
                     <widget class="QLabel" name="label_121">
                      <property name="text">
                       <string>&amp;Repaint every</string>
@@ -567,6 +567,16 @@
                      </property>
                      <property name="value">
                       <double>3.500000000000000</double>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QCheckBox" name="chatSignMessages">
+                     <property name="text">
+                      <string>&amp;Sign messages.</string>
+                     </property>
+                     <property name="checked">
+                      <bool>true</bool>
                      </property>
                     </widget>
                    </item>
@@ -1028,8 +1038,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1094</width>
-             <height>594</height>
+             <width>879</width>
+             <height>575</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -2225,8 +2235,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>912</width>
-             <height>467</height>
+             <width>776</width>
+             <height>487</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2885,8 +2895,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>283</width>
-                     <height>1429</height>
+                     <width>233</width>
+                     <height>1393</height>
                     </rect>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3346,8 +3356,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1066</width>
-             <height>622</height>
+             <width>855</width>
+             <height>595</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -4489,7 +4499,7 @@
              <x>0</x>
              <y>0</y>
              <width>776</width>
-             <height>485</height>
+             <height>487</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -4541,9 +4551,9 @@
                <property name="geometry">
                 <rect>
                  <x>0</x>
-                 <y>-387</y>
-                 <width>748</width>
-                 <height>627</height>
+                 <y>0</y>
+                 <width>751</width>
+                 <height>558</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_65">
@@ -5342,8 +5352,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>829</width>
-             <height>1073</height>
+             <width>761</width>
+             <height>1047</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -6575,8 +6585,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>758</width>
-             <height>559</height>
+             <width>761</width>
+             <height>546</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -7574,7 +7584,7 @@
              <x>0</x>
              <y>0</y>
              <width>776</width>
-             <height>485</height>
+             <height>487</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -8056,7 +8066,7 @@
              <x>0</x>
              <y>0</y>
              <width>776</width>
-             <height>485</height>
+             <height>487</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -8265,7 +8275,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>25</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -8511,11 +8521,12 @@
   <tabstop>buzzTab</tabstop>
   <tabstop>scrollArea_2</tabstop>
   <tabstop>acceptChatKeys</tabstop>
+  <tabstop>acceptGeminis</tabstop>
   <tabstop>chatAcceptSigned</tabstop>
-  <tabstop>displayPopups</tabstop>
   <tabstop>impersonate</tabstop>
-  <tabstop>chatSignMessages</tabstop>
+  <tabstop>displayPopups</tabstop>
   <tabstop>chatUpdateInterval</tabstop>
+  <tabstop>chatSignMessages</tabstop>
   <tabstop>enableChatEmoticons</tabstop>
   <tabstop>clearMessages</tabstop>
   <tabstop>messages</tabstop>

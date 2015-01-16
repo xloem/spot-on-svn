@@ -241,6 +241,7 @@ class spoton: public QMainWindow
   void slotAcceptBuzzMagnets(bool state);
   void slotAcceptChatKeys(bool state);
   void slotAcceptEmailKeys(bool state);
+  void slotAcceptGeminis(bool state);
   void slotAcceptPublicizedListeners(void);
   void slotAcceptUrlKeys(bool state);
   void slotActivateKernel(void);

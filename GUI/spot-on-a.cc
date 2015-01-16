@@ -1678,6 +1678,8 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/acceptChatKeys", false).toBool());
   m_ui.acceptEmailKeys->setChecked
     (m_settings.value("gui/acceptEmailKeys", false).toBool());
+  m_ui.acceptGeminis->setChecked
+    (m_settings.value("gui/acceptGeminis", true).toBool());
   m_ui.acceptUrlKeys->setChecked
     (m_settings.value("gui/acceptUrlKeys", false).toBool());
   m_ui.autoAddSharedSBMagnets->setChecked

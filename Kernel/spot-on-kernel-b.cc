@@ -1242,6 +1242,9 @@ void spoton_kernel::saveGemini(const QByteArray &publicKeyHash,
   ** spot-on-neighbor.cc.
   */
 
+  if(!setting("gui/acceptGeminis", true).toBool())
+    return;
+
   QDateTime dateTime
     (QDateTime::fromString(timestamp.constData(), "MMddyyyyhhmmss"));
 

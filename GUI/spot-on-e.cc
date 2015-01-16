@@ -776,3 +776,12 @@ void spoton::slotSetNeighborPriority(void)
 
   QSqlDatabase::removeDatabase(connectionName);
 }
+
+void spoton::slotAcceptGeminis(bool state)
+{
+  m_settings["gui/acceptGeminis"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/acceptGeminis", state);
+}
