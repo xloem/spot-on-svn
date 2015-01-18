@@ -688,6 +688,16 @@ QPushButton:pressed {
                     </widget>
                    </item>
                    <item>
+                    <widget class="QCheckBox" name="acceptGeminis">
+                     <property name="text">
+                      <string>&amp;Accept &amp;geminis.</string>
+                     </property>
+                     <property name="checked">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
                     <widget class="QCheckBox" name="chatAcceptSigned">
                      <property name="toolTip">
                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;People who have your key can only send messages if they are signed.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -11103,6 +11113,7 @@ spot-on-kernel&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; color:#666666;&quot;&
   <tabstop>saveNodeName</tabstop>
   <tabstop>enableChatEmoticons</tabstop>
   <tabstop>hideOfflineParticipants</tabstop>
+  <tabstop>acceptGeminis</tabstop>
   <tabstop>chatAcceptSigned</tabstop>
   <tabstop>displayPopups</tabstop>
   <tabstop>chatSignMessages</tabstop>
