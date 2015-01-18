@@ -1399,7 +1399,10 @@ void spoton_neighbor::saveStatus(const QSqlDatabase &db,
 
 void spoton_neighbor::run(void)
 {
+  QReadLocker locker(&m_priorityMutex);
+
   setPriority(m_priority);
+  locker.unlock();
 
   spoton_neighbor_worker worker(this);
 
