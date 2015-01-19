@@ -84,7 +84,7 @@ void spoton::slotConfigurePoptastic(void)
   connect(m_poptasticSettingsUi.capath,
 	  SIGNAL(returnPressed(void)),
 	  this,
-	  SLOT(slotSetCAPath(void)));
+	  SLOT(slotSelectCAPath(void)));
   connect(m_ui.passphrase2,
 	  SIGNAL(returnPressed(void)),
 	  this,
