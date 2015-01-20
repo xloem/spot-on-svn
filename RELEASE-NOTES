@@ -1,4 +1,4 @@
-0.18 (01/30/2015)
+0.18 (01/21/2015)
 
 1.   Additional read and write locks. Protect the kernel and sensitive
      data.
