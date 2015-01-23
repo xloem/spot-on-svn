@@ -26,7 +26,7 @@
 15.  The urls_key_information.db must be created during the initialization
      of the user interface.
 16.  Updated Qt to version 5.4.0 on Windows.
-17.  Updated OpenSSL libraries to version 1.0.1k on Windows.
+17.  Updated OpenSSL libraries to version 1.0.1l on Windows.
 18.  Allow the user to accept or deny gemini keys.
 
 0.17c (12/25/2014)
