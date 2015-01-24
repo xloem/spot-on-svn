@@ -110,8 +110,13 @@ int main(int argc, char *argv[])
 #endif
 
   QApplication qapplication(argc, argv);
+  QThread *thread = qapplication.thread();
 
-  QThread::currentThread()->setPriority(QThread::HighPriority);
+  if(!thread)
+    thread = QThread::currentThread();
+
+  if(thread)
+    thread->setPriority(QThread::HighPriority);
 
 #ifdef Q_OS_MAC
 #if QT_VERSION >= 0x050000
