@@ -117,6 +117,9 @@ int main(int argc, char *argv[])
 
   if(thread)
     thread->setPriority(QThread::HighPriority);
+  else
+    qDebug() << "Cannot set the main thread's priority because "
+      "the main thread does not exist.";
 
 #ifdef Q_OS_MAC
 #if QT_VERSION >= 0x050000
