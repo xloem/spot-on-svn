@@ -1252,6 +1252,8 @@ spoton::spoton(void):QMainWindow()
 	  m_ui.postgresqlConnect, SLOT(setDisabled(bool)));
   connect(m_ui.sqlite, SIGNAL(toggled(bool)),
 	  this, SLOT(slotPostgreSQLDisconnect(bool)));
+  connect(m_ui.acceptGeminis, SIGNAL(toggled(bool)),
+	  this, SLOT(slotAcceptGeminis(bool)));
   connect(m_ui.action_Poptastic_Settings, SIGNAL(triggered(void)),
 	  this, SLOT(slotConfigurePoptastic(void)));
   connect(&m_chatInactivityTimer,
