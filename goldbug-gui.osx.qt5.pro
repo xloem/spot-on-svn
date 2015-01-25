@@ -38,13 +38,14 @@ QMAKE_EXTRA_TARGETS = libntru libspoton purge
 QMAKE_LFLAGS_RELEASE =
 QMAKE_LFLAGS_RPATH =
 INCLUDEPATH	+= . ../../. GUI ../../libGeoIP/Include.osx64 \
-                   /usr/local/include
+                   /usr/local/include /usr/local/opt
 ICON		= Icons/Logo/goldbug.icns
 LIBS		+= -L../../libGeoIP/Libraries.osx64 -lGeoIP \
                    -L../../libNTRU -lntru \
                    -L../../libSpotOn -lspoton \
-                   -L/usr/local/lib -lcrypto -lcurl -lgcrypt -lgpg-error \
-                   -lssl \
+                   -L/usr/local/lib -L/usr/local/opt/curl/lib \
+                   -L/usr/local/opt/openssl/lib \
+                   -lcrypto -lcurl -lgcrypt -lgpg-error -lssl \
                    -framework AppKit -framework Cocoa
 PRE_TARGETDEPS = libntru.dylib libspoton.dylib
 OBJECTS_DIR = temp/obj
@@ -53,18 +54,18 @@ MOC_DIR = temp/moc
 RCC_DIR = temp/rcc
 
 FORMS           = GoldBug-UI/adaptiveechoprompt.ui \
-                  GoldBug-UI/buzzpage.ui \
-                  GoldBug-UI/chatwindow.ui \
-                  GoldBug-UI/controlcenter.ui \
-                  GoldBug-UI/encryptfile.ui \
+		  GoldBug-UI/buzzpage.ui \
+		  GoldBug-UI/chatwindow.ui \
+		  GoldBug-UI/controlcenter.ui \
+		  GoldBug-UI/encryptfile.ui \
 		  GoldBug-UI/ipinformation.ui \
                   GoldBug-UI/logviewer.ui \
                   GoldBug-UI/passwordprompt.ui \
 		  GoldBug-UI/poptasticsettings.ui \
 		  GoldBug-UI/postgresqlconnect.ui \
-                  GoldBug-UI/rosetta.ui \
+		  GoldBug-UI/rosetta.ui \
                   GoldBug-UI/starbeamanalyzer.ui \
-                  GoldBug-UI/statusbar.ui
+		  GoldBug-UI/statusbar.ui
 
 UI_HEADERS_DIR  = GUI
 
@@ -185,8 +186,8 @@ PROJECTNAME	= GoldBug
 
 QMAKE_STRIP	= echo
 
-spoton.path		= /Applications/GoldBug.d/GoldBug.app
-spoton.files		= GoldBug.app/*
+goldbug.path		= /Applications/GoldBug.d/GoldBug.app
+goldbug.files		= GoldBug.app/*
 install1.path           = /Applications/GoldBug.d
 install1.files          = spot-on-neighbors.txt
 libgeoip_data_install.path = /Applications/GoldBug.d/GeoIP
@@ -196,7 +197,7 @@ libgeoip_install.extra  = cp ../../libGeoIP/Libraries.osx64/libGeoIP.1.dylib ./G
 libntru_install.path  = .
 libntru_install.extra = cp ../../libNTRU/libntru.dylib ./GoldBug.app/Contents/Frameworks/libntru.dylib && install_name_tool -change ../../libNTRU/libntru.dylib @executable_path/../Frameworks/libntru.dylib ./GoldBug.app/Contents/MacOS/GoldBug
 libspoton_install.path  = .
-libspoton_install.extra = cp ../../libSpotOn/libspoton.dylib ./GoldBug.app/Contents/Frameworks/libspoton.dylib && install_name_tool -change /usr/local/lib/libgcrypt.11.dylib @loader_path/libgcrypt.11.dylib ./GoldBug.app/Contents/Frameworks/libspoton.dylib && install_name_tool -change ../../libSpotOn/libspoton.dylib @executable_path/../Frameworks/libspoton.dylib ./GoldBug.app/Contents/MacOS/GoldBug
+libspoton_install.extra = cp ../../libSpotOn/libspoton.dylib ./GoldBug.app/Contents/Frameworks/libspoton.dylib && install_name_tool -change /usr/local/lib/libgcrypt.20.dylib @loader_path/libgcrypt.20.dylib ./GoldBug.app/Contents/Frameworks/libspoton.dylib && install_name_tool -change ../../libSpotOn/libspoton.dylib @executable_path/../Frameworks/libspoton.dylib ./GoldBug.app/Contents/MacOS/GoldBug
 lrelease.extra          = $$[QT_INSTALL_BINS]/lrelease goldbug-gui.osx.qt5.pro
 lrelease.path           = .
 lupdate.extra           = $$[QT_INSTALL_BINS]/lupdate goldbug-gui.osx.qt5.pro
@@ -223,5 +224,5 @@ INSTALLS	= macdeployqt \
                   lupdate \
                   lrelease \
                   translations \
-                  spoton \
+                  goldbug \
                   postinstall
