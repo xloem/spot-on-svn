@@ -85,8 +85,8 @@ SOURCES		= ../Common/spot-on-crypt.cc \
 		  spot-on-starbeam-reader.cc \
 		  spot-on-starbeam-writer.cc
 
-OBJECTIVE_HEADERS += ../Common/Cocoainitializer.h
-OBJECTIVE_SOURCES += ../Common/Cocoainitializer.mm
+OBJECTIVE_HEADERS += ../Common/CocoaInitializer.h
+OBJECTIVE_SOURCES += ../Common/CocoaInitializer.mm
 
 TRANSLATIONS    =
 

@@ -101,8 +101,8 @@ SOURCES		= Common/spot-on-crypt.cc \
 		  GUI/spot-on-urls.cc \
 		  GUI/spot-on-urls-search.cc
 
-OBJECTIVE_HEADERS += Common/Cocoainitializer.h
-OBJECTIVE_SOURCES += Common/Cocoainitializer.mm
+OBJECTIVE_HEADERS += Common/CocoaInitializer.h
+OBJECTIVE_SOURCES += Common/CocoaInitializer.mm
 
 TRANSLATIONS    = Translations/spot-on_af.ts \
                   Translations/spot-on_al.ts \
