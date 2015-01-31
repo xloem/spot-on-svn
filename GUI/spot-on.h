@@ -495,6 +495,7 @@ class spoton: public QMainWindow
   void slotUnblockNeighbor(void);
   void slotUpdateChatWindows(void);
   void slotUpdateSpinBoxChanged(double value);
+  void slotUrlDistillersRadioButton(bool state);
   void slotValidatePassphrase(void);
   void slotVerify(void);
   void slotViewLog(void);
