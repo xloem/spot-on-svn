@@ -3400,3 +3400,35 @@ bool spoton_misc::prepareUrlKeysDatabase(void)
   QSqlDatabase::removeDatabase(connectionName);
   return ok;
 }
+
+int spoton_misc::user_interfaces(void)
+{
+  QString connectionName("");
+  int count = 0;
+
+  {
+    QSqlDatabase db = database(connectionName);
+
+    db.setDatabaseName(homePath() + QDir::separator() + "kernel.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	if(query.exec("SELECT statistic, value FROM kernel_statistics "
+		      "ORDER BY statistic"))
+	  while(query.next())
+	    if(query.value(0).toString().toLower().
+	       contains("user interfaces"))
+	      {
+		count = query.value(1).toInt();
+		break;
+	      }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+  return count;
+}

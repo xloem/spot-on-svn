@@ -134,6 +134,7 @@ class spoton_misc
   static bool saveGemini(const QPair<QByteArray, QByteArray> &gemini,
 			 const QString &oid,
 			 spoton_crypt *crypt);
+  static int user_interfaces(void);
   static qint64 participantCount(const QString &keyType,
 				 spoton_crypt *crypt);
   static void cleanupDatabases(spoton_crypt *crypt);
