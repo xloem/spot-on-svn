@@ -1,3 +1,8 @@
+0.19 (02/28/2015)
+
+1.   URL distribution.
+2.   Updated NTRU files to 242722f72b2c97a995eb2a0e4a82dc0bd279fc7f.
+
 0.18 (01/23/2015)
 
 1.   Additional read and write locks. Protect the kernel and sensitive
