@@ -217,6 +217,7 @@ class spoton: public QMainWindow
   void populateMOTD(const QString &listenerOid);
   void populateMail(void);
   void populateNovas(void);
+  void populateUrlDistillers(void);
   void prepareContextMenuMirrors(void);
   void prepareListenerIPCombo(void);
   void prepareUrlContainers(void);
@@ -421,6 +422,7 @@ class spoton: public QMainWindow
   void slotReceiversClicked(bool state);
   void slotRefreshMail(void);
   void slotRefreshPostOffice(void);
+  void slotRefreshUrlDistillers(void);
   void slotRegenerateKey(void);
   void slotRemoveEmailParticipants(void);
   void slotRemoveParticipants(void);

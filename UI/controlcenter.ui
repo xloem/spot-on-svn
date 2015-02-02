@@ -7852,7 +7852,7 @@
                      </layout>
                     </item>
                     <item>
-                     <widget class="QListWidget" name="listWidget">
+                     <widget class="QListWidget" name="downDistillers">
                       <property name="tabKeyNavigation">
                        <bool>true</bool>
                       </property>
@@ -7937,7 +7937,7 @@
                      </layout>
                     </item>
                     <item>
-                     <widget class="QListWidget" name="listWidget_2">
+                     <widget class="QListWidget" name="upDistillers">
                       <property name="tabKeyNavigation">
                        <bool>true</bool>
                       </property>
@@ -8800,10 +8800,10 @@
   <tabstop>urlTab</tabstop>
   <tabstop>acceptlistDL</tabstop>
   <tabstop>denylistDL</tabstop>
-  <tabstop>listWidget</tabstop>
+  <tabstop>downDistillers</tabstop>
   <tabstop>acceptlistUL</tabstop>
   <tabstop>denylistUL</tabstop>
-  <tabstop>listWidget_2</tabstop>
+  <tabstop>upDistillers</tabstop>
   <tabstop>domain</tabstop>
   <tabstop>downDist</tabstop>
   <tabstop>upDist</tabstop>

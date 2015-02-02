@@ -2441,7 +2441,7 @@ void spoton::slotRegenerateKey(void)
 			  tr("An error (%1) occurred with "
 			     "spoton_crypt::"
 			     "generatePrivatePublicKeys().").
-			  arg(error.remove(".").trimmed()));
+			  arg(error.trimmed()));
 }
 
 void spoton::prepareContextMenuMirrors(void)

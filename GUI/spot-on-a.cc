@@ -1264,6 +1264,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(returnPressed(void)),
 	  this,
 	  SLOT(slotAddDistiller(void)));
+  connect(m_ui.refreshDistillers,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotRefreshUrlDistillers(void)));
   connect(&m_chatInactivityTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -2278,7 +2282,7 @@ void spoton::slotAddListener(void)
       spoton_misc::logError
 	(QString("spoton::"
 		 "slotAddListener(): "
-		 "generateSslKeys() failure (%1).").arg(error.remove(".")));
+		 "generateSslKeys() failure (%1).").arg(error));
       goto done_label;
     }
 
@@ -4280,7 +4284,6 @@ void spoton::slotGeneralTimerTimeout(void)
 	  palette.setColor(m_ui.pid->backgroundRole(), color);
 	  m_ui.pid->setPalette(palette);
 	  m_ui.pid->setText(QString::number(pid));
-	  derivativeUpdates();
 #if SPOTON_GOLDBUG == 1
 	  m_ui.activateKernel->setStyleSheet("background-color: lightgreen;"
 					     "border-style: outset;"
@@ -5138,16 +5141,16 @@ void spoton::slotSetPassphrase(void)
 	}
     }
 
-  if(!error1.remove(".").trimmed().isEmpty())
+  if(!error1.trimmed().isEmpty())
     {
       spoton_crypt::purgeDatabases();
       updatePublicKeysLabel();
       QMessageBox::critical
 	(this, tr("%1: Error").arg(SPOTON_APPLICATION_NAME),
 	 tr("An error (%1) occurred with spoton_crypt::"
-	    "derivedKeys().").arg(error1.remove(".").trimmed()));
+	    "derivedKeys().").arg(error1.trimmed()));
     }
-  else if(!error2.remove(".").trimmed().isEmpty())
+  else if(!error2.trimmed().isEmpty())
     {
       spoton_crypt::purgeDatabases();
       updatePublicKeysLabel();
@@ -5158,9 +5161,9 @@ void spoton::slotSetPassphrase(void)
 			       "generatePrivatePublicKeys() or "
 			       "spoton_crypt::"
 			       "reencodePrivatePublicKeys().").
-			    arg(error2.remove(".").trimmed()));
+			    arg(error2.trimmed()));
     }
-  else if(!error3.remove(".").trimmed().isEmpty())
+  else if(!error3.trimmed().isEmpty())
     {
       spoton_crypt::purgeDatabases();
       updatePublicKeysLabel();
@@ -5171,7 +5174,7 @@ void spoton::slotSetPassphrase(void)
 			       "keyedHash() or "
 			       "spoton_crypt::"
 			       "saltedPassphraseHash().").
-			    arg(error3.remove(".").trimmed()));
+			    arg(error3.trimmed()));
     }
   else
     {
@@ -5562,7 +5565,6 @@ void spoton::slotValidatePassphrase(void)
 #endif
   m_ui.passphrase->setFocus();
   updatePublicKeysLabel();
-  derivativeUpdates();
 }
 
 void spoton::slotTabChanged(int index)

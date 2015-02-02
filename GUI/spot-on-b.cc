@@ -4300,6 +4300,8 @@ void spoton::slotSetIcons(void)
   // URLs
 
   m_ui.addDistiller->setIcon(QIcon(QString(":/%1/add.png").arg(iconSet)));
+  m_ui.refreshDistillers->setIcon
+    (QIcon(QString(":/%1/refresh.png").arg(iconSet)));
   m_ui.urlTab->setTabIcon
     (0, QIcon(QString(":/%1/down.png").arg(iconSet)));
   m_ui.urlTab->setTabIcon
@@ -5020,7 +5022,7 @@ void spoton::initializeKernelSocket(void)
     spoton_misc::logError
       (QString("spoton::"
 	       "initializeKernelSocket(): "
-	       "generateSslKeys() failure (%1).").arg(error.remove(".")));
+	       "generateSslKeys() failure (%1).").arg(error));
 }
 
 void spoton::slotBuzzChanged(void)

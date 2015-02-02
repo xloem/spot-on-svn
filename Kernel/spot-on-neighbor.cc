@@ -616,7 +616,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	  (QString("spoton_neighbor:: "
 		   "spoton_neighbor(): "
 		   "generateSslKeys() failure (%1) for %2:%3.").
-	   arg(error.remove(".")).
+	   arg(error).
 	   arg(ipAddress).
 	   arg(port));
     }

@@ -1112,4 +1112,159 @@ void spoton::slotSaveCommonUrlCredentials(void)
 
 void spoton::slotAddDistiller(void)
 {
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
+
+  if(!crypt)
+    {
+      QMessageBox::critical
+	(this, tr("%1: Error").arg(SPOTON_APPLICATION_NAME),
+	 tr("Invalid spoton_crypt object. This is a fatal flaw."));
+      return;
+    }
+
+  QString connectionName("");
+  QString error("");
+  QUrl url(QUrl::fromUserInput(m_ui.domain->text().toLower()));
+  bool ok = true;
+
+  if(url.isEmpty() || !url.isValid())
+    {
+      error = tr("Invalid domain.");
+      ok = false;
+      goto done_label;
+    }
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "urls_distillers_information.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.prepare("INSERT INTO distillers "
+		      "(direction, "
+		      "domain, "
+		      "domain_hash) "
+		      "VALUES "
+		      "(?, ?, ?)");
+
+	if(m_ui.downDist->isChecked())
+	  query.bindValue(0, "download");
+	else
+	  query.bindValue(0, "upload");
+
+	query.bindValue
+	  (1,
+	   crypt->encryptedThenHashed(url.host().toUtf8(), &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (2, crypt->keyedHash(url.host().toUtf8(), &ok).toBase64());
+
+	if(ok)
+	  ok = query.exec();
+
+	if(query.lastError().isValid())
+	  error = query.lastError().text().trimmed();
+      }
+    else
+      {
+	ok = false;
+
+	if(db.lastError().isValid())
+	  error = db.lastError().text();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+
+ done_label:
+
+  if(ok)
+    {
+      m_ui.domain->selectAll();
+      populateUrlDistillers();
+    }
+  else if(error.isEmpty())
+    QMessageBox::critical(this, tr("%1: Error").
+			  arg(SPOTON_APPLICATION_NAME),
+			  tr("Unable to add the specified URL domain. "
+			     "Please enable logging via the Log Viewer "
+			     "and try again."));
+  else
+    QMessageBox::critical(this, tr("%1: Error").
+			  arg(SPOTON_APPLICATION_NAME),
+			  tr("An error (%1) occurred while attempting "
+			     "to add the specified URL domain. "
+			     "Please enable logging via the Log Viewer "
+			     "and try again.").arg(error));
+}
+
+void spoton::populateUrlDistillers(void)
+{
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
+
+  if(!crypt)
+    return;
+
+  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "urls_distillers_information.db");
+
+    if(db.open())
+      {
+	m_ui.downDistillers->clear();
+	m_ui.upDistillers->clear();
+
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+	query.prepare("SELECT direction, domain FROM distillers");
+
+	if(query.exec())
+	  while(query.next())
+	    {
+	      QString direction
+		(query.value(0).toString().toLower().trimmed());
+	      QString domain("");
+	      bool ok = true;
+
+	      domain = crypt->
+		decryptedAfterAuthenticated(QByteArray::
+					    fromBase64(query.
+						       value(1).
+						       toByteArray()),
+					    &ok).constData();
+
+	      if(ok)
+		{
+		  if(direction == "download")
+		    m_ui.downDistillers->addItem(domain);
+		  else
+		    m_ui.upDistillers->addItem(domain);
+		}
+	    }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+  QApplication::restoreOverrideCursor();
+}
+
+void spoton::slotRefreshUrlDistillers(void)
+{
+  populateUrlDistillers();
 }

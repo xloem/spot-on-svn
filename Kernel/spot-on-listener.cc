@@ -737,7 +737,7 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
 	      (QString("spoton_listener::"
 		       "slotNewConnection(): "
 		       "generateSslKeys() failure (%1) for %2:%3.").
-	       arg(error.remove(".")).
+	       arg(error).
 	       arg(m_address.toString()).
 	       arg(m_port));
 	}
@@ -753,7 +753,7 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
 	      (QString("spoton_listener::"
 		       "slotNewConnection(): "
 		       "generateSslKeys() failure (%1) for %2:%3.").
-	       arg(error.remove(".")).
+	       arg(error).
 	       arg(m_address.toString()).
 	       arg(m_port));
 	}
@@ -769,7 +769,7 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
 	      (QString("spoton_listener::"
 		       "slotNewConnection(): "
 		       "generateSslKeys() failure (%1) for %2:%3.").
-	       arg(error.remove(".")).
+	       arg(error).
 	       arg(m_address.toString()).
 	       arg(m_port));
 	}

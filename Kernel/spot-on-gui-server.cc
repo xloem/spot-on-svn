@@ -131,7 +131,7 @@ void spoton_gui_server_tcp_server::incomingConnection(int socketDescriptor)
       spoton_misc::logError
 	(QString("spoton_gui_server_tcp_server::"
 		 "spoton_gui_server_tcp_server(): "
-		 "generateSslKeys() failure (%1).").arg(error.remove(".")));
+		 "generateSslKeys() failure (%1).").arg(error));
     }
 }
 
