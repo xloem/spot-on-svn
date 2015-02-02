@@ -1256,6 +1256,14 @@ spoton::spoton(void):QMainWindow()
 	  this, SLOT(slotAcceptGeminis(bool)));
   connect(m_ui.action_Poptastic_Settings, SIGNAL(triggered(void)),
 	  this, SLOT(slotConfigurePoptastic(void)));
+  connect(m_ui.addDistiller,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotAddDistiller(void)));
+  connect(m_ui.domain,
+	  SIGNAL(returnPressed(void)),
+	  this,
+	  SLOT(slotAddDistiller(void)));
   connect(&m_chatInactivityTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -2154,6 +2162,7 @@ spoton::spoton(void):QMainWindow()
   m_sb.status->setText(tr("Preparing databases. Please be patient."));
   m_sb.status->repaint();
   spoton_misc::prepareDatabases();
+  spoton_misc::prepareUrlDistillersDatabase();
   spoton_misc::prepareUrlKeysDatabase();
   m_sb.status->clear();
   QApplication::restoreOverrideCursor();

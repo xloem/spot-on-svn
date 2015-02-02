@@ -123,6 +123,7 @@ class spoton_misc
 			       spoton_crypt *crypt);
   static bool isValidStarBeamMagnet(const QByteArray &magnet);
   static bool isValidStarBeamMissingLinksMagnet(const QByteArray &magnet);
+  static bool prepareUrlDistillersDatabase(void);
   static bool prepareUrlKeysDatabase(void);
   static bool saveFriendshipBundle(const QByteArray &keyType,
 				   const QByteArray &name,

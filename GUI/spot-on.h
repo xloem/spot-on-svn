@@ -250,6 +250,7 @@ class spoton: public QMainWindow
   void slotAddAccount(void);
   void slotAddAttachment(void);
   void slotAddBootstrapper(void);
+  void slotAddDistiller(void);
   void slotAddEtpMagnet(const QString &text = QString(),
 			const bool displayError = true);
   void slotAddFriendsKey(void);

@@ -3348,6 +3348,37 @@ void spoton_misc::saveParticipantStatus(const QByteArray &name,
   QSqlDatabase::removeDatabase(connectionName);
 }
 
+bool spoton_misc::prepareUrlDistillersDatabase(void)
+{
+  QString connectionName("");
+  bool ok = false;
+
+  {
+    QSqlDatabase db = database(connectionName);
+
+    db.setDatabaseName
+      (homePath() + QDir::separator() + "urls_distillers_information.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	if(!query.exec("CREATE TABLE IF NOT EXISTS distillers ("
+		       "direction TEXT NOT NULL DEFAULT 'download', "
+		       "domain TEXT NOT NULL, "
+		       "domain_hash TEXT PRIMARY KEY NOT NULL)"))
+	  ok = false;
+      }
+    else
+      ok = false;
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+  return ok;
+}
+
 bool spoton_misc::prepareUrlKeysDatabase(void)
 {
   QString connectionName("");

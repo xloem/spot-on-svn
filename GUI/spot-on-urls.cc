@@ -131,7 +131,11 @@ void spoton::slotPrepareUrlDatabases(void)
   if(m_ui.sqlite->isChecked())
     slotPostgreSQLDisconnect(true);
 
-  created = spoton_misc::prepareUrlKeysDatabase();
+  created = spoton_misc::prepareUrlDistillersDatabase();
+
+  if(created)
+    created = spoton_misc::prepareUrlKeysDatabase();
+
   progress.update();
 
   for(int i = 0, processed = 0; i < 10 + 6 && !progress.wasCanceled(); i++)
@@ -1104,4 +1108,8 @@ void spoton::slotSaveCommonUrlCredentials(void)
       prepareUrlContainers();
       prepareUrlLabels();
     }
+}
+
+void spoton::slotAddDistiller(void)
+{
 }

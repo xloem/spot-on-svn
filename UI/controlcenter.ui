@@ -73,7 +73,7 @@
              <x>0</x>
              <y>0</y>
              <width>776</width>
-             <height>487</height>
+             <height>483</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_54">
@@ -456,8 +456,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>751</width>
-                <height>503</height>
+                <width>752</width>
+                <height>510</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1038,8 +1038,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>879</width>
-             <height>575</height>
+             <width>898</width>
+             <height>600</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -2256,7 +2256,7 @@
              <x>0</x>
              <y>0</y>
              <width>776</width>
-             <height>487</height>
+             <height>483</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2915,8 +2915,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>233</width>
-                     <height>1393</height>
+                     <width>240</width>
+                     <height>1433</height>
                     </rect>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3376,8 +3376,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>855</width>
-             <height>595</height>
+             <width>880</width>
+             <height>646</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -4519,7 +4519,7 @@
              <x>0</x>
              <y>0</y>
              <width>776</width>
-             <height>487</height>
+             <height>483</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -4572,8 +4572,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>751</width>
-                 <height>558</height>
+                 <width>752</width>
+                 <height>596</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_65">
@@ -5372,8 +5372,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>761</width>
-             <height>1047</height>
+             <width>762</width>
+             <height>1115</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -6605,8 +6605,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>761</width>
-             <height>546</height>
+             <width>762</width>
+             <height>571</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -7604,7 +7604,7 @@
              <x>0</x>
              <y>0</y>
              <width>776</width>
-             <height>487</height>
+             <height>483</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -7852,64 +7852,23 @@
                      </layout>
                     </item>
                     <item>
-                     <layout class="QHBoxLayout" name="horizontalLayout_5">
-                      <property name="spacing">
-                       <number>5</number>
+                     <widget class="QListWidget" name="listWidget">
+                      <property name="tabKeyNavigation">
+                       <bool>true</bool>
                       </property>
-                      <item>
-                       <layout class="QVBoxLayout" name="verticalLayout_8">
-                        <property name="spacing">
-                         <number>5</number>
-                        </property>
-                        <item>
-                         <widget class="QPushButton" name="addDLDistiller">
-                          <property name="text">
-                           <string>Add</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QPushButton" name="delDLDistiller">
-                          <property name="text">
-                           <string>Delete</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <spacer name="verticalSpacer_3">
-                          <property name="orientation">
-                           <enum>Qt::Vertical</enum>
-                          </property>
-                          <property name="sizeHint" stdset="0">
-                           <size>
-                            <width>20</width>
-                            <height>40</height>
-                           </size>
-                          </property>
-                         </spacer>
-                        </item>
-                       </layout>
-                      </item>
-                      <item>
-                       <widget class="QListWidget" name="listWidget">
-                        <property name="tabKeyNavigation">
-                         <bool>true</bool>
-                        </property>
-                        <property name="alternatingRowColors">
-                         <bool>true</bool>
-                        </property>
-                        <property name="selectionBehavior">
-                         <enum>QAbstractItemView::SelectRows</enum>
-                        </property>
-                        <property name="horizontalScrollMode">
-                         <enum>QAbstractItemView::ScrollPerPixel</enum>
-                        </property>
-                        <property name="sortingEnabled">
-                         <bool>true</bool>
-                        </property>
-                       </widget>
-                      </item>
-                     </layout>
+                      <property name="alternatingRowColors">
+                       <bool>true</bool>
+                      </property>
+                      <property name="selectionBehavior">
+                       <enum>QAbstractItemView::SelectRows</enum>
+                      </property>
+                      <property name="horizontalScrollMode">
+                       <enum>QAbstractItemView::ScrollPerPixel</enum>
+                      </property>
+                      <property name="sortingEnabled">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
                     </item>
                    </layout>
                   </widget>
@@ -7978,67 +7937,104 @@
                      </layout>
                     </item>
                     <item>
-                     <layout class="QHBoxLayout" name="horizontalLayout_22">
-                      <property name="spacing">
-                       <number>5</number>
+                     <widget class="QListWidget" name="listWidget_2">
+                      <property name="tabKeyNavigation">
+                       <bool>true</bool>
                       </property>
-                      <item>
-                       <layout class="QVBoxLayout" name="verticalLayout_14">
-                        <property name="spacing">
-                         <number>5</number>
-                        </property>
-                        <item>
-                         <widget class="QPushButton" name="addULDistiller">
-                          <property name="text">
-                           <string>Add</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QPushButton" name="delULDistiller">
-                          <property name="text">
-                           <string>Delete</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <spacer name="verticalSpacer_4">
-                          <property name="orientation">
-                           <enum>Qt::Vertical</enum>
-                          </property>
-                          <property name="sizeHint" stdset="0">
-                           <size>
-                            <width>20</width>
-                            <height>40</height>
-                           </size>
-                          </property>
-                         </spacer>
-                        </item>
-                       </layout>
-                      </item>
-                      <item>
-                       <widget class="QListWidget" name="listWidget_2">
-                        <property name="tabKeyNavigation">
-                         <bool>true</bool>
-                        </property>
-                        <property name="alternatingRowColors">
-                         <bool>true</bool>
-                        </property>
-                        <property name="selectionBehavior">
-                         <enum>QAbstractItemView::SelectRows</enum>
-                        </property>
-                        <property name="horizontalScrollMode">
-                         <enum>QAbstractItemView::ScrollPerPixel</enum>
-                        </property>
-                        <property name="sortingEnabled">
-                         <bool>true</bool>
-                        </property>
-                       </widget>
-                      </item>
-                     </layout>
+                      <property name="alternatingRowColors">
+                       <bool>true</bool>
+                      </property>
+                      <property name="selectionBehavior">
+                       <enum>QAbstractItemView::SelectRows</enum>
+                      </property>
+                      <property name="horizontalScrollMode">
+                       <enum>QAbstractItemView::ScrollPerPixel</enum>
+                      </property>
+                      <property name="sortingEnabled">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
                     </item>
                    </layout>
                   </widget>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QFrame" name="frame_3">
+                  <property name="frameShape">
+                   <enum>QFrame::StyledPanel</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Raised</enum>
+                  </property>
+                  <layout class="QHBoxLayout" name="horizontalLayout_5">
+                   <property name="spacing">
+                    <number>5</number>
+                   </property>
+                   <property name="margin">
+                    <number>5</number>
+                   </property>
+                   <item>
+                    <widget class="QLabel" name="label_99">
+                     <property name="text">
+                      <string>&amp;Domain</string>
+                     </property>
+                     <property name="buddy">
+                      <cstring>domain</cstring>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="domain"/>
+                   </item>
+                   <item>
+                    <widget class="QRadioButton" name="downDist">
+                     <property name="text">
+                      <string>&amp;Download</string>
+                     </property>
+                     <property name="checked">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QRadioButton" name="upDist">
+                     <property name="text">
+                      <string>&amp;Upload</string>
+                     </property>
+                     <property name="checked">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="addDistiller">
+                     <property name="text">
+                      <string>Add</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="refreshDistillers">
+                     <property name="text">
+                      <string>Refresh</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_72">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>161</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
                  </widget>
                 </item>
                </layout>
@@ -8083,7 +8079,7 @@
              <x>0</x>
              <y>0</y>
              <width>776</width>
-             <height>487</height>
+             <height>483</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -8292,7 +8288,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>23</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -8804,14 +8800,15 @@
   <tabstop>urlTab</tabstop>
   <tabstop>acceptlistDL</tabstop>
   <tabstop>denylistDL</tabstop>
-  <tabstop>addDLDistiller</tabstop>
-  <tabstop>delDLDistiller</tabstop>
   <tabstop>listWidget</tabstop>
   <tabstop>acceptlistUL</tabstop>
   <tabstop>denylistUL</tabstop>
-  <tabstop>addULDistiller</tabstop>
-  <tabstop>delULDistiller</tabstop>
   <tabstop>listWidget_2</tabstop>
+  <tabstop>domain</tabstop>
+  <tabstop>downDist</tabstop>
+  <tabstop>upDist</tabstop>
+  <tabstop>addDistiller</tabstop>
+  <tabstop>refreshDistillers</tabstop>
   <tabstop>scrollArea_11</tabstop>
   <tabstop>passphrase_rb_authenticate</tabstop>
   <tabstop>passphrase</tabstop>
