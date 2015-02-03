@@ -1038,7 +1038,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>898</width>
+             <width>906</width>
              <height>600</height>
             </rect>
            </property>
@@ -7859,6 +7859,9 @@
                       <property name="alternatingRowColors">
                        <bool>true</bool>
                       </property>
+                      <property name="selectionMode">
+                       <enum>QAbstractItemView::ExtendedSelection</enum>
+                      </property>
                       <property name="selectionBehavior">
                        <enum>QAbstractItemView::SelectRows</enum>
                       </property>
@@ -7944,6 +7947,9 @@
                       <property name="alternatingRowColors">
                        <bool>true</bool>
                       </property>
+                      <property name="selectionMode">
+                       <enum>QAbstractItemView::ExtendedSelection</enum>
+                      </property>
                       <property name="selectionBehavior">
                        <enum>QAbstractItemView::SelectRows</enum>
                       </property>
@@ -8011,6 +8017,20 @@
                     <widget class="QPushButton" name="addDistiller">
                      <property name="text">
                       <string>Add</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="Line" name="line">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="deleteDistillers">
+                     <property name="text">
+                      <string>Delete</string>
                      </property>
                     </widget>
                    </item>
@@ -8808,6 +8828,7 @@
   <tabstop>downDist</tabstop>
   <tabstop>upDist</tabstop>
   <tabstop>addDistiller</tabstop>
+  <tabstop>deleteDistillers</tabstop>
   <tabstop>refreshDistillers</tabstop>
   <tabstop>scrollArea_11</tabstop>
   <tabstop>passphrase_rb_authenticate</tabstop>

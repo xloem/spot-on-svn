@@ -1268,3 +1268,66 @@ void spoton::slotRefreshUrlDistillers(void)
 {
   populateUrlDistillers();
 }
+
+void spoton::slotDeleteUrlDistillers(void)
+{
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
+
+  if(!crypt)
+    return;
+
+  QList<QListWidgetItem *> list;
+  QString direction("");
+
+  if(m_ui.urlTab->currentIndex() == 0)
+    {
+      direction = "download";
+      list = m_ui.downDistillers->selectedItems();
+    }
+  else
+    {
+      direction = "upload";
+      list = m_ui.upDistillers->selectedItems();
+    }
+
+  if(list.isEmpty())
+    return;
+
+  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "urls_distillers_information.db");
+
+    if(db.open())
+      while(!list.isEmpty())
+	{
+	  QListWidgetItem *item = list.takeFirst();
+
+	  if(!item)
+	    continue;
+
+	  QSqlQuery query(db);
+	  bool ok = true;
+
+	  query.prepare("DELETE FROM distillers WHERE "
+			"direction = ? AND domain_hash = ?");
+	  query.bindValue(0, direction);
+	  query.bindValue(1, crypt->keyedHash(item->text().toUtf8(),
+					      &ok).toBase64());
+
+	  if(ok)
+	    query.exec();
+	}
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+  QApplication::restoreOverrideCursor();
+  populateUrlDistillers();
+}

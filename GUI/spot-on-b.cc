@@ -4300,6 +4300,8 @@ void spoton::slotSetIcons(void)
   // URLs
 
   m_ui.addDistiller->setIcon(QIcon(QString(":/%1/add.png").arg(iconSet)));
+  m_ui.deleteDistillers->setIcon
+    (QIcon(QString(":/%1/delete.png").arg(iconSet)));
   m_ui.refreshDistillers->setIcon
     (QIcon(QString(":/%1/refresh.png").arg(iconSet)));
   m_ui.urlTab->setTabIcon
