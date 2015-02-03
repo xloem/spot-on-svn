@@ -2340,6 +2340,7 @@ void spoton::slotResetAll(void)
        << "shared.db"
        << "starbeam.db"
        << "urls.db"
+       << "urls_distillers_information.db"
        << "urls_key_information.db";
 
   while(!list.isEmpty())
