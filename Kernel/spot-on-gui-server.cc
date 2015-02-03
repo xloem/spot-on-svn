@@ -65,12 +65,6 @@ void spoton_gui_server_tcp_server::incomingConnection(int socketDescriptor)
 	{
 	  try
 	    {
-	      QString sslCS
-		(spoton_kernel::
-		 setting("gui/sslControlString",
-			 "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH").
-		 toString());
-
 	      socket->setSocketDescriptor(socketDescriptor);
 	      socket->setSocketOption
 		(QAbstractSocket::LowDelayOption,
@@ -88,6 +82,11 @@ void spoton_gui_server_tcp_server::incomingConnection(int socketDescriptor)
 		      SIGNAL(modeChanged(QSslSocket::SslMode)));
 
 	      QSslConfiguration configuration;
+	      QString sslCS
+		(spoton_kernel::
+		 setting("gui/sslControlString",
+			 "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH").
+		 toString());
 
 	      configuration.setLocalCertificate(QSslCertificate(certificate));
 	      configuration.setPrivateKey(QSslKey(privateKey, QSsl::Rsa));

@@ -87,16 +87,23 @@ spoton_sctp_server::spoton_sctp_server(const qint64 id,
   m_isListening = false;
   m_serverPort = 0;
   m_socketDescriptor = -1;
+#if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
+  m_socketNotifier = 0;
+#else
   m_timer.setInterval(100);
   connect(&m_timer,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotTimeout(void)));
+#endif
 }
 
 spoton_sctp_server::~spoton_sctp_server()
 {
+#if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
+#else
   m_timer.stop();
+#endif
   close();
 }
 
@@ -349,7 +356,34 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
       m_isListening = true;
       m_serverAddress = address;
       m_serverPort  = port;
+#if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
+      if(m_socketNotifier)
+	m_socketNotifier->deleteLater();
+
+      m_socketNotifier = 0;
+
+      try
+	{
+          m_socketNotifier = new QSocketNotifier
+	    (m_socketDescriptor, QSocketNotifier::Read, this);
+	  connect(m_socketNotifier,
+		  SIGNAL(activated(int)),
+		  this,
+		  SLOT(slotActivated(int)));
+        }
+      catch(...)
+	{
+	  if(m_socketNotifier)
+	    m_socketNotifier->deleteLater();
+
+	  m_socketNotifier = 0;
+        }
+
+      if(m_socketNotifier)
+	m_socketNotifier->setEnabled(true);
+#else
       m_timer.start();
+#endif
     }
   else
 #ifdef Q_OS_WIN32
@@ -410,7 +444,14 @@ void spoton_sctp_server::close(void)
   m_serverAddress.clear();
   m_serverPort = 0;
   m_socketDescriptor = -1;
+#if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
+  if(m_socketNotifier)
+    m_socketNotifier->deleteLater();
+
+  m_socketNotifier = 0;
+#else
   m_timer.stop();
+#endif
 #endif
 }
 
@@ -423,8 +464,15 @@ void spoton_sctp_server::setMaxPendingConnections(const int numConnections)
 #endif
 }
 
+#if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
+void spoton_sctp_server::slotActivated(int socketDescriptor)
+#else
 void spoton_sctp_server::slotTimeout(void)
+#endif
 {
+#if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
+  Q_UNUSED(socketDescriptor);
+#endif
 #ifdef SPOTON_SCTP_ENABLED
   QAbstractSocket::NetworkLayerProtocol protocol =
     QAbstractSocket::IPv4Protocol;
@@ -481,12 +529,21 @@ void spoton_sctp_server::slotTimeout(void)
 #else
 	      ::close(socketDescriptor);
 #endif
+#if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
+	      spoton_misc::logError
+		(QString("spoton_sctp_server::slotActivated(): "
+			 "connection from %1 denied for %2:%3.").
+		 arg(address.toString()).
+		 arg(serverAddress().toString()).
+		 arg(serverPort()));
+#else
 	      spoton_misc::logError
 		(QString("spoton_sctp_server::slotTimeout(): "
 			 "connection from %1 denied for %2:%3.").
 		 arg(address.toString()).
 		 arg(serverAddress().toString()).
 		 arg(serverPort()));
+#endif
 	    }
 	  else if(spoton_misc::isIpBlocked(address,
 					   spoton_kernel::s_crypts.
@@ -497,12 +554,21 @@ void spoton_sctp_server::slotTimeout(void)
 #else
 	      ::close(socketDescriptor);
 #endif
+#if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
+	      spoton_misc::logError
+		(QString("spoton_sctp_server::slotActivated(): "
+			 "connection from %1 denied for %2:%3.").
+		 arg(address.toString()).
+		 arg(serverAddress().toString()).
+		 arg(serverPort()));
+#else
 	      spoton_misc::logError
 		(QString("spoton_sctp_server::slotTimeout(): "
 			 "connection from %1 blocked for %2:%3.").
 		 arg(address.toString()).
 		 arg(serverAddress().toString()).
 		 arg(serverPort()));
+#endif
 	    }
 	  else
 #if QT_VERSION < 0x050000
@@ -584,12 +650,21 @@ void spoton_sctp_server::slotTimeout(void)
 #else
 	      ::close(socketDescriptor);
 #endif
+#if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
+	      spoton_misc::logError
+		(QString("spoton_sctp_server::slotActivated(): "
+			 "connection from %1 denied for %2:%3.").
+		 arg(address.toString()).
+		 arg(serverAddress().toString()).
+		 arg(serverPort()));
+#else
 	      spoton_misc::logError
 		(QString("spoton_sctp_server::slotTimeout(): "
 			 "connection from %1 denied for %2:%3.").
 		 arg(address.toString()).
 		 arg(serverAddress().toString()).
 		 arg(serverPort()));
+#endif
 	    }
 	  else if(spoton_misc::isIpBlocked(address,
 					   spoton_kernel::s_crypts.
@@ -600,12 +675,21 @@ void spoton_sctp_server::slotTimeout(void)
 #else
 	      ::close(socketDescriptor);
 #endif
+#if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
+	      spoton_misc::logError
+		(QString("spoton_sctp_server::slotActivated(): "
+			 "connection from %1 denied for %2:%3.").
+		 arg(address.toString()).
+		 arg(serverAddress().toString()).
+		 arg(serverPort()));
+#else
 	      spoton_misc::logError
 		(QString("spoton_sctp_server::slotTimeout(): "
 			 "connection from %1 blocked for %2:%3.").
 		 arg(address.toString()).
 		 arg(serverAddress().toString()).
 		 arg(serverPort()));
+#endif
 	    }
 	  else
 #if QT_VERSION < 0x050000
