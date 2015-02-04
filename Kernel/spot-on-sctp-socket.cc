@@ -365,7 +365,9 @@ int spoton_sctp_socket::socketDescriptor(void) const
 qint64 spoton_sctp_socket::read(char *data, const qint64 size)
 {
 #ifdef SPOTON_SCTP_ENABLED
-  if(!data || size < 0)
+  if(m_socketDescriptor == -1 || m_state != ConnectedState)
+    return -1;
+  else if(!data || size < 0)
     return -1;
   else if(size == 0)
     return 0;
@@ -453,7 +455,9 @@ qint64 spoton_sctp_socket::read(char *data, const qint64 size)
 qint64 spoton_sctp_socket::write(const char *data, const qint64 size)
 {
 #ifdef SPOTON_SCTP_ENABLED
-  if(!data || size < 0)
+  if(m_socketDescriptor == -1 || m_state != ConnectedState)
+    return -1;
+  else if(!data || size < 0)
     return -1;
   else if(size == 0)
     return 0;
@@ -944,55 +948,77 @@ void spoton_sctp_socket::slotTimeout(void)
 #ifdef SPOTON_SCTP_ENABLED
   if(m_state != ConnectedState)
     {
-      int errorcode = 0;
-      int rc = 0;
-      socklen_t length = sizeof(errorcode);
+      fd_set rfds, wfds;
+      struct timeval tv;
 
-#ifdef Q_OS_WIN32
-      rc = getsockopt
-	(m_socketDescriptor, SOL_SOCKET,
-	 SO_ERROR, (char *) &errorcode, &length);
-#else
-      rc = getsockopt
-	(m_socketDescriptor, SOL_SOCKET,
-	 SO_ERROR, &errorcode, &length);
-#endif
+      FD_ZERO(&rfds);
+      FD_ZERO(&wfds);
+      FD_SET(m_socketDescriptor, &rfds);
+      FD_SET(m_socketDescriptor, &wfds);
+      tv.tv_sec = 0;
+      tv.tv_usec = 250000;
 
-      if(rc == 0)
-	if(errorcode == 0)
-	  {
-	    if(m_state == ConnectingState)
-	      {
-		m_state = ConnectedState;
-		emit connected();
-	      }
-	  }
-    }
-
-  QByteArray data(static_cast<int> (m_readBufferSize), 0);
-  qint64 rc = read(data.data(), data.length());
-
-  if(rc > 0)
-    {
-      if(static_cast<int> (rc) <= m_readBufferSize - m_readBuffer.length())
-	m_readBuffer.append(data.mid(0, static_cast<int> (rc)));
-      else
+      if(select(m_socketDescriptor + 1, &rfds, &wfds, 0, &tv) > 0)
 	{
-	  int n = qMin
-	    (static_cast<int> (m_readBufferSize) - m_readBuffer.length(),
-	     static_cast<int> (rc));
+	  if(FD_ISSET(m_socketDescriptor, &rfds) ||
+	     FD_ISSET(m_socketDescriptor, &wfds))
+	    {
+	      int errorcode = 0;
+	      int rc = 0;
+	      socklen_t length = sizeof(errorcode);
 
-	  if(n > 0)
-	    m_readBuffer.append(data.mid(0, n));
-	}
-
-      emit readyRead();
-    }
 #ifdef Q_OS_WIN32
-  else if(WSAGetLastError() != WSAEWOULDBLOCK)
+	      rc = getsockopt
+		(m_socketDescriptor, SOL_SOCKET,
+		 SO_ERROR, (char *) &errorcode, &length);
 #else
-  else if(!(errno == EAGAIN || errno == EWOULDBLOCK))
+	      rc = getsockopt
+		(m_socketDescriptor, SOL_SOCKET,
+		 SO_ERROR, &errorcode, &length);
 #endif
-    close();
+
+	      if(rc == 0)
+		if(errorcode == 0)
+		  if(m_state == ConnectingState)
+		    {
+		      m_state = ConnectedState;
+		      emit connected();
+		    }
+	    }
+	  else
+	    close();
+	}
+      else
+	close();
+    }
+
+  if(m_state == ConnectedState)
+    {
+      QByteArray data(static_cast<int> (m_readBufferSize), 0);
+      qint64 rc = read(data.data(), data.length());
+
+      if(rc > 0)
+	{
+	  if(static_cast<int> (rc) <= m_readBufferSize - m_readBuffer.length())
+	    m_readBuffer.append(data.mid(0, static_cast<int> (rc)));
+	  else
+	    {
+	      int n = qMin
+		(static_cast<int> (m_readBufferSize) - m_readBuffer.length(),
+		 static_cast<int> (rc));
+
+	      if(n > 0)
+		m_readBuffer.append(data.mid(0, n));
+	    }
+
+	  emit readyRead();
+	}
+#ifdef Q_OS_WIN32
+      else if(WSAGetLastError() != WSAEWOULDBLOCK)
+#else
+      else if(!(errno == EAGAIN || errno == EWOULDBLOCK))
 #endif
+	close();
+#endif
+    }
 }

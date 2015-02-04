@@ -1162,15 +1162,18 @@ void spoton_neighbor::slotTimeout(void)
 			     spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
 		    locker2.unlock();
 
-		    QWriteLocker locker3(&m_priorityMutex);
+		    if(isRunning())
+		      {
+			QWriteLocker locker(&m_priorityMutex);
 
-		    m_priority = Priority(query.value(10).toInt());
+			m_priority = Priority(query.value(10).toInt());
 
-		    if(m_priority < 0 || m_priority > 7)
-		      m_priority = HighPriority;
+			if(m_priority < 0 || m_priority > 7)
+			  m_priority = HighPriority;
 
-		    setPriority(m_priority);
-		    locker3.unlock();
+			setPriority(m_priority);
+		      }
+
 		    m_sslControlString = query.value(9).toString();
 
 		    if(m_sslControlString.isEmpty())
@@ -1459,11 +1462,12 @@ void spoton_neighbor::slotReadyRead(void)
 
 void spoton_neighbor::processData(void)
 {
-  {
-    QReadLocker locker(&m_priorityMutex);
+  if(isRunning())
+    {
+      QReadLocker locker(&m_priorityMutex);
 
-    setPriority(m_priority);
-  }
+      setPriority(m_priority);
+    }
 
   QByteArray data;
 
