@@ -6,6 +6,7 @@
      systems. Removed QTimer usage.
 4.   Removed timer-based writes from spoton_sctp_socket. The change
      also provides the correct number of bytes written.
+5.   Allow removal of URLs.
 
 0.18 (01/23/2015)
 
@@ -13,7 +14,7 @@
      data.
 2.   Allow URL link interaction from the user interface.
 3.   Created another PostgreSQL account. Set read and write permissions
-     for spot_on_user. The spot_on_user should not be allowed to
+     for spot_on_user. The spot_on_user account should not be allowed to
      delete database entries.
 4.   Modified the retrieve e-mail mechanism so that it also retrieves
      e-mail via IMAP/POP3.
