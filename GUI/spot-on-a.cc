@@ -1272,6 +1272,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotDeleteUrlDistillers(void)));
+  connect(m_ui.urls,
+	  SIGNAL(anchorClicked(const QUrl &)),
+	  this,
+	  SLOT(slotDeleteLink(const QUrl &)));
   connect(&m_chatInactivityTimer,
 	  SIGNAL(timeout(void)),
 	  this,

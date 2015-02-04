@@ -202,6 +202,7 @@ class spoton: public QMainWindow
   void closeEvent(QCloseEvent *event);
   void demagnetize(void);
   void derivativeUpdates(void);
+  void discoverUrls(void);
   void generateHalfGeminis(void);
   void highlightPaths(void);
   void importNeighbors(const QString &filePath);
@@ -317,6 +318,7 @@ class spoton: public QMainWindow
   void slotDeleteEtpAllMagnets(void);
   void slotDeleteEtpMagnet(void);
   void slotDeleteInstitution(void);
+  void slotDeleteLink(const QUrl &u);
   void slotDeleteListener(void);
   void slotDeleteMail(int index);
   void slotDeleteNeighbor(void);

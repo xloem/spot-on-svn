@@ -862,11 +862,9 @@ void spoton::importUrl(const QByteArray &d, // Description
 	     "url_hash) VALUES (?, ?, ?, ?, ?)").
      arg(urlHash.mid(0, 2).constData()));
   query.bindValue(0, QDateTime::currentDateTime().toString(Qt::ISODate));
-
-  if(ok)
-    query.bindValue
-      (1, m_urlCommonCrypt->encryptedThenHashed(description, &ok).
-       toBase64());
+  query.bindValue
+    (1, m_urlCommonCrypt->encryptedThenHashed(description, &ok).
+     toBase64());
 
   if(ok)
     query.bindValue
@@ -1330,4 +1328,130 @@ void spoton::slotDeleteUrlDistillers(void)
   QSqlDatabase::removeDatabase(connectionName);
   QApplication::restoreOverrideCursor();
   populateUrlDistillers();
+}
+
+void spoton::slotDeleteLink(const QUrl &u)
+{
+  QString scheme(u.scheme().toLower().trimmed());
+  QUrl url(u);
+
+  if(!scheme.startsWith("delete-"))
+    return;
+  else
+    {
+      scheme.remove("delete-");
+      url.setScheme(scheme);
+    }
+
+  spoton_crypt *crypt = m_crypts.value("url", 0);
+
+  if(!crypt)
+    {
+      QMessageBox::critical
+	(this, tr("%1: Error").
+	 arg(SPOTON_APPLICATION_NAME),
+	 tr("Invalid spoton_crypt object. This is a fatal flaw."));
+      return;
+    }
+  else if(!m_urlCommonCrypt)
+    {
+      QMessageBox::critical
+	(this, tr("%1: Error").
+	 arg(SPOTON_APPLICATION_NAME),
+	 tr("Invalid m_urlCommonCrypt object. This is a fatal flaw."));
+      return;
+    }
+
+  QByteArray urlHash;
+  bool ok = true;
+
+  urlHash = m_urlCommonCrypt->keyedHash(url.toEncoded(), &ok).toHex();
+
+  if(!ok)
+    return;
+
+  /*
+  ** Let's first remove the URL from the correct URL table.
+  */
+
+  QSqlQuery query(m_urlDatabase);
+
+  if(m_urlDatabase.driverName() != "QPSQL")
+    query.exec("PRAGMA secure_delete = ON");
+
+  query.prepare(QString("DELETE FROM spot_on_urls_%1 "
+			"WHERE url_hash = ?").
+		arg(urlHash.mid(0, 2).constData()));
+  query.bindValue(0, urlHash.constData());
+
+  if(!query.exec())
+    if(query.lastError().text().toLower().contains("permission denied"))
+      {
+	QMessageBox::critical(this, tr("%1: Error").
+			      arg(SPOTON_APPLICATION_NAME),
+			      tr("Invalid permissions."));
+	return;
+      }
+
+  /*
+  ** Now, we must remove the URL from all of the keywords tables.
+  */
+
+  QProgressDialog progress(this);
+
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+  progress.setAttribute(Qt::WA_MacMetalStyle, true);
+#endif
+#endif
+  progress.setLabelText(tr("Deleting URL keywords..."));
+  progress.setMaximum(10 * 10 + 6 * 6);
+  progress.setMinimum(0);
+  progress.setWindowTitle(tr("%1: Deleting URL Keywords").
+    arg(SPOTON_APPLICATION_NAME));
+  progress.show();
+  progress.update();
+
+  for(int i = 0, processed = 0; i < 10 + 6 && !progress.wasCanceled(); i++)
+    for(int j = 0; j < 10 + 6 && !progress.wasCanceled(); j++)
+      {
+	if(processed <= progress.maximum())
+	  progress.setValue(processed);
+
+	QChar c1;
+	QChar c2;
+	QSqlQuery query(m_urlDatabase);
+
+	if(i <= 9)
+	  c1 = QChar(i + 48);
+	else
+	  c1 = QChar(i + 97 - 10);
+
+	if(j <= 9)
+	  c2 = QChar(j + 48);
+	else
+	  c2 = QChar(j + 97 - 10);
+
+	if(m_urlDatabase.driverName() != "QPSQL")
+	  query.exec("PRAGMA secure_delete = ON");
+
+	query.prepare(QString("DELETE FROM "
+			      "spot_on_keywords_%1%2 WHERE "
+			      "url_hash = ?").
+		      arg(c1).arg(c2));
+	query.bindValue(0, urlHash.constData());
+	query.exec();
+
+	processed += 1;
+	progress.update();
+#ifndef Q_OS_MAC
+	QApplication::processEvents();
+#endif
+      }
+
+  /*
+  ** Finally, let's discover!
+  */
+
+  discoverUrls();
 }

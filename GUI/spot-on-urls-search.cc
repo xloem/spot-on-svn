@@ -30,6 +30,11 @@
 
 void spoton::slotDiscover(void)
 {
+  discoverUrls();
+}
+
+void spoton::discoverUrls(void)
+{
   if(!m_urlCommonCrypt)
     {
       QMessageBox::critical
@@ -187,7 +192,7 @@ void spoton::showUrls(const QString &link, const QString &querystr)
 
 	  QString description("");
 	  QString title("");
-	  QString url("");
+	  QUrl url;
 	  bool ok = true;
 
 	  description = QString::fromUtf8
@@ -206,27 +211,40 @@ void spoton::showUrls(const QString &link, const QString &querystr)
 					   &ok));
 
 	  if(ok)
-	    url = QString::fromUtf8
-	      (m_urlCommonCrypt->
-	       decryptedAfterAuthenticated(QByteArray::
-					   fromBase64(query.value(1).
-						      toByteArray()),
-					   &ok));
+	    url = QUrl::fromUserInput
+	      (QString::
+	       fromUtf8(m_urlCommonCrypt->
+			decryptedAfterAuthenticated(QByteArray::
+						    fromBase64(query.value(1).
+							       toByteArray()),
+						    &ok)));
 
 	  if(ok)
 	    {
 	      QString html("");
+	      QString scheme(url.scheme().toLower().trimmed());
+	      QUrl deleteUrl(url);
 
-	      html.append(QString("<a href=\"%1\">%2</a>").
-			  arg(url).arg(title));
+	      if(scheme.contains("delete-"))
+		{
+		  scheme.remove("delete-");
+		  url.setScheme(scheme);
+		}
+
+	      deleteUrl.setScheme(QString("delete-%1").arg(url.scheme()));
+	      html.append
+		(QString("<a href=\"%1\">%2</a> | "
+			 "<a href=\"%3\" title=\"Remove Link\">"
+			 "Remove Link</a>").
+		 arg(url.toString()).arg(title).arg(deleteUrl.toString()));
 	      html.append("<br>");
-	      html.append(QString("<font color=\"green\" size=2>%1</font>").
-			  arg(url));
+	      html.append(QString("<font color=\"green\" size=3>%1</font>").
+			  arg(url.toString()));
 	      html.append("<br>");
-	      html.append(QString("<font color=\"gray\" size=2>%1</font>").
+	      html.append(QString("<font color=\"gray\" size=3>%1</font>").
 			  arg(description));
 	      html.append("<br>");
-	      html.append(QString("<font color=\"gray\" size=2>%1</font>").
+	      html.append(QString("<font color=\"gray\" size=3>%1</font>").
 			  arg(query.value(3).toString()));
 	      html.append("<br>");
 	      m_ui.urls->append(html);
