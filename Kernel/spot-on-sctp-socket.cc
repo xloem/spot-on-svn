@@ -79,7 +79,7 @@ extern "C"
 
 spoton_sctp_socket::spoton_sctp_socket(QObject *parent):QObject(parent)
 {
-  m_bufferSize = m_writeBufferSize = 65535;
+  m_bufferSize = 65535;
   m_connectToPeerPort = 0;
   m_hostLookupId = -1;
   m_readBufferSize = spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE;
@@ -234,7 +234,6 @@ bool spoton_sctp_socket::setSocketDescriptor(const int socketDescriptor)
       close();
       m_socketDescriptor = socketDescriptor;
       m_state = ConnectedState;
-      m_writeBufferSize = 65535;
 
       /*
       ** Let's hope that the socket descriptor inherited the server's
@@ -459,23 +458,100 @@ qint64 spoton_sctp_socket::write(const char *data, const qint64 size)
   else if(size == 0)
     return 0;
 
-  if(static_cast<int> (size) <=
-     spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE - m_writeBuffer.length())
-    {
-      m_writeBuffer.append(data, static_cast<int> (size));
-      return size;
-    }
-  else
-    {
-      int n = qMin
-	(static_cast<int> (spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE) -
-	 m_writeBuffer.length(), static_cast<int> (size));
+  qint64 written = -1;
+  ssize_t remaining = static_cast<ssize_t> (size);
+  ssize_t sent = 0;
+  ssize_t writeSize = 65535;
 
-      if(n > 0)
-	m_writeBuffer.append(data, n);
+  /*
+  ** We'll send a fraction of the desired buffer size. Otherwise,
+  ** our process may become exhausted.
+  */
 
-      return n;
+  while(remaining > 0)
+    {
+#ifdef Q_OS_WIN32
+      sent = send
+	(m_socketDescriptor, data, qMin(remaining, writeSize), 0);
+#else
+      sent = send
+	(m_socketDescriptor, data, qMin(remaining, writeSize), MSG_DONTWAIT);
+#endif
+
+      if(sent == -1)
+	{
+#ifdef Q_OS_WIN32
+	  if(WSAGetLastError() == WSAEWOULDBLOCK)
+#else
+	  if(errno == EAGAIN || errno == EWOULDBLOCK)
+#endif
+	    /*
+	    ** We'll ignore this condition.
+	    */
+
+	    sent = 0;
+#ifdef Q_OS_WIN32
+	  else if(WSAGetLastError() == WSAEMSGSIZE)
+#else
+	  else if(errno == EMSGSIZE)
+#endif
+	    {
+	      writeSize /= 2;
+
+	      if(writeSize <= 0)
+		break;
+	      else
+		sent = 0;
+	    }
+	  else
+	    break;
+	}
+      else if(sent > 0)
+	{
+	  if(written == -1)
+	    written = 0;
+
+	  data += sent;
+	  remaining -= sent;
+	  written += sent;
+	}
+      else
+	{
+	  if(written == -1)
+	    written = 0;
+
+	  break;
+	}
     }
+
+  if(sent == -1)
+    {
+#ifdef Q_OS_WIN32
+      QString errorstr(QString("write()::send()::error=%1").
+		       arg(WSAGetLastError()));
+
+      emit error(errorstr, UnknownSocketError);
+#else
+      QString errorstr(QString("write()::send()::errno=%1").
+		       arg(errno));
+
+      if(errno == EACCES)
+	emit error(errorstr, SocketAccessError);
+      else if(errno == ECONNRESET)
+	emit error(errorstr, RemoteHostClosedError);
+      else if(errno == EMSGSIZE || errno == ENOBUFS || errno == ENOMEM)
+	emit error(errorstr, SocketResourceError);
+      else if(errno == EHOSTUNREACH || errno == ENETDOWN ||
+	      errno == ENETUNREACH || errno == ENOTCONN)
+	emit error(errorstr, NetworkError);
+      else if(errno == EOPNOTSUPP)
+	emit error(errorstr, UnsupportedSocketOperationError);
+      else
+	emit error(errorstr, UnknownSocketError);
+#endif
+    }
+
+  return written;
 #else
   Q_UNUSED(data);
   Q_UNUSED(size);
@@ -536,7 +612,6 @@ void spoton_sctp_socket::close(void)
   m_socketDescriptor = -1;
   m_state = UnconnectedState;
   m_timer.stop();
-  m_writeBuffer.clear();
   emit disconnected();
 #endif
 }
@@ -696,7 +771,6 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 	  */
 
 	  m_state = ConnectedState;
-	  m_writeBufferSize = 65535;
 	  emit connected();
 	}
       else
@@ -766,7 +840,6 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 	  */
 
 	  m_state = ConnectedState;
-	  m_writeBufferSize = 65535;
 	  emit connected();
 	}
       else
@@ -925,83 +998,5 @@ void spoton_sctp_socket::slotTimeout(void)
   else if(!(errno == EAGAIN || errno == EWOULDBLOCK))
 #endif
     close();
-
-  if(m_state == ConnectedState)
-    write();
-#endif
-}
-
-void spoton_sctp_socket::write(void)
-{
-#ifdef SPOTON_SCTP_ENABLED
-  if(m_writeBuffer.isEmpty())
-    return;
-
-  char *data = m_writeBuffer.data();
-  ssize_t remaining = static_cast<ssize_t> (m_writeBuffer.size());
-  ssize_t sent = 0;
-
-  /*
-  ** We'll send a fraction of the desired buffer size. Otherwise,
-  ** our process may become exhausted.
-  */
-
-#ifdef Q_OS_WIN32
-  sent = send(m_socketDescriptor, data,
-	      qMin(static_cast<ssize_t> (m_writeBufferSize), remaining), 0);
-#else
-  sent = send(m_socketDescriptor, data,
-	      qMin(static_cast<ssize_t> (m_writeBufferSize), remaining),
-	      MSG_DONTWAIT);
-#endif
-
-  if(sent == -1)
-    {
-#ifdef Q_OS_WIN32
-      if(WSAGetLastError() == WSAEWOULDBLOCK)
-#else
-      if(errno == EAGAIN || errno == EWOULDBLOCK)
-#endif
-	/*
-	** We'll ignore this condition.
-	*/
-
-	sent = 0;
-#ifdef Q_OS_WIN32
-      else if(WSAGetLastError() == WSAEMSGSIZE)
-#else
-      else if(errno == EMSGSIZE)
-#endif
-	m_writeBufferSize = qMax(4096, m_writeBufferSize / 2);
-    }
-  else if(sent > 0)
-    m_writeBuffer.remove(0, static_cast<int> (sent));
-
-  if(sent == -1)
-    {
-#ifdef Q_OS_WIN32
-      QString errorstr(QString("write()::send()::error=%1").
-		       arg(WSAGetLastError()));
-
-      emit error(errorstr, UnknownSocketError);
-#else
-      QString errorstr(QString("write()::send()::errno=%1").
-		       arg(errno));
-
-      if(errno == EACCES)
-	emit error(errorstr, SocketAccessError);
-      else if(errno == ECONNRESET)
-	emit error(errorstr, RemoteHostClosedError);
-      else if(errno == EMSGSIZE || errno == ENOBUFS || errno == ENOMEM)
-	emit error(errorstr, SocketResourceError);
-      else if(errno == EHOSTUNREACH || errno == ENETDOWN ||
-	      errno == ENETUNREACH || errno == ENOTCONN)
-	emit error(errorstr, NetworkError);
-      else if(errno == EOPNOTSUPP)
-	emit error(errorstr, UnsupportedSocketOperationError);
-      else
-	emit error(errorstr, UnknownSocketError);
-#endif
-    }
 #endif
 }

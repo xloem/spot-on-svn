@@ -95,7 +95,6 @@ class spoton_sctp_socket: public QObject
 
  private:
   QByteArray m_readBuffer;
-  QByteArray m_writeBuffer;
   QString m_connectToPeerName;
   QString m_ipAddress;
   QTimer m_timer;
@@ -103,7 +102,6 @@ class spoton_sctp_socket: public QObject
   int m_bufferSize;
   int m_hostLookupId;
   int m_socketDescriptor;
-  int m_writeBufferSize;
   qint64 m_readBufferSize;
   quint16 m_connectToPeerPort;
   QHostAddress localAddressAndPort(quint16 *port) const;
@@ -112,7 +110,6 @@ class spoton_sctp_socket: public QObject
   int setSocketBlockingOrNon(void);
   qint64 read(char *data, const qint64 maxSize);
   void connectToHostImplementation(void);
-  void write(void);
 
  private slots:
   void slotHostFound(const QHostInfo &hostInfo);
