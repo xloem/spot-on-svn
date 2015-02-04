@@ -485,10 +485,6 @@ qint64 spoton_sctp_socket::write(const char *data, const qint64 size)
 #else
 	  if(errno == EAGAIN || errno == EWOULDBLOCK)
 #endif
-	    /*
-	    ** We'll ignore this condition.
-	    */
-
 	    sent = 0;
 #ifdef Q_OS_WIN32
 	  else if(WSAGetLastError() == WSAEMSGSIZE)
@@ -513,7 +509,7 @@ qint64 spoton_sctp_socket::write(const char *data, const qint64 size)
 
 	  data += sent;
 	  remaining -= sent;
-	  written += sent;
+	  written += static_cast<qint64> (sent);
 	}
       else
 	{
