@@ -2,6 +2,9 @@
 
 1.   URL distribution.
 2.   Updated NTRU files to 242722f72b2c97a995eb2a0e4a82dc0bd279fc7f.
+3.   Added QSocketNotifier to the SCTP server implementation for Unix-like
+     systems. Removed QTimer usage.
+4.   Removed timer-based writes from spoton_sctp_socket.
 
 0.18 (01/23/2015)
 
