@@ -992,33 +992,33 @@ void spoton_sctp_socket::slotTimeout(void)
 	close();
     }
 
-  if(m_state == ConnectedState)
+  if(m_socketDescriptor == -1 || m_state != ConnectedState)
+    return;
+
+  QByteArray data(static_cast<int> (m_readBufferSize), 0);
+  qint64 rc = read(data.data(), data.length());
+
+  if(rc > 0)
     {
-      QByteArray data(static_cast<int> (m_readBufferSize), 0);
-      qint64 rc = read(data.data(), data.length());
-
-      if(rc > 0)
+      if(static_cast<int> (rc) <= m_readBufferSize - m_readBuffer.length())
+	m_readBuffer.append(data.mid(0, static_cast<int> (rc)));
+      else
 	{
-	  if(static_cast<int> (rc) <= m_readBufferSize - m_readBuffer.length())
-	    m_readBuffer.append(data.mid(0, static_cast<int> (rc)));
-	  else
-	    {
-	      int n = qMin
-		(static_cast<int> (m_readBufferSize) - m_readBuffer.length(),
-		 static_cast<int> (rc));
+	  int n = qMin
+	    (static_cast<int> (m_readBufferSize) - m_readBuffer.length(),
+	     static_cast<int> (rc));
 
-	      if(n > 0)
-		m_readBuffer.append(data.mid(0, n));
-	    }
-
-	  emit readyRead();
+	  if(n > 0)
+	    m_readBuffer.append(data.mid(0, n));
 	}
-#ifdef Q_OS_WIN32
-      else if(WSAGetLastError() != WSAEWOULDBLOCK)
-#else
-      else if(!(errno == EAGAIN || errno == EWOULDBLOCK))
-#endif
-	close();
-#endif
+
+      emit readyRead();
     }
+#ifdef Q_OS_WIN32
+  else if(WSAGetLastError() != WSAEWOULDBLOCK)
+#else
+  else if(!(errno == EAGAIN || errno == EWOULDBLOCK))
+#endif
+    close();
+#endif
 }

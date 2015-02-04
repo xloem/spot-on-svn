@@ -1445,7 +1445,7 @@ void spoton_neighbor::slotReadyRead(void)
   if(!data.isEmpty())
     {
       QReadLocker locker1(&m_maximumBufferSizeMutex);
-      int maximumBufferSize = m_maximumBufferSize;
+      qint64 maximumBufferSize = m_maximumBufferSize;
 
       locker1.unlock();
 
