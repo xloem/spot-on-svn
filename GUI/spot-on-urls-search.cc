@@ -234,8 +234,7 @@ void spoton::showUrls(const QString &link, const QString &querystr)
 	      deleteUrl.setScheme(QString("delete-%1").arg(url.scheme()));
 	      html.append
 		(QString("<a href=\"%1\">%2</a> | "
-			 "<a href=\"%3\" title=\"Remove Link\">"
-			 "Remove Link</a>").
+			 "<a href=\"%3\">Remove URL</a>").
 		 arg(url.toString()).arg(title).arg(deleteUrl.toString()));
 	      html.append("<br>");
 	      html.append(QString("<font color=\"green\" size=3>%1</font>").
