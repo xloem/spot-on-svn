@@ -133,7 +133,7 @@ class spoton: public QMainWindow
   QHash<QByteArray, quint64> m_receivedChatSequenceNumbers;
   QHash<QString, QByteArray> m_buzzIds;
   QHash<QString, QPointer<spoton_chatwindow> > m_chatWindows;
-  QHash<QString, bool> m_booleans;
+  QHash<QString, QString> m_keysShared;
   QHash<QString, spoton_crypt *> m_crypts;
 #ifdef SPOTON_LINKED_WITH_LIBPHONON
 #endif

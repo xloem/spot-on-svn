@@ -203,8 +203,8 @@ spoton::spoton(void):QMainWindow()
 {
   qsrand(QTime(0, 0, 0).secsTo(QTime::currentTime()));
   QDir().mkdir(spoton_misc::homePath());
-  m_booleans["buzz_channels_sent_to_kernel"] = false;
-  m_booleans["keys_sent_to_kernel"] = false;
+  m_keysShared["buzz_channels_sent_to_kernel"] = "false";
+  m_keysShared["keys_sent_to_kernel"] = "false";
   m_buzzStatusTimer.setInterval(15000);
   m_buzzFavoritesLastModificationTime = QDateTime();
   m_kernelStatisticsLastModificationTime = QDateTime();
@@ -4373,11 +4373,15 @@ void spoton::slotGeneralTimerTimeout(void)
   else
     m_buzzStatusTimer.stop();
 
-  m_sb.status->setText
-    (tr("External IP: %1.").
-     arg(m_externalAddress.address().isNull() ?
-	 "unknown" : m_externalAddress.address().toString()));
-  m_sb.status->repaint();
+  if(m_sb.status->text() != tr("The kernel requires your authentication "
+			       "and encryption keys."))
+    {
+      m_sb.status->setText
+	(tr("External IP: %1.").
+	 arg(m_externalAddress.address().isNull() ?
+	     "unknown" : m_externalAddress.address().toString()));
+      m_sb.status->repaint();
+    }
 }
 
 void spoton::slotSelectGeoIPPath(void)
@@ -6071,8 +6075,8 @@ void spoton::slotKernelSocketState(void)
     }
   else if(state == QAbstractSocket::UnconnectedState)
     {
-      m_booleans["buzz_channels_sent_to_kernel"] = false;
-      m_booleans["keys_sent_to_kernel"] = false;
+      m_keysShared["buzz_channels_sent_to_kernel"] = "false";
+      m_keysShared["keys_sent_to_kernel"] = "false";
       m_sb.kernelstatus->setIcon
 	(QIcon(QString(":/%1/deactivate.png").
 	       arg(m_settings.value("gui/iconSet", "nouve").toString())));
@@ -6084,7 +6088,9 @@ void spoton::slotKernelSocketState(void)
 
 void spoton::sendBuzzKeysToKernel(void)
 {
-  if(m_booleans.value("buzz_channels_sent_to_kernel", false))
+  QString str(m_keysShared.value("buzz_channels_sent_to_kernel", "false"));
+
+  if(str == "ignore" || str == "true")
     return;
 
   bool sent = true;
@@ -6118,18 +6124,53 @@ void spoton::sendBuzzKeysToKernel(void)
 	    }
 	}
 
-  m_booleans["buzz_channels_sent_to_kernel"] = sent;
+  m_keysShared["buzz_channels_sent_to_kernel"] = sent ? "true" : "false";
 }
 
 void spoton::sendKeysToKernel(void)
 {
-  if(m_booleans.value("keys_sent_to_kernel", false))
-    return;
+  QString str(m_keysShared.value("keys_sent_to_kernel", "false"));
+
+  if(str == "ignore" || str == "true")
+    {
+      if(str == "ignore")
+	m_sb.status->setText(tr("The kernel requires your authentication "
+				"and encryption keys."));
+
+      return;
+    }
 
   if(m_crypts.value("chat", 0))
     if(m_kernelSocket.state() == QAbstractSocket::ConnectedState)
       if(m_kernelSocket.isEncrypted())
 	{
+	  if(str != "allow_sharing")
+	    {
+	      QMessageBox mb(this);
+	      QString str(m_settings.value("gui/kernelPath").toString());
+
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+	      mb.setAttribute(Qt::WA_MacMetalStyle, true);
+#endif
+#endif
+	      mb.setIcon(QMessageBox::Question);
+	      mb.setWindowTitle(tr("%1: Question").
+				arg(SPOTON_APPLICATION_NAME));
+	      mb.setWindowModality(Qt::WindowModal);
+	      mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+	      mb.setText
+		(tr("The program %1 requires your authentication and "
+		    "encryption keys. Would you like to share your keys?").
+		 arg(str));
+
+	      if(mb.exec() != QMessageBox::Yes)
+		{
+		  m_keysShared["keys_sent_to_kernel"] = "ignore";
+		  return;
+		}
+	    }
+
 	  QByteArray hashKey(m_crypts.value("chat")->hashKey());
 	  QByteArray keys("keys_");
 	  QByteArray symmetricKey(m_crypts.value("chat")->symmetricKey());
@@ -6149,7 +6190,7 @@ void spoton::sendKeysToKernel(void)
 	       arg(m_kernelSocket.peerAddress().toString()).
 	       arg(m_kernelSocket.peerPort()));
 	  else
-	    m_booleans["keys_sent_to_kernel"] = true;
+	    m_keysShared["keys_sent_to_kernel"] = "true";
 	}
 }
 
