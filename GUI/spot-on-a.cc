@@ -305,6 +305,7 @@ spoton::spoton(void):QMainWindow()
   m_sb.buzz->setVisible(false);
   m_sb.chat->setVisible(false);
   m_sb.email->setVisible(false);
+  m_sb.status->setTextFormat(Qt::RichText);
 #ifdef Q_OS_MAC
   foreach(QToolButton *toolButton, m_sbWidget->findChildren<QToolButton *> ())
     toolButton->setStyleSheet
@@ -377,6 +378,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotKernelStatus(void)));
+  connect(m_sb.status,
+	  SIGNAL(linkActivated(const QString &)),
+	  this,
+	  SLOT(slotShareKeysWithKernel(const QString &)));
   statusBar()->addPermanentWidget(m_sbWidget, 100);
   statusBar()->setStyleSheet("QStatusBar::item {"
 			     "border: none; "
@@ -4373,8 +4378,10 @@ void spoton::slotGeneralTimerTimeout(void)
   else
     m_buzzStatusTimer.stop();
 
-  if(m_sb.status->text() != tr("The kernel requires your authentication "
-			       "and encryption keys."))
+  if(!isKernelActive() ||
+     m_sb.status->text() != tr("<html><a href=\"authenticate\">"
+			       "The kernel requires your authentication "
+			       "and encryption keys.</a></html>"))
     {
       m_sb.status->setText
 	(tr("External IP: %1.").
@@ -5479,7 +5486,6 @@ void spoton::slotValidatePassphrase(void)
 	    askKernelToReadStarBeamKeys();
 	    populateNovas();
 	    sendBuzzKeysToKernel();
-	    sendKeysToKernel();
 	    m_sb.frame->setEnabled(true);
 	    m_ui.passphrase_rb_authenticate->setChecked(true);
 	    m_ui.action_Export_Listeners->setEnabled(true);
@@ -6133,9 +6139,12 @@ void spoton::sendKeysToKernel(void)
 
   if(str == "ignore" || str == "true")
     {
-      if(str == "ignore")
-	m_sb.status->setText(tr("The kernel requires your authentication "
-				"and encryption keys."));
+      if(isKernelActive())
+	if(str == "ignore")
+	  m_sb.status->setText
+	    (tr("<html><a href=\"authenticate\">"
+		"The kernel requires your authentication "
+		"and encryption keys.</a></html>"));
 
       return;
     }
@@ -6144,31 +6153,27 @@ void spoton::sendKeysToKernel(void)
     if(m_kernelSocket.state() == QAbstractSocket::ConnectedState)
       if(m_kernelSocket.isEncrypted())
 	{
-	  if(str != "allow_sharing")
-	    {
-	      QMessageBox mb(this);
-	      QString str(m_settings.value("gui/kernelPath").toString());
+	  QMessageBox mb(this);
+	  QString str(m_settings.value("gui/kernelPath").toString());
 
 #ifdef Q_OS_MAC
 #if QT_VERSION < 0x050000
-	      mb.setAttribute(Qt::WA_MacMetalStyle, true);
+	  mb.setAttribute(Qt::WA_MacMetalStyle, true);
 #endif
 #endif
-	      mb.setIcon(QMessageBox::Question);
-	      mb.setWindowTitle(tr("%1: Question").
-				arg(SPOTON_APPLICATION_NAME));
-	      mb.setWindowModality(Qt::WindowModal);
-	      mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
-	      mb.setText
-		(tr("The program %1 requires your authentication and "
-		    "encryption keys. Would you like to share your keys?").
-		 arg(str));
+	  mb.setIcon(QMessageBox::Question);
+	  mb.setWindowTitle(tr("%1: Question").
+			    arg(SPOTON_APPLICATION_NAME));
+	  mb.setWindowModality(Qt::WindowModal);
+	  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+	  mb.setText(tr("The program %1 requires your authentication and "
+			"encryption keys. Would you like to share your keys?").
+		     arg(str));
 
-	      if(mb.exec() != QMessageBox::Yes)
-		{
-		  m_keysShared["keys_sent_to_kernel"] = "ignore";
-		  return;
-		}
+	  if(mb.exec() != QMessageBox::Yes)
+	    {
+	      m_keysShared["keys_sent_to_kernel"] = "ignore";
+	      return;
 	    }
 
 	  QByteArray hashKey(m_crypts.value("chat")->hashKey());
@@ -6190,7 +6195,10 @@ void spoton::sendKeysToKernel(void)
 	       arg(m_kernelSocket.peerAddress().toString()).
 	       arg(m_kernelSocket.peerPort()));
 	  else
-	    m_keysShared["keys_sent_to_kernel"] = "true";
+	    {
+	      m_keysShared["keys_sent_to_kernel"] = "true";
+	      m_sb.status->clear();
+	    }
 	}
 }
 

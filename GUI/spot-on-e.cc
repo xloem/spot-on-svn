@@ -806,3 +806,9 @@ void spoton::slotUrlDistillersRadioButton(bool state)
       settings.setValue("gui/acceptUrlUL", state);
     }
 }
+
+void spoton::slotShareKeysWithKernel(const QString &link)
+{
+  Q_UNUSED(link);
+  m_keysShared["keys_sent_to_kernel"] = "false";
+}
