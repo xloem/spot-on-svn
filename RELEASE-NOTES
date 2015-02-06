@@ -7,6 +7,8 @@
 4.   Removed timer-based writes from spoton_sctp_socket. The change
      also provides the correct number of bytes written.
 5.   Allow removal of URLs.
+6.   Provide a prompt before sharing the authentication and encryption
+     keys with a kernel process.
 
 0.18 (01/23/2015)
 
