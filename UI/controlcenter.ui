@@ -139,6 +139,12 @@
               </item>
               <item>
                <widget class="QCheckBox" name="buzzAutoJoin">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="text">
                  <string>&amp;Join automatically after the kernel is activated.</string>
                 </property>
@@ -536,6 +542,12 @@
                    </property>
                    <item>
                     <widget class="QCheckBox" name="displayPopups">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="text">
                       <string>&amp;Display popups automatically.</string>
                      </property>
@@ -572,6 +584,12 @@
                    </item>
                    <item>
                     <widget class="QCheckBox" name="chatSignMessages">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="text">
                       <string>&amp;Sign messages.</string>
                      </property>
@@ -1148,6 +1166,12 @@
               </property>
               <item>
                <widget class="QCheckBox" name="emailAcceptSigned">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="text">
                  <string>&amp;Accept only signed messages.</string>
                 </property>
@@ -1158,6 +1182,12 @@
               </item>
               <item>
                <widget class="QCheckBox" name="acceptEmailKeys">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="text">
                  <string>Accept shared public &amp;keys.</string>
                 </property>
@@ -1191,6 +1221,12 @@
               </item>
               <item>
                <widget class="QCheckBox" name="autoEmailRetrieve">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="text">
                  <string>&amp;Retrieve e-mail every</string>
                 </property>
@@ -1572,6 +1608,12 @@
                       </item>
                       <item>
                        <widget class="QCheckBox" name="saveCopy">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
                         <property name="text">
                          <string>&amp;Save copies.</string>
                         </property>
@@ -1582,6 +1624,12 @@
                       </item>
                       <item>
                        <widget class="QCheckBox" name="emailSignMessages">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
                         <property name="toolTip">
                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The kernel is responsible for signing messages. Because messages are queued, please avoid toggling this checkbox until queued messages have been processed by the kernel.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                         </property>
@@ -2093,6 +2141,12 @@
                         </property>
                         <item>
                          <widget class="QCheckBox" name="addInstitutionCheckBox">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
                           <property name="text">
                            <string>&amp;Add</string>
                           </property>
@@ -2323,6 +2377,12 @@
                   </item>
                   <item>
                    <widget class="QCheckBox" name="publishPeriodically">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
                     <property name="toolTip">
                      <string>External IP information is required.</string>
                     </property>
@@ -2741,6 +2801,12 @@
                      </item>
                      <item>
                       <widget class="QCheckBox" name="recordIPAddress">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
                        <property name="toolTip">
                         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Record the current external IP address in the listener's certificate. Please do not use this option if you have a dynamic IP address.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                        </property>
@@ -2751,6 +2817,12 @@
                      </item>
                      <item>
                       <widget class="QCheckBox" name="permanentCertificate">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
                        <property name="text">
                         <string>&amp;Permanent Certificate</string>
                        </property>
@@ -2761,6 +2833,12 @@
                      </item>
                      <item>
                       <widget class="QCheckBox" name="sslListener">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
                        <property name="text">
                         <string>&amp;SSL Key Size</string>
                        </property>
@@ -3448,6 +3526,12 @@
                   </property>
                   <item>
                    <widget class="QRadioButton" name="acceptPublishedConnected">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
                     <property name="toolTip">
                      <string>Select this option if you would like to accept and connect to published listeners.</string>
                     </property>
@@ -3458,6 +3542,12 @@
                   </item>
                   <item>
                    <widget class="QRadioButton" name="acceptPublishedDisconnected">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
                     <property name="toolTip">
                      <string>Select this option if you would like to accept published listeners.</string>
                     </property>
@@ -3471,6 +3561,12 @@
                   </item>
                   <item>
                    <widget class="QRadioButton" name="ignorePublished">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
                     <property name="text">
                      <string>&amp;Ignore published listeners.</string>
                     </property>
@@ -3541,6 +3637,12 @@
                   </property>
                   <item>
                    <widget class="QCheckBox" name="keepOnlyUserDefinedNeighbors">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
                     <property name="text">
                      <string>&amp;Keep only user-defined neighbors.</string>
                     </property>
@@ -4050,6 +4152,12 @@
                       </item>
                       <item>
                        <widget class="QCheckBox" name="addException">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
                         <property name="toolTip">
                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Spot-On will record peer certificates during initial connections. Subsequent connections will cause Spot-On to inspect peer certificates. If there are discrepancies between recorded certificates and transmitted certificates, Spot-On will sever the connections. Enable this option if you would like Spot-On to ignore discrepancies.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                         </property>
@@ -4060,6 +4168,12 @@
                       </item>
                       <item>
                        <widget class="QCheckBox" name="requireSsl">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
                         <property name="toolTip">
                          <string>Require secure connections.</string>
                         </property>
@@ -5679,6 +5793,12 @@
                    </property>
                    <item>
                     <widget class="QCheckBox" name="forceRegistration">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="toolTip">
                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please enable this option if you would like to force kernel registration. By forcing kernel registration, an existing kernel process that Spot-On is aware of will be deactivated. You may wish to use this option if a kernel was not deactivated properly.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
@@ -5832,6 +5952,12 @@
                    </item>
                    <item>
                     <widget class="QCheckBox" name="kernelLogEvents">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="text">
                       <string>&amp;Log Events</string>
                      </property>
@@ -5839,6 +5965,12 @@
                    </item>
                    <item>
                     <widget class="QCheckBox" name="scrambler">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="toolTip">
                       <string>Please note that this option will advertise your presence.</string>
                      </property>
@@ -6623,6 +6755,12 @@
               </property>
               <item>
                <widget class="QCheckBox" name="autoAddSharedSBMagnets">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="text">
                  <string>Automatically accept shared &amp;magnets.</string>
                 </property>
@@ -6807,6 +6945,12 @@
                      </property>
                      <item>
                       <widget class="QRadioButton" name="pairRadio">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
                        <property name="text">
                         <string>&amp;Create</string>
                        </property>
@@ -7485,6 +7629,12 @@
                       </property>
                       <item>
                        <widget class="QCheckBox" name="missingLinksCheckBox">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
                         <property name="text">
                          <string>&amp;Missing Links Magnet</string>
                         </property>
@@ -7621,31 +7771,17 @@
               </property>
               <item>
                <widget class="QCheckBox" name="acceptUrlKeys">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="text">
                  <string>Accept shared public &amp;keys.</string>
                 </property>
                </widget>
               </item>
-              <item>
-               <spacer name="horizontalSpacer_38">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_22">
-              <property name="spacing">
-               <number>5</number>
-              </property>
               <item>
                <widget class="QLabel" name="label_104">
                 <property name="text">
@@ -7671,7 +7807,7 @@
                </widget>
               </item>
               <item>
-               <spacer name="horizontalSpacer_77">
+               <spacer name="horizontalSpacer_38">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -8039,6 +8175,12 @@
                    </item>
                    <item>
                     <widget class="QRadioButton" name="downDist">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="text">
                       <string>&amp;Download</string>
                      </property>
@@ -8049,6 +8191,12 @@
                    </item>
                    <item>
                     <widget class="QRadioButton" name="upDist">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="text">
                       <string>&amp;Upload</string>
                      </property>
@@ -8227,6 +8375,12 @@
                 </item>
                 <item>
                  <widget class="QRadioButton" name="passphrase_rb_authenticate">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="text">
                    <string>P&amp;assphrase</string>
                   </property>
@@ -8271,6 +8425,12 @@
                 </property>
                 <item>
                  <widget class="QRadioButton" name="question_rb_authenticate">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="text">
                    <string>&amp;Question</string>
                   </property>
