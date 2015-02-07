@@ -812,3 +812,13 @@ void spoton::slotShareKeysWithKernel(const QString &link)
   Q_UNUSED(link);
   m_keysShared["keys_sent_to_kernel"] = "false";
 }
+
+void spoton::slotSaveUrlDistribution(int index)
+{
+  QString str("");
+
+  if(index == 0)
+    str = "linear";
+  else
+    str = "simple random";
+}
