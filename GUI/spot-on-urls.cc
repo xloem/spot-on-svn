@@ -1361,6 +1361,14 @@ void spoton::slotDeleteLink(const QUrl &u)
 	 tr("Invalid m_urlCommonCrypt object. This is a fatal flaw."));
       return;
     }
+  else if(!m_urlDatabase.isOpen())
+    {
+      QMessageBox::critical
+	(this,
+	 tr("%1: Error").arg(SPOTON_APPLICATION_NAME),
+	 tr("Please connect to a URL database."));
+      return;
+    }
 
   QByteArray urlHash;
   bool ok = true;
