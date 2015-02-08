@@ -1047,7 +1047,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>906</width>
+             <width>898</width>
              <height>600</height>
             </rect>
            </property>
@@ -2300,8 +2300,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>766</width>
-             <height>432</height>
+             <width>776</width>
+             <height>498</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2984,7 +2984,7 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>249</width>
+                     <width>240</width>
                      <height>1433</height>
                     </rect>
                    </property>
@@ -4623,8 +4623,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>339</width>
-             <height>315</height>
+             <width>776</width>
+             <height>498</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -4677,8 +4677,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>635</width>
-                 <height>630</height>
+                 <width>752</width>
+                 <height>596</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_65">
@@ -5329,29 +5329,16 @@
                 <number>5</number>
                </property>
                <item>
-                <widget class="QLabel" name="label_102">
-                 <property name="text">
-                  <string>Please note that complete keywords must be provided.</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_7">
                  <property name="spacing">
                   <number>5</number>
                  </property>
                  <item>
-                  <spacer name="horizontalSpacer_4">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
+                  <widget class="QLabel" name="label_102">
+                   <property name="text">
+                    <string>Please provide complete keywords.</string>
                    </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
+                  </widget>
                  </item>
                  <item>
                   <widget class="QLineEdit" name="search">
@@ -5369,19 +5356,6 @@
                     <string>Discover!</string>
                    </property>
                   </widget>
-                 </item>
-                 <item>
-                  <spacer name="horizontalSpacer_5">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
                  </item>
                 </layout>
                </item>
@@ -5477,7 +5451,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>719</width>
+             <width>762</width>
              <height>1115</height>
             </rect>
            </property>
@@ -6728,7 +6702,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>468</width>
+             <width>762</width>
              <height>571</height>
             </rect>
            </property>
@@ -7744,8 +7718,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>576</width>
-             <height>453</height>
+             <width>776</width>
+             <height>498</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -8284,8 +8258,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>241</width>
-             <height>151</height>
+             <width>776</width>
+             <height>498</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
