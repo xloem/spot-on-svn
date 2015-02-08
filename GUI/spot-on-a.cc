@@ -6154,7 +6154,6 @@ void spoton::sendKeysToKernel(void)
       if(m_kernelSocket.isEncrypted())
 	{
 	  QMessageBox mb(this);
-	  QString str(m_settings.value("gui/kernelPath").toString());
 
 #ifdef Q_OS_MAC
 #if QT_VERSION < 0x050000
@@ -6166,9 +6165,10 @@ void spoton::sendKeysToKernel(void)
 			    arg(SPOTON_APPLICATION_NAME));
 	  mb.setWindowModality(Qt::WindowModal);
 	  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
-	  mb.setText(tr("The program %1 requires your authentication and "
-			"encryption keys. Would you like to share your keys?").
-		     arg(str));
+	  mb.setText
+	    (tr("The kernel process %1 requires your private authentication "
+		"and encryption keys. Would you like to share the keys?").
+	     arg(m_ui.pid->text()));
 
 	  if(mb.exec() != QMessageBox::Yes)
 	    {
