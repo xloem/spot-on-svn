@@ -30,9 +30,6 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
-      <property name="tabPosition">
-       <enum>QTabWidget::North</enum>
-      </property>
       <property name="tabShape">
        <enum>QTabWidget::Rounded</enum>
       </property>
@@ -41,13 +38,16 @@
       </property>
       <property name="iconSize">
        <size>
-        <width>32</width>
-        <height>32</height>
+        <width>16</width>
+        <height>16</height>
        </size>
+      </property>
+      <property name="elideMode">
+       <enum>Qt::ElideLeft</enum>
       </property>
       <widget class="QWidget" name="tab_8">
        <attribute name="title">
-        <string/>
+        <string>Buzz</string>
        </attribute>
        <attribute name="toolTip">
         <string>Buzz</string>
@@ -73,7 +73,7 @@
              <x>0</x>
              <y>0</y>
              <width>776</width>
-             <height>487</height>
+             <height>503</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_54">
@@ -422,7 +422,7 @@
       </widget>
       <widget class="QWidget" name="tab_chat">
        <attribute name="title">
-        <string/>
+        <string>Chat</string>
        </attribute>
        <attribute name="toolTip">
         <string>Chat</string>
@@ -462,8 +462,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>751</width>
-                <height>503</height>
+                <width>732</width>
+                <height>521</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1019,7 +1019,7 @@
       </widget>
       <widget class="QWidget" name="tab_email">
        <attribute name="title">
-        <string/>
+        <string>E-Mail</string>
        </attribute>
        <attribute name="toolTip">
         <string>E-Mail</string>
@@ -1044,7 +1044,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>887</width>
+             <width>879</width>
              <height>575</height>
             </rect>
            </property>
@@ -2272,7 +2272,7 @@
       </widget>
       <widget class="QWidget" name="tab_7">
        <attribute name="title">
-        <string/>
+        <string>Listeners</string>
        </attribute>
        <attribute name="toolTip">
         <string>Listeners</string>
@@ -2297,8 +2297,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>776</width>
-             <height>487</height>
+             <width>760</width>
+             <height>516</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -3417,7 +3417,7 @@
       </widget>
       <widget class="QWidget" name="tab_neighbors">
        <attribute name="title">
-        <string/>
+        <string>Neighbors</string>
        </attribute>
        <attribute name="toolTip">
         <string>Neighbors</string>
@@ -4595,7 +4595,7 @@
       </widget>
       <widget class="QWidget" name="tab_search">
        <attribute name="title">
-        <string/>
+        <string>Search</string>
        </attribute>
        <attribute name="toolTip">
         <string>Search</string>
@@ -4620,8 +4620,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>776</width>
-             <height>487</height>
+             <width>742</width>
+             <height>531</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -4674,7 +4674,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>751</width>
+                 <width>717</width>
                  <height>558</height>
                 </rect>
                </property>
@@ -5449,7 +5449,7 @@
       </widget>
       <widget class="QWidget" name="tab_settings">
        <attribute name="title">
-        <string/>
+        <string>Settings</string>
        </attribute>
        <attribute name="toolTip">
         <string>Settings</string>
@@ -5474,7 +5474,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>761</width>
+             <width>727</width>
              <height>1047</height>
             </rect>
            </property>
@@ -6700,7 +6700,7 @@
       </widget>
       <widget class="QWidget" name="tab_9">
        <attribute name="title">
-        <string/>
+        <string>StarBeam</string>
        </attribute>
        <attribute name="toolTip">
         <string>StarBeam</string>
@@ -6725,7 +6725,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>761</width>
+             <width>727</width>
              <height>546</height>
             </rect>
            </property>
@@ -7716,7 +7716,7 @@
       </widget>
       <widget class="QWidget" name="tab_cultivation">
        <attribute name="title">
-        <string/>
+        <string>URLs</string>
        </attribute>
        <attribute name="toolTip">
         <string>URLs</string>
@@ -7741,8 +7741,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>776</width>
-             <height>487</height>
+             <width>742</width>
+             <height>531</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -8281,8 +8281,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>776</width>
-             <height>487</height>
+             <width>742</width>
+             <height>531</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
