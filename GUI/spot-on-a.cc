@@ -1281,6 +1281,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(anchorClicked(const QUrl &)),
 	  this,
 	  SLOT(slotDeleteLink(const QUrl &)));
+  connect(m_ui.urlDistributionModel,
+	  SIGNAL(currentIndexChanged(int)),
+	  this,
+	  SLOT(slotSaveUrlDistribution(int)));
   connect(&m_chatInactivityTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -1598,6 +1602,12 @@ spoton::spoton(void):QMainWindow()
       (m_ui.publishedKeySize->findText(keySize));
   else
     m_ui.publishedKeySize->setCurrentIndex(0);
+
+  if(m_settings.value("gui/urlDistribution",
+		      "linear").toString() == "simple random")
+    m_ui.urlDistributionModel->setCurrentIndex(1);
+  else
+    m_ui.urlDistributionModel->setCurrentIndex(0);
 
   QByteArray status
     (m_settings.value("gui/my_status", "Online").toByteArray());

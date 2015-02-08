@@ -821,4 +821,10 @@ void spoton::slotSaveUrlDistribution(int index)
     str = "linear";
   else
     str = "simple random";
+
+  m_settings["gui/urlDistribution"] = str;
+
+  QSettings settings;
+
+  settings.setValue("gui/urlDistribution", str);
 }
