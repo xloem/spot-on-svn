@@ -828,3 +828,16 @@ void spoton::slotSaveUrlDistribution(int index)
 
   settings.setValue("gui/urlDistribution", str);
 }
+
+void spoton::slotSaveSharePrivateKeys(bool state)
+{
+  m_settings["gui/sharePrivateKeysWithKernel"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/sharePrivateKeysWithKernel", state);
+
+  if(state)
+    if(m_keysShared["keys_sent_to_kernel"] == "ignore")
+      m_keysShared["keys_sent_to_kernel"] = "false";
+}

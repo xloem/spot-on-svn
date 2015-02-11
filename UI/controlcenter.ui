@@ -5772,6 +5772,19 @@
                     </widget>
                    </item>
                    <item>
+                    <widget class="QCheckBox" name="sharePrivateKeys">
+                     <property name="toolTip">
+                      <string>Automatically share the private authentication and encryption keys with a kernel process. If this option is disabled, the user interface will provide reminders.</string>
+                     </property>
+                     <property name="text">
+                      <string>&amp;Share Private Keys</string>
+                     </property>
+                     <property name="checked">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
                     <widget class="QPushButton" name="activateKernel">
                      <property name="text">
                       <string>Activate</string>
@@ -8908,6 +8921,7 @@
   <tabstop>kernelPath</tabstop>
   <tabstop>selectKernelPath</tabstop>
   <tabstop>forceRegistration</tabstop>
+  <tabstop>sharePrivateKeys</tabstop>
   <tabstop>activateKernel</tabstop>
   <tabstop>pid</tabstop>
   <tabstop>deactivateKernel</tabstop>

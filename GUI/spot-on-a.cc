@@ -1285,6 +1285,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(currentIndexChanged(int)),
 	  this,
 	  SLOT(slotSaveUrlDistribution(int)));
+  connect(m_ui.sharePrivateKeys,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotSaveSharePrivateKeys(bool)));
   connect(&m_chatInactivityTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -1775,6 +1779,8 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/impersonate", false).toBool());
   m_ui.displayPopups->setChecked
     (m_settings.value("gui/displayPopupsAutomatically", true).toBool());
+  m_ui.sharePrivateKeys->setChecked
+    (m_settings.value("gui/sharePrivateKeysWithKernel", true).toBool());
 
   /*
   ** Please don't translate n/a.
@@ -6106,7 +6112,7 @@ void spoton::sendBuzzKeysToKernel(void)
 {
   QString str(m_keysShared.value("buzz_channels_sent_to_kernel", "false"));
 
-  if(str == "ignore" || str == "true")
+  if(str == "true")
     return;
 
   bool sent = true;
@@ -6163,27 +6169,31 @@ void spoton::sendKeysToKernel(void)
     if(m_kernelSocket.state() == QAbstractSocket::ConnectedState)
       if(m_kernelSocket.isEncrypted())
 	{
-	  QMessageBox mb(this);
+	  if(!m_ui.sharePrivateKeys->isChecked())
+	    {
+	      QMessageBox mb(this);
 
 #ifdef Q_OS_MAC
 #if QT_VERSION < 0x050000
-	  mb.setAttribute(Qt::WA_MacMetalStyle, true);
+	      mb.setAttribute(Qt::WA_MacMetalStyle, true);
 #endif
 #endif
-	  mb.setIcon(QMessageBox::Question);
-	  mb.setWindowTitle(tr("%1: Question").
-			    arg(SPOTON_APPLICATION_NAME));
-	  mb.setWindowModality(Qt::WindowModal);
-	  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
-	  mb.setText
-	    (tr("The kernel process %1 requires your private authentication "
-		"and encryption keys. Would you like to share the keys?").
-	     arg(m_ui.pid->text()));
+	      mb.setIcon(QMessageBox::Question);
+	      mb.setWindowTitle(tr("%1: Question").
+				arg(SPOTON_APPLICATION_NAME));
+	      mb.setWindowModality(Qt::WindowModal);
+	      mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+	      mb.setText
+		 (tr("The kernel process %1 requires your private "
+		     "authentication "
+		     "and encryption keys. Would you like to share the keys?").
+		  arg(m_ui.pid->text()));
 
-	  if(mb.exec() != QMessageBox::Yes)
-	    {
-	      m_keysShared["keys_sent_to_kernel"] = "ignore";
-	      return;
+	      if(mb.exec() != QMessageBox::Yes)
+		{
+		  m_keysShared["keys_sent_to_kernel"] = "ignore";
+		  return;
+		}
 	    }
 
 	  QByteArray hashKey(m_crypts.value("chat")->hashKey());
