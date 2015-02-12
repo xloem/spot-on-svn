@@ -11,7 +11,7 @@
      keys with a kernel process.
 7.   Removed duplicate QSqlQuery::exec() from
      spoton_misc::saveParticipantStatus().
-8.   Some database fields require lower-case data.
+8.   Some database fields require lowercase data.
 
 0.18 (01/23/2015)
 
