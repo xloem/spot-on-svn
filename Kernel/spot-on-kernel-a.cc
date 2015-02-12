@@ -563,7 +563,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   m_settingsTimer.setInterval(1500);
   m_scramblerTimer.setSingleShot(true);
   m_settingsTimer.setSingleShot(true);
-  m_statusTimer.start(15000);
+  m_statusTimer.start(1000 * STATUS_INTERVAL);
   m_guiServer = new spoton_gui_server(this);
   m_mailer = new spoton_mailer(this);
   m_starbeamWriter = new spoton_starbeam_writer(this);
@@ -872,7 +872,7 @@ void spoton_kernel::prepareListeners(void)
 	  while(query.next())
 	    {
 	      QPointer<spoton_listener> listener = 0;
-	      QString status(query.value(4).toString());
+	      QString status(query.value(4).toString().toLower());
 	      qint64 id = query.value(query.record().count() - 1).
 		toLongLong();
 
@@ -1136,7 +1136,7 @@ void spoton_kernel::prepareNeighbors(void)
 	      qint64 id = query.value(query.record().count() - 1).
 		toLongLong();
 
-	      if(query.value(3).toString() == "connected")
+	      if(query.value(3).toString().toLower() == "connected")
 		{
 		  if(!m_neighbors.contains(id))
 		    {
@@ -2089,8 +2089,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 	      (1, QDateTime::currentDateTime().toString(Qt::ISODate));
 
 	    if(i == 1)
-	      query.bindValue
-		(2, 2.5 * qCeil(m_statusTimer.interval() / 1000.0));
+	      query.bindValue(2, 2.5 * STATUS_INTERVAL);
 	    else
 	      query.bindValue(2, 2.5 * POPTASTIC_STATUS_INTERVAL);
 

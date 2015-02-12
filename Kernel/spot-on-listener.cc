@@ -427,7 +427,7 @@ void spoton_listener::slotTimeout(void)
 	    if(query.next())
 	      {
 		QString echoMode("");
-		QString status(query.value(0).toString());
+		QString status(query.value(0).toString().toLower());
 		bool ok = true;
 		spoton_crypt *s_crypt =
 		  spoton_kernel::s_crypts.value("chat", 0);

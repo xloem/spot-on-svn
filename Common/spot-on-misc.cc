@@ -1617,8 +1617,9 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 	     crypt->encryptedThenHashed(address.scopeId().toLatin1(),
 					&ok).toBase64());
 
-	if(statusControl == "connected" || statusControl == "disconnected")
-	  query.bindValue(6, statusControl);
+	if(statusControl.toLower() == "connected" ||
+	   statusControl.toLower() == "disconnected")
+	  query.bindValue(6, statusControl.toLower());
 	else
 	  query.bindValue(6, "disconnected");
 
@@ -3236,6 +3237,7 @@ void spoton_misc::saveParticipantStatus(const QByteArray &name,
 		query.bindValue
 		  (0, QDateTime::currentDateTime().toString(Qt::ISODate));
 		query.bindValue(1, publicKeyHash.toBase64());
+		query.exec();
 	      }
 	    else if(crypt)
 	      {
@@ -3277,15 +3279,18 @@ void spoton_misc::saveParticipantStatus(const QByteArray &name,
 			      "WHERE neighbor_oid = -1 AND "
 			      "public_key_hash = ?");
 
-		if(status == "away" || status == "busy" ||
-		   status == "offline" || status == "online")
-		  query.bindValue(0, status);
+		if(status.toLower() == "away" ||
+		   status.toLower() == "busy" ||
+		   status.toLower() == "offline" ||
+		   status.toLower() == "online")
+		  query.bindValue(0, status.toLower());
 		else
 		  query.bindValue(0, "offline");
 
 		query.bindValue
 		  (1, QDateTime::currentDateTime().toString(Qt::ISODate));
 		query.bindValue(2, publicKeyHash.toBase64());
+		query.exec();
 	      }
 	    else if(crypt)
 	      {
@@ -3307,9 +3312,11 @@ void spoton_misc::saveParticipantStatus(const QByteArray &name,
 					   NAME_MAXIMUM_LENGTH), &ok).
 		   toBase64());
 
-		if(status == "away" || status == "busy" ||
-		   status == "offline" || status == "online")
-		  query.bindValue(1, status);
+		if(status.toLower() == "away" ||
+		   status.toLower() == "busy" ||
+		   status.toLower() == "offline" ||
+		   status.toLower() == "online")
+		  query.bindValue(1, status.toLower());
 		else
 		  query.bindValue(1, "offline");
 
@@ -3326,9 +3333,11 @@ void spoton_misc::saveParticipantStatus(const QByteArray &name,
 			      "WHERE neighbor_oid = -1 AND "
 			      "public_key_hash = ?");
 
-		if(status == "away" || status == "busy" ||
-		   status == "offline" || status == "online")
-		  query.bindValue(0, status);
+		if(status.toLower() == "away" ||
+		   status.toLower() == "busy" ||
+		   status.toLower() == "offline" ||
+		   status.toLower() == "online")
+		  query.bindValue(0, status.toLower());
 		else
 		  query.bindValue(0, "offline");
 
@@ -3338,8 +3347,6 @@ void spoton_misc::saveParticipantStatus(const QByteArray &name,
 		query.exec();
 	      }
 	  }
-
-	query.exec();
       }
 
     db.close();

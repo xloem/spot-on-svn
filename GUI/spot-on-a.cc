@@ -1614,13 +1614,13 @@ spoton::spoton(void):QMainWindow()
     m_ui.urlDistributionModel->setCurrentIndex(0);
 
   QByteArray status
-    (m_settings.value("gui/my_status", "Online").toByteArray());
+    (m_settings.value("gui/my_status", "Online").toByteArray().toLower());
 
-  if(status == "Away")
+  if(status == "away")
     m_ui.status->setCurrentIndex(0);
-  else if(status == "Busy")
+  else if(status == "busy")
     m_ui.status->setCurrentIndex(1);
-  else if(status == "Offline")
+  else if(status == "offline")
     m_ui.status->setCurrentIndex(2);
   else
     m_ui.status->setCurrentIndex(3);
@@ -3299,7 +3299,8 @@ void spoton::slotPopulateListeners(void)
 
 			if(i == 0)
 			  {
-			    if(query.value(0).toString() == "online")
+			    if(query.value(0).toString().
+			       toLower() == "online")
 			      check->setChecked(true);
 			  }
 			else
@@ -3478,7 +3479,8 @@ void spoton::slotPopulateListeners(void)
 
 			if(i == 1)
 			  {
-			    if(query.value(i).toString() == "online")
+			    if(query.value(i).toString().
+			       toLower() == "online")
 			      item->setBackground
 				(QBrush(QColor("lightgreen")));
 			    else
@@ -4072,7 +4074,8 @@ void spoton::slotPopulateNeighbors(void)
 
 			if(i == 2)
 			  {
-			    if(query.value(i).toString() == "connected")
+			    if(query.value(i).toString().
+			       toLower() == "connected")
 			      item->setBackground
 				(QBrush(QColor("lightgreen")));
 			    else
@@ -6674,7 +6677,7 @@ void spoton::slotPopulateParticipants(void)
 	      QString keyType("");
 	      QString name("");
 	      QString oid("");
-	      QString status(query.value(4).toString());
+	      QString status(query.value(4).toString().toLower());
 	      bool ok = true;
 	      bool temporary =
 		query.value(2).toLongLong() == -1 ? false : true;
@@ -6750,23 +6753,19 @@ void spoton::slotPopulateParticipants(void)
 			}
 		      else if(i == 4) // Status
 			{
-			  QString status(query.value(i).toString());
+			  QString status(query.value(i).toString().
+					 toLower());
 
-			  if(!status.isEmpty())
-			    {
-			      if(status.at(0).isLetter())
-				status[0] = status.toUpper()[0];
-			    }
-			  else
-			    status = "Offline";
+			  if(status.isEmpty())
+			    status = "offline";
 
-			  if(status == "Away")
+			  if(status == "away")
 			    item = new QTableWidgetItem(tr("Away"));
-			  else if(status == "Busy")
+			  else if(status == "busy")
 			    item = new QTableWidgetItem(tr("Busy"));
-			  else if(status == "Offline")
+			  else if(status == "offline")
 			    item = new QTableWidgetItem(tr("Offline"));
-			  else if(status == "Online")
+			  else if(status == "online")
 			    item = new QTableWidgetItem(tr("Online"));
 			  else
 			    item = new QTableWidgetItem(tr("Friend"));

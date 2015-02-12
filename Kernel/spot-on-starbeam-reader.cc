@@ -116,7 +116,7 @@ void spoton_starbeam_reader::slotTimeout(void)
 	    if(query.exec())
 	      if(query.next())
 		{
-		  QString status(query.value(5).toString());
+		  QString status(query.value(5).toString().toLower());
 
 		  if(status == "deleted")
 		    shouldDelete = true;

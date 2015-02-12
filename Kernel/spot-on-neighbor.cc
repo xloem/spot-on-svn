@@ -1022,7 +1022,7 @@ void spoton_neighbor::slotTimeout(void)
 	  {
 	    if(query.next())
 	      {
-		status = query.value(0).toString();
+		status = query.value(0).toString().toLower();
 
 		if(status == "blocked" || status == "disconnected")
 		  {
@@ -4232,7 +4232,8 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
 					    const QByteArray &timestamp)
 {
   spoton_misc::saveParticipantStatus
-    (name, publicKeyHash, status, timestamp, 30,
+    (name, publicKeyHash, status, timestamp,
+     2.5 * spoton_kernel::STATUS_INTERVAL,
      spoton_kernel::s_crypts.value("chat", 0));
 }
 

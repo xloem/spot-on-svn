@@ -1399,7 +1399,8 @@ void spoton::slotPopulateStars(void)
 		    }
 		  else if(i == 4)
 		    {
-		      item = new QTableWidgetItem(query.value(i).toString());
+		      item = new QTableWidgetItem
+			(query.value(i).toString().toLower());
 
 		      if(item->text() != "paused")
 			checkBox->setChecked(false);
