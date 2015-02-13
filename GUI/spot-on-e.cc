@@ -862,3 +862,22 @@ void spoton::slotShowOptions(void)
   m_optionsWindow->show();
   m_optionsWindow->raise();
 }
+
+void spoton::slotSetIconSize(int index)
+{
+  QSettings settings;
+  QSize size;
+
+  if(index == 0)
+    size = QSize(16, 16);
+  else if(index == 1)
+    size = QSize(24, 24);
+  else if(index == 2)
+    size = QSize(32, 32);
+  else
+    size = QSize(64, 64);
+
+  m_settings["gui/tabIconSize"] = size;
+  m_ui.tab->setIconSize(size);
+  settings.setValue("gui/tabIconSize", size);
+}

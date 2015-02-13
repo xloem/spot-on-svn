@@ -468,6 +468,7 @@ class spoton: public QMainWindow
   void slotSendMail(void);
   void slotSendMessage(void);
   void slotSetAETokenInformation(void);
+  void slotSetIconSize(int index);
   void slotSetIcons(int index);
   void slotSetListenerSSLControlString(void);
   void slotSetNeighborPriority(void);

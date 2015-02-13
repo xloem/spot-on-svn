@@ -803,6 +803,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(currentIndexChanged(int)),
 	  this,
 	  SLOT(slotSetIcons(int)));
+  connect(m_optionsUi.iconsize,
+	  SIGNAL(currentIndexChanged(int)),
+	  this,
+	  SLOT(slotSetIconSize(int)));
   connect(m_optionsUi.position,
 	  SIGNAL(currentIndexChanged(int)),
 	  this,
@@ -2168,6 +2172,22 @@ spoton::spoton(void):QMainWindow()
     m_optionsUi.icons->setCurrentIndex(1);
 
   slotSetIcons(m_optionsUi.icons->currentIndex());
+
+  QSize size(m_settings.value("gui/tabIconSize", QSize(24, 24)).toSize());
+
+  if(size == QSize(16, 16))
+    m_optionsUi.iconsize->setCurrentIndex(0);
+  else if(size == QSize(32, 32))
+    m_optionsUi.iconsize->setCurrentIndex(2);
+  else if(size == QSize(64, 64))
+    m_optionsUi.iconsize->setCurrentIndex(3);
+  else
+    {
+      m_optionsUi.iconsize->setCurrentIndex(1);
+      size = QSize(24, 24);
+    }
+
+  m_ui.tab->setIconSize(size);
   prepareContextMenuMirrors();
   show();
   update();
