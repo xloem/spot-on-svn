@@ -53,9 +53,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
+             <y>-135</y>
              <width>607</width>
-             <height>692</height>
+             <height>665</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -563,25 +563,6 @@
                 <number>5</number>
                </property>
                <item>
-                <widget class="QCheckBox" name="forceRegistration">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="toolTip">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please enable this option if you would like to force kernel registration. By forcing kernel registration, an existing kernel process that Spot-On is aware of will be deactivated. You may wish to use this option if a kernel was not deactivated properly.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                 </property>
-                 <property name="text">
-                  <string>&amp;Force kernel registration.</string>
-                 </property>
-                 <property name="checked">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_64">
                  <property name="spacing">
                   <number>5</number>
@@ -731,8 +712,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>601</width>
-             <height>868</height>
+             <width>605</width>
+             <height>895</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -1168,6 +1149,25 @@
                 <number>5</number>
                </property>
                <item>
+                <widget class="QCheckBox" name="forceRegistration">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="toolTip">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please enable this option if you would like to force kernel registration. By forcing kernel registration, an existing kernel process that Spot-On is aware of will be deactivated. You may wish to use this option if a kernel was not deactivated properly.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="text">
+                  <string>&amp;Force kernel registration.</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
                 <widget class="QCheckBox" name="scrambler">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -1383,7 +1383,6 @@
   <tabstop>listenersUpdateInterval</tabstop>
   <tabstop>keepOnlyUserDefinedNeighbors</tabstop>
   <tabstop>neighborsUpdateInterval</tabstop>
-  <tabstop>forceRegistration</tabstop>
   <tabstop>kernelUpdateInterval</tabstop>
   <tabstop>starbeamUpdateInterval</tabstop>
   <tabstop>scrollArea_2</tabstop>
@@ -1404,6 +1403,7 @@
   <tabstop>acceptPublishedDisconnected</tabstop>
   <tabstop>ignorePublished</tabstop>
   <tabstop>publishedKeySize</tabstop>
+  <tabstop>forceRegistration</tabstop>
   <tabstop>scrambler</tabstop>
   <tabstop>sharePrivateKeys</tabstop>
   <tabstop>superEcho</tabstop>
