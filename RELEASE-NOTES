@@ -1,17 +1,18 @@
-0.19 (02/28/2015)
+0.19 (02/13/2015)
 
 1.   URL distribution work. Incomplete.
 2.   Updated NTRU files to 242722f72b2c97a995eb2a0e4a82dc0bd279fc7f.
-3.   Added QSocketNotifier to the SCTP server implementation for Unix-like
+3.   Added QSocketNotifier to the SCTP server implementation on Unix-like
      systems. Removed QTimer usage.
 4.   Removed timer-based writes from spoton_sctp_socket. The change
      also provides the correct number of bytes written.
 5.   Allow removal of URLs.
 6.   Provide a prompt before sharing the authentication and encryption
-     keys with a kernel process.
+     keys with a kernel process. Optional.
 7.   Removed duplicate QSqlQuery::exec() from
      spoton_misc::saveParticipantStatus().
 8.   Some database fields require lowercase data.
+9.   New dialog for housing many options.
 
 0.18 (01/23/2015)
 
