@@ -602,9 +602,7 @@ void spoton::slotShowMinimalDisplay(bool state)
   m_ui.saveBuzzName->setHidden(state);
   m_ui.clearMessages->setHidden(state);
   m_ui.copyrepleo_chat->setHidden(state);
-  m_ui.chatAcceptSigned->setHidden(state);
   m_ui.acceptChatKeys->setHidden(state);
-  m_ui.chatSignMessages->setHidden(state);
   m_ui.participants->setColumnHidden(4, state);
   m_ui.participants->setColumnHidden(7, state);
   m_ui.mail->setColumnHidden(0, state);
@@ -613,11 +611,8 @@ void spoton::slotShowMinimalDisplay(bool state)
   m_ui.emailName->setHidden(state);
   m_ui.saveEmailName->setHidden(state);
   m_ui.saveCopy->setHidden(state);
-  m_ui.emailSignMessages->setHidden(state);
   m_ui.line_18->setHidden(state);
   m_ui.postoffice->setHidden(state);
-  m_ui.emailAcceptSigned->setHidden(state);
-  m_ui.acceptEmailKeys->setHidden(state);
   m_ui.label_79->setHidden(state);
   m_ui.label_80->setHidden(state);
   m_ui.institutionNameType->setHidden(state);
