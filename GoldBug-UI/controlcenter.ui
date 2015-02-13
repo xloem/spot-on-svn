@@ -618,20 +618,12 @@ QPushButton:pressed {
                     </widget>
                    </item>
                    <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_9">
-                     <property name="leftMargin">
-                      <number>0</number>
+                    <widget class="QPushButton" name="saveNodeName">
+                     <property name="toolTip">
+                      <string>Save my name.</string>
                      </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <item>
-                      <widget class="QPushButton" name="saveNodeName">
-                       <property name="toolTip">
-                        <string>Save my name.</string>
-                       </property>
-                       <property name="styleSheet">
-                        <string notr="true">QPushButton {
+                     <property name="styleSheet">
+                      <string notr="true">QPushButton {
  border: 2px solid gray;
  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                                    stop: 0 #E0E0E0, stop: 1 #FFFFFF);
@@ -651,22 +643,13 @@ QPushButton:pressed {
      border-style: inset;
  }
 </string>
-                       </property>
-                       <property name="text">
-                        <string>Save</string>
-                       </property>
-                       <property name="icon">
-                        <iconset resource="../Icons/icons.qrc">
-                         <normaloff>:/nuvola/ok.png</normaloff>:/nuvola/ok.png</iconset>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <widget class="Line" name="line">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="text">
+                      <string>Save</string>
+                     </property>
+                     <property name="icon">
+                      <iconset resource="../Icons/icons.qrc">
+                       <normaloff>:/nuvola/ok.png</normaloff>:/nuvola/ok.png</iconset>
                      </property>
                     </widget>
                    </item>
@@ -688,26 +671,6 @@ QPushButton:pressed {
                    </item>
                   </layout>
                  </widget>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="label_120">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="styleSheet">
-                  <string notr="true">QLabel { background-color : rgb(137, 207, 240);}
-</string>
-                 </property>
-                 <property name="frameShape">
-                  <enum>QFrame::StyledPanel</enum>
-                 </property>
-                 <property name="text">
-                  <string>Poptastic participants.</string>
-                 </property>
                 </widget>
                </item>
                <item>
@@ -10952,9 +10915,6 @@ spot-on-kernel&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; color:#666666;&quot;&
       <iconset resource="../Icons/icons.qrc">
        <normaloff>:/nouve/icons.png</normaloff>:/nouve/icons.png</iconset>
      </property>
-     <addaction name="actionEveraldo"/>
-     <addaction name="actionNouve"/>
-     <addaction name="actionNuvola"/>
     </widget>
     <addaction name="action_Quit"/>
     <addaction name="separator"/>
@@ -11023,59 +10983,6 @@ spot-on-kernel&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; color:#666666;&quot;&
     <string>Ctrl+L</string>
    </property>
   </action>
-  <action name="action_Documentation">
-   <property name="icon">
-    <iconset resource="../Icons/icons.qrc">
-     <normaloff>:/nuvola/documentation.png</normaloff>:/nuvola/documentation.png</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Documentation</string>
-   </property>
-  </action>
-  <action name="action_Nuvola">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Nuvola</string>
-   </property>
-  </action>
-  <action name="actionNouve">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../Icons/icons.qrc">
-     <normaloff>:/nouve/chat.png</normaloff>:/nouve/chat.png</iconset>
-   </property>
-   <property name="text">
-    <string>Nouve</string>
-   </property>
-  </action>
-  <action name="actionNuvola">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../Icons/icons.qrc">
-     <normaloff>:/nuvola/chat.png</normaloff>:/nuvola/chat.png</iconset>
-   </property>
-   <property name="text">
-    <string>Nuvola</string>
-   </property>
-  </action>
-  <action name="actionEveraldo">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../Icons/icons.qrc">
-     <normaloff>:/everaldo/chat.png</normaloff>:/everaldo/chat.png</iconset>
-   </property>
-   <property name="text">
-    <string>Everaldo</string>
-   </property>
-  </action>
   <action name="action_ResetSpotOn">
    <property name="icon">
     <iconset resource="../Icons/icons.qrc">
@@ -11083,31 +10990,6 @@ spot-on-kernel&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; color:#666666;&quot;&
    </property>
    <property name="text">
     <string>!!_Total-Database-&amp;Erase_!!</string>
-   </property>
-  </action>
-  <action name="action_East">
-   <property name="text">
-    <string>action_East</string>
-   </property>
-  </action>
-  <action name="action_North">
-   <property name="text">
-    <string>action_North</string>
-   </property>
-  </action>
-  <action name="action_West">
-   <property name="text">
-    <string>action_West</string>
-   </property>
-  </action>
-  <action name="actionSimple_Mobileview">
-   <property name="text">
-    <string>Simple Mobile</string>
-   </property>
-  </action>
-  <action name="actionAdvanced_Desktopview">
-   <property name="text">
-    <string>Advanced Desktop</string>
    </property>
   </action>
   <action name="action_Rosetta">
@@ -11538,6 +11420,20 @@ spot-on-kernel&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; color:#666666;&quot;&
   <tabstop>prepareUrlDatabases_2</tabstop>
   <tabstop>sqlite</tabstop>
   <tabstop>acceptChatKeys</tabstop>
+  <tabstop>urlTab_3</tabstop>
+  <tabstop>acceptlistDL_2</tabstop>
+  <tabstop>denylistDL_2</tabstop>
+  <tabstop>downDistillers</tabstop>
+  <tabstop>acceptlistUL_2</tabstop>
+  <tabstop>denylistUL_2</tabstop>
+  <tabstop>upDistillers</tabstop>
+  <tabstop>domain</tabstop>
+  <tabstop>downDist</tabstop>
+  <tabstop>upDist</tabstop>
+  <tabstop>addDistiller</tabstop>
+  <tabstop>deleteDistillers</tabstop>
+  <tabstop>refreshDistillers</tabstop>
+  <tabstop>urlDistributionModel</tabstop>
  </tabstops>
  <resources>
   <include location="../Icons/icons.qrc"/>

@@ -530,8 +530,6 @@ void spoton::slotShowMinimalDisplay(bool state)
   m_ui.buildInformation->setHidden(state);
   m_ui.label_27->setHidden(state);
   m_ui.passphraseGroupBox->setHidden(state);
-  m_ui.scrambler->setHidden(state);
-  m_ui.impersonate->setHidden(state);
   m_ui.label_58->setHidden(state);
   m_ui.geoipPath4->setHidden(state);
   m_ui.selectGeoIP4->setHidden(state);

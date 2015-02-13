@@ -1495,17 +1495,12 @@ spoton::spoton(void):QMainWindow()
 	      toLower());
 #endif
 
-#if SPOTON_GOLDBUG == 1
-  m_ui.action_East->setChecked(true);
-  m_ui.action_East->trigger();
-#else
   if(str == "east")
     m_optionsUi.position->setCurrentIndex(0);
   else if(str == "west")
     m_optionsUi.position->setCurrentIndex(2);
   else
     m_optionsUi.position->setCurrentIndex(1);
-#endif
 
   m_sb.errorlog->setIcon
     (QIcon(QString(":/%1/information.png").
