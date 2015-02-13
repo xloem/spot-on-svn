@@ -521,7 +521,7 @@ void spoton::slotReceivedKernelMessage(void)
 
 		  msg.append(content);
 
-		  if(m_ui.displayPopups->isChecked())
+		  if(m_optionsUi.displayPopups->isChecked())
 		    if(first)
 		      if(!m_chatWindows.contains(list.value(0).toBase64()))
 			slotParticipantDoubleClicked(items.at(0));
@@ -997,20 +997,20 @@ void spoton::slotAcceptPublicizedListeners(void)
   if(!radioButton)
     return;
 
-  if(m_ui.acceptPublishedConnected == radioButton)
+  if(m_optionsUi.acceptPublishedConnected == radioButton)
     {
       m_settings["gui/acceptPublicizedListeners"] = "connected";
-      m_ui.publishedKeySize->setEnabled(true);
+      m_optionsUi.publishedKeySize->setEnabled(true);
     }
-  else if(m_ui.acceptPublishedDisconnected == radioButton)
+  else if(m_optionsUi.acceptPublishedDisconnected == radioButton)
     {
       m_settings["gui/acceptPublicizedListeners"] = "disconnected";
-      m_ui.publishedKeySize->setEnabled(true);
+      m_optionsUi.publishedKeySize->setEnabled(true);
     }
   else
     {
       m_settings["gui/acceptPublicizedListeners"] = "ignored";
-      m_ui.publishedKeySize->setEnabled(false);
+      m_optionsUi.publishedKeySize->setEnabled(false);
     }
 
   QSettings settings;
@@ -4093,34 +4093,20 @@ void spoton::slotKeepCopy(bool state)
   settings.setValue("gui/saveCopy", state);
 }
 
-void spoton::slotSetIcons(void)
+void spoton::slotSetIcons(int index)
 {
-  QAction *action = qobject_cast<QAction *> (sender());
+  QSettings settings;
   QString iconSet("nouve");
 
-  if(action)
-    {
-      action->setChecked(true); /*
-				** Do not allow the user to uncheck
-				** the checked action.
-				*/
+  if(index == 0)
+    iconSet = "everaldo";
+  else if(index == 1)
+    iconSet = "nouve";
+  else
+    iconSet = "nuvola";
 
-      for(int i = 0; i < m_ui.menu_Icons->actions().size(); i++)
-	if(action != m_ui.menu_Icons->actions().at(i))
-	  m_ui.menu_Icons->actions().at(i)->setChecked(false);
-
-      QSettings settings;
-
-      if(action == m_ui.actionEveraldo)
-	iconSet = "everaldo";
-      else if(action == m_ui.actionNouve)
-	iconSet = "nouve";
-      else
-	iconSet = "nuvola";
-
-      m_settings["gui/iconSet"] = iconSet;
-      settings.setValue("gui/iconSet", iconSet);
-    }
+  m_settings["gui/iconSet"] = iconSet;
+  settings.setValue("gui/iconSet", iconSet);
 
   /*
   ** Kernel, listeners, and neighbors status icons are prepared elsewhere.

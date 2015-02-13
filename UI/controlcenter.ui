@@ -84,33 +84,6 @@
              <number>5</number>
             </property>
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_67">
-              <property name="spacing">
-               <number>5</number>
-              </property>
-              <item>
-               <widget class="QCheckBox" name="acceptBuzzMagnets">
-                <property name="text">
-                 <string>Accept shared &amp;magnets.</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_54">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </item>
-            <item>
              <layout class="QHBoxLayout" name="horizontalLayout_34">
               <property name="spacing">
                <number>5</number>
@@ -135,22 +108,6 @@
                   <string notr="true">Spot-On Developer Channel</string>
                  </property>
                 </item>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="buzzAutoJoin">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>&amp;Join automatically after the kernel is activated.</string>
-                </property>
-                <property name="checked">
-                 <bool>true</bool>
-                </property>
                </widget>
               </item>
               <item>
@@ -462,8 +419,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>752</width>
-                <height>510</height>
+                <width>766</width>
+                <height>488</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -478,129 +435,6 @@
                  <property name="spacing">
                   <number>5</number>
                  </property>
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_45">
-                   <property name="spacing">
-                    <number>5</number>
-                   </property>
-                   <item>
-                    <widget class="QCheckBox" name="acceptChatKeys">
-                     <property name="text">
-                      <string>Accept shared public &amp;keys.</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QCheckBox" name="acceptGeminis">
-                     <property name="text">
-                      <string>Accept &amp;geminis.</string>
-                     </property>
-                     <property name="checked">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QCheckBox" name="chatAcceptSigned">
-                     <property name="text">
-                      <string>&amp;Accept only signed messages.</string>
-                     </property>
-                     <property name="checked">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QCheckBox" name="impersonate">
-                     <property name="toolTip">
-                      <string>Broadcast odd messages at odd times. Please note that this option will advertise your presence.</string>
-                     </property>
-                     <property name="text">
-                      <string>&amp;Impersonate me.</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="horizontalSpacer_43">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                  </layout>
-                 </item>
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_98">
-                   <property name="spacing">
-                    <number>5</number>
-                   </property>
-                   <item>
-                    <widget class="QCheckBox" name="displayPopups">
-                     <property name="text">
-                      <string>&amp;Display popups automatically.</string>
-                     </property>
-                     <property name="checked">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QLabel" name="label_121">
-                     <property name="text">
-                      <string>&amp;Repaint every</string>
-                     </property>
-                     <property name="buddy">
-                      <cstring>chatUpdateInterval</cstring>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QDoubleSpinBox" name="chatUpdateInterval">
-                     <property name="suffix">
-                      <string> seconds.</string>
-                     </property>
-                     <property name="minimum">
-                      <double>0.500000000000000</double>
-                     </property>
-                     <property name="maximum">
-                      <double>10.000000000000000</double>
-                     </property>
-                     <property name="value">
-                      <double>3.500000000000000</double>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QCheckBox" name="chatSignMessages">
-                     <property name="text">
-                      <string>&amp;Sign messages.</string>
-                     </property>
-                     <property name="checked">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="horizontalSpacer_68">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                  </layout>
-                 </item>
                  <item>
                   <widget class="QSplitter" name="chatHorizontalSplitter">
                    <property name="orientation">
@@ -622,13 +456,6 @@
                        <property name="spacing">
                         <number>5</number>
                        </property>
-                       <item>
-                        <widget class="QCheckBox" name="enableChatEmoticons">
-                         <property name="text">
-                          <string>Enable &amp;emoticons.</string>
-                         </property>
-                        </widget>
-                       </item>
                        <item>
                         <spacer name="horizontalSpacer_23">
                          <property name="orientation">
@@ -866,33 +693,6 @@
                        </column>
                       </widget>
                      </item>
-                     <item>
-                      <layout class="QHBoxLayout" name="horizontalLayout">
-                       <property name="spacing">
-                        <number>5</number>
-                       </property>
-                       <item>
-                        <widget class="QCheckBox" name="hideOfflineParticipants">
-                         <property name="text">
-                          <string>&amp;Hide offline participants.</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <spacer name="horizontalSpacer_21">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                      </layout>
-                     </item>
                     </layout>
                    </widget>
                   </widget>
@@ -1047,8 +847,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>898</width>
-             <height>600</height>
+             <width>762</width>
+             <height>566</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -1137,107 +937,6 @@
               </item>
               <item>
                <spacer name="horizontalSpacer_7">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_62">
-              <property name="spacing">
-               <number>5</number>
-              </property>
-              <item>
-               <widget class="QCheckBox" name="emailAcceptSigned">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>&amp;Accept only signed messages.</string>
-                </property>
-                <property name="checked">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="acceptEmailKeys">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>Accept shared public &amp;keys.</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_76">
-                <property name="text">
-                 <string>&amp;Limit the size of email.db to</string>
-                </property>
-                <property name="buddy">
-                 <cstring>maximumEmailFileSize</cstring>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QSpinBox" name="maximumEmailFileSize">
-                <property name="suffix">
-                 <string> MiB.</string>
-                </property>
-                <property name="minimum">
-                 <number>1</number>
-                </property>
-                <property name="maximum">
-                 <number>5000</number>
-                </property>
-                <property name="value">
-                 <number>100</number>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="autoEmailRetrieve">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>&amp;Retrieve e-mail every</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QSpinBox" name="emailRetrievalInterval">
-                <property name="suffix">
-                 <string> minutes.</string>
-                </property>
-                <property name="minimum">
-                 <number>5</number>
-                </property>
-                <property name="maximum">
-                 <number>60</number>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_46">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -1614,25 +1313,6 @@
                        </widget>
                       </item>
                       <item>
-                       <widget class="QCheckBox" name="emailSignMessages">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="toolTip">
-                         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The kernel is responsible for signing messages. Because messages are queued, please avoid toggling this checkbox until queued messages have been processed by the kernel.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                        </property>
-                        <property name="text">
-                         <string>Sign &amp;messages.</string>
-                        </property>
-                        <property name="checked">
-                         <bool>true</bool>
-                        </property>
-                       </widget>
-                      </item>
-                      <item>
                        <widget class="QPushButton" name="sendMail">
                         <property name="text">
                          <string>Send</string>
@@ -1900,16 +1580,6 @@
                    <widget class="QCheckBox" name="postofficeCheckBox">
                     <property name="text">
                      <string>&amp;Enable C/O service.</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QCheckBox" name="coAcceptSigned">
-                    <property name="text">
-                     <string>&amp;Reject messages without signatures. The setting does not apply to data destined for institutions.</string>
-                    </property>
-                    <property name="checked">
-                     <bool>true</bool>
                     </property>
                    </widget>
                   </item>
@@ -2334,102 +2004,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QLabel" name="label_86">
-                    <property name="text">
-                     <string>&amp;Limit connections to</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>limitConnections</cstring>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QSpinBox" name="limitConnections">
-                    <property name="toolTip">
-                     <string>Limit the number of connections per client IP address.</string>
-                    </property>
-                    <property name="minimum">
-                     <number>1</number>
-                    </property>
-                    <property name="maximum">
-                     <number>50</number>
-                    </property>
-                    <property name="value">
-                     <number>10</number>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLabel" name="label_96">
-                    <property name="text">
-                     <string>clients.</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QCheckBox" name="publishPeriodically">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="toolTip">
-                     <string>External IP information is required.</string>
-                    </property>
-                    <property name="text">
-                     <string>Periodically p&amp;ublish plaintext information.</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
                    <spacer name="horizontalSpacer_20">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                 </layout>
-                </item>
-                <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_91">
-                  <property name="spacing">
-                   <number>5</number>
-                  </property>
-                  <item>
-                   <widget class="QLabel" name="label_123">
-                    <property name="text">
-                     <string>&amp;Repaint every</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>listenersUpdateInterval</cstring>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QDoubleSpinBox" name="listenersUpdateInterval">
-                    <property name="suffix">
-                     <string> seconds.</string>
-                    </property>
-                    <property name="minimum">
-                     <double>0.500000000000000</double>
-                    </property>
-                    <property name="maximum">
-                     <double>10.000000000000000</double>
-                    </property>
-                    <property name="value">
-                     <double>3.500000000000000</double>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <spacer name="horizontalSpacer_76">
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
                     </property>
@@ -3445,8 +3020,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>880</width>
-             <height>646</height>
+             <width>806</width>
+             <height>572</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -3497,179 +3072,6 @@
                   </item>
                   <item>
                    <spacer name="horizontalSpacer_22">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                 </layout>
-                </item>
-                <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_24">
-                  <property name="spacing">
-                   <number>5</number>
-                  </property>
-                  <item>
-                   <widget class="QRadioButton" name="acceptPublishedConnected">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="toolTip">
-                     <string>Select this option if you would like to accept and connect to published listeners.</string>
-                    </property>
-                    <property name="text">
-                     <string>&amp;Accept published listeners (connected).</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QRadioButton" name="acceptPublishedDisconnected">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="toolTip">
-                     <string>Select this option if you would like to accept published listeners.</string>
-                    </property>
-                    <property name="text">
-                     <string>&amp;Accept published listeners (disconnected).</string>
-                    </property>
-                    <property name="checked">
-                     <bool>false</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QRadioButton" name="ignorePublished">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>&amp;Ignore published listeners.</string>
-                    </property>
-                    <property name="checked">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLabel" name="label_30">
-                    <property name="text">
-                     <string>&amp;SSL Key Size</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>publishedKeySize</cstring>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QComboBox" name="publishedKeySize">
-                    <property name="enabled">
-                     <bool>false</bool>
-                    </property>
-                    <property name="sizeAdjustPolicy">
-                     <enum>QComboBox::AdjustToContents</enum>
-                    </property>
-                    <item>
-                     <property name="text">
-                      <string>2048</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>3072</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>4096</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>8192</string>
-                     </property>
-                    </item>
-                   </widget>
-                  </item>
-                  <item>
-                   <spacer name="horizontalSpacer_24">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                 </layout>
-                </item>
-                <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_28">
-                  <property name="spacing">
-                   <number>5</number>
-                  </property>
-                  <item>
-                   <widget class="QCheckBox" name="keepOnlyUserDefinedNeighbors">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>&amp;Keep only user-defined neighbors.</string>
-                    </property>
-                    <property name="checked">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLabel" name="label_125">
-                    <property name="text">
-                     <string>&amp;Repaint every</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>neighborsUpdateInterval</cstring>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QDoubleSpinBox" name="neighborsUpdateInterval">
-                    <property name="suffix">
-                     <string> seconds.</string>
-                    </property>
-                    <property name="minimum">
-                     <double>0.500000000000000</double>
-                    </property>
-                    <property name="maximum">
-                     <double>10.000000000000000</double>
-                    </property>
-                    <property name="value">
-                     <double>3.500000000000000</double>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <spacer name="horizontalSpacer_25">
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
                     </property>
@@ -5334,11 +4736,24 @@
                   <number>5</number>
                  </property>
                  <item>
+                  <spacer name="horizontalSpacer_4">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
                   <widget class="QLineEdit" name="search">
                    <property name="minimumSize">
                     <size>
-                     <width>0</width>
-                     <height>28</height>
+                     <width>500</width>
+                     <height>0</height>
                     </size>
                    </property>
                    <property name="toolTip">
@@ -5352,6 +4767,19 @@
                     <string>Discover!</string>
                    </property>
                   </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_5">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
                  </item>
                 </layout>
                </item>
@@ -5448,7 +4876,7 @@
              <x>0</x>
              <y>0</y>
              <width>762</width>
-             <height>1115</height>
+             <height>1081</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -5772,19 +5200,6 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QCheckBox" name="sharePrivateKeys">
-                     <property name="toolTip">
-                      <string>Automatically share the private authentication and encryption keys with a kernel process. If this option is disabled, the user interface will provide reminders.</string>
-                     </property>
-                     <property name="text">
-                      <string>&amp;Share Private Keys</string>
-                     </property>
-                     <property name="checked">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
                     <widget class="QPushButton" name="activateKernel">
                      <property name="text">
                       <string>Activate</string>
@@ -5938,22 +5353,6 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QCheckBox" name="scrambler">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="toolTip">
-                      <string>Please note that this option will advertise your presence.</string>
-                     </property>
-                     <property name="text">
-                      <string>&amp;Scrambler</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
                     <widget class="QLabel" name="label_34">
                      <property name="text">
                       <string>&amp;SSL Key Size</string>
@@ -5989,39 +5388,6 @@
                      <item>
                       <property name="text">
                        <string>8192</string>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QLabel" name="label_119">
-                     <property name="text">
-                      <string>&amp;Super Echo</string>
-                     </property>
-                     <property name="buddy">
-                      <cstring>superEcho</cstring>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QComboBox" name="superEcho">
-                     <property name="toolTip">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If enabled, messages that are interpreted correctly will be echoed. Please note that this option will advertise your presence. This option does not supersede a half-echo agreement.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                     </property>
-                     <property name="currentIndex">
-                      <number>1</number>
-                     </property>
-                     <property name="sizeAdjustPolicy">
-                      <enum>QComboBox::AdjustToContents</enum>
-                     </property>
-                     <item>
-                      <property name="text">
-                       <string>Complete</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Disabled</string>
                       </property>
                      </item>
                     </widget>
@@ -6083,52 +5449,6 @@
                     <property name="margin">
                      <number>5</number>
                     </property>
-                    <item>
-                     <layout class="QHBoxLayout" name="horizontalLayout_64">
-                      <property name="spacing">
-                       <number>5</number>
-                      </property>
-                      <item>
-                       <widget class="QLabel" name="label_127">
-                        <property name="text">
-                         <string>&amp;Repaint every</string>
-                        </property>
-                        <property name="buddy">
-                         <cstring>kernelUpdateInterval</cstring>
-                        </property>
-                       </widget>
-                      </item>
-                      <item>
-                       <widget class="QDoubleSpinBox" name="kernelUpdateInterval">
-                        <property name="suffix">
-                         <string> seconds.</string>
-                        </property>
-                        <property name="minimum">
-                         <double>0.500000000000000</double>
-                        </property>
-                        <property name="maximum">
-                         <double>10.000000000000000</double>
-                        </property>
-                        <property name="value">
-                         <double>3.500000000000000</double>
-                        </property>
-                       </widget>
-                      </item>
-                      <item>
-                       <spacer name="horizontalSpacer_78">
-                        <property name="orientation">
-                         <enum>Qt::Horizontal</enum>
-                        </property>
-                        <property name="sizeHint" stdset="0">
-                         <size>
-                          <width>40</width>
-                          <height>20</height>
-                         </size>
-                        </property>
-                       </spacer>
-                      </item>
-                     </layout>
-                    </item>
                     <item>
                      <widget class="QTableWidget" name="kernelStatistics">
                       <property name="verticalScrollBarPolicy">
@@ -6712,7 +6032,7 @@
              <x>0</x>
              <y>0</y>
              <width>762</width>
-             <height>571</height>
+             <height>537</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -6722,65 +6042,6 @@
             <property name="margin">
              <number>5</number>
             </property>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_82">
-              <property name="spacing">
-               <number>5</number>
-              </property>
-              <item>
-               <widget class="QCheckBox" name="autoAddSharedSBMagnets">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>Automatically accept shared &amp;magnets.</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_129">
-                <property name="text">
-                 <string>&amp;Repaint every</string>
-                </property>
-                <property name="buddy">
-                 <cstring>starbeamUpdateInterval</cstring>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QDoubleSpinBox" name="starbeamUpdateInterval">
-                <property name="suffix">
-                 <string> seconds.</string>
-                </property>
-                <property name="minimum">
-                 <double>0.500000000000000</double>
-                </property>
-                <property name="maximum">
-                 <double>10.000000000000000</double>
-                </property>
-                <property name="value">
-                 <double>3.500000000000000</double>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_66">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </item>
             <item>
              <widget class="QTabWidget" name="etpTab">
               <property name="currentIndex">
@@ -7744,19 +7005,6 @@
                <number>5</number>
               </property>
               <item>
-               <widget class="QCheckBox" name="acceptUrlKeys">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>Accept shared public &amp;keys.</string>
-                </property>
-               </widget>
-              </item>
-              <item>
                <widget class="QLabel" name="label_104">
                 <property name="text">
                  <string>&amp;Distribution Model</string>
@@ -8504,27 +7752,10 @@
     <property name="title">
      <string>&amp;View</string>
     </property>
-    <widget class="QMenu" name="menu_Icons">
-     <property name="title">
-      <string>&amp;Icons</string>
-     </property>
-     <addaction name="actionEveraldo"/>
-     <addaction name="actionNouve"/>
-     <addaction name="actionNuvola"/>
-    </widget>
-    <widget class="QMenu" name="menu_Tab_Position">
-     <property name="title">
-      <string>&amp;Tab Position</string>
-     </property>
-     <addaction name="action_East"/>
-     <addaction name="action_North"/>
-     <addaction name="action_West"/>
-    </widget>
-    <addaction name="menu_Icons"/>
     <addaction name="action_Log_Viewer"/>
     <addaction name="action_Minimal_Display"/>
+    <addaction name="action_Options"/>
     <addaction name="action_Poptastic_Settings"/>
-    <addaction name="menu_Tab_Position"/>
    </widget>
    <widget class="QMenu" name="menu_Tools">
     <property name="title">
@@ -8563,22 +7794,6 @@
     <string>Ctrl+Q</string>
    </property>
   </action>
-  <action name="actionNuvola">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Nuvola</string>
-   </property>
-  </action>
-  <action name="actionNouve">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Nouve</string>
-   </property>
-  </action>
   <action name="action_Log_Viewer">
    <property name="text">
     <string>&amp;Log Viewer</string>
@@ -8590,33 +7805,6 @@
   <action name="action_ResetSpotOn">
    <property name="text">
     <string>&amp;Reset Spot-On</string>
-   </property>
-  </action>
-  <action name="action_East">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>&amp;East</string>
-   </property>
-  </action>
-  <action name="action_North">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>&amp;North</string>
-   </property>
-  </action>
-  <action name="action_West">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>&amp;West</string>
    </property>
   </action>
   <action name="action_Rosetta">
@@ -8673,14 +7861,6 @@
     <string>&amp;Minimal Display</string>
    </property>
   </action>
-  <action name="actionEveraldo">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Everaldo</string>
-   </property>
-  </action>
   <action name="action_File_Encryption">
    <property name="text">
     <string>&amp;File Encryption</string>
@@ -8697,6 +7877,11 @@
   <action name="action_Poptastic_Settings">
    <property name="text">
     <string>&amp;Poptastic Settings</string>
+   </property>
+  </action>
+  <action name="action_Options">
+   <property name="text">
+    <string>&amp;Options</string>
    </property>
   </action>
  </widget>
@@ -8716,9 +7901,7 @@
  <tabstops>
   <tabstop>tab</tabstop>
   <tabstop>scrollArea_5</tabstop>
-  <tabstop>acceptBuzzMagnets</tabstop>
   <tabstop>commonBuzzChannels</tabstop>
-  <tabstop>buzzAutoJoin</tabstop>
   <tabstop>buzzName</tabstop>
   <tabstop>saveBuzzName</tabstop>
   <tabstop>favorites</tabstop>
@@ -8734,14 +7917,6 @@
   <tabstop>join</tabstop>
   <tabstop>buzzTab</tabstop>
   <tabstop>scrollArea_2</tabstop>
-  <tabstop>acceptChatKeys</tabstop>
-  <tabstop>acceptGeminis</tabstop>
-  <tabstop>chatAcceptSigned</tabstop>
-  <tabstop>impersonate</tabstop>
-  <tabstop>displayPopups</tabstop>
-  <tabstop>chatUpdateInterval</tabstop>
-  <tabstop>chatSignMessages</tabstop>
-  <tabstop>enableChatEmoticons</tabstop>
   <tabstop>clearMessages</tabstop>
   <tabstop>messages</tabstop>
   <tabstop>nodeName</tabstop>
@@ -8749,7 +7924,6 @@
   <tabstop>status</tabstop>
   <tabstop>chatActionMenu</tabstop>
   <tabstop>participants</tabstop>
-  <tabstop>hideOfflineParticipants</tabstop>
   <tabstop>chatSendMethod</tabstop>
   <tabstop>message</tabstop>
   <tabstop>sendMessage</tabstop>
@@ -8758,11 +7932,6 @@
   <tabstop>emptyTrash</tabstop>
   <tabstop>refreshMail</tabstop>
   <tabstop>retrieveMail</tabstop>
-  <tabstop>emailAcceptSigned</tabstop>
-  <tabstop>acceptEmailKeys</tabstop>
-  <tabstop>maximumEmailFileSize</tabstop>
-  <tabstop>autoEmailRetrieve</tabstop>
-  <tabstop>emailRetrievalInterval</tabstop>
   <tabstop>mailTab</tabstop>
   <tabstop>folder</tabstop>
   <tabstop>reply</tabstop>
@@ -8782,10 +7951,8 @@
   <tabstop>goldbug</tabstop>
   <tabstop>generateGoldBug</tabstop>
   <tabstop>saveCopy</tabstop>
-  <tabstop>emailSignMessages</tabstop>
   <tabstop>sendMail</tabstop>
   <tabstop>postofficeCheckBox</tabstop>
-  <tabstop>coAcceptSigned</tabstop>
   <tabstop>postoffice</tabstop>
   <tabstop>days</tabstop>
   <tabstop>institutions</tabstop>
@@ -8800,9 +7967,6 @@
   <tabstop>addInstitution</tabstop>
   <tabstop>scrollArea_7</tabstop>
   <tabstop>listenersActionMenu</tabstop>
-  <tabstop>limitConnections</tabstop>
-  <tabstop>publishPeriodically</tabstop>
-  <tabstop>listenersUpdateInterval</tabstop>
   <tabstop>listeners</tabstop>
   <tabstop>listenerIPCombo</tabstop>
   <tabstop>listenerIP</tabstop>
@@ -8844,12 +8008,6 @@
   <tabstop>neighborsActionMenu</tabstop>
   <tabstop>toolButtonCopyToClipboard</tabstop>
   <tabstop>shareBuzzMagnet</tabstop>
-  <tabstop>acceptPublishedConnected</tabstop>
-  <tabstop>acceptPublishedDisconnected</tabstop>
-  <tabstop>ignorePublished</tabstop>
-  <tabstop>publishedKeySize</tabstop>
-  <tabstop>keepOnlyUserDefinedNeighbors</tabstop>
-  <tabstop>neighborsUpdateInterval</tabstop>
   <tabstop>neighbors</tabstop>
   <tabstop>neighborSummary</tabstop>
   <tabstop>neighborIP</tabstop>
@@ -8921,7 +8079,6 @@
   <tabstop>kernelPath</tabstop>
   <tabstop>selectKernelPath</tabstop>
   <tabstop>forceRegistration</tabstop>
-  <tabstop>sharePrivateKeys</tabstop>
   <tabstop>activateKernel</tabstop>
   <tabstop>pid</tabstop>
   <tabstop>deactivateKernel</tabstop>
@@ -8929,11 +8086,8 @@
   <tabstop>kernelHashType</tabstop>
   <tabstop>cost</tabstop>
   <tabstop>kernelLogEvents</tabstop>
-  <tabstop>scrambler</tabstop>
   <tabstop>kernelKeySize</tabstop>
-  <tabstop>superEcho</tabstop>
   <tabstop>showStatistics</tabstop>
-  <tabstop>kernelUpdateInterval</tabstop>
   <tabstop>kernelStatistics</tabstop>
   <tabstop>cipherType</tabstop>
   <tabstop>hashType</tabstop>
@@ -8955,8 +8109,6 @@
   <tabstop>keys</tabstop>
   <tabstop>regenerate</tabstop>
   <tabstop>scrollArea_4</tabstop>
-  <tabstop>autoAddSharedSBMagnets</tabstop>
-  <tabstop>starbeamUpdateInterval</tabstop>
   <tabstop>etpTab</tabstop>
   <tabstop>magnetsActionMenu</tabstop>
   <tabstop>etpMagnets</tabstop>
@@ -8994,7 +8146,6 @@
   <tabstop>pulseSize</tabstop>
   <tabstop>transmit</tabstop>
   <tabstop>scrollArea_10</tabstop>
-  <tabstop>acceptUrlKeys</tabstop>
   <tabstop>urlDistributionModel</tabstop>
   <tabstop>urlName</tabstop>
   <tabstop>saveUrlName</tabstop>

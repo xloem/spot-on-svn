@@ -297,6 +297,10 @@ spoton::spoton(void):QMainWindow()
   setAttribute(Qt::WA_MacMetalStyle, true);
 #endif
 #endif
+  m_optionsWindow = new QMainWindow(this);
+  m_optionsUi.setupUi(m_optionsWindow);
+  m_optionsWindow->setWindowTitle
+    (tr("%1: Options").arg(SPOTON_APPLICATION_NAME));
   m_poptasticDialog = new QDialog(this);
   m_poptasticSettingsUi.setupUi(m_poptasticDialog);
   m_sbWidget = new QWidget(this);
@@ -411,6 +415,14 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(triggered(void)),
 	  this,
 	  SLOT(slotQuit(void)));
+  connect(m_optionsUi.action_Close,
+	  SIGNAL(triggered(void)),
+	  m_optionsWindow,
+	  SLOT(close(void)));
+  connect(m_ui.action_Options,
+	  SIGNAL(triggered(void)),
+	  this,
+	  SLOT(slotShowOptions(void)));
   connect(m_ui.action_Log_Viewer,
 	  SIGNAL(triggered(void)),
 	  this,
@@ -435,11 +447,11 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotAddNeighbor(void)));
-  connect(m_ui.autoAddSharedSBMagnets,
+  connect(m_optionsUi.autoAddSharedSBMagnets,
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotAutoAddSharedSBMagnets(bool)));
-  connect(m_ui.buzzAutoJoin,
+  connect(m_optionsUi.buzzAutoJoin,
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotSaveBuzzAutoJoin(bool)));
@@ -463,7 +475,7 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotProtocolRadioToggled(bool)));
-  connect(m_ui.limitConnections,
+  connect(m_optionsUi.limitConnections,
 	  SIGNAL(valueChanged(int)),
 	  this,
 	  SLOT(slotLimitConnections(int)));
@@ -611,11 +623,11 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(returnPressed(void)),
 	  this,
 	  SLOT(slotSaveUrlName(void)));
-  connect(m_ui.scrambler,
+  connect(m_optionsUi.scrambler,
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotScramble(bool)));
-  connect(m_ui.impersonate,
+  connect(m_optionsUi.impersonate,
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotImpersonate(bool)));
@@ -707,19 +719,19 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotGenerateGoldBug(void)));
-  connect(m_ui.acceptPublishedConnected,
+  connect(m_optionsUi.acceptPublishedConnected,
 	  SIGNAL(pressed(void)),
 	  this,
 	  SLOT(slotAcceptPublicizedListeners(void)));
-  connect(m_ui.acceptPublishedDisconnected,
+  connect(m_optionsUi.acceptPublishedDisconnected,
 	  SIGNAL(pressed(void)),
 	  this,
 	  SLOT(slotAcceptPublicizedListeners(void)));
-  connect(m_ui.ignorePublished,
+  connect(m_optionsUi.ignorePublished,
 	  SIGNAL(pressed(void)),
 	  this,
 	  SLOT(slotAcceptPublicizedListeners(void)));
-  connect(m_ui.keepOnlyUserDefinedNeighbors,
+  connect(m_optionsUi.keepOnlyUserDefinedNeighbors,
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotKeepOnlyUserDefinedNeighbors(bool)));
@@ -775,7 +787,7 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(currentChanged(int)),
 	  this,
 	  SLOT(slotMailTabChanged(int)));
-  connect(m_ui.enableChatEmoticons,
+  connect(m_optionsUi.enableChatEmoticons,
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotEnableChatEmoticons(bool)));
@@ -787,30 +799,14 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotKeepCopy(bool)));
-  connect(m_ui.actionEveraldo,
-	  SIGNAL(triggered(void)),
+  connect(m_optionsUi.icons,
+	  SIGNAL(currentIndexChanged(int)),
 	  this,
-	  SLOT(slotSetIcons(void)));
-  connect(m_ui.actionNouve,
-	  SIGNAL(triggered(void)),
+	  SLOT(slotSetIcons(int)));
+  connect(m_optionsUi.position,
+	  SIGNAL(currentIndexChanged(int)),
 	  this,
-	  SLOT(slotSetIcons(void)));
-  connect(m_ui.actionNuvola,
-	  SIGNAL(triggered(void)),
-	  this,
-	  SLOT(slotSetIcons(void)));
-  connect(m_ui.action_East,
-	  SIGNAL(triggered(void)),
-	  this,
-	  SLOT(slotChangeTabPosition(void)));
-  connect(m_ui.action_North,
-	  SIGNAL(triggered(void)),
-	  this,
-	  SLOT(slotChangeTabPosition(void)));
-  connect(m_ui.action_West,
-	  SIGNAL(triggered(void)),
-	  this,
-	  SLOT(slotChangeTabPosition(void)));
+	  SLOT(slotChangeTabPosition(int)));
   connect(m_ui.action_Export_Listeners,
 	  SIGNAL(triggered(void)),
 	  this,
@@ -863,7 +859,7 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(valueChanged(int)),
 	  this,
 	  SLOT(slotDaysChanged(int)));
-  connect(m_ui.maximumEmailFileSize,
+  connect(m_optionsUi.maximumEmailFileSize,
 	  SIGNAL(valueChanged(int)),
 	  this,
 	  SLOT(slotMaximumEmailFileSizeChanged(int)));
@@ -871,7 +867,7 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(valueChanged(int)),
 	  this,
 	  SLOT(slotMaxMosaicSize(int)));
-  connect(m_ui.emailRetrievalInterval,
+  connect(m_optionsUi.emailRetrievalInterval,
 	  SIGNAL(valueChanged(int)),
 	  this,
 	  SLOT(slotMailRetrievalIntervalChanged(int)));
@@ -919,11 +915,11 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  m_ui.listenersSslControlString,
 	  SLOT(setEnabled(bool)));
-  connect(m_ui.publishPeriodically,
+  connect(m_optionsUi.publishPeriodically,
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotPublishPeriodicallyToggled(bool)));
-  connect(m_ui.hideOfflineParticipants,
+  connect(m_optionsUi.hideOfflineParticipants,
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotHideOfflineParticipants(bool)));
@@ -931,7 +927,7 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(currentIndexChanged(int)),
 	  this,
 	  SLOT(slotProxyTypeChanged(int)));
-  connect(m_ui.publishedKeySize,
+  connect(m_optionsUi.publishedKeySize,
 	  SIGNAL(currentIndexChanged(const QString &)),
 	  this,
 	  SLOT(slotPublishedKeySizeChanged(const QString &)));
@@ -939,7 +935,7 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(currentIndexChanged(const QString &)),
 	  this,
 	  SLOT(slotKernelKeySizeChanged(const QString &)));
-  connect(m_ui.superEcho,
+  connect(m_optionsUi.superEcho,
 	  SIGNAL(currentIndexChanged(int)),
 	  this,
 	  SLOT(slotSuperEcho(int)));
@@ -1011,35 +1007,35 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(tabCloseRequested(int)),
 	  this,
 	  SLOT(slotCloseBuzzTab(int)));
-  connect(m_ui.chatAcceptSigned,
+  connect(m_optionsUi.chatAcceptSigned,
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotSignatureCheckBoxToggled(bool)));
-  connect(m_ui.acceptChatKeys,
+  connect(m_optionsUi.acceptChatKeys,
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotAcceptChatKeys(bool)));
-  connect(m_ui.acceptEmailKeys,
+  connect(m_optionsUi.acceptEmailKeys,
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotAcceptEmailKeys(bool)));
-  connect(m_ui.acceptUrlKeys,
+  connect(m_optionsUi.acceptUrlKeys,
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotAcceptUrlKeys(bool)));
-  connect(m_ui.chatSignMessages,
+  connect(m_optionsUi.chatSignMessages,
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotSignatureCheckBoxToggled(bool)));
-  connect(m_ui.emailAcceptSigned,
+  connect(m_optionsUi.emailAcceptSigned,
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotSignatureCheckBoxToggled(bool)));
-  connect(m_ui.emailSignMessages,
+  connect(m_optionsUi.emailSignMessages,
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotSignatureCheckBoxToggled(bool)));
-  connect(m_ui.coAcceptSigned,
+  connect(m_optionsUi.coAcceptSigned,
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotSignatureCheckBoxToggled(bool)));
@@ -1091,7 +1087,7 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  m_ui.generate,
 	  SLOT(setEnabled(bool)));
-  connect(m_ui.autoEmailRetrieve,
+  connect(m_optionsUi.autoEmailRetrieve,
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotAutoRetrieveEmail(bool)));
@@ -1115,7 +1111,7 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotRewindFile(void)));
-  connect(m_ui.acceptBuzzMagnets,
+  connect(m_optionsUi.acceptBuzzMagnets,
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotAcceptBuzzMagnets(bool)));
@@ -1155,7 +1151,7 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotAddInstitutionCheckBoxToggled(bool)));
-  connect(m_ui.displayPopups,
+  connect(m_optionsUi.displayPopups,
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotDisplayPopups(bool)));
@@ -1227,23 +1223,23 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotPostgreSQLConnect(void)));
-  connect(m_ui.chatUpdateInterval,
+  connect(m_optionsUi.chatUpdateInterval,
 	  SIGNAL(valueChanged(double)),
 	  this,
 	  SLOT(slotUpdateSpinBoxChanged(double)));
-  connect(m_ui.kernelUpdateInterval,
+  connect(m_optionsUi.kernelUpdateInterval,
 	  SIGNAL(valueChanged(double)),
 	  this,
 	  SLOT(slotUpdateSpinBoxChanged(double)));
-  connect(m_ui.listenersUpdateInterval,
+  connect(m_optionsUi.listenersUpdateInterval,
 	  SIGNAL(valueChanged(double)),
 	  this,
 	  SLOT(slotUpdateSpinBoxChanged(double)));
-  connect(m_ui.neighborsUpdateInterval,
+  connect(m_optionsUi.neighborsUpdateInterval,
 	  SIGNAL(valueChanged(double)),
 	  this,
 	  SLOT(slotUpdateSpinBoxChanged(double)));
-  connect(m_ui.starbeamUpdateInterval,
+  connect(m_optionsUi.starbeamUpdateInterval,
 	  SIGNAL(valueChanged(double)),
 	  this,
 	  SLOT(slotUpdateSpinBoxChanged(double)));
@@ -1257,7 +1253,7 @@ spoton::spoton(void):QMainWindow()
 	  m_ui.postgresqlConnect, SLOT(setDisabled(bool)));
   connect(m_ui.sqlite, SIGNAL(toggled(bool)),
 	  this, SLOT(slotPostgreSQLDisconnect(bool)));
-  connect(m_ui.acceptGeminis, SIGNAL(toggled(bool)),
+  connect(m_optionsUi.acceptGeminis, SIGNAL(toggled(bool)),
 	  this, SLOT(slotAcceptGeminis(bool)));
   connect(m_ui.action_Poptastic_Settings, SIGNAL(triggered(void)),
 	  this, SLOT(slotConfigurePoptastic(void)));
@@ -1285,7 +1281,7 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(currentIndexChanged(int)),
 	  this,
 	  SLOT(slotSaveUrlDistribution(int)));
-  connect(m_ui.sharePrivateKeys,
+  connect(m_optionsUi.sharePrivateKeys,
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotSaveSharePrivateKeys(bool)));
@@ -1463,28 +1459,28 @@ spoton::spoton(void):QMainWindow()
 
   spoton_misc::correctSettingsContainer(m_settings);
 
-  m_ui.chatUpdateInterval->setValue
+  m_optionsUi.chatUpdateInterval->setValue
     (m_settings.value("gui/participantsUpdateTimer", 3.50).toDouble());
   m_emailRetrievalTimer.setInterval
     (m_settings.value("gui/emailRetrievalInterval", 5 * 60 * 1000).toInt());
-  m_ui.kernelUpdateInterval->setValue
+  m_optionsUi.kernelUpdateInterval->setValue
     (m_settings.value("gui/kernelUpdateTimer", 3.50).toDouble());
-  m_ui.listenersUpdateInterval->setValue
+  m_optionsUi.listenersUpdateInterval->setValue
     (m_settings.value("gui/listenersUpdateTimer", 3.50).toDouble());
-  m_ui.neighborsUpdateInterval->setValue
+  m_optionsUi.neighborsUpdateInterval->setValue
     (m_settings.value("gui/neighborsUpdateTimer", 3.50).toDouble());
-  m_ui.starbeamUpdateInterval->setValue
+  m_optionsUi.starbeamUpdateInterval->setValue
     (m_settings.value("gui/starbeamUpdateTimer", 3.50).toDouble());
   m_kernelUpdateTimer.start
-    (static_cast<int> (1000 * m_ui.kernelUpdateInterval->value()));
+    (static_cast<int> (1000 * m_optionsUi.kernelUpdateInterval->value()));
   m_listenersUpdateTimer.start
-    (static_cast<int> (1000 * m_ui.listenersUpdateInterval->value()));
+    (static_cast<int> (1000 * m_optionsUi.listenersUpdateInterval->value()));
   m_neighborsUpdateTimer.start
-    (static_cast<int> (1000 * m_ui.neighborsUpdateInterval->value()));
+    (static_cast<int> (1000 * m_optionsUi.neighborsUpdateInterval->value()));
   m_participantsUpdateTimer.start
-    (static_cast<int> (1000 * m_ui.chatUpdateInterval->value()));
+    (static_cast<int> (1000 * m_optionsUi.chatUpdateInterval->value()));
   m_starbeamUpdateTimer.start
-    (static_cast<int> (1000 * m_ui.starbeamUpdateInterval->value()));
+    (static_cast<int> (1000 * m_optionsUi.starbeamUpdateInterval->value()));
   m_tableTimer.start(3500);
 
 #if SPOTON_GOLDBUG == 1
@@ -1498,22 +1494,16 @@ spoton::spoton(void):QMainWindow()
   m_ui.action_East->trigger();
 #else
   if(str == "east")
-    {
-      m_ui.action_East->setChecked(true);
-      m_ui.action_East->trigger();
-    }
+    m_optionsUi.position->setCurrentIndex(0);
   else if(str == "west")
-    {
-      m_ui.action_West->setChecked(true);
-      m_ui.action_West->trigger();
-    }
+    m_optionsUi.position->setCurrentIndex(2);
   else
-    {
-      m_ui.action_North->setChecked(true);
-      m_ui.action_North->trigger();
-    }
+    m_optionsUi.position->setCurrentIndex(1);
 #endif
 
+  m_sb.errorlog->setIcon
+    (QIcon(QString(":/%1/information.png").
+	   arg(m_settings.value("gui/iconSet", "nouve").toString())));
   m_sb.kernelstatus->setIcon
     (QIcon(QString(":/%1/deactivate.png").
 	   arg(m_settings.value("gui/iconSet", "nouve").toString())));
@@ -1601,11 +1591,11 @@ spoton::spoton(void):QMainWindow()
 
   keySize = m_settings.value("gui/publishedKeySize", "2048").toString();
 
-  if(m_ui.publishedKeySize->findText(keySize) > -1)
-    m_ui.publishedKeySize->setCurrentIndex
-      (m_ui.publishedKeySize->findText(keySize));
+  if(m_optionsUi.publishedKeySize->findText(keySize) > -1)
+    m_optionsUi.publishedKeySize->setCurrentIndex
+      (m_optionsUi.publishedKeySize->findText(keySize));
   else
-    m_ui.publishedKeySize->setCurrentIndex(0);
+    m_optionsUi.publishedKeySize->setCurrentIndex(0);
 
   if(m_settings.value("gui/urlDistribution",
 		      "linear").toString() == "simple random")
@@ -1697,9 +1687,9 @@ spoton::spoton(void):QMainWindow()
   m_ui.days->setValue(m_settings.value("gui/postofficeDays", 1).toInt());
   m_ui.etpMaxMosaicSize->setValue(m_settings.value("gui/maxMosaicSize",
 						   512).toInt());
-  m_ui.emailRetrievalInterval->setValue
+  m_optionsUi.emailRetrievalInterval->setValue
     (m_settings.value("gui/emailRetrievalInterval", 5).toInt());
-  m_ui.maximumEmailFileSize->setValue
+  m_optionsUi.maximumEmailFileSize->setValue
     (m_settings.value("gui/maximumEmailFileSize", 100).toInt());
 
   QString statusControl
@@ -1709,77 +1699,77 @@ spoton::spoton(void):QMainWindow()
 
   if(statusControl == "connected")
     {
-      m_ui.acceptPublishedConnected->setChecked(true);
-      m_ui.publishedKeySize->setEnabled(true);
+      m_optionsUi.acceptPublishedConnected->setChecked(true);
+      m_optionsUi.publishedKeySize->setEnabled(true);
     }
   else if(statusControl == "disconnected")
     {
-      m_ui.acceptPublishedDisconnected->setChecked(true);
-      m_ui.publishedKeySize->setEnabled(true);
+      m_optionsUi.acceptPublishedDisconnected->setChecked(true);
+      m_optionsUi.publishedKeySize->setEnabled(true);
     }
   else
     {
-      m_ui.ignorePublished->setChecked(true);
-      m_ui.publishedKeySize->setEnabled(false);
+      m_optionsUi.ignorePublished->setChecked(true);
+      m_optionsUi.publishedKeySize->setEnabled(false);
     }
 
-  m_ui.acceptChatKeys->setChecked
+  m_optionsUi.acceptChatKeys->setChecked
     (m_settings.value("gui/acceptChatKeys", false).toBool());
-  m_ui.acceptEmailKeys->setChecked
+  m_optionsUi.acceptEmailKeys->setChecked
     (m_settings.value("gui/acceptEmailKeys", false).toBool());
-  m_ui.acceptGeminis->setChecked
+  m_optionsUi.acceptGeminis->setChecked
     (m_settings.value("gui/acceptGeminis", true).toBool());
-  m_ui.acceptUrlKeys->setChecked
+  m_optionsUi.acceptUrlKeys->setChecked
     (m_settings.value("gui/acceptUrlKeys", false).toBool());
-  m_ui.autoAddSharedSBMagnets->setChecked
+  m_optionsUi.autoAddSharedSBMagnets->setChecked
     (m_settings.value("gui/autoAddSharedSBMagnets", false).toBool());
-  m_ui.buzzAutoJoin->setChecked
+  m_optionsUi.buzzAutoJoin->setChecked
     (m_settings.value("gui/buzzAutoJoin", true).toBool());
-  m_ui.enableChatEmoticons->setChecked
+  m_optionsUi.enableChatEmoticons->setChecked
     (m_settings.value("gui/enableChatEmoticons", false).toBool());
-  m_ui.hideOfflineParticipants->setChecked
+  m_optionsUi.hideOfflineParticipants->setChecked
     (m_settings.value("gui/hideOfflineParticipants", false).toBool());
-  m_ui.keepOnlyUserDefinedNeighbors->setChecked
+  m_optionsUi.keepOnlyUserDefinedNeighbors->setChecked
     (m_settings.value("gui/keepOnlyUserDefinedNeighbors", true).toBool());
   m_ui.kernelLogEvents->setChecked
     (m_settings.value("gui/kernelLogEvents", false).toBool());
-  m_ui.limitConnections->setValue
+  m_optionsUi.limitConnections->setValue
     (m_settings.value("gui/limitConnections", 10).toInt());
   m_ui.postofficeCheckBox->setChecked
     (m_settings.value("gui/postoffice_enabled", false).toBool());
-  m_ui.publishPeriodically->setChecked
+  m_optionsUi.publishPeriodically->setChecked
     (m_settings.value("gui/publishPeriodically", false).toBool());
   m_ui.saveCopy->setChecked
     (m_settings.value("gui/saveCopy", true).toBool());
-  m_ui.scrambler->setChecked
+  m_optionsUi.scrambler->setChecked
     (m_settings.value("gui/scramblerEnabled", false).toBool());
-  m_ui.superEcho->setCurrentIndex
+  m_optionsUi.superEcho->setCurrentIndex
     (m_settings.value("gui/superEcho", 1).toInt());
 
-  if(m_ui.superEcho->currentIndex() < 0)
-    m_ui.superEcho->setCurrentIndex(1);
+  if(m_optionsUi.superEcho->currentIndex() < 0)
+    m_optionsUi.superEcho->setCurrentIndex(1);
 
-  m_ui.chatAcceptSigned->setChecked
+  m_optionsUi.chatAcceptSigned->setChecked
     (m_settings.value("gui/chatAcceptSignedMessagesOnly", true).toBool());
-  m_ui.chatSignMessages->setChecked
+  m_optionsUi.chatSignMessages->setChecked
     (m_settings.value("gui/chatSignMessages", true).toBool());
-  m_ui.emailAcceptSigned->setChecked
+  m_optionsUi.emailAcceptSigned->setChecked
     (m_settings.value("gui/emailAcceptSignedMessagesOnly", true).toBool());
-  m_ui.emailSignMessages->setChecked
+  m_optionsUi.emailSignMessages->setChecked
     (m_settings.value("gui/emailSignMessages", true).toBool());
-  m_ui.coAcceptSigned->setChecked
+  m_optionsUi.coAcceptSigned->setChecked
     (m_settings.value("gui/coAcceptSignedMessagesOnly", true).toBool());
   m_ui.receivers->setChecked(m_settings.value("gui/etpReceivers",
 					      false).toBool());
-  m_ui.autoEmailRetrieve->setChecked
+  m_optionsUi.autoEmailRetrieve->setChecked
     (m_settings.value("gui/automaticallyRetrieveEmail", false).toBool());
-  m_ui.acceptBuzzMagnets->setChecked
+  m_optionsUi.acceptBuzzMagnets->setChecked
     (m_settings.value("gui/acceptBuzzMagnets", false).toBool());
-  m_ui.impersonate->setChecked
+  m_optionsUi.impersonate->setChecked
     (m_settings.value("gui/impersonate", false).toBool());
-  m_ui.displayPopups->setChecked
+  m_optionsUi.displayPopups->setChecked
     (m_settings.value("gui/displayPopupsAutomatically", true).toBool());
-  m_ui.sharePrivateKeys->setChecked
+  m_optionsUi.sharePrivateKeys->setChecked
     (m_settings.value("gui/sharePrivateKeysWithKernel", true).toBool());
 
   /*
@@ -1891,6 +1881,7 @@ spoton::spoton(void):QMainWindow()
       m_ui.action_Import_Neighbors->setEnabled(false);
       m_ui.action_Export_Public_Keys->setEnabled(false);
       m_ui.action_Import_Public_Keys->setEnabled(false);
+      m_ui.action_Options->setEnabled(false);
       m_ui.action_Poptastic_Settings->setEnabled(false);
       m_ui.action_Rosetta->setEnabled(false);
       m_ui.encryptionKeyType->setEnabled(false);
@@ -1924,6 +1915,7 @@ spoton::spoton(void):QMainWindow()
       m_ui.action_Import_Neighbors->setEnabled(false);
       m_ui.action_Export_Public_Keys->setEnabled(false);
       m_ui.action_Import_Public_Keys->setEnabled(false);
+      m_ui.action_Options->setEnabled(false);
       m_ui.action_Poptastic_Settings->setEnabled(false);
       m_ui.action_Rosetta->setEnabled(false);
       m_ui.answer_authenticate->setEnabled(false);
@@ -2166,28 +2158,16 @@ spoton::spoton(void):QMainWindow()
 	m_externalAddressDiscovererTimer.start(60000);
     }
 
-  if(m_ui.menu_Icons->actions().size() == 3)
-    {
-      QString str(m_settings.value("gui/iconSet", "nouve").
-		  toString());
+  str = m_settings.value("gui/iconSet", "nouve").toString();
 
-      if(str == "everaldo")
-	{
-	  m_ui.menu_Icons->actions().at(0)->setChecked(true);
-	  m_ui.menu_Icons->actions().at(0)->trigger();
-	}
-      else if(str == "nouve")
-	{
-	  m_ui.menu_Icons->actions().at(1)->setChecked(true);
-	  m_ui.menu_Icons->actions().at(1)->trigger();
-	}
-      else
-	{
-	  m_ui.menu_Icons->actions().at(2)->setChecked(true);
-	  m_ui.menu_Icons->actions().at(2)->trigger();
-	}
-    }
+  if(str == "everaldo")
+    m_optionsUi.icons->setCurrentIndex(0);
+  else if(str == "nuvola")
+    m_optionsUi.icons->setCurrentIndex(2);
+  else
+    m_optionsUi.icons->setCurrentIndex(1);
 
+  slotSetIcons(m_optionsUi.icons->currentIndex());
   prepareContextMenuMirrors();
   show();
   update();
@@ -4777,7 +4757,7 @@ void spoton::updateListenersTable(const QSqlDatabase &db)
 
 void spoton::updateNeighborsTable(const QSqlDatabase &db)
 {
-  if(m_ui.keepOnlyUserDefinedNeighbors->isChecked())
+  if(m_optionsUi.keepOnlyUserDefinedNeighbors->isChecked())
     if(db.isOpen())
       {
 	/*
@@ -5284,6 +5264,7 @@ void spoton::slotSetPassphrase(void)
       m_ui.action_Import_Neighbors->setEnabled(true);
       m_ui.action_Export_Public_Keys->setEnabled(true);
       m_ui.action_Import_Public_Keys->setEnabled(true);
+      m_ui.action_Options->setEnabled(true);
       m_ui.action_Poptastic_Settings->setEnabled(true);
       m_ui.action_Rosetta->setEnabled(true);
       m_ui.answer->clear();
@@ -5511,6 +5492,7 @@ void spoton::slotValidatePassphrase(void)
 	    m_ui.action_Import_Neighbors->setEnabled(true);
 	    m_ui.action_Export_Public_Keys->setEnabled(true);
 	    m_ui.action_Import_Public_Keys->setEnabled(true);
+	    m_ui.action_Options->setEnabled(true);
 	    m_ui.action_Poptastic_Settings->setEnabled(true);
 	    m_ui.action_Rosetta->setEnabled(true);
 	    m_ui.answer->clear();
@@ -6172,7 +6154,7 @@ void spoton::sendKeysToKernel(void)
     if(m_kernelSocket.state() == QAbstractSocket::ConnectedState)
       if(m_kernelSocket.isEncrypted())
 	{
-	  if(!m_ui.sharePrivateKeys->isChecked())
+	  if(!m_optionsUi.sharePrivateKeys->isChecked())
 	    {
 	      QMessageBox mb(this);
 
@@ -6726,7 +6708,8 @@ void spoton::slotPopulateParticipants(void)
 			  ** if this is a Poptastic key-less participant.
 			  */
 
-			  if(!((m_ui.hideOfflineParticipants->isChecked() &&
+			  if(!((m_optionsUi.
+				hideOfflineParticipants->isChecked() &&
 				status == "offline") ||
 			       publicKey.contains("-poptastic")))
 			    {
@@ -6873,7 +6856,7 @@ void spoton::slotPopulateParticipants(void)
 		      ** and are not subjected to this restriction.
 		      */
 
-		      if((m_ui.hideOfflineParticipants->isChecked() &&
+		      if((m_optionsUi.hideOfflineParticipants->isChecked() &&
 			  status == "offline") ||
 			 publicKey.contains("-poptastic"))
 			/*
@@ -7465,15 +7448,15 @@ void spoton::slotSignatureCheckBoxToggled(bool state)
   QCheckBox *checkBox = qobject_cast<QCheckBox *> (sender());
   QString str("");
 
-  if(checkBox == m_ui.chatAcceptSigned)
+  if(checkBox == m_optionsUi.chatAcceptSigned)
     str = "chatAcceptSignedMessagesOnly";
-  else if(checkBox == m_ui.chatSignMessages)
+  else if(checkBox == m_optionsUi.chatSignMessages)
     str = "chatSignMessages";
-  else if(checkBox == m_ui.emailAcceptSigned)
+  else if(checkBox == m_optionsUi.emailAcceptSigned)
     str = "emailAcceptSignedMessagesOnly";
-  else if(checkBox == m_ui.emailSignMessages)
+  else if(checkBox == m_optionsUi.emailSignMessages)
     str = "emailSignMessages";
-  else if(checkBox == m_ui.coAcceptSigned)
+  else if(checkBox == m_optionsUi.coAcceptSigned)
     str = "coAcceptSignedMessagesOnly";
 
   if(!str.isEmpty())
@@ -7798,30 +7781,14 @@ void spoton::slotNeighborSelected(void)
     }
 }
 
-void spoton::slotChangeTabPosition(void)
+void spoton::slotChangeTabPosition(int index)
 {
-  QAction *action = qobject_cast<QAction *> (sender());
-
-  if(action)
-    {
-      action->setChecked(true); /*
-				** Do not allow the user to uncheck
-				** the checked action.
-				*/
-
-#if SPOTON_GOLDBUG == 0
-      for(int i = 0; i < m_ui.menu_Tab_Position->actions().size(); i++)
-	if(action != m_ui.menu_Tab_Position->actions().at(i))
-	  m_ui.menu_Tab_Position->actions().at(i)->setChecked(false);
-#endif
-    }
-
-  if(action == m_ui.action_East)
+  if(index == 0)
     {
       m_settings["gui/tabPosition"] = "east";
       m_ui.tab->setTabPosition(QTabWidget::East);
     }
-  else if(action == m_ui.action_West)
+  else if(index == 2)
     {
       m_settings["gui/tabPosition"] = "west";
       m_ui.tab->setTabPosition(QTabWidget::West);

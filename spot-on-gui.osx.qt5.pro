@@ -59,6 +59,7 @@ FORMS           = UI/adaptiveechoprompt.ui \
 		  UI/encryptfile.ui \
 		  UI/ipinformation.ui \
                   UI/logviewer.ui \
+		  UI/options.ui \
                   UI/passwordprompt.ui \
 		  UI/poptasticsettings.ui \
 		  UI/postgresqlconnect.ui \

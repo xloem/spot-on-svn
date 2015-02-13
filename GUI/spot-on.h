@@ -97,6 +97,7 @@ extern "C"
 #include "spot-on-rosetta.h"
 #include "spot-on-starbeamanalyzer.h"
 #include "ui_controlcenter.h"
+#include "ui_options.h"
 #include "ui_poptasticsettings.h"
 #include "ui_statusbar.h"
 
@@ -137,6 +138,7 @@ class spoton: public QMainWindow
   QHash<QString, spoton_crypt *> m_crypts;
 #ifdef SPOTON_LINKED_WITH_LIBPHONON
 #endif
+  QMainWindow *m_optionsWindow;
   QSqlDatabase m_urlDatabase;
   QSslSocket m_kernelSocket;
   QString m_urlQuery;
@@ -155,6 +157,7 @@ class spoton: public QMainWindow
   QWidget *m_sbWidget;
   Ui_poptasticsettings m_poptasticSettingsUi;
   Ui_spoton_mainwindow m_ui;
+  Ui_spoton_options m_optionsUi;
   Ui_statusbar m_sb;
   quint64 m_urlCurrentPage;
   quint64 m_urlLimit;
@@ -272,7 +275,7 @@ class spoton: public QMainWindow
   void slotBuzzChanged(void);
   void slotBuzzTools(int index);
   void slotCallParticipant(void);
-  void slotChangeTabPosition(void);
+  void slotChangeTabPosition(int index);
   void slotChatInactivityTimeout(void);
   void slotChatPopup(void);
   void slotChatSendMethodChanged(int index);
@@ -465,7 +468,7 @@ class spoton: public QMainWindow
   void slotSendMail(void);
   void slotSendMessage(void);
   void slotSetAETokenInformation(void);
-  void slotSetIcons(void);
+  void slotSetIcons(int index);
   void slotSetListenerSSLControlString(void);
   void slotSetNeighborPriority(void);
   void slotSetNeighborSSLControlString(void);
@@ -484,6 +487,7 @@ class spoton: public QMainWindow
   void slotShowEncryptFile(void);
   void slotShowEtpMagnetsMenu(const QPoint &point);
   void slotShowMinimalDisplay(bool state);
+  void slotShowOptions(void);
   void slotShowStarBeamAnalyzer(void);
   void slotShowStatistics(void);
   void slotShowUrlSettings(void);

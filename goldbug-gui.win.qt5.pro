@@ -54,6 +54,7 @@ FORMS           = GoldBug-UI\\adaptiveechoprompt.ui \
 		  GoldBug-UI\\encryptfile.ui \
 		  GoldBug-UI\\ipinformation.ui \
                   GoldBug-UI\\logviewer.ui \
+		  GoldBug-UI\\options.ui \
                   GoldBug-UI\\passwordprompt.ui \
 		  GoldBug-UI\\poptasticsettings.ui \
 		  GoldBug-UI\\postgresqlconnect.ui \

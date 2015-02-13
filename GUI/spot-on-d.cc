@@ -2418,31 +2418,31 @@ void spoton::slotUpdateSpinBoxChanged(double value)
   if(value < 0.50)
     value = 3.50;
 
-  if(doubleSpinBox == m_ui.chatUpdateInterval)
+  if(doubleSpinBox == m_optionsUi.chatUpdateInterval)
     {
       m_participantsUpdateTimer.setInterval(static_cast<int> (1000 * value));
       m_settings["gui/participantsUpdateTimer"] = value;
       settings.setValue("gui/participantsUpdateTimer", value);
     }
-  else if(doubleSpinBox == m_ui.kernelUpdateInterval)
+  else if(doubleSpinBox == m_optionsUi.kernelUpdateInterval)
     {
       m_kernelUpdateTimer.setInterval(static_cast<int> (1000 * value));
       m_settings["gui/kernelUpdateTimer"] = value;
       settings.setValue("gui/kernelUpdateTimer", value);
     }
-  else if(doubleSpinBox == m_ui.listenersUpdateInterval)
+  else if(doubleSpinBox == m_optionsUi.listenersUpdateInterval)
     {
       m_listenersUpdateTimer.setInterval(static_cast<int> (1000 * value));
       m_settings["gui/listenersUpdateTimer"] = value;
       settings.setValue("gui/listenersUpdateTimer", value);
     }
-  else if(doubleSpinBox == m_ui.neighborsUpdateInterval)
+  else if(doubleSpinBox == m_optionsUi.neighborsUpdateInterval)
     {
       m_neighborsUpdateTimer.setInterval(static_cast<int> (1000 * value));
       m_settings["gui/neighborsUpdateTimer"] = value;
       settings.setValue("gui/neighborsUpdateTimer", value);
     }
-  else if(doubleSpinBox == m_ui.starbeamUpdateInterval)
+  else if(doubleSpinBox == m_optionsUi.starbeamUpdateInterval)
     {
       m_starbeamUpdateTimer.setInterval(static_cast<int> (1000 * value));
       m_settings["gui/starbeamUpdateTimer"] = value;
