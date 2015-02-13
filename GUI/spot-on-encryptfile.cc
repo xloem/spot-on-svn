@@ -170,7 +170,8 @@ void spoton_encryptfile::keyPressEvent(QKeyEvent *event)
 void spoton_encryptfile::slotSetIcons(void)
 {
   QSettings settings;
-  QString iconSet(settings.value("gui/iconSet", "nuove").toString());
+  QString iconSet(settings.value("gui/iconSet", "nuove").toString().
+		  toLower());
 
   if(!(iconSet == "everaldo" || iconSet == "nouve" || iconSet == "nuvola"))
     iconSet = "nouve";

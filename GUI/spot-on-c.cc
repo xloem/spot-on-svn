@@ -318,7 +318,7 @@ void spoton::slotShowEtpMagnetsMenu(const QPoint &point)
       menu.addSeparator();
       menu.addAction(QIcon(QString(":/%1/clear.png").
 			   arg(m_settings.value("gui/iconSet", "nouve").
-			       toString())),
+			       toString().toLower())),
 		     tr("&Delete"),
 		     this, SLOT(slotDeleteEtpMagnet(void)));
       menu.addAction(tr("Delete &All"),
@@ -764,7 +764,8 @@ void spoton::slotPopulateKernelStatistics(void)
     {
       m_sb.listeners->setIcon
 	(QIcon(QString(":/%1/status-online.png").
-	       arg(m_settings.value("gui/iconSet", "nouve").toString())));
+	       arg(m_settings.value("gui/iconSet", "nouve").toString().
+		   toLower())));
       m_sb.listeners->setToolTip
 	(tr("There is (are) %1 active listener(s).").arg(activeListeners));
     }
@@ -772,7 +773,8 @@ void spoton::slotPopulateKernelStatistics(void)
     {
       m_sb.listeners->setIcon
 	(QIcon(QString(":/%1/status-offline.png").
-	       arg(m_settings.value("gui/iconSet", "nouve").toString())));
+	       arg(m_settings.value("gui/iconSet", "nouve").toString().
+		   toLower())));
       m_sb.listeners->setToolTip(tr("Listeners are offline."));
     }
 
@@ -780,7 +782,8 @@ void spoton::slotPopulateKernelStatistics(void)
     {
       m_sb.neighbors->setIcon
 	(QIcon(QString(":/%1/status-online.png").
-	       arg(m_settings.value("gui/iconSet", "nouve").toString())));
+	       arg(m_settings.value("gui/iconSet", "nouve").toString().
+		   toLower())));
       m_sb.neighbors->setToolTip
 	(tr("There is (are) %1 connected neighbor(s).").
 	 arg(activeNeighbors));
@@ -789,7 +792,8 @@ void spoton::slotPopulateKernelStatistics(void)
     {
       m_sb.neighbors->setIcon
 	(QIcon(QString(":/%1/status-offline.png").
-	       arg(m_settings.value("gui/iconSet", "nouve").toString())));
+	       arg(m_settings.value("gui/iconSet", "nouve").toString().
+		   toLower())));
       m_sb.neighbors->setToolTip(tr("Neighbors are offline."));
     }
 }
@@ -2079,9 +2083,9 @@ void spoton::slotComputeFileHash(void)
 
   QTableWidget *table = 0;
 
-  if(action->property("widget_of").toString() == "received")
+  if(action->property("widget_of").toString().toLower() == "received")
     table = m_ui.received;
-  else if(action->property("widget_of").toString() == "transmitted")
+  else if(action->property("widget_of").toString().toLower() == "transmitted")
     table = m_ui.transmitted;
 
   if(!table)
@@ -2178,9 +2182,9 @@ void spoton::slotCopyFileHash(void)
 
   QTableWidget *table = 0;
 
-  if(action->property("widget_of").toString() == "received")
+  if(action->property("widget_of").toString().toLower() == "received")
     table = m_ui.received;
-  else if(action->property("widget_of").toString() == "transmitted")
+  else if(action->property("widget_of").toString().toLower() == "transmitted")
     table = m_ui.transmitted;
 
   if(!table)
@@ -2454,7 +2458,8 @@ void spoton::prepareContextMenuMirrors(void)
 
       menu->addAction
 	(QIcon(QString(":/%1/add.png").
-	       arg(m_settings.value("gui/iconSet", "nouve").toString())),
+	       arg(m_settings.value("gui/iconSet", "nouve").toString().
+		   toLower())),
 	 tr("&Add participant as friend."),
 	 this, SLOT(slotShareChatPublicKeyWithParticipant(void)));
       menu->addSeparator();
@@ -2469,7 +2474,7 @@ void spoton::prepareContextMenuMirrors(void)
       action = menu->addAction(QIcon(QString(":/%1/melodica.png").
 				     arg(m_settings.value("gui/iconSet",
 							  "nouve").
-					 toString())),
+					 toString().toLower())),
 			       tr("MELODICA: &Call friend with new "
 				  "Gemini pair."),
 			       this, SLOT(slotCallParticipant(void)));
@@ -2477,7 +2482,7 @@ void spoton::prepareContextMenuMirrors(void)
       action = menu->addAction(QIcon(QString(":/%1/melodica.png").
 				     arg(m_settings.value("gui/iconSet",
 							  "nouve").
-					 toString())),
+					 toString().toLower())),
 			       tr("MELODICA: &Call friend with new "
 				  "Gemini pair using the existing "
 				  "Gemini pair."),
@@ -2486,7 +2491,7 @@ void spoton::prepareContextMenuMirrors(void)
       action = menu->addAction(QIcon(QString(":/%1/melodica.png").
 				     arg(m_settings.value("gui/iconSet",
 							  "nouve").
-					 toString())),
+					 toString().toLower())),
 			       tr("MELODICA Two-Way: &Call friend with new "
 				  "Gemini pair."),
 			       this, SLOT(slotCallParticipant(void)));
@@ -2520,7 +2525,7 @@ void spoton::prepareContextMenuMirrors(void)
       menu->addSeparator();
       menu->addAction(QIcon(QString(":/%1/clear.png").
 			    arg(m_settings.value("gui/iconSet", "nouve").
-				toString())),
+				toString().toLower())),
 		      tr("&Remove participant(s)."),
 		      this, SLOT(slotRemoveParticipants(void)));
       menu->addSeparator();
@@ -2537,7 +2542,8 @@ void spoton::prepareContextMenuMirrors(void)
 
       menu->addAction
 	(QIcon(QString(":/%1/add.png").
-	       arg(m_settings.value("gui/iconSet", "nouve").toString())),
+	       arg(m_settings.value("gui/iconSet", "nouve").toString().
+		   toLower())),
 	 tr("&Add participant as friend."),
 	 this, SLOT(slotShareEmailPublicKeyWithParticipant(void)));
       menu->addSeparator();
@@ -2546,13 +2552,13 @@ void spoton::prepareContextMenuMirrors(void)
 		      this, SLOT(slotCopyEmailFriendshipBundle(void)));
       menu->addAction(QIcon(QString(":/%1/copy.png").
 			    arg(m_settings.value("gui/iconSet", "nouve").
-				toString())),
+				toString().toLower())),
 		      tr("&Copy keys to the clipboard buffer."),
 		      this, SLOT(slotCopyEmailKeys(void)));
       menu->addSeparator();
       menu->addAction(QIcon(QString(":/%1/clear.png").
 			    arg(m_settings.value("gui/iconSet", "nouve").
-				toString())),
+				toString().toLower())),
 		      tr("&Remove participant(s)."),
 		      this, SLOT(slotRemoveEmailParticipants(void)));
       menu->addSeparator();
@@ -2569,7 +2575,7 @@ void spoton::prepareContextMenuMirrors(void)
 
       menu->addAction(QIcon(QString(":/%1/clear.png").
 			    arg(m_settings.value("gui/iconSet", "nouve").
-				toString())),
+				toString().toLower())),
 		      tr("&Delete"),
 		      this, SLOT(slotDeleteListener(void)));
       menu->addAction(tr("Delete &All"),
@@ -2608,7 +2614,7 @@ void spoton::prepareContextMenuMirrors(void)
       menu->addSeparator();
       menu->addAction(QIcon(QString(":/%1/clear.png").
 			    arg(m_settings.value("gui/iconSet", "nouve").
-				toString())),
+				toString().toLower())),
 		      tr("&Delete"),
 		      this, SLOT(slotDeleteEtpMagnet(void)));
       menu->addAction(tr("Delete &All"),
@@ -2623,22 +2629,22 @@ void spoton::prepareContextMenuMirrors(void)
 
       menu->addAction(QIcon(QString(":/%1/share.png").
 			    arg(m_settings.value("gui/iconSet", "nouve").
-				toString())),
+				toString().toLower())),
 		      tr("Share &Chat Public Key"),
 		      this, SLOT(slotShareChatPublicKey(void)));
       menu->addAction(QIcon(QString(":/%1/share.png").
 			    arg(m_settings.value("gui/iconSet", "nouve").
-				toString())),
+				toString().toLower())),
 		      tr("Share &E-Mail Public Key"),
 		      this, SLOT(slotShareEmailPublicKey(void)));
       menu->addAction(QIcon(QString(":/%1/share.png").
 			    arg(m_settings.value("gui/iconSet", "nouve").
-				toString())),
+				toString().toLower())),
 		      tr("Share &Poptastic Public Key"),
 		      this, SLOT(slotSharePoptasticPublicKey(void)));
       menu->addAction(QIcon(QString(":%1//share.png").
 			    arg(m_settings.value("gui/iconSet", "nouve").
-				toString())),
+				toString().toLower())),
 		      tr("Share &URL Public Key"),
 		      this, SLOT(slotShareURLPublicKey(void)));
       menu->addSeparator();
@@ -2668,7 +2674,7 @@ void spoton::prepareContextMenuMirrors(void)
       menu->addSeparator();
       menu->addAction(QIcon(QString(":/%1/clear.png").
 			    arg(m_settings.value("gui/iconSet", "nouve").
-				toString())),
+				toString().toLower())),
 		      tr("&Delete"),
 		      this, SLOT(slotDeleteNeighbor(void)));
       menu->addAction(tr("Delete &All"),
@@ -2748,7 +2754,7 @@ void spoton::prepareContextMenuMirrors(void)
 
       menu->addAction(QIcon(QString(":/%1/clear.png").
 			    arg(m_settings.value("gui/iconSet", "nouve").
-				toString())),
+				toString().toLower())),
 		      tr("&Delete"), this,
 		      SLOT(slotDeleteReceived(void)));
       menu->addAction(tr("Delete &All"), this,
@@ -2774,7 +2780,7 @@ void spoton::prepareContextMenuMirrors(void)
 
       menu->addAction(QIcon(QString(":/%1/clear.png").
 			    arg(m_settings.value("gui/iconSet", "nouve").
-				toString())),
+				toString().toLower())),
 		      tr("&Delete"), this,
 		      SLOT(slotDeleteTransmitted(void)));
       menu->addAction(tr("Delete &All"), this,
@@ -2800,7 +2806,8 @@ void spoton::prepareContextMenuMirrors(void)
 
       menu->addAction
 	(QIcon(QString(":/%1/add.png").
-	       arg(m_settings.value("gui/iconSet", "nouve").toString())),
+	       arg(m_settings.value("gui/iconSet", "nouve").toString().
+		   toLower())),
 	 tr("&Add participant as friend."),
 	 this, SLOT(slotShareUrlPublicKeyWithParticipant(void)));
       menu->addSeparator();
@@ -2810,7 +2817,7 @@ void spoton::prepareContextMenuMirrors(void)
       menu->addSeparator();
       menu->addAction(QIcon(QString(":/%1/clear.png").
 			    arg(m_settings.value("gui/iconSet", "nouve").
-				toString())),
+				toString().toLower())),
 		      tr("&Remove participant(s)."),
 		      this, SLOT(slotRemoveUrlParticipants(void)));
       menu->addSeparator();
@@ -3985,7 +3992,7 @@ void spoton::slotRenameParticipant(void)
   if(!action)
     return;
 
-  QString type(action->property("type").toString());
+  QString type(action->property("type").toString().toLower());
 
   if(!(type == "chat" || type == "email" ||
        type == "poptastic" || type == "url"))

@@ -854,7 +854,7 @@ void spoton::slotAddMagnet(void)
   if(!action)
     return;
 
-  QString type(action->property("type").toString());
+  QString type(action->property("type").toString().toLower());
   QUrl url(action->property("url").toUrl());
 
   if(type == "buzz")

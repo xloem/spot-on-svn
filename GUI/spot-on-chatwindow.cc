@@ -99,7 +99,8 @@ spoton_chatwindow::~spoton_chatwindow()
 void spoton_chatwindow::slotSetIcons(void)
 {
   QSettings settings;
-  QString iconSet(settings.value("gui/iconSet", "nouve").toString());
+  QString iconSet(settings.value("gui/iconSet", "nouve").toString().
+		  toLower());
 
   if(!(iconSet == "everaldo" || iconSet == "nouve" || iconSet == "nuvola"))
     iconSet = "nouve";

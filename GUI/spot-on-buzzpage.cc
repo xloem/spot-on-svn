@@ -165,7 +165,8 @@ spoton_buzzpage::~spoton_buzzpage()
 void spoton_buzzpage::slotSetIcons(void)
 {
   QSettings settings;
-  QString iconSet(settings.value("gui/iconSet", "nouve").toString());
+  QString iconSet(settings.value("gui/iconSet", "nouve").toString().
+		  toLower());
 
   if(!(iconSet == "everaldo" || iconSet == "nouve" || iconSet == "nuvola"))
     iconSet = "nouve";
