@@ -1146,7 +1146,7 @@ void spoton_kernel::prepareNeighbors(void)
 
 		      for(int i = 0; i < query.record().count() - 1; i++)
 			if(i == 3) // status_control
-			  list.append(query.value(i).toString());
+			  list.append(query.value(i).toString().toLower());
 			else if(i == 9) // user_defined
 			  list.append(userDefined);
 			else if(i == 10) // ssl_key_size
@@ -1385,7 +1385,7 @@ void spoton_kernel::prepareStarbeamReaders(void)
 		      "FROM transmitted"))
 	  while(query.next())
 	    {
-	      QString status(query.value(0).toString());
+	      QString status(query.value(0).toString().toLower());
 	      QPointer<spoton_starbeam_reader> starbeam = 0;
 	      qint64 id = query.value(query.record().count() - 1).
 		toLongLong();
@@ -1720,7 +1720,8 @@ void spoton_kernel::slotMessageReceivedFromUI
 	  else
 	    {
 	      if(setting("gui/chatSendMethod",
-			 "Artificial_GET").toString() == "Artificial_GET")
+			 "Artificial_GET").toString().
+		 toLower() == "artificial_get")
 		emit sendMessage(data, spoton_send::ARTIFICIAL_GET);
 	      else
 		emit sendMessage(data, spoton_send::NORMAL_POST);
@@ -2428,7 +2429,7 @@ void spoton_kernel::slotScramble(void)
   if(ok)
     {
       if(setting("gui/chatSendMethod",
-		 "Artificial_GET").toString() == "Artificial_GET")
+		 "Artificial_GET").toString().toLower() == "artificial_get")
 	emit sendMessage(data, spoton_send::ARTIFICIAL_GET);
       else
 	emit sendMessage(data, spoton_send::NORMAL_POST);

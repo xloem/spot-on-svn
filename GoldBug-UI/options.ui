@@ -12,7 +12,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../Icons/icons.qrc">
-    <normaloff>:/Logo/spot-on-logo.png</normaloff>:/Logo/spot-on-logo.png</iconset>
+    <normaloff>:/Logo/goldbug.png</normaloff>:/Logo/goldbug.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -55,7 +55,7 @@
              <x>0</x>
              <y>0</y>
              <width>607</width>
-             <height>665</height>
+             <height>692</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -256,7 +256,7 @@
                   </sizepolicy>
                  </property>
                  <property name="text">
-                  <string>&amp;Join common channel automatically after the kernel is activated.</string>
+                  <string>Join &amp;common channel automatically after the kernel is activated.</string>
                  </property>
                  <property name="checked">
                   <bool>true</bool>
@@ -562,6 +562,25 @@
                <property name="margin">
                 <number>5</number>
                </property>
+               <item>
+                <widget class="QCheckBox" name="forceRegistration">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="toolTip">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please enable this option if you would like to force kernel registration. By forcing kernel registration, an existing kernel process that Spot-On is aware of will be deactivated. You may wish to use this option if a kernel was not deactivated properly.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="text">
+                  <string>&amp;Force kernel registration.</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_64">
                  <property name="spacing">
@@ -1364,6 +1383,7 @@
   <tabstop>listenersUpdateInterval</tabstop>
   <tabstop>keepOnlyUserDefinedNeighbors</tabstop>
   <tabstop>neighborsUpdateInterval</tabstop>
+  <tabstop>forceRegistration</tabstop>
   <tabstop>kernelUpdateInterval</tabstop>
   <tabstop>starbeamUpdateInterval</tabstop>
   <tabstop>scrollArea_2</tabstop>

@@ -4907,29 +4907,25 @@ void spoton_neighbor::slotPeerVerifyError(const QSslError &error)
       return;
     }
 
-  if(m_tcpSocket)
+  if(!m_allowExceptions)
     if(m_isUserDefined)
-      if(!m_peerCertificate.isNull() &&
-	 !m_tcpSocket->peerCertificate().isNull())
-	if(!m_allowExceptions)
-	  if(!spoton_crypt::memcmp(m_peerCertificate.toPem(),
-				   m_tcpSocket->peerCertificate().toPem()))
-	    /*
-	    ** Do we really need to verify that m_peerCertificate.toPem()
-	    ** is empty? What if m_tcpSocket->peerCertificate().toPem() is
-	    ** empty? We do verify that both m_peerCertificate and
-	    ** m_tcpSocket->peerCertificate() are not void.
-	    */
-	    {
-	      spoton_misc::logError
-		(QString("spoton_neighbor::slotPeerVerifyError(): "
-			 "the stored certificate does not match "
-			 "the peer's certificate for %1:%2. This is a "
-			 "serious problem! Aborting.").
-		 arg(m_address.toString()).
-		 arg(m_port));
-	      deleteLater();
-	    }
+      if(m_tcpSocket)
+	if(!m_peerCertificate.isNull() &&
+	   !m_tcpSocket->peerCertificate().isNull())
+	  if(!m_peerCertificate.toPem().isEmpty() &&
+	     !m_tcpSocket->peerCertificate().toPem().isEmpty())
+	    if(!spoton_crypt::memcmp(m_peerCertificate.toPem(),
+				     m_tcpSocket->peerCertificate().toPem()))
+	      {
+		spoton_misc::logError
+		  (QString("spoton_neighbor::slotPeerVerifyError(): "
+			   "the stored certificate does not match "
+			   "the peer's certificate for %1:%2. This is a "
+			   "serious problem! Aborting.").
+		   arg(m_address.toString()).
+		   arg(m_port));
+		deleteLater();
+	      }
 }
 
 void spoton_neighbor::slotModeChanged(QSslSocket::SslMode mode)
@@ -5374,7 +5370,7 @@ void spoton_neighbor::slotCallParticipant(const QByteArray &data,
 					    value("chat")));
 
   if(spoton_kernel::setting("gui/chatSendMethod", "Artificial_GET").
-     toString() == "Artificial_GET")
+     toString().toLower() == "artificial_get")
     {
       if(messageType == "0000a" || messageType == "0000c")
 	message = spoton_send::message0000a(data,
