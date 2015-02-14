@@ -54,8 +54,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>607</width>
-             <height>665</height>
+             <width>606</width>
+             <height>624</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -712,8 +712,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>601</width>
-             <height>895</height>
+             <width>584</width>
+             <height>910</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -1137,6 +1137,28 @@
              </widget>
             </item>
             <item>
+             <widget class="QGroupBox" name="groupBox_16">
+              <property name="title">
+               <string>Search</string>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_18">
+               <property name="spacing">
+                <number>5</number>
+               </property>
+               <property name="margin">
+                <number>5</number>
+               </property>
+               <item>
+                <widget class="QCheckBox" name="openlinks">
+                 <property name="text">
+                  <string>&amp;Open links.</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
              <widget class="QGroupBox" name="groupBox_11">
               <property name="title">
                <string>Settings</string>
@@ -1337,7 +1359,7 @@
      <x>0</x>
      <y>0</y>
      <width>645</width>
-     <height>27</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -1403,6 +1425,7 @@
   <tabstop>acceptPublishedDisconnected</tabstop>
   <tabstop>ignorePublished</tabstop>
   <tabstop>publishedKeySize</tabstop>
+  <tabstop>openlinks</tabstop>
   <tabstop>forceRegistration</tabstop>
   <tabstop>scrambler</tabstop>
   <tabstop>sharePrivateKeys</tabstop>

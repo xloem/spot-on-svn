@@ -881,3 +881,12 @@ void spoton::slotSetIconSize(int index)
   m_ui.tab->setIconSize(size);
   settings.setValue("gui/tabIconSize", size);
 }
+
+void spoton::slotSaveOpenLinks(bool state)
+{
+  m_settings["gui/openLinks"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/openLinks", state);
+}

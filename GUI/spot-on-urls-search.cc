@@ -53,6 +53,7 @@ void spoton::discoverUrls(void)
       return;
     }
 
+  m_ui.searchfor->clear();
   m_ui.urls->clear();
   m_ui.url_pages->setText(": 1 :");
 
@@ -67,6 +68,8 @@ void spoton::discoverUrls(void)
 
   if(search.isEmpty())
     {
+      m_ui.searchfor->setText(tr("You searched for everything!"));
+
       for(int i = 0; i < 10 + 6; i++)
 	for(int j = 0; j < 10 + 6; j++)
 	  {
@@ -100,12 +103,18 @@ void spoton::discoverUrls(void)
   else
     {
       QString keywordclause("");
+      QString searchfor(tr("You searched for... "));
       QStringList keywords
 	(search.toLower().split(QRegExp("\\W+"), QString::SkipEmptyParts));
       bool ok = true;
 
       for(int i = 0; i < keywords.size(); i++)
 	{
+	  searchfor.append(keywords.at(i));
+
+	  if(i != keywords.size() - 1)
+	    searchfor.append("... ");
+
 	  QByteArray keywordHash
 	    (m_urlCommonCrypt->keyedHash(keywords.at(i).toUtf8(), &ok).
 	     toHex());
@@ -126,6 +135,9 @@ void spoton::discoverUrls(void)
 	       arg(keywordHash.mid(0, 2).constData()).
 	       arg(keywordHash.constData()));
 	}
+
+      searchfor.append(".");
+      m_ui.searchfor->setText(searchfor);
 
       for(int i = 0; i < 10 + 6; i++)
 	for(int j = 0; j < 10 + 6; j++)

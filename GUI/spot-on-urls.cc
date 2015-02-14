@@ -1336,7 +1336,12 @@ void spoton::slotDeleteLink(const QUrl &u)
   QUrl url(u);
 
   if(!scheme.startsWith("delete-"))
-    return;
+    {
+      if(m_settings.value("gui/openLinks", false).toBool())
+	QDesktopServices::openUrl(u);
+
+      return;
+    }
   else
     {
       scheme.remove("delete-");

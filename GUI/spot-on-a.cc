@@ -1159,6 +1159,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotDisplayPopups(bool)));
+  connect(m_optionsUi.openlinks,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotSaveOpenLinks(bool)));
   connect(m_ui.selectAttachment,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -1742,6 +1746,8 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/kernelLogEvents", false).toBool());
   m_optionsUi.limitConnections->setValue
     (m_settings.value("gui/limitConnections", 10).toInt());
+  m_optionsUi.openlinks->setChecked
+    (m_settings.value("gui/openLinks", false).toBool());
   m_ui.postofficeCheckBox->setChecked
     (m_settings.value("gui/postoffice_enabled", false).toBool());
   m_optionsUi.publishPeriodically->setChecked
