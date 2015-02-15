@@ -99,3 +99,8 @@ void spoton_external_address::slotError(QNetworkReply::NetworkError error)
   if(reply)
     reply->deleteLater();
 }
+
+void spoton_external_address::clear(void)
+{
+  m_address = QHostAddress();
+}

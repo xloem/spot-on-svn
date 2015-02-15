@@ -1282,7 +1282,12 @@ void spoton_neighbor::slotTimeout(void)
 	}
     }
   else
-    m_externalAddressDiscovererTimer.stop();
+    {
+      if(m_externalAddress)
+	m_externalAddress->clear();
+
+      m_externalAddressDiscovererTimer.stop();
+    }
 }
 
 void spoton_neighbor::saveStatistics(const QSqlDatabase &db)
@@ -2033,7 +2038,12 @@ void spoton_neighbor::slotConnected(void)
 	m_externalAddressDiscovererTimer.stop();
     }
   else
-    m_externalAddressDiscovererTimer.stop();
+    {
+      if(m_externalAddress)
+	m_externalAddress->clear();
+
+      m_externalAddressDiscovererTimer.stop();
+    }
 
   m_lastReadTime = QDateTime::currentDateTime();
 

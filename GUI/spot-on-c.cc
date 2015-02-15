@@ -833,7 +833,10 @@ void spoton::slotExternalIp(int index)
       else if(index == 1)
 	m_externalAddressDiscovererTimer.start(60000);
       else
-	m_externalAddressDiscovererTimer.stop();
+	{
+	  m_externalAddress.clear();
+	  m_externalAddressDiscovererTimer.stop();
+	}
     }
 }
 
