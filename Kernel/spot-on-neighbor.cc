@@ -1209,10 +1209,10 @@ void spoton_neighbor::slotTimeout(void)
       return;
     }
 
-  QWriteLocker locker(&m_kernelInterfacesMutex);
+  QWriteLocker locker1(&m_kernelInterfacesMutex);
 
   m_kernelInterfaces = spoton_kernel::interfaces();
-  locker.unlock();
+  locker1.unlock();
 
   if(m_isUserDefined)
     if(status == "connected")
@@ -1288,6 +1288,20 @@ void spoton_neighbor::slotTimeout(void)
 
       m_externalAddressDiscovererTimer.stop();
     }
+
+  /*
+  ** Remove learned adaptive echo tokens that are not contained
+  ** in the complete set of adaptive echo tokens.
+  */
+
+  QSet<QPair<QByteArray, QByteArray> > a;
+  QSet<QPair<QByteArray, QByteArray> > b
+    (spoton_kernel::adaptiveEchoTokens().toSet());
+  QWriteLocker locker2(&m_learnedAdaptiveEchoPairsMutex);
+
+  a = m_learnedAdaptiveEchoPairs.toSet();
+  m_learnedAdaptiveEchoPairs =
+    QList<QPair<QByteArray, QByteArray> >::fromSet(a.intersect(b));
 }
 
 void spoton_neighbor::saveStatistics(const QSqlDatabase &db)

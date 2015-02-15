@@ -5048,3 +5048,10 @@ void spoton_kernel::postPoptasticMessage(const QByteArray &attachment,
 			   << attachmentName
 			   << mailOid);
 }
+
+QList<QPair<QByteArray, QByteArray> > spoton_kernel::adaptiveEchoTokens(void)
+{
+  QReadLocker locker(&s_adaptiveEchoPairsMutex);
+
+  return s_adaptiveEchoPairs;
+}
