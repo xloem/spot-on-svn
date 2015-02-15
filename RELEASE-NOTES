@@ -13,8 +13,11 @@
      spoton_misc::saveParticipantStatus().
 8.   Some database fields require lowercase data.
 9.   New dialog for housing many options.
-10.  Clear the external address containers if disabled.
-11.  Allow opening of URLs.
+10.  Clear the external address containers if the mechanisms are disabled.
+11.  Allow opening of URLs in the appropriate Web browser as defined
+     by the user's environment.
+12.  Remove learned adaptive echo tokens that are not contained in the
+     complete set of adaptive echo tokens.
 
 0.18 (01/23/2015)
 
