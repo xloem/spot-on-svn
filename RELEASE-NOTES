@@ -13,6 +13,7 @@
      spoton_misc::saveParticipantStatus().
 8.   Some database fields require lowercase data.
 9.   New dialog for housing many options.
+10.  Clear the external address containers if disabled.
 
 0.18 (01/23/2015)
 
