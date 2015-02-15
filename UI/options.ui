@@ -53,7 +53,7 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
+             <y>-88</y>
              <width>606</width>
              <height>624</height>
             </rect>
@@ -256,7 +256,7 @@
                   </sizepolicy>
                  </property>
                  <property name="text">
-                  <string>Join &amp;common channel automatically after the kernel is activated.</string>
+                  <string>Join the first &amp;common channel after the kernel is activated.</string>
                  </property>
                  <property name="checked">
                   <bool>true</bool>
@@ -281,7 +281,7 @@
                <item>
                 <widget class="QCheckBox" name="displayPopups">
                  <property name="text">
-                  <string>&amp;Display popups automatically.</string>
+                  <string>&amp;Display participant popups automatically.</string>
                  </property>
                  <property name="checked">
                   <bool>true</bool>
@@ -310,7 +310,7 @@
                  <item>
                   <widget class="QLabel" name="label_121">
                    <property name="text">
-                    <string>&amp;Repaint every</string>
+                    <string>&amp;Populate table every</string>
                    </property>
                    <property name="buddy">
                     <cstring>chatUpdateInterval</cstring>
@@ -432,7 +432,7 @@
                  <item>
                   <widget class="QLabel" name="label_123">
                    <property name="text">
-                    <string>&amp;Repaint every</string>
+                    <string>&amp;Populate table every</string>
                    </property>
                    <property name="buddy">
                     <cstring>listenersUpdateInterval</cstring>
@@ -509,7 +509,7 @@
                  <item>
                   <widget class="QLabel" name="label_125">
                    <property name="text">
-                    <string>&amp;Repaint every</string>
+                    <string>&amp;Populate table every</string>
                    </property>
                    <property name="buddy">
                     <cstring>neighborsUpdateInterval</cstring>
@@ -570,7 +570,7 @@
                  <item>
                   <widget class="QLabel" name="label_127">
                    <property name="text">
-                    <string>&amp;Repaint statistics every</string>
+                    <string>&amp;Populate statistics every</string>
                    </property>
                    <property name="buddy">
                     <cstring>kernelUpdateInterval</cstring>
@@ -631,7 +631,7 @@
                  <item>
                   <widget class="QLabel" name="label_129">
                    <property name="text">
-                    <string>&amp;Repaint every</string>
+                    <string>&amp;Populate tables every</string>
                    </property>
                    <property name="buddy">
                     <cstring>starbeamUpdateInterval</cstring>
@@ -1003,7 +1003,7 @@
                   <string>External IP information is required.</string>
                  </property>
                  <property name="text">
-                  <string>Periodically p&amp;ublish plaintext information.</string>
+                  <string>Periodically p&amp;ublish plaintext connection information.</string>
                  </property>
                 </widget>
                </item>
@@ -1151,7 +1151,7 @@
                <item>
                 <widget class="QCheckBox" name="openlinks">
                  <property name="text">
-                  <string>&amp;Open links.</string>
+                  <string>&amp;Open clicked links in the appropriate Web browser as defined by the user's environment.</string>
                  </property>
                 </widget>
                </item>
@@ -1201,7 +1201,7 @@
                   <string>Please note that this option will advertise your presence.</string>
                  </property>
                  <property name="text">
-                  <string>&amp;Scrambler</string>
+                  <string>&amp;Periodically broadcast scrambled messages.</string>
                  </property>
                 </widget>
                </item>
@@ -1211,7 +1211,7 @@
                   <string>Automatically share the private authentication and encryption keys with a kernel process. If this option is disabled, the user interface will provide reminders.</string>
                  </property>
                  <property name="text">
-                  <string>&amp;Share private authentication and encryption keys with kernel process.</string>
+                  <string>&amp;Share private authentication and encryption keys with the kernel process.</string>
                  </property>
                  <property name="checked">
                   <bool>true</bool>
