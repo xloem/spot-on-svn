@@ -712,7 +712,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>584</width>
+             <width>567</width>
              <height>910</height>
             </rect>
            </property>
@@ -770,7 +770,7 @@
                <item>
                 <widget class="QCheckBox" name="chatAcceptSigned">
                  <property name="text">
-                  <string>&amp;Accept only signed messages.</string>
+                  <string>&amp;Accept only signed geminis, messages, and status bulletins.</string>
                  </property>
                  <property name="checked">
                   <bool>true</bool>
@@ -797,7 +797,7 @@
                <item>
                 <widget class="QCheckBox" name="chatSignMessages">
                  <property name="text">
-                  <string>&amp;Sign messages.</string>
+                  <string>&amp;Sign geminis, messages, and status bulletins.</string>
                  </property>
                  <property name="checked">
                   <bool>true</bool>
@@ -828,7 +828,7 @@
                   </sizepolicy>
                  </property>
                  <property name="text">
-                  <string>&amp;Accept only signed messages.</string>
+                  <string>&amp;Accept only signed letters.</string>
                  </property>
                  <property name="checked">
                   <bool>true</bool>
@@ -897,7 +897,7 @@
                <item>
                 <widget class="QCheckBox" name="coAcceptSigned">
                  <property name="text">
-                  <string>&amp;Reject messages without signatures. The setting does not apply to data destined for institutions.</string>
+                  <string>&amp;Reject letters without signatures. The setting does not apply to data destined for institutions.</string>
                  </property>
                  <property name="checked">
                   <bool>true</bool>
@@ -916,7 +916,7 @@
                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The kernel is responsible for signing messages. Because messages are queued, please avoid toggling this checkbox until queued messages have been processed by the kernel.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                  <property name="text">
-                  <string>Sign &amp;messages.</string>
+                  <string>Sign &amp;letters.</string>
                  </property>
                  <property name="checked">
                   <bool>true</bool>
@@ -1211,7 +1211,7 @@
                   <string>Automatically share the private authentication and encryption keys with a kernel process. If this option is disabled, the user interface will provide reminders.</string>
                  </property>
                  <property name="text">
-                  <string>&amp;Share private keys with kernel process.</string>
+                  <string>&amp;Share private authentication and encryption keys with kernel process.</string>
                  </property>
                  <property name="checked">
                   <bool>true</bool>
@@ -1295,7 +1295,7 @@
                   </sizepolicy>
                  </property>
                  <property name="text">
-                  <string>Automatically accept shared &amp;magnets.</string>
+                  <string>Accept shared &amp;magnets.</string>
                  </property>
                 </widget>
                </item>
