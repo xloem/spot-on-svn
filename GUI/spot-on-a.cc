@@ -659,7 +659,7 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(currentIndexChanged(int)),
 	  this,
 	  SLOT(slotRefreshMail(void)));
-  connect(m_ui.chatSendMethod,
+  connect(m_optionsUi.chatSendMethod,
 	  SIGNAL(currentIndexChanged(int)),
 	  this,
 	  SLOT(slotChatSendMethodChanged(int)));
@@ -1585,9 +1585,9 @@ spoton::spoton(void):QMainWindow()
 
   if(m_settings.value("gui/chatSendMethod", "Artificial_GET").
      toString().toLower() == "artificial_get")
-    m_ui.chatSendMethod->setCurrentIndex(1);
+    m_optionsUi.chatSendMethod->setCurrentIndex(1);
   else
-    m_ui.chatSendMethod->setCurrentIndex(0);
+    m_optionsUi.chatSendMethod->setCurrentIndex(0);
 
   QString keySize
     (m_settings.value("gui/kernelKeySize", "2048").toString());

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>645</width>
+    <width>500</width>
     <height>610</height>
    </rect>
   </property>
@@ -54,8 +54,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>606</width>
-             <height>624</height>
+             <width>461</width>
+             <height>656</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -301,6 +301,59 @@
                   <string>&amp;Hide offline participants.</string>
                  </property>
                 </widget>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_5">
+                 <property name="spacing">
+                  <number>5</number>
+                 </property>
+                 <item>
+                  <widget class="QLabel" name="label_9">
+                   <property name="text">
+                    <string>&amp;Preferred Method</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>chatSendMethod</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="chatSendMethod">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="sizeAdjustPolicy">
+                    <enum>QComboBox::AdjustToContents</enum>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>Normal POST</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Artificial GET</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_5">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
                </item>
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_98">
@@ -1358,7 +1411,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>645</width>
+     <width>500</width>
      <height>23</height>
     </rect>
    </property>
@@ -1399,6 +1452,7 @@
   <tabstop>displayPopups</tabstop>
   <tabstop>enableChatEmoticons</tabstop>
   <tabstop>hideOfflineParticipants</tabstop>
+  <tabstop>chatSendMethod</tabstop>
   <tabstop>chatUpdateInterval</tabstop>
   <tabstop>autoEmailRetrieve</tabstop>
   <tabstop>emailRetrievalInterval</tabstop>

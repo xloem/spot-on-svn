@@ -669,78 +669,6 @@
                     <number>5</number>
                    </property>
                    <item>
-                    <layout class="QVBoxLayout" name="verticalLayout_12">
-                     <property name="spacing">
-                      <number>5</number>
-                     </property>
-                     <item>
-                      <spacer name="verticalSpacer_6">
-                       <property name="orientation">
-                        <enum>Qt::Vertical</enum>
-                       </property>
-                       <property name="sizeType">
-                        <enum>QSizePolicy::Preferred</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>20</width>
-                         <height>40</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_9">
-                       <property name="text">
-                        <string>&amp;Preferred Method</string>
-                       </property>
-                       <property name="buddy">
-                        <cstring>chatSendMethod</cstring>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="chatSendMethod">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="sizeAdjustPolicy">
-                        <enum>QComboBox::AdjustToContents</enum>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Normal POST</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Artificial GET</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <spacer name="verticalSpacer_9">
-                       <property name="orientation">
-                        <enum>Qt::Vertical</enum>
-                       </property>
-                       <property name="sizeType">
-                        <enum>QSizePolicy::Preferred</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>20</width>
-                         <height>40</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
                     <widget class="spoton_textedit" name="message">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -813,7 +741,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>761</width>
+             <width>759</width>
              <height>543</height>
             </rect>
            </property>
@@ -1856,8 +1784,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>776</width>
-             <height>503</height>
+             <width>707</width>
+             <height>365</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -3911,8 +3839,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>776</width>
-             <height>503</height>
+             <width>630</width>
+             <height>353</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -3965,8 +3893,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>751</width>
-                 <height>558</height>
+                 <width>605</width>
+                 <height>588</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_65">
@@ -4786,7 +4714,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>761</width>
+             <width>663</width>
              <height>1015</height>
             </rect>
            </property>
@@ -5923,7 +5851,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>761</width>
+             <width>481</width>
              <height>514</height>
             </rect>
            </property>
@@ -6880,8 +6808,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>776</width>
-             <height>503</height>
+             <width>594</width>
+             <height>448</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -7407,8 +7335,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>776</width>
-             <height>503</height>
+             <width>307</width>
+             <height>408</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -7816,7 +7744,6 @@
   <tabstop>status</tabstop>
   <tabstop>chatActionMenu</tabstop>
   <tabstop>participants</tabstop>
-  <tabstop>chatSendMethod</tabstop>
   <tabstop>message</tabstop>
   <tabstop>sendMessage</tabstop>
   <tabstop>scrollArea_6</tabstop>
