@@ -68,8 +68,6 @@ void spoton::discoverUrls(void)
 
   if(search.isEmpty())
     {
-      m_ui.searchfor->setText(tr("You searched for everything!"));
-
       for(int i = 0; i < 10 + 6; i++)
 	for(int j = 0; j < 10 + 6; j++)
 	  {
@@ -103,7 +101,7 @@ void spoton::discoverUrls(void)
   else
     {
       QString keywordclause("");
-      QString searchfor(tr("You searched for... "));
+      QString searchfor(tr("Searched for... "));
       QStringList keywords
 	(search.toLower().split(QRegExp("\\W+"), QString::SkipEmptyParts));
       bool ok = true;
