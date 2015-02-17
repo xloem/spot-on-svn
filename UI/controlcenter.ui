@@ -573,9 +573,22 @@
                         <number>5</number>
                        </property>
                        <item>
-                        <widget class="QPushButton" name="chatActionMenu">
+                        <widget class="QToolButton" name="chatActionMenu">
+                         <property name="toolTip">
+                          <string>Context Menu</string>
+                         </property>
                          <property name="text">
                           <string>Context Menu Reflection</string>
+                         </property>
+                         <property name="icon">
+                          <iconset resource="../Icons/icons.qrc">
+                           <normaloff>:/generic/menu.png</normaloff>:/generic/menu.png</iconset>
+                         </property>
+                         <property name="popupMode">
+                          <enum>QToolButton::MenuButtonPopup</enum>
+                         </property>
+                         <property name="autoRaise">
+                          <bool>true</bool>
                          </property>
                         </widget>
                        </item>
@@ -1292,9 +1305,22 @@
                        </widget>
                       </item>
                       <item>
-                       <widget class="QPushButton" name="emailWriteActionMenu">
+                       <widget class="QToolButton" name="emailWriteActionMenu">
+                        <property name="toolTip">
+                         <string>Context Menu</string>
+                        </property>
                         <property name="text">
                          <string>Context Menu Reflection</string>
+                        </property>
+                        <property name="icon">
+                         <iconset resource="../Icons/icons.qrc">
+                          <normaloff>:/generic/menu.png</normaloff>:/generic/menu.png</iconset>
+                        </property>
+                        <property name="popupMode">
+                         <enum>QToolButton::MenuButtonPopup</enum>
+                        </property>
+                        <property name="autoRaise">
+                         <bool>true</bool>
                         </property>
                        </widget>
                       </item>
@@ -1838,9 +1864,22 @@
                    <number>5</number>
                   </property>
                   <item>
-                   <widget class="QPushButton" name="listenersActionMenu">
+                   <widget class="QToolButton" name="listenersActionMenu">
+                    <property name="toolTip">
+                     <string>Context Menu</string>
+                    </property>
                     <property name="text">
                      <string>Context Menu Reflection</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../Icons/icons.qrc">
+                      <normaloff>:/generic/menu.png</normaloff>:/generic/menu.png</iconset>
+                    </property>
+                    <property name="popupMode">
+                     <enum>QToolButton::MenuButtonPopup</enum>
+                    </property>
+                    <property name="autoRaise">
+                     <bool>true</bool>
                     </property>
                    </widget>
                   </item>
@@ -2862,7 +2901,7 @@
              <x>0</x>
              <y>0</y>
              <width>851</width>
-             <height>544</height>
+             <height>549</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -2888,9 +2927,22 @@
                    <number>5</number>
                   </property>
                   <item>
-                   <widget class="QPushButton" name="neighborsActionMenu">
+                   <widget class="QToolButton" name="neighborsActionMenu">
+                    <property name="toolTip">
+                     <string>Context Menu</string>
+                    </property>
                     <property name="text">
                      <string>Context Menu Reflection</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../Icons/icons.qrc">
+                      <normaloff>:/generic/menu.png</normaloff>:/generic/menu.png</iconset>
+                    </property>
+                    <property name="popupMode">
+                     <enum>QToolButton::MenuButtonPopup</enum>
+                    </property>
+                    <property name="autoRaise">
+                     <bool>true</bool>
                     </property>
                    </widget>
                   </item>
@@ -5879,7 +5931,7 @@
              <x>0</x>
              <y>0</y>
              <width>758</width>
-             <height>521</height>
+             <height>526</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -5911,9 +5963,22 @@
                    <number>5</number>
                   </property>
                   <item>
-                   <widget class="QPushButton" name="magnetsActionMenu">
+                   <widget class="QToolButton" name="magnetsActionMenu">
+                    <property name="toolTip">
+                     <string>Context Menu</string>
+                    </property>
                     <property name="text">
                      <string>Context Menu Reflection</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../Icons/icons.qrc">
+                      <normaloff>:/generic/menu.png</normaloff>:/generic/menu.png</iconset>
+                    </property>
+                    <property name="popupMode">
+                     <enum>QToolButton::MenuButtonPopup</enum>
+                    </property>
+                    <property name="autoRaise">
+                     <bool>true</bool>
                     </property>
                    </widget>
                   </item>
@@ -6359,9 +6424,22 @@
                        </widget>
                       </item>
                       <item>
-                       <widget class="QPushButton" name="receivedActionMenu">
+                       <widget class="QToolButton" name="receivedActionMenu">
+                        <property name="toolTip">
+                         <string>Context Menu</string>
+                        </property>
                         <property name="text">
                          <string>Context Menu Reflection</string>
+                        </property>
+                        <property name="icon">
+                         <iconset resource="../Icons/icons.qrc">
+                          <normaloff>:/generic/menu.png</normaloff>:/generic/menu.png</iconset>
+                        </property>
+                        <property name="popupMode">
+                         <enum>QToolButton::MenuButtonPopup</enum>
+                        </property>
+                        <property name="autoRaise">
+                         <bool>true</bool>
                         </property>
                        </widget>
                       </item>
@@ -6476,9 +6554,22 @@
                    <number>5</number>
                   </property>
                   <item>
-                   <widget class="QPushButton" name="transmittedActionMenu">
+                   <widget class="QToolButton" name="transmittedActionMenu">
+                    <property name="toolTip">
+                     <string>Context Menu</string>
+                    </property>
                     <property name="text">
                      <string>Context Menu Reflection</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../Icons/icons.qrc">
+                      <normaloff>:/generic/menu.png</normaloff>:/generic/menu.png</iconset>
+                    </property>
+                    <property name="popupMode">
+                     <enum>QToolButton::MenuButtonPopup</enum>
+                    </property>
+                    <property name="autoRaise">
+                     <bool>true</bool>
                     </property>
                    </widget>
                   </item>
@@ -6955,9 +7046,22 @@
                    <number>5</number>
                   </property>
                   <item>
-                   <widget class="QPushButton" name="urlActionMenu">
+                   <widget class="QToolButton" name="urlActionMenu">
+                    <property name="toolTip">
+                     <string>Context Menu</string>
+                    </property>
                     <property name="text">
                      <string>Context Menu Reflection</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../Icons/icons.qrc">
+                      <normaloff>:/generic/menu.png</normaloff>:/generic/menu.png</iconset>
+                    </property>
+                    <property name="popupMode">
+                     <enum>QToolButton::MenuButtonPopup</enum>
+                    </property>
+                    <property name="autoRaise">
+                     <bool>true</bool>
                     </property>
                    </widget>
                   </item>
