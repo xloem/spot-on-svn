@@ -735,18 +735,18 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotKeepOnlyUserDefinedNeighbors(bool)));
-  connect(m_ui.clearEmail,
-	  SIGNAL(activated(int)),
+  connect(m_ui.clearOutgoing,
+	  SIGNAL(clicked(void)),
 	  this,
-	  SLOT(slotClearOutgoingMessage(int)));
+	  SLOT(slotClearOutgoingMessage(void)));
   connect(m_ui.deleteInstitution,
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotDeleteInstitution(void)));
-  connect(m_ui.clearEmail,
-	  SIGNAL(activated(int)),
+  connect(m_ui.deleteEmail,
+	  SIGNAL(clicked(void)),
 	  this,
-	  SLOT(slotDeleteMail(int)));
+	  SLOT(slotDeleteMail(void)));
   connect(m_ui.refreshMail,
 	  SIGNAL(clicked(void)),
 	  this,

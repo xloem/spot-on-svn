@@ -2285,22 +2285,16 @@ void spoton::slotDisplayLocalSearchResults(void)
 {
 }
 
-void spoton::slotClearOutgoingMessage(int index)
+void spoton::slotClearOutgoingMessage(void)
 {
-  if(index == 1)
-    {
-      m_ui.attachment->clear();
-      m_ui.clearEmail->blockSignals(true);
-      m_ui.clearEmail->setCurrentIndex(0);
-      m_ui.clearEmail->blockSignals(false);
-      m_ui.emailParticipants->selectionModel()->clear();
-      m_ui.goldbug->clear();
-      m_ui.outgoingMessage->clear();
-      m_ui.outgoingMessage->setCurrentCharFormat(QTextCharFormat());
-      m_ui.outgoingSubject->clear();
-      m_ui.plain->setChecked(false);
-      m_ui.outgoingSubject->setFocus();
-    }
+  m_ui.attachment->clear();
+  m_ui.emailParticipants->selectionModel()->clear();
+  m_ui.goldbug->clear();
+  m_ui.outgoingMessage->clear();
+  m_ui.outgoingMessage->setCurrentCharFormat(QTextCharFormat());
+  m_ui.outgoingSubject->clear();
+  m_ui.plain->setChecked(false);
+  m_ui.outgoingSubject->setFocus();
 }
 
 void spoton::slotResetAll(void)
@@ -3690,15 +3684,8 @@ void spoton::slotMailSelected(QTableWidgetItem *item)
   m_ui.mailMessage->verticalScrollBar()->setValue(0);
 }
 
-void spoton::slotDeleteMail(int index)
+void spoton::slotDeleteMail(void)
 {
-  if(index != 0)
-    return;
-
-  m_ui.clearEmail->blockSignals(true);
-  m_ui.clearEmail->setCurrentIndex(0);
-  m_ui.clearEmail->blockSignals(false);
-
   QModelIndexList list
     (m_ui.mail->selectionModel()->
      selectedRows(m_ui.mail->columnCount() - 1)); // OID
@@ -3984,11 +3971,7 @@ void spoton::slotKernelStatus(void)
 
 void spoton::slotMailTabChanged(int index)
 {
-  /*
-  ** Change states of some widgets.
-  */
-
-  m_ui.clearEmail->setEnabled(index != 1);
+  Q_UNUSED(index);
 }
 
 void spoton::slotEnabledPostOffice(bool state)

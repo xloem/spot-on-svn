@@ -73,7 +73,7 @@
              <x>0</x>
              <y>0</y>
              <width>776</width>
-             <height>502</height>
+             <height>498</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_54">
@@ -420,7 +420,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>766</width>
-                <height>492</height>
+                <height>488</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -781,8 +781,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>779</width>
-             <height>554</height>
+             <width>762</width>
+             <height>560</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -809,23 +809,6 @@
                  </size>
                 </property>
                </spacer>
-              </item>
-              <item>
-               <widget class="QComboBox" name="clearEmail">
-                <property name="sizeAdjustPolicy">
-                 <enum>QComboBox::AdjustToContents</enum>
-                </property>
-                <item>
-                 <property name="text">
-                  <string>Clear E-Mail Messages</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Clear Outgoing Message</string>
-                 </property>
-                </item>
-               </widget>
               </item>
               <item>
                <widget class="QPushButton" name="emptyTrash">
@@ -938,6 +921,13 @@
                           <string>Trash</string>
                          </property>
                         </item>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QPushButton" name="deleteEmail">
+                        <property name="text">
+                         <string>Delete Selection</string>
+                        </property>
                        </widget>
                       </item>
                       <item>
@@ -1296,6 +1286,13 @@
                       </property>
                       <item>
                        <widget class="QLineEdit" name="emailName"/>
+                      </item>
+                      <item>
+                       <widget class="QPushButton" name="clearOutgoing">
+                        <property name="text">
+                         <string>Clear All</string>
+                        </property>
+                       </widget>
                       </item>
                       <item>
                        <widget class="QPushButton" name="saveEmailName">
@@ -1838,7 +1835,7 @@
              <x>0</x>
              <y>0</y>
              <width>776</width>
-             <height>502</height>
+             <height>498</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2439,8 +2436,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>265</width>
-                     <height>1406</height>
+                     <width>240</width>
+                     <height>1433</height>
                     </rect>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -2900,8 +2897,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>851</width>
-             <height>549</height>
+             <width>806</width>
+             <height>579</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -3919,7 +3916,7 @@
              <x>0</x>
              <y>0</y>
              <width>776</width>
-             <height>502</height>
+             <height>498</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -3972,8 +3969,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>748</width>
-                 <height>587</height>
+                 <width>752</width>
+                 <height>596</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_65">
@@ -4793,8 +4790,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>759</width>
-             <height>1026</height>
+             <width>762</width>
+             <height>1081</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -5930,8 +5927,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>758</width>
-             <height>526</height>
+             <width>762</width>
+             <height>544</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -6927,7 +6924,7 @@
              <x>0</x>
              <y>0</y>
              <width>776</width>
-             <height>502</height>
+             <height>498</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -7467,7 +7464,7 @@
              <x>0</x>
              <y>0</y>
              <width>776</width>
-             <height>502</height>
+             <height>498</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -7688,7 +7685,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>24</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -7879,18 +7876,19 @@
   <tabstop>message</tabstop>
   <tabstop>sendMessage</tabstop>
   <tabstop>scrollArea_6</tabstop>
-  <tabstop>clearEmail</tabstop>
   <tabstop>emptyTrash</tabstop>
   <tabstop>refreshMail</tabstop>
   <tabstop>retrieveMail</tabstop>
   <tabstop>mailTab</tabstop>
   <tabstop>folder</tabstop>
+  <tabstop>deleteEmail</tabstop>
   <tabstop>reply</tabstop>
   <tabstop>resend</tabstop>
   <tabstop>saveAttachment</tabstop>
   <tabstop>mail</tabstop>
   <tabstop>mailMessage</tabstop>
   <tabstop>emailName</tabstop>
+  <tabstop>clearOutgoing</tabstop>
   <tabstop>saveEmailName</tabstop>
   <tabstop>emailWriteActionMenu</tabstop>
   <tabstop>emailParticipants</tabstop>

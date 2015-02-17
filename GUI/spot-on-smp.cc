@@ -208,7 +208,7 @@ QList<QByteArray> spoton_smp::step2(const QList<QByteArray> &other,
   qb1 = gcry_mpi_new(BITS);
   qb2 = gcry_mpi_new(BITS);
 
-  if(!g2 || !g2a || !g2b || !g3 || !g3a || !g3b || !pb || !qb || !qb1 || qb2)
+  if(!g2 || !g2a || !g2b || !g3 || !g3a || !g3b || !pb || !qb || !qb1 || !qb2)
     {
       if(ok)
 	*ok = false;
