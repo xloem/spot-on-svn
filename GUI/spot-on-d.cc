@@ -2533,6 +2533,12 @@ void spoton::slotPostgreSQLDisconnect(bool state)
 	(spoton_misc::homePath() + QDir::separator() + "urls.db");
       m_urlDatabase.open();
     }
+
+  m_settings["gui/sqliteSearch"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/sqliteSearch", state);
 }
 
 void spoton::generateHalfGeminis(void)

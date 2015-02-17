@@ -255,12 +255,12 @@ spoton::spoton(void):QMainWindow()
     {
       m_ui.postgresqlConnect->setToolTip(tr("Unable to locate the QPSQL "
 					    "database driver."));
+      m_ui.sqlite->setChecked(true);
       m_ui.sqlite->setEnabled(false);
     }
   else
     m_ui.postgresqlConnect->setEnabled(false);
 
-  slotPostgreSQLDisconnect(true); // Open the SQLite database.
 #ifndef SPOTON_LINKED_WITH_LIBGEOIP
   m_ui.geoipPath4->setEnabled(false);
   m_ui.geoipPath4->setToolTip
@@ -1466,6 +1466,17 @@ spoton::spoton(void):QMainWindow()
       (settings.allKeys().at(i));
 
   spoton_misc::correctSettingsContainer(m_settings);
+
+  if(m_ui.sqlite->isEnabled())
+    {
+      if(m_settings.value("gui/sqliteSearch", true).toBool())
+	m_ui.sqlite->setChecked(true);
+      else
+	m_ui.sqlite->setChecked(false);
+    }
+
+  if(m_ui.sqlite->isChecked())
+    slotPostgreSQLDisconnect(true); // Open the SQLite database.
 
   m_optionsUi.chatUpdateInterval->setValue
     (m_settings.value("gui/participantsUpdateTimer", 3.50).toDouble());
