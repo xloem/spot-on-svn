@@ -923,7 +923,7 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotPublishPeriodicallyToggled(bool)));
-  connect(m_optionsUi.hideOfflineParticipants,
+  connect(m_ui.hideOfflineParticipants,
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotHideOfflineParticipants(bool)));
@@ -1749,7 +1749,7 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/enableChatEmoticons", false).toBool());
   m_optionsUi.forceRegistration->setChecked
     (m_settings.value("gui/forceKernelRegistration", true).toBool());
-  m_optionsUi.hideOfflineParticipants->setChecked
+  m_ui.hideOfflineParticipants->setChecked
     (m_settings.value("gui/hideOfflineParticipants", false).toBool());
   m_optionsUi.keepOnlyUserDefinedNeighbors->setChecked
     (m_settings.value("gui/keepOnlyUserDefinedNeighbors", true).toBool());
@@ -6755,8 +6755,7 @@ void spoton::slotPopulateParticipants(void)
 			  ** if this is a Poptastic key-less participant.
 			  */
 
-			  if(!((m_optionsUi.
-				hideOfflineParticipants->isChecked() &&
+			  if(!((m_ui.hideOfflineParticipants->isChecked() &&
 				status == "offline") ||
 			       publicKey.contains("-poptastic")))
 			    {
@@ -6903,7 +6902,7 @@ void spoton::slotPopulateParticipants(void)
 		      ** and are not subjected to this restriction.
 		      */
 
-		      if((m_optionsUi.hideOfflineParticipants->isChecked() &&
+		      if((m_ui.hideOfflineParticipants->isChecked() &&
 			  status == "offline") ||
 			 publicKey.contains("-poptastic"))
 			/*

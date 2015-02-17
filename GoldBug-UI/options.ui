@@ -54,8 +54,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>461</width>
-             <height>656</height>
+             <width>458</width>
+             <height>640</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -292,13 +292,6 @@
                 <widget class="QCheckBox" name="enableChatEmoticons">
                  <property name="text">
                   <string>Enable &amp;emoticons.</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QCheckBox" name="hideOfflineParticipants">
-                 <property name="text">
-                  <string>&amp;Hide offline participants.</string>
                  </property>
                 </widget>
                </item>
@@ -765,8 +758,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>567</width>
-             <height>910</height>
+             <width>659</width>
+             <height>914</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -1412,7 +1405,7 @@
      <x>0</x>
      <y>0</y>
      <width>500</width>
-     <height>23</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -1451,7 +1444,6 @@
   <tabstop>buzzAutoJoin</tabstop>
   <tabstop>displayPopups</tabstop>
   <tabstop>enableChatEmoticons</tabstop>
-  <tabstop>hideOfflineParticipants</tabstop>
   <tabstop>chatSendMethod</tabstop>
   <tabstop>chatUpdateInterval</tabstop>
   <tabstop>autoEmailRetrieve</tabstop>

@@ -27,6 +27,7 @@
 
 #include <QApplication>
 #include <QDir>
+#include <QSettings>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlRecord>
@@ -1756,4 +1757,20 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
   QSqlDatabase::removeDatabase(connectionName);
   sb.status->clear();
+
+  QByteArray bytes;
+  QSettings settings;
+  bool ok = true;
+
+  bytes = oldCrypt->decryptedAfterAuthenticated
+    (QByteArray::fromBase64(settings.value("gui/postgresql_password", "").
+			    toByteArray()), &ok);
+
+  if(ok)
+    settings.setValue
+      ("gui/postgresql_password",
+       newCrypt->encryptedThenHashed(bytes, &ok).toBase64());
+
+  if(!ok)
+    settings.remove("gui/postgresql_password");
 }

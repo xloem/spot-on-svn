@@ -3501,7 +3501,7 @@ void spoton_kernel::slotBuzzReceivedFromUI(const QByteArray &key,
 	emit sendBuzz(spoton_send::message0040a(data));
       else
 	{
-	  if(sendMethod == "Artificial_GET")
+	  if(sendMethod.toLower() == "artificial_get")
 	    emit sendBuzz
 	      (spoton_send::message0040b(data,
 					 spoton_send::ARTIFICIAL_GET));
