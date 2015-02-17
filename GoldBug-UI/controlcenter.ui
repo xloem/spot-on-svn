@@ -681,7 +681,7 @@ QPushButton:pressed {
                 </widget>
                </item>
                <item>
-                <widget class="QPushButton" name="chatActionMenu">
+                <widget class="QToolButton" name="chatActionMenu">
                  <property name="toolTip">
                   <string>Right-mouse context menu as a button for tablets.</string>
                  </property>
@@ -709,6 +709,16 @@ QPushButton:pressed {
                  </property>
                  <property name="text">
                   <string>Context Menu Reflection</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../Icons/icons.qrc">
+                   <normaloff>:/generic/menu.png</normaloff>:/generic/menu.png</iconset>
+                 </property>
+                 <property name="popupMode">
+                  <enum>QToolButton::MenuButtonPopup</enum>
+                 </property>
+                 <property name="autoRaise">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
@@ -1612,7 +1622,7 @@ QPushButton:pressed {
                       <number>0</number>
                      </property>
                      <item>
-                      <widget class="QPushButton" name="emailWriteActionMenu">
+                      <widget class="QToolButton" name="emailWriteActionMenu">
                        <property name="toolTip">
                         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Right-mouse context menu as a button for tablets.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                        </property>
@@ -1639,6 +1649,16 @@ QPushButton:pressed {
                        </property>
                        <property name="text">
                         <string>CM</string>
+                       </property>
+                       <property name="icon">
+                        <iconset resource="../Icons/icons.qrc">
+                         <normaloff>:/generic/menu.png</normaloff>:/generic/menu.png</iconset>
+                       </property>
+                       <property name="popupMode">
+                        <enum>QToolButton::MenuButtonPopup</enum>
+                       </property>
+                       <property name="autoRaise">
+                        <bool>true</bool>
                        </property>
                       </widget>
                      </item>
@@ -3125,7 +3145,7 @@ QPushButton:pressed {
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="magnetsActionMenu">
+             <widget class="QToolButton" name="magnetsActionMenu">
               <property name="toolTip">
                <string>Right-mouse context menu as a button for tablets.</string>
               </property>
@@ -3153,11 +3173,21 @@ QPushButton:pressed {
               <property name="text">
                <string>Context Menu Reflection</string>
               </property>
+              <property name="icon">
+               <iconset resource="../Icons/icons.qrc">
+                <normaloff>:/generic/menu.png</normaloff>:/generic/menu.png</iconset>
+              </property>
               <property name="iconSize">
                <size>
                 <width>24</width>
                 <height>24</height>
                </size>
+              </property>
+              <property name="popupMode">
+               <enum>QToolButton::MenuButtonPopup</enum>
+              </property>
+              <property name="autoRaise">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -3396,7 +3426,7 @@ QPushButton:pressed {
                 </widget>
                </item>
                <item>
-                <widget class="QPushButton" name="receivedActionMenu">
+                <widget class="QToolButton" name="receivedActionMenu">
                  <property name="toolTip">
                   <string>Right-mouse context menu as a button for tablets.</string>
                  </property>
@@ -3423,6 +3453,16 @@ QPushButton:pressed {
                  </property>
                  <property name="text">
                   <string>Context Menu Reflection</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../Icons/icons.qrc">
+                   <normaloff>:/generic/menu.png</normaloff>:/generic/menu.png</iconset>
+                 </property>
+                 <property name="popupMode">
+                  <enum>QToolButton::MenuButtonPopup</enum>
+                 </property>
+                 <property name="autoRaise">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
@@ -3931,7 +3971,10 @@ QPushButton:pressed {
                   <number>0</number>
                  </property>
                  <item>
-                  <widget class="QPushButton" name="transmittedActionMenu">
+                  <widget class="QToolButton" name="transmittedActionMenu">
+                   <property name="toolTip">
+                    <string>Right-mouse context menu as a button for tablets.</string>
+                   </property>
                    <property name="styleSheet">
                     <string notr="true">QPushButton {
  border: 2px solid gray;
@@ -3958,7 +4001,13 @@ QPushButton:pressed {
                    </property>
                    <property name="icon">
                     <iconset resource="../Icons/icons.qrc">
-                     <normaloff>:/nuvola/copy.png</normaloff>:/nuvola/copy.png</iconset>
+                     <normaloff>:/generic/menu.png</normaloff>:/generic/menu.png</iconset>
+                   </property>
+                   <property name="popupMode">
+                    <enum>QToolButton::MenuButtonPopup</enum>
+                   </property>
+                   <property name="autoRaise">
+                    <bool>true</bool>
                    </property>
                   </widget>
                  </item>
@@ -5259,7 +5308,7 @@ color: rgb(255, 255, 255);</string>
                 </widget>
                </item>
                <item>
-                <widget class="QPushButton" name="listenersActionMenu">
+                <widget class="QToolButton" name="listenersActionMenu">
                  <property name="toolTip">
                   <string>Right-mouse context menu as a button for tablets.</string>
                  </property>
@@ -5291,6 +5340,16 @@ QPushButton:pressed {
                  </property>
                  <property name="text">
                   <string>Context Menu Reflection</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../Icons/icons.qrc">
+                   <normaloff>:/generic/menu.png</normaloff>:/generic/menu.png</iconset>
+                 </property>
+                 <property name="popupMode">
+                  <enum>QToolButton::MenuButtonPopup</enum>
+                 </property>
+                 <property name="autoRaise">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
