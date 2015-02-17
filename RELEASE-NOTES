@@ -19,6 +19,10 @@
 12.  Remove learned adaptive echo tokens that are not contained in the
      complete set of adaptive echo tokens.
 13.  Secure the PostgreSQL password in the user's INI file.
+14.  Implemented an asynchronous, and experimental, version of the five-step
+     Socialist Millionaire Protocol. Please see
+     https://otr.cypherpunks.ca/Protocol-v3-4.0.0.html. Zero-knowledge
+     proofs are not included in the sent values.
 
 0.18 (01/23/2015)
 
