@@ -3073,13 +3073,17 @@ bool spoton_misc::saveGemini(const QPair<QByteArray, QByteArray> &gemini,
 	QSqlQuery query(db);
 
 	query.prepare("UPDATE friends_public_keys SET "
-		      "gemini = ?, gemini_hash_key = ? WHERE OID = ? AND "
+		      "gemini = ?, gemini_hash_key = ?, "
+		      "last_status_update = ?, status = 'online' "
+		      "WHERE OID = ? AND "
 		      "neighbor_oid = -1");
 
 	if(gemini.first.isEmpty() || gemini.second.isEmpty())
 	  {
 	    query.bindValue(0, QVariant(QVariant::String));
 	    query.bindValue(1, QVariant(QVariant::String));
+	    query.bindValue
+	      (2, QDateTime::currentDateTime().toString(Qt::ISODate));
 	  }
 	else
 	  {
@@ -3099,9 +3103,12 @@ bool spoton_misc::saveGemini(const QPair<QByteArray, QByteArray> &gemini,
 		query.bindValue(0, QVariant(QVariant::String));
 		query.bindValue(1, QVariant(QVariant::String));
 	      }
+
+	    query.bindValue
+	      (2, QDateTime::currentDateTime().toString(Qt::ISODate));
 	  }
 
-	query.bindValue(2, oid);
+	query.bindValue(3, oid);
 
 	if(ok)
 	  ok = query.exec();
@@ -3231,7 +3238,8 @@ void spoton_misc::saveParticipantStatus(const QByteArray &name,
 	    if(name.isEmpty())
 	      {
 		query.prepare("UPDATE friends_public_keys SET "
-			      "last_status_update = ? "
+			      "last_status_update = ?, "
+			      "status = 'online' "
 			      "WHERE neighbor_oid = -1 AND "
 			      "public_key_hash = ?");
 		query.bindValue
@@ -3244,7 +3252,8 @@ void spoton_misc::saveParticipantStatus(const QByteArray &name,
 		bool ok = true;
 
 		query.prepare("UPDATE friends_public_keys SET "
-			      "last_status_update = ? "
+			      "last_status_update = ?, "
+			      "status = 'online' "
 			      "WHERE neighbor_oid = -1 AND "
 			      "public_key_hash = ?");
 		query.bindValue

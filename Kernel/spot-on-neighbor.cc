@@ -4226,7 +4226,7 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &publicKeyHash)
 
 	query.exec("PRAGMA synchronous = OFF");
 	query.prepare("UPDATE friends_public_keys SET "
-		      "last_status_update = ? "
+		      "last_status_update = ?, status = 'online' "
 		      "WHERE neighbor_oid = -1 AND "
 		      "public_key_hash = ?");
 	query.bindValue
@@ -5574,7 +5574,7 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 
 	query.prepare("UPDATE friends_public_keys SET "
 		      "gemini = ?, gemini_hash_key = ?, "
-		      "last_status_update = ? "
+		      "last_status_update = ?, status = 'online' "
 		      "WHERE neighbor_oid = -1 AND "
 		      "public_key_hash = ?");
 

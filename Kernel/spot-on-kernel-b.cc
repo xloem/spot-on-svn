@@ -1299,7 +1299,7 @@ void spoton_kernel::saveGemini(const QByteArray &publicKeyHash,
 	geminis.second = geminiHashKey;
 	query.prepare("UPDATE friends_public_keys SET "
 		      "gemini = ?, gemini_hash_key = ?, "
-		      "last_status_update = ? "
+		      "last_status_update = ?, status = 'online' "
 		      "WHERE neighbor_oid = -1 AND "
 		      "public_key_hash = ?");
 
