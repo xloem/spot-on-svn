@@ -62,6 +62,8 @@ class spoton_smp
   gcry_mpi_t m_generator;
   gcry_mpi_t m_guess;
   gcry_mpi_t m_modulus;
+  gcry_mpi_t m_qa;
+  gcry_mpi_t m_qb;
   gcry_mpi_t generateRandomExponent(bool *ok);
 };
 
