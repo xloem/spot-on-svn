@@ -52,7 +52,11 @@ class spoton_smp
   QList<QByteArray> step1(bool *ok);
   QList<QByteArray> step2(const QList<QByteArray> &other, bool *ok);
   QList<QByteArray> step3(const QList<QByteArray> &other, bool *ok);
+  QList<QByteArray> step4(const QList<QByteArray> &other, bool *ok,
+			  bool *passed);
+  void reset(void);
   void setGuess(const QString &guess);
+  void test(void);
 
  private:
   gcry_mpi_t m_a2;
@@ -62,7 +66,8 @@ class spoton_smp
   gcry_mpi_t m_generator;
   gcry_mpi_t m_guess;
   gcry_mpi_t m_modulus;
-  gcry_mpi_t m_qa;
+  gcry_mpi_t m_pa;
+  gcry_mpi_t m_pb;
   gcry_mpi_t m_qb;
   gcry_mpi_t generateRandomExponent(bool *ok);
 };
