@@ -49,6 +49,7 @@ class spoton_smp
   spoton_smp(void);
   ~spoton_smp(void);
   static const unsigned int BITS = 1536;
+  static void test(void);
   QList<QByteArray> step1(bool *ok);
   QList<QByteArray> step2(const QList<QByteArray> &other, bool *ok);
   QList<QByteArray> step3(const QList<QByteArray> &other, bool *ok);
@@ -56,7 +57,7 @@ class spoton_smp
 			  bool *passed);
   void reset(void);
   void setGuess(const QString &guess);
-  void test(void);
+  void step5(const QList<QByteArray> &other, bool *ok, bool *passed);
 
  private:
   gcry_mpi_t m_a2;

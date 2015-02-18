@@ -38,7 +38,8 @@ spoton_smp::spoton_smp(void)
 {
   gcry_mpi_scan(&m_generator, GCRYMPI_FMT_HEX, "0x02", 0, 0);
   gcry_mpi_scan(&m_modulus, GCRYMPI_FMT_HEX,
-		"0xFFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD1"
+		"0x"
+		"FFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD1"
 		"29024E088A67CC74020BBEA63B139B22514A08798E3404DD"
 		"EF9519B3CD3A431B302B0A6DF25F14374FE1356D6D51C245"
 		"E485B576625E7EC6F44C42E9A637ED6B0BFF5CB6F406B7ED"
@@ -116,6 +117,15 @@ QList<QByteArray> spoton_smp::step1(bool *ok)
   g3a = gcry_mpi_new(BITS);
 
   if(!g2a || !g3a)
+    {
+      if(ok)
+	*ok = false;
+
+      list.clear();
+      goto done_label;
+    }
+
+  if(!m_generator || !m_modulus)
     {
       if(ok)
 	*ok = false;
@@ -290,6 +300,15 @@ QList<QByteArray> spoton_smp::step2(const QList<QByteArray> &other,
   ** Calculate g2b and g3b and store them in the list.
   */
 
+  if(!m_generator || !m_modulus)
+    {
+      if(ok)
+	*ok = false;
+
+      list.clear();
+      goto done_label;
+    }
+
   gcry_mpi_powm(g2b, m_generator, m_b2, m_modulus);
   gcry_mpi_powm(g3b, m_generator, m_b3, m_modulus);
 
@@ -348,6 +367,15 @@ QList<QByteArray> spoton_smp::step2(const QList<QByteArray> &other,
   /*
   ** Calculate pb and qb and store the results in the list.
   */
+
+  if(!m_guess)
+    {
+      if(ok)
+	*ok = false;
+
+      list.clear();
+      goto done_label;
+    }
 
   gcry_mpi_powm(m_pb, g3, r, m_modulus);
   gcry_mpi_powm(qb1, m_generator, r, m_modulus);
@@ -418,7 +446,7 @@ QList<QByteArray> spoton_smp::step3(const QList<QByteArray> &other,
   unsigned char *buffer = 0;
 
   /*
-  ** Extract g2b, g3b, and qb.
+  ** Extract g2b, g3b, pb, and qb.
   */
 
   if(other.size() != 4)
@@ -454,6 +482,18 @@ QList<QByteArray> spoton_smp::step3(const QList<QByteArray> &other,
       goto done_label;
     }
 
+  bytes = other.at(2).mid(0, static_cast<int> (BITS / 8));
+
+  if(gcry_mpi_scan(&m_pb, GCRYMPI_FMT_USG,
+		   bytes.constData(), bytes.length(), 0) != 0)
+    {
+      if(ok)
+	*ok = false;
+
+      list.clear();
+      goto done_label;
+    }
+
   bytes = other.at(3).mid(0, static_cast<int> (BITS / 8));
 
   if(gcry_mpi_scan(&qb, GCRYMPI_FMT_USG,
@@ -474,6 +514,15 @@ QList<QByteArray> spoton_smp::step3(const QList<QByteArray> &other,
   g3 = gcry_mpi_new(BITS);
 
   if(!g2 || !g3)
+    {
+      if(ok)
+	*ok = false;
+
+      list.clear();
+      goto done_label;
+    }
+
+  if(!m_a2 || !m_a3 || !m_modulus)
     {
       if(ok)
 	*ok = false;
@@ -516,6 +565,15 @@ QList<QByteArray> spoton_smp::step3(const QList<QByteArray> &other,
   qa2 = gcry_mpi_new(BITS);
 
   if(!m_pa || !qa || !qa1 || !qa2)
+    {
+      if(ok)
+	*ok = false;
+
+      list.clear();
+      goto done_label;
+    }
+
+  if(!m_generator || !m_guess)
     {
       if(ok)
 	*ok = false;
@@ -618,6 +676,7 @@ QList<QByteArray> spoton_smp::step3(const QList<QByteArray> &other,
   gcry_mpi_release(g2b);
   gcry_mpi_release(g3);
   gcry_mpi_release(g3b);
+  gcry_mpi_release(qa);
   gcry_mpi_release(qa1);
   gcry_mpi_release(qa2);
   gcry_mpi_release(qb);
@@ -686,7 +745,7 @@ QList<QByteArray> spoton_smp::step4(const QList<QByteArray> &other,
     }
 
   bytes = other.at(2).mid(0, static_cast<int> (BITS / 8));
-  
+
   if(gcry_mpi_scan(&ra, GCRYMPI_FMT_USG,
 		   bytes.constData(), bytes.length(), 0) != 0)
     {
@@ -712,6 +771,15 @@ QList<QByteArray> spoton_smp::step4(const QList<QByteArray> &other,
       goto done_label;
     }
 
+  if(!m_modulus || !m_qb)
+    {
+      if(ok)
+	*ok = false;
+
+      list.clear();
+      goto done_label;
+    }
+
   if(!gcry_mpi_invm(qbinv, m_qb, m_modulus))
     {
       if(ok)
@@ -725,6 +793,15 @@ QList<QByteArray> spoton_smp::step4(const QList<QByteArray> &other,
   rb1 = gcry_mpi_new(BITS);
 
   if(!rb || !rb1)
+    {
+      if(ok)
+	*ok = false;
+
+      list.clear();
+      goto done_label;
+    }
+
+  if(!m_b3)
     {
       if(ok)
 	*ok = false;
@@ -775,6 +852,15 @@ QList<QByteArray> spoton_smp::step4(const QList<QByteArray> &other,
   pbinv = gcry_mpi_new(BITS);
 
   if(!pbinv)
+    {
+      if(ok)
+	*ok = false;
+
+      list.clear();
+      goto done_label;
+    }
+
+  if(!m_pb)
     {
       if(ok)
 	*ok = false;
@@ -863,6 +949,16 @@ void spoton_smp::reset(void)
   gcry_mpi_release(m_pa);
   gcry_mpi_release(m_pb);
   gcry_mpi_release(m_qb);
+  m_a2 = 0;
+  m_a3 = 0;
+  m_b2 = 0;
+  m_b3 = 0;
+  m_generator = 0;
+  m_guess = 0;
+  m_modulus = 0;
+  m_pa = 0;
+  m_pb = 0;
+  m_qb = 0;
 }
 
 void spoton_smp::setGuess(const QString &guess)
@@ -878,6 +974,128 @@ void spoton_smp::setGuess(const QString &guess)
 		guess.toUtf8().length(), 0);
 }
 
+void spoton_smp::step5(const QList<QByteArray> &other, bool *ok,
+		       bool *passed)
+{
+  QByteArray bytes;
+  gcry_mpi_t papb = 0;
+  gcry_mpi_t pbinv = 0;
+  gcry_mpi_t rab = 0;
+  gcry_mpi_t rb = 0;
+
+  if(passed)
+    *passed = false;
+
+  /*
+  ** Extract rb.
+  */
+
+  if(other.size() != 1)
+    {
+      if(ok)
+	*ok = false;
+
+      goto done_label;
+    }
+
+  bytes = other.at(0).mid(0, static_cast<int> (BITS / 8));
+
+  if(gcry_mpi_scan(&rb, GCRYMPI_FMT_USG,
+		   bytes.constData(), bytes.length(), 0) != 0)
+    {
+      if(ok)
+	*ok = false;
+
+      goto done_label;
+    }
+
+  /*
+  ** Calculate rab.
+  */
+
+  rab = gcry_mpi_new(BITS);
+
+  if(!rab)
+    {
+      if(ok)
+	*ok = false;
+
+      goto done_label;
+    }
+
+  if(!m_a3 || !m_modulus)
+    {
+      if(ok)
+	*ok = false;
+
+      goto done_label;
+    }
+
+  gcry_mpi_powm(rab, rb, m_a3, m_modulus);
+
+  /*
+  ** Calculate pa / pb.
+  */
+
+  pbinv = gcry_mpi_new(BITS);
+
+  if(!pbinv)
+    {
+      if(ok)
+	*ok = false;
+
+      goto done_label;
+    }
+
+  if(!m_modulus || !m_pb)
+    {
+      if(ok)
+	*ok = false;
+
+      goto done_label;
+    }
+
+  if(!gcry_mpi_invm(pbinv, m_pb, m_modulus))
+    {
+      if(ok)
+	*ok = false;
+
+      goto done_label;
+    }
+
+  papb = gcry_mpi_new(BITS);
+
+  if(!papb)
+    {
+      if(ok)
+	*ok = false;
+
+      goto done_label;
+    }
+
+  if(!m_pa)
+    {
+      if(ok)
+	*ok = false;
+
+      goto done_label;
+    }
+
+  gcry_mpi_mulm(papb, m_pa, pbinv, m_modulus);
+
+  if(gcry_mpi_cmp(rab, papb) == 0)
+    {
+      if(passed)
+	*passed = true;
+    }
+
+ done_label:
+  gcry_mpi_release(papb);
+  gcry_mpi_release(pbinv);
+  gcry_mpi_release(rab);
+  gcry_mpi_release(rb);
+}
+
 void spoton_smp::test(void)
 {
   QList<QByteArray> list;
@@ -886,8 +1104,8 @@ void spoton_smp::test(void)
   spoton_smp a;
   spoton_smp b;
 
-  a.setGuess("hello1");
-  b.setGuess("hello2");
+  a.setGuess("This is a test.");
+  b.setGuess("This is a test.");
   list = a.step1(&ok);
 
   if(!ok)
@@ -925,5 +1143,16 @@ void spoton_smp::test(void)
   else
     qDebug() << "Secrets are different from b's perspective.";
 
-  qDebug() << "SMP successful.";
+  a.step5(list, &ok, &passed);
+
+  if(!ok)
+    {
+      qDebug() << "SMP step 5 failure.";
+      return;
+    }
+
+  if(passed)
+    qDebug() << "Secrets are identical from a's perspective.";
+  else
+    qDebug() << "Secrets are different from a's perspective.";
 }
