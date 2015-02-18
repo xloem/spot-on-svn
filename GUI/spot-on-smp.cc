@@ -394,12 +394,13 @@ QList<QByteArray> spoton_smp::step3(const QList<QByteArray> &other,
   gcry_mpi_t qa = 0;
   gcry_mpi_t qa1 = 0;
   gcry_mpi_t qa2 = 0;
+  gcry_mpi_t qb = 0;
   gcry_mpi_t s = 0;
   size_t size = 0;
   unsigned char *buffer = 0;
 
   /*
-  ** Extract g2b and g3b.
+  ** Extract g2b, g3b, and qb.
   */
 
   if(other.size() != 4)
@@ -424,6 +425,17 @@ QList<QByteArray> spoton_smp::step3(const QList<QByteArray> &other,
   bytes = other.at(1).mid(0, static_cast<int> (BITS / 8));
 
   if(gcry_mpi_scan(&g3b, GCRYMPI_FMT_USG,
+		   bytes.constData(), bytes.length(), 0) != 0)
+    {
+      if(ok)
+	*ok = false;
+
+      goto done_label;
+    }
+
+  bytes = other.at(3).mid(0, static_cast<int> (BITS / 8));
+
+  if(gcry_mpi_scan(&qb, GCRYMPI_FMT_USG,
 		   bytes.constData(), bytes.length(), 0) != 0)
     {
       if(ok)
@@ -464,7 +476,6 @@ QList<QByteArray> spoton_smp::step3(const QList<QByteArray> &other,
       goto done_label;
     }
 
-  
   /*
   ** Calculate pa and qa and store the results in the list.
   */
@@ -526,6 +537,7 @@ QList<QByteArray> spoton_smp::step3(const QList<QByteArray> &other,
   gcry_mpi_release(qa);
   gcry_mpi_release(qa1);
   gcry_mpi_release(qa2);
+  gcry_mpi_release(qb);
   gcry_mpi_release(s);
   return list;
 }
