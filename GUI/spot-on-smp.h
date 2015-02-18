@@ -30,6 +30,7 @@
 
 #include <QByteArray>
 #include <QList>
+#include <QString>
 
 extern "C"
 {
@@ -48,6 +49,12 @@ class spoton_smp
   spoton_smp(void);
   ~spoton_smp(void);
   static const unsigned int BITS = 1536;
+  QList<QByteArray> step1(bool *ok);
+  QList<QByteArray> step2(const QList<QByteArray> &other, bool *ok);
+  QList<QByteArray> step3(const QList<QByteArray> &other, bool *ok);
+  void setGuess(const QString &guess);
+
+ private:
   gcry_mpi_t m_a2;
   gcry_mpi_t m_a3;
   gcry_mpi_t m_b2;
@@ -55,11 +62,6 @@ class spoton_smp
   gcry_mpi_t m_generator;
   gcry_mpi_t m_guess;
   gcry_mpi_t m_modulus;
-  QList<QByteArray> step1(bool *ok);
-  QList<QByteArray> step2(const QList<QByteArray> &other, bool *ok);
-  QList<QByteArray> step3(const QList<QByteArray> &other, bool *ok);
-
- private:
   gcry_mpi_t generateRandomExponent(bool *ok);
 };
 

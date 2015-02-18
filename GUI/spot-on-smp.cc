@@ -34,12 +34,9 @@
 
 spoton_smp::spoton_smp(void)
 {
-  gcry_mpi_scan(&m_generator, GCRYMPI_FMT_HEX,
-		"0x02",
-		0, 0);
+  gcry_mpi_scan(&m_generator, GCRYMPI_FMT_HEX, "0x02", 0, 0);
   gcry_mpi_scan(&m_modulus, GCRYMPI_FMT_HEX,
-		"0x"
-		"FFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD1"
+		"0xFFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD1"
 		"29024E088A67CC74020BBEA63B139B22514A08798E3404DD"
 		"EF9519B3CD3A431B302B0A6DF25F14374FE1356D6D51C245"
 		"E485B576625E7EC6F44C42E9A637ED6B0BFF5CB6F406B7ED"
@@ -52,7 +49,7 @@ spoton_smp::spoton_smp(void)
   m_a3 = 0;
   m_b2 = 0;
   m_b3 = 0;
-  m_guess = gcry_mpi_new(BITS);
+  m_guess = 0;
 }
 
 spoton_smp::~spoton_smp()
@@ -112,7 +109,6 @@ QList<QByteArray> spoton_smp::step1(bool *ok)
 
   /*
   ** Calculate g2a and g3a and store the results in the list.
-  ** m_generator is g1.
   */
 
   g2a = gcry_mpi_new(BITS);
@@ -198,17 +194,15 @@ QList<QByteArray> spoton_smp::step2(const QList<QByteArray> &other,
     }
 
   g2 = gcry_mpi_new(BITS);
-  g2a = gcry_mpi_new(BITS);
   g2b = gcry_mpi_new(BITS);
   g3 = gcry_mpi_new(BITS);
-  g3a = gcry_mpi_new(BITS);
   g3b = gcry_mpi_new(BITS);
   pb = gcry_mpi_new(BITS);
   qb = gcry_mpi_new(BITS);
   qb1 = gcry_mpi_new(BITS);
   qb2 = gcry_mpi_new(BITS);
 
-  if(!g2 || !g2a || !g2b || !g3 || !g3a || !g3b || !pb || !qb || !qb1 || !qb2)
+  if(!g2 || !g2b || !g3 || !g3b || !pb || !qb || !qb1 || !qb2)
     {
       if(ok)
 	*ok = false;
@@ -276,7 +270,6 @@ QList<QByteArray> spoton_smp::step2(const QList<QByteArray> &other,
 
   /*
   ** Calculate g2b and g3b and store them in the list.
-  ** m_generator is g1.
   */
 
   gcry_mpi_powm(g2b, m_generator, m_b2, m_modulus);
@@ -288,6 +281,7 @@ QList<QByteArray> spoton_smp::step2(const QList<QByteArray> &other,
 	*ok = false;
 
       list.clear();
+      goto done_label;
     }
   else
     list.append(QByteArray(reinterpret_cast<char *> (buffer),
@@ -396,26 +390,19 @@ QList<QByteArray> spoton_smp::step3(const QList<QByteArray> &other,
   gcry_mpi_t g2b = 0;
   gcry_mpi_t g3 = 0;
   gcry_mpi_t g3b = 0;
+  gcry_mpi_t pa = 0;
+  gcry_mpi_t qa = 0;
+  gcry_mpi_t qa1 = 0;
+  gcry_mpi_t qa2 = 0;
   gcry_mpi_t s = 0;
+  size_t size = 0;
+  unsigned char *buffer = 0;
 
   /*
   ** Extract g2b and g3b.
   */
 
   if(other.size() != 4)
-    {
-      if(ok)
-	*ok = false;
-
-      goto done_label;
-    }
-
-  g2 = gcry_mpi_new(BITS);
-  g2b = gcry_mpi_new(BITS);
-  g3 = gcry_mpi_new(BITS);
-  g3b = gcry_mpi_new(BITS);
-
-  if(!g2 || !g2b || !g3 || !g3b)
     {
       if(ok)
 	*ok = false;
@@ -449,6 +436,17 @@ QList<QByteArray> spoton_smp::step3(const QList<QByteArray> &other,
   ** Calculate g2 and g3.
   */
 
+  g2 = gcry_mpi_new(BITS);
+  g3 = gcry_mpi_new(BITS);
+
+  if(!g2 || !g3)
+    {
+      if(ok)
+	*ok = false;
+
+      goto done_label;
+    }
+
   gcry_mpi_powm(g2, g2b, m_a2, m_modulus);
   gcry_mpi_powm(g3, g3b, m_a3, m_modulus);
 
@@ -466,11 +464,68 @@ QList<QByteArray> spoton_smp::step3(const QList<QByteArray> &other,
       goto done_label;
     }
 
+  
+  /*
+  ** Calculate pa and qa and store the results in the list.
+  */
+
+  pa = gcry_mpi_new(BITS);
+  qa = gcry_mpi_new(BITS);
+  qa1 = gcry_mpi_new(BITS);
+  qa2 = gcry_mpi_new(BITS);
+
+  if(!pa || !qa || !qa1 || qa2)
+    {
+      if(ok)
+	*ok = false;
+
+      goto done_label;
+    }
+
+  gcry_mpi_powm(pa, g3, s, m_modulus);
+  gcry_mpi_powm(qa1, m_generator, s, m_modulus);
+  gcry_mpi_powm(qa2, g2, m_guess, m_modulus);
+  gcry_mpi_mulm(qa, qa1, qa2, m_modulus);
+
+  if(gcry_mpi_aprint(GCRYMPI_FMT_USG, &buffer, &size, pa) != 0)
+    {
+      if(ok)
+	*ok = false;
+
+      list.clear();
+      goto done_label;
+    }
+  else
+    list.append(QByteArray(reinterpret_cast<char *> (buffer),
+			   static_cast<int> (size)));
+
+  gcry_free(buffer);
+  buffer = 0;
+
+  if(gcry_mpi_aprint(GCRYMPI_FMT_USG, &buffer, &size, qa) != 0)
+    {
+      if(ok)
+	*ok = false;
+
+      list.clear();
+      goto done_label;
+    }
+  else
+    list.append(QByteArray(reinterpret_cast<char *> (buffer),
+			   static_cast<int> (size)));
+
+  gcry_free(buffer);
+  buffer = 0;
+
  done_label:
   gcry_mpi_release(g2);
   gcry_mpi_release(g2b);
   gcry_mpi_release(g3);
   gcry_mpi_release(g3b);
+  gcry_mpi_release(pa);
+  gcry_mpi_release(qa);
+  gcry_mpi_release(qa1);
+  gcry_mpi_release(qa2);
   gcry_mpi_release(s);
   return list;
 }
@@ -500,4 +555,17 @@ gcry_mpi_t spoton_smp::generateRandomExponent(bool *ok)
  done_label:
   gcry_free(buffer);
   return exponent;
+}
+
+void spoton_smp::setGuess(const QString &guess)
+{
+  if(m_guess)
+    {
+      gcry_mpi_release(m_guess);
+      m_guess = 0;
+    }
+
+  gcry_mpi_scan(&m_guess, GCRYMPI_FMT_USG,
+		guess.toUtf8().constData(),
+		guess.toUtf8().length(), 0);
 }
