@@ -23,6 +23,7 @@
      Socialist Millionaire Protocol. Please see
      https://otr.cypherpunks.ca/Protocol-v3-4.0.0.html. Zero-knowledge
      proofs are not included in the sent values.
+15.  Update a participant's status information whenever geminis are updated.
 
 0.18 (01/23/2015)
 
