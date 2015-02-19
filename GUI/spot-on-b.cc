@@ -375,6 +375,11 @@ void spoton::slotReceivedKernelMessage(void)
 		  if(spoton_misc::
 		     isValidSMPMagnet(list.value(2), values))
 		    {
+		      QByteArray hash
+			(list.at(0)); /*
+				      ** SHA-512 hash of the sender's
+				      ** public key.
+				      */
 		      QDateTime now(QDateTime::currentDateTime());
 		      QString msg("");
 
@@ -388,16 +393,16 @@ void spoton::slotReceivedKernelMessage(void)
 			 arg(now.toString("mm")).
 			 arg(now.toString("ss")));
 		      msg.append
-			(tr("<i>Received an SMP message from %1.</i>").
-			 arg(list.value(0).toBase64().mid(0, 16).
+			(tr("<i>Received an SMP message from %1...%2.</i>").
+			 arg(hash.toBase64().mid(0, 16).
 			     constData()).
-			 arg(list.value(0).toBase64().right(16).
+			 arg(hash.toBase64().right(16).
 			     constData()));
 
-		      if(m_chatWindows.contains(list.value(0).toBase64()))
+		      if(m_chatWindows.contains(hash.toBase64()))
 			{
 			  QPointer<spoton_chatwindow> chat =
-			    m_chatWindows.value(list.value(0).toBase64());
+			    m_chatWindows.value(hash.toBase64());
 
 			  if(chat)
 			    {
@@ -412,9 +417,17 @@ void spoton::slotReceivedKernelMessage(void)
 		      m_ui.messages->verticalScrollBar()->setValue
 			(m_ui.messages->verticalScrollBar()->maximum());
 
+		      spoton_smp *smp = m_smps.value(hash.toBase64());
+
+		      if(!smp)
+			{
+			  smp = new spoton_smp();
+			  m_smps[hash.toBase64()] = smp;
+			}
+
 		      QList<QTableWidgetItem *> items
 			(m_ui.participants->
-			 findItems(list.value(0).toBase64(),
+			 findItems(hash.toBase64(),
 				   Qt::MatchExactly));
 		      QString oid("");
 		      bool passed = false;
@@ -443,11 +456,11 @@ void spoton::slotReceivedKernelMessage(void)
 			     arg(now.toString("mm")).
 			     arg(now.toString("ss")));
 			  msg.append
-			    (tr("<i>SMP guess is identical with "
-				"%1's.</i>").
-			     arg(list.value(0).toBase64().mid(0, 16).
+			    (tr("<i>SMP guess with %1...%2 "
+				"has been verified.</i>").
+			     arg(hash.toBase64().mid(0, 16).
 				 constData()).
-			     arg(list.value(0).toBase64().right(16).
+			     arg(hash.toBase64().right(16).
 				 constData()));
 			  m_ui.messages->append(msg);
 			  m_ui.messages->verticalScrollBar()->setValue
@@ -611,13 +624,13 @@ void spoton::slotReceivedKernelMessage(void)
 
 		  if(m_optionsUi.displayPopups->isChecked())
 		    if(first)
-		      if(!m_chatWindows.contains(list.value(0).toBase64()))
+		      if(!m_chatWindows.contains(hash.toBase64()))
 			slotParticipantDoubleClicked(items.at(0));
 
-		  if(m_chatWindows.contains(list.value(0).toBase64()))
+		  if(m_chatWindows.contains(hash.toBase64()))
 		    {
 		      QPointer<spoton_chatwindow> chat =
-			m_chatWindows.value(list.value(0).toBase64());
+			m_chatWindows.value(hash.toBase64());
 
 		      if(chat)
 			{
@@ -929,6 +942,16 @@ void spoton::slotRemoveParticipants(void)
 
 		if(chat)
 		  chat->deleteLater();
+	      }
+
+	    if(m_smps.contains(hash.toString()))
+	      {
+		spoton_smp *smp = m_smps.value(hash.toString());
+
+		m_smps.remove(hash.toString());
+
+		if(smp)
+		  delete smp;
 	      }
 	  }
 

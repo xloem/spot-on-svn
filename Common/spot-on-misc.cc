@@ -3480,3 +3480,71 @@ int spoton_misc::user_interfaces(void)
   QSqlDatabase::removeDatabase(connectionName);
   return count;
 }
+
+bool spoton_misc::isValidSMPMagnet(const QByteArray &magnet,
+					QList<QByteArray> &values)
+{
+  QList<QByteArray> list;
+  bool valid = false;
+  int tokens = 0;
+
+  /*
+  ** Validate the magnet.
+  */
+
+  if(magnet.startsWith("magnet:?"))
+    list = magnet.mid(static_cast<int> (qstrlen("magnet:?"))).split('&');
+  else
+    goto done_label;
+
+  while(!list.isEmpty())
+    {
+      QString str(list.takeFirst());
+
+      if(str.startsWith("step="))
+	{
+	  str.remove(0, 5);
+
+	  if(str.toInt() >= 1 && str.toInt() <= 4)
+	    tokens += 1;
+	  else
+	    {
+	      valid = false;
+	      goto done_label;
+	    }
+	}
+      else if(str.startsWith("value="))
+	{
+	  str.remove(0, 6);
+
+	  if(str.isEmpty())
+	    {
+	      valid = false;
+	      goto done_label;
+	    }
+	  else
+	    {
+	      values.append(QByteArray::fromBase64(str.toLatin1()));
+	      tokens += 1;
+	    }
+	}
+      else if(str.startsWith("xt="))
+	{
+	  str.remove(0, 3);
+
+	  if(str != "urn:smp")
+	    {
+	      valid = false;
+	      goto done_label;
+	    }
+	  else
+	    tokens += 1;
+	}
+    }
+
+  if(tokens >= 3 && tokens <= 6)
+    valid = true;
+
+ done_label:
+  return valid;
+}

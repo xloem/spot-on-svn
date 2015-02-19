@@ -898,6 +898,7 @@ void spoton::slotPrepareSMP(void)
   else if(!m_kernelSocket.isEncrypted())
     return;
 
+  QString hash("");
   QString keyType("");
   QString oid("");
   bool temporary = true;
@@ -915,9 +916,16 @@ void spoton::slotPrepareSMP(void)
 	  oid = item->text();
 	  temporary = item->data(Qt::UserRole).toBool();
 	}
+
+      item = m_ui.participants->item(row, 3); // public_key_hash
+
+      if(item)
+	hash = item->text();
     }
 
-  if(keyType != "chat")
+  if(hash.isEmpty())
+    return;
+  else if(keyType != "chat")
     return;
   else if(temporary) // Temporary friend?
     return; // Not allowed!
@@ -932,6 +940,18 @@ void spoton::slotPrepareSMP(void)
 
   if(guess.isEmpty() || !ok)
     return;
+
+  spoton_smp *smp = 0;
+
+  if(m_smps.contains(hash))
+    smp = m_smps.value(hash);
+  else
+    {
+      smp = new spoton_smp();
+      m_smps[hash] = smp;
+    }
+
+  smp->setGuess(guess);
 }
 
 void spoton::sendSMPLinkToKernel(const QList<QByteArray> &list,

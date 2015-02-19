@@ -133,11 +133,11 @@ class spoton: public QMainWindow
   QDialog *m_poptasticDialog;
   QHash<QByteArray, QString> m_neighborToOidMap;
   QHash<QByteArray, quint64> m_receivedChatSequenceNumbers;
-  QHash<QByteArray, QPointer<spoton_smp> > m_smps;
   QHash<QString, QByteArray> m_buzzIds;
   QHash<QString, QPointer<spoton_chatwindow> > m_chatWindows;
   QHash<QString, QString> m_keysShared;
   QHash<QString, spoton_crypt *> m_crypts;
+  QHash<QString, spoton_smp *> m_smps;
 #ifdef SPOTON_LINKED_WITH_LIBPHONON
 #endif
   QMainWindow *m_optionsWindow;
