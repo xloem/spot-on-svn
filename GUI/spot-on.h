@@ -133,6 +133,7 @@ class spoton: public QMainWindow
   QDialog *m_poptasticDialog;
   QHash<QByteArray, QString> m_neighborToOidMap;
   QHash<QByteArray, quint64> m_receivedChatSequenceNumbers;
+  QHash<QByteArray, QPointer<spoton_smp> > m_smps;
   QHash<QString, QByteArray> m_buzzIds;
   QHash<QString, QPointer<spoton_chatwindow> > m_chatWindows;
   QHash<QString, QString> m_keysShared;
@@ -169,7 +170,6 @@ class spoton: public QMainWindow
   spoton_external_address m_externalAddress;
   spoton_logviewer m_logViewer;
   spoton_rosetta m_rosetta;
-  spoton_smp m_smp;
   spoton_starbeamanalyzer *m_starbeamAnalyzer;
   QByteArray copyMyChatPublicKey(void) const;
   QByteArray copyMyEmailPublicKey(void) const;

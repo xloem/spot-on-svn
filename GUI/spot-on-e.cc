@@ -932,15 +932,6 @@ void spoton::slotPrepareSMP(void)
 
   if(guess.isEmpty() || !ok)
     return;
-
-  m_smp.setGuess(guess);
-
-  QList<QByteArray> list;
-
-  list = m_smp.step1(&ok);
-
-  if(ok)
-    sendSMPLinkToKernel(list, oid);
 }
 
 void spoton::sendSMPLinkToKernel(const QList<QByteArray> &list,
@@ -955,7 +946,7 @@ void spoton::sendSMPLinkToKernel(const QList<QByteArray> &list,
 
   QString magnet("magnet:?");
 
-  magnet.append(QString("step=%1&").arg(m_smp.step()));
+  magnet.append(QString("step=%1&").arg(1));
 
   for(int i = 0; i < list.size(); i++)
     magnet.append

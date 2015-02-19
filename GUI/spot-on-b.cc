@@ -412,9 +412,6 @@ void spoton::slotReceivedKernelMessage(void)
 		      m_ui.messages->verticalScrollBar()->setValue
 			(m_ui.messages->verticalScrollBar()->maximum());
 
-		      if(m_smp.step() == 1)
-			continue;
-
 		      QList<QTableWidgetItem *> items
 			(m_ui.participants->
 			 findItems(list.value(0).toBase64(),
@@ -432,8 +429,6 @@ void spoton::slotReceivedKernelMessage(void)
 			  if(item)
 			    oid = item->text();
 			}
-
-		      m_smp.nextStep(values, &passed);
 
 		      if(passed)
 			{
