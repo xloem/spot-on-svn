@@ -58,6 +58,7 @@ spoton_smp::spoton_smp(void)
   m_pa = 0;
   m_pb = 0;
   m_qb = 0;
+  m_step = 1;
 }
 
 spoton_smp::~spoton_smp()
@@ -134,6 +135,7 @@ QList<QByteArray> spoton_smp::step1(bool *ok)
 
   gcry_free(buffer);
   buffer = 0;
+  m_step = 1;
 
  done_label:
   gcry_free(buffer);
@@ -193,13 +195,17 @@ QList<QByteArray> spoton_smp::step2(const QList<QByteArray> &other,
   bytes = other.at(0).mid(0, static_cast<int> (BITS / 8));
 
   if(gcry_mpi_scan(&g2a, GCRYMPI_FMT_USG,
-		   bytes.constData(), bytes.length(), 0) != 0)
+		   reinterpret_cast<const unsigned char *> (bytes.
+							    constData()),
+		   bytes.length(), 0) != 0)
     GOTO_DONE_LABEL;
 
   bytes = other.at(1).mid(0, static_cast<int> (BITS / 8));
 
   if(gcry_mpi_scan(&g3a, GCRYMPI_FMT_USG,
-		   bytes.constData(), bytes.length(), 0) != 0)
+		   reinterpret_cast<const unsigned char *> (bytes.
+							    constData()),
+		   bytes.length(), 0) != 0)
     GOTO_DONE_LABEL;
 
   /*
@@ -301,6 +307,7 @@ QList<QByteArray> spoton_smp::step2(const QList<QByteArray> &other,
 
   gcry_free(buffer);
   buffer = 0;
+  m_step = 2;
 
  done_label:
   gcry_mpi_release(g2);
@@ -345,25 +352,33 @@ QList<QByteArray> spoton_smp::step3(const QList<QByteArray> &other,
   bytes = other.at(0).mid(0, static_cast<int> (BITS / 8));
 
   if(gcry_mpi_scan(&g2b, GCRYMPI_FMT_USG,
-		   bytes.constData(), bytes.length(), 0) != 0)
+		   reinterpret_cast<const unsigned char *> (bytes.
+							    constData()),
+		   bytes.length(), 0) != 0)
     GOTO_DONE_LABEL;
 
   bytes = other.at(1).mid(0, static_cast<int> (BITS / 8));
 
   if(gcry_mpi_scan(&g3b, GCRYMPI_FMT_USG,
-		   bytes.constData(), bytes.length(), 0) != 0)
+		   reinterpret_cast<const unsigned char *> (bytes.
+							    constData()),
+		   bytes.length(), 0) != 0)
     GOTO_DONE_LABEL;
 
   bytes = other.at(2).mid(0, static_cast<int> (BITS / 8));
 
   if(gcry_mpi_scan(&m_pb, GCRYMPI_FMT_USG,
-		   bytes.constData(), bytes.length(), 0) != 0)
+		   reinterpret_cast<const unsigned char *> (bytes.
+							    constData()),
+		   bytes.length(), 0) != 0)
     GOTO_DONE_LABEL;
 
   bytes = other.at(3).mid(0, static_cast<int> (BITS / 8));
 
   if(gcry_mpi_scan(&qb, GCRYMPI_FMT_USG,
-		   bytes.constData(), bytes.length(), 0) != 0)
+		   reinterpret_cast<const unsigned char *> (bytes.
+							    constData()),
+		   bytes.length(), 0) != 0)
     GOTO_DONE_LABEL;
 
   /*
@@ -464,6 +479,7 @@ QList<QByteArray> spoton_smp::step3(const QList<QByteArray> &other,
 
   gcry_free(buffer);
   buffer = 0;
+  m_step = 3;
 
  done_label:
   gcry_mpi_release(g2);
@@ -511,19 +527,25 @@ QList<QByteArray> spoton_smp::step4(const QList<QByteArray> &other,
   bytes = other.at(0).mid(0, static_cast<int> (BITS / 8));
 
   if(gcry_mpi_scan(&pa, GCRYMPI_FMT_USG,
-		   bytes.constData(), bytes.length(), 0) != 0)
+		   reinterpret_cast<const unsigned char *> (bytes.
+							    constData()),
+		   bytes.length(), 0) != 0)
     GOTO_DONE_LABEL;
 
   bytes = other.at(1).mid(0, static_cast<int> (BITS / 8));
 
   if(gcry_mpi_scan(&qa, GCRYMPI_FMT_USG,
-		   bytes.constData(), bytes.length(), 0) != 0)
+		   reinterpret_cast<const unsigned char *> (bytes.
+							    constData()),
+		   bytes.length(), 0) != 0)
     GOTO_DONE_LABEL;
 
   bytes = other.at(2).mid(0, static_cast<int> (BITS / 8));
 
   if(gcry_mpi_scan(&ra, GCRYMPI_FMT_USG,
-		   bytes.constData(), bytes.length(), 0) != 0)
+		   reinterpret_cast<const unsigned char *> (bytes.
+							    constData()),
+		   bytes.length(), 0) != 0)
     GOTO_DONE_LABEL;
 
   /*
@@ -601,6 +623,8 @@ QList<QByteArray> spoton_smp::step4(const QList<QByteArray> &other,
 	*passed = true;
     }
 
+  m_step = 4;
+
  done_label:
   gcry_mpi_release(pa);
   gcry_mpi_release(papb);
@@ -659,6 +683,26 @@ void spoton_smp::reset(void)
   m_pa = 0;
   m_pb = 0;
   m_qb = 0;
+  m_step = 1;
+}
+
+int spoton_smp::step(void) const
+{
+  return m_step;
+}
+
+void spoton_smp::nextStep(QList<QByteArray> &values, bool *passed)
+{
+  bool ok = true;
+
+  if(m_step == 1)
+    values = step2(values, &ok);
+  else if(m_step == 2)
+    values = step3(values, &ok);
+  else if(m_step == 3)
+    values = step4(values, &ok, passed);
+  else if(m_step == 4)
+    step5(values, &ok, passed);
 }
 
 void spoton_smp::setGuess(const QString &guess)
@@ -670,7 +714,8 @@ void spoton_smp::setGuess(const QString &guess)
     }
 
   gcry_mpi_scan(&m_guess, GCRYMPI_FMT_USG,
-		guess.toUtf8().constData(),
+		reinterpret_cast<const unsigned char *> (guess.toUtf8().
+							 constData()),
 		guess.toUtf8().length(), 0);
 }
 
@@ -701,7 +746,9 @@ void spoton_smp::step5(const QList<QByteArray> &other, bool *ok,
   bytes = other.at(0).mid(0, static_cast<int> (BITS / 8));
 
   if(gcry_mpi_scan(&rb, GCRYMPI_FMT_USG,
-		   bytes.constData(), bytes.length(), 0) != 0)
+		   reinterpret_cast<const unsigned char *> (bytes.
+							    constData()),
+		   bytes.length(), 0) != 0)
     {
       if(ok)
 	*ok = false;
@@ -788,6 +835,8 @@ void spoton_smp::step5(const QList<QByteArray> &other, bool *ok,
       if(passed)
 	*passed = true;
     }
+
+  m_step = 5;
 
  done_label:
   gcry_mpi_release(papb);

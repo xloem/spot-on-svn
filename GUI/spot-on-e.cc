@@ -890,3 +890,99 @@ void spoton::slotSaveOpenLinks(bool state)
 
   settings.setValue("gui/openLinks", state);
 }
+
+void spoton::slotPrepareSMP(void)
+{
+  if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
+    return;
+  else if(!m_kernelSocket.isEncrypted())
+    return;
+
+  QString keyType("");
+  QString oid("");
+  bool temporary = true;
+  int row = -1;
+
+  if((row = m_ui.participants->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = m_ui.participants->item
+	(row, 1); // OID
+
+      if(item)
+	{
+	  keyType = item->data
+	    (Qt::ItemDataRole(Qt::UserRole + 1)).toString();
+	  oid = item->text();
+	  temporary = item->data(Qt::UserRole).toBool();
+	}
+    }
+
+  if(keyType != "chat")
+    return;
+  else if(temporary) // Temporary friend?
+    return; // Not allowed!
+
+  QString guess("");
+  bool ok = true;
+
+  guess = QInputDialog::getText
+    (this, tr("%1: SMP Secret").arg(SPOTON_APPLICATION_NAME),
+     tr("&Secret"),
+     QLineEdit::Normal, QString(""), &ok);
+
+  if(guess.isEmpty() || !ok)
+    return;
+
+  m_smp.setGuess(guess);
+
+  QList<QByteArray> list;
+
+  list = m_smp.step1(&ok);
+
+  if(ok)
+    sendSMPLinkToKernel(list, oid);
+}
+
+void spoton::sendSMPLinkToKernel(const QList<QByteArray> &list,
+				 const QString &oid)
+{
+  if(list.isEmpty())
+    return;
+  else if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
+    return;
+  else if(!m_kernelSocket.isEncrypted())
+    return;
+
+  QString magnet("magnet:?");
+
+  magnet.append(QString("step=%1&").arg(m_smp.step()));
+
+  for(int i = 0; i < list.size(); i++)
+    magnet.append
+      (QString("value=%2&").arg(list.at(i).toBase64().constData()));
+
+  magnet.append("urn:smp");
+
+  QByteArray message;
+
+  message.append("message_");
+  message.append(QString("%1_").arg(oid));
+  message.append(m_settings.value("gui/nodeName", "unknown").
+		 toByteArray().toBase64());
+  message.append("_");
+  message.append(magnet.toLatin1().toBase64());
+  message.append("_");
+  message.append(QByteArray("1").toBase64());
+  message.append("_");
+  message.append(QDateTime::currentDateTime().toUTC().
+		 toString("MMddyyyyhhmmss").toLatin1().toBase64());
+  message.append("\n");
+
+  if(m_kernelSocket.write(message.constData(), message.length()) !=
+     message.length())
+    spoton_misc::logError
+      (QString("spoton::sendSMPLinkToKernel(): write() failure for "
+	       "%1:%2.").
+       arg(m_kernelSocket.peerAddress().toString()).
+       arg(m_kernelSocket.peerPort()));
+}

@@ -34,13 +34,7 @@
 
 extern "C"
 {
-  /*
-  ** Older compilers (GCC 4.2.1) misbehave.
-  */
-
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #include <gcrypt.h>
-#pragma GCC diagnostic warning "-Wdeprecated-declarations"
 }
 
 class spoton_smp
@@ -55,6 +49,8 @@ class spoton_smp
   QList<QByteArray> step3(const QList<QByteArray> &other, bool *ok);
   QList<QByteArray> step4(const QList<QByteArray> &other, bool *ok,
 			  bool *passed);
+  int step(void) const;
+  void nextStep(QList<QByteArray> &values, bool *passed);
   void reset(void);
   void setGuess(const QString &guess);
   void step5(const QList<QByteArray> &other, bool *ok, bool *passed);
@@ -71,6 +67,7 @@ class spoton_smp
   gcry_mpi_t m_pb;
   gcry_mpi_t m_qb;
   gcry_mpi_t generateRandomExponent(bool *ok);
+  int m_step;
 };
 
 #endif

@@ -370,6 +370,99 @@ void spoton::slotReceivedKernelMessage(void)
 
 		    list.replace(i, QByteArray::fromBase64(list.at(i)));
 
+		  QList<QByteArray> values;
+
+		  if(spoton_misc::
+		     isValidSMPMagnet(list.value(2), values))
+		    {
+		      QDateTime now(QDateTime::currentDateTime());
+		      QString msg("");
+
+		      msg.append
+			(QString("[%1/%2/%3 %4:%5<font color=grey>:%6"
+				 "</font>] ").
+			 arg(now.toString("MM")).
+			 arg(now.toString("dd")).
+			 arg(now.toString("yyyy")).
+			 arg(now.toString("hh")).
+			 arg(now.toString("mm")).
+			 arg(now.toString("ss")));
+		      msg.append
+			(tr("<i>Received an SMP message from %1.</i>").
+			 arg(list.value(0).toBase64().mid(0, 16).
+			     constData()).
+			 arg(list.value(0).toBase64().right(16).
+			     constData()));
+
+		      if(m_chatWindows.contains(list.value(0).toBase64()))
+			{
+			  QPointer<spoton_chatwindow> chat =
+			    m_chatWindows.value(list.value(0).toBase64());
+
+			  if(chat)
+			    {
+			      chat->append(msg);
+
+			      if(chat->isVisible())
+				chat->activateWindow();
+			    }
+			}
+
+		      m_ui.messages->append(msg);
+		      m_ui.messages->verticalScrollBar()->setValue
+			(m_ui.messages->verticalScrollBar()->maximum());
+
+		      if(m_smp.step() == 1)
+			continue;
+
+		      QList<QTableWidgetItem *> items
+			(m_ui.participants->
+			 findItems(list.value(0).toBase64(),
+				   Qt::MatchExactly));
+		      QString oid("");
+		      bool passed = false;
+
+		      if(!items.isEmpty() && items.at(0))
+			{
+			  QTableWidgetItem *item = m_ui.participants->
+			    item(items.at(0)->row(),
+				 m_ui.participants->
+				 columnCount() - 1); // OID
+
+			  if(item)
+			    oid = item->text();
+			}
+
+		      m_smp.nextStep(values, &passed);
+
+		      if(passed)
+			{
+			  msg.clear();
+			  msg.append
+			    (QString("[%1/%2/%3 %4:%5<font color=grey>:%6"
+				     "</font>] ").
+			     arg(now.toString("MM")).
+			     arg(now.toString("dd")).
+			     arg(now.toString("yyyy")).
+			     arg(now.toString("hh")).
+			     arg(now.toString("mm")).
+			     arg(now.toString("ss")));
+			  msg.append
+			    (tr("<i>SMP guess is identical with "
+				"%1's.</i>").
+			     arg(list.value(0).toBase64().mid(0, 16).
+				 constData()).
+			     arg(list.value(0).toBase64().right(16).
+				 constData()));
+			  m_ui.messages->append(msg);
+			  m_ui.messages->verticalScrollBar()->setValue
+			    (m_ui.messages->verticalScrollBar()->maximum());
+			}
+
+		      sendSMPLinkToKernel(values, oid);
+		      continue;
+		    }
+
 		  QByteArray hash(list.at(0)); /*
 					       ** SHA-512 hash of the sender's
 					       ** public key.

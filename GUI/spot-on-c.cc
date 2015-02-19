@@ -2535,6 +2535,10 @@ void spoton::prepareContextMenuMirrors(void)
       action = menu->addAction(tr("&Rename participant."),
 			       this, SLOT(slotRenameParticipant(void)));
       action->setProperty("type", "chat");
+      menu->addSeparator();
+      menu->addAction(tr("&Verify a secret via SMP."),
+		      this,
+		      SLOT(slotPrepareSMP(void)));
       m_ui.chatActionMenu->setMenu(menu);
     }
 

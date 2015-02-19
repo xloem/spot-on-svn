@@ -5987,6 +5987,10 @@ void spoton::slotShowContextMenu(const QPoint &point)
       action = menu.addAction(tr("&Rename participant."),
 			      this, SLOT(slotRenameParticipant(void)));
       action->setProperty("type", "chat");
+      menu.addSeparator();
+      menu.addAction(tr("&Verify a secret via SMP."),
+		     this,
+		     SLOT(slotPrepareSMP(void)));
       menu.exec(m_ui.participants->mapToGlobal(point));
     }
   else if(m_ui.received == sender())

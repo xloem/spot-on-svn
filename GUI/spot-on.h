@@ -169,6 +169,7 @@ class spoton: public QMainWindow
   spoton_external_address m_externalAddress;
   spoton_logviewer m_logViewer;
   spoton_rosetta m_rosetta;
+  spoton_smp m_smp;
   spoton_starbeamanalyzer *m_starbeamAnalyzer;
   QByteArray copyMyChatPublicKey(void) const;
   QByteArray copyMyEmailPublicKey(void) const;
@@ -236,6 +237,8 @@ class spoton: public QMainWindow
   void saveUrlIniPath(const QString &path);
   void sendBuzzKeysToKernel(void);
   void sendKeysToKernel(void);
+  void sendSMPLinkToKernel(const QList<QByteArray> &list,
+			   const QString &oid);
   void sharePublicKeyWithParticipant(const QString &keyType);
   void showUrls(const QString &link, const QString &querystr);
   void updateListenersTable(const QSqlDatabase &db);
@@ -416,6 +419,7 @@ class spoton: public QMainWindow
   void slotPopulateStars(void);
   void slotPostgreSQLConnect(void);
   void slotPostgreSQLDisconnect(bool state);
+  void slotPrepareSMP(void);
   void slotPrepareUrlDatabases(void);
   void slotProtocolRadioToggled(bool state);
   void slotProxyChecked(bool state);
