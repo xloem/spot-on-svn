@@ -904,7 +904,6 @@ void spoton::slotPrepareSMP(void)
 {
   QString hash("");
   QString keyType("");
-  QString oid("");
   bool temporary = true;
   int row = -1;
 
@@ -917,7 +916,6 @@ void spoton::slotPrepareSMP(void)
 	{
 	  keyType = item->data
 	    (Qt::ItemDataRole(Qt::UserRole + 1)).toString();
-	  oid = item->text();
 	  temporary = item->data(Qt::UserRole).toBool();
 	}
 
@@ -928,8 +926,6 @@ void spoton::slotPrepareSMP(void)
     }
 
   if(hash.isEmpty())
-    return;
-  else if(keyType != "chat")
     return;
   else if(temporary) // Temporary friend?
     return; // Not allowed!
