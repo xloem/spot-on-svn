@@ -903,7 +903,6 @@ void spoton::slotSaveOpenLinks(bool state)
 void spoton::slotPrepareSMP(void)
 {
   QString hash("");
-  QString keyType("");
   bool temporary = true;
   int row = -1;
 
@@ -913,11 +912,7 @@ void spoton::slotPrepareSMP(void)
 	(row, 1); // OID
 
       if(item)
-	{
-	  keyType = item->data
-	    (Qt::ItemDataRole(Qt::UserRole + 1)).toString();
-	  temporary = item->data(Qt::UserRole).toBool();
-	}
+	temporary = item->data(Qt::UserRole).toBool();
 
       item = m_ui.participants->item(row, 3); // public_key_hash
 
@@ -989,6 +984,8 @@ void spoton::slotVerifySMPSecret(void)
 
   if(hash.isEmpty())
     return;
+  else if(oid.isEmpty())
+    return;
   else if(temporary) // Temporary friend?
     return; // Not allowed!
 
@@ -1037,6 +1034,7 @@ void spoton::sendSMPLinkToKernel(const QList<QByteArray> &list,
   magnet.append("xt=urn:smp");
 
   QByteArray message;
+  QByteArray name;
 
   if(keyType.toLower() == "chat")
     message.append("message_");
@@ -1044,8 +1042,22 @@ void spoton::sendSMPLinkToKernel(const QList<QByteArray> &list,
     message.append("poptasticmessage_");
 
   message.append(QString("%1_").arg(oid));
-  message.append(m_settings.value("gui/nodeName", "unknown").
-		 toByteArray().toBase64());
+
+  if(keyType.toLower() == "chat")
+    name = m_settings.value("gui/nodeName", "unknown").toByteArray();
+  else
+    name = m_settings.value("gui/poptasticName",
+			    "unknown@unknown.org").toByteArray();
+
+  if(name.isEmpty())
+    {
+      if(keyType.toLower() == "chat")
+	name = "unknown";
+      else
+	name = "unknown@unknown.org";
+    }
+
+  message.append(name.toBase64());
   message.append("_");
   message.append(magnet.toLatin1().toBase64());
   message.append("_");
