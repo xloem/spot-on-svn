@@ -30,6 +30,15 @@ extern "C"
 #include <curl/curl.h>
 }
 
+#if SPOTON_GOLDBUG == 1
+#if QT_VERSION >= 0x050000
+#include <QCoreApplication>
+#include <QMediaPlayer>
+#include <QtConcurrent>
+#include <QtCore>
+#endif
+#endif
+
 #include <QThread>
 
 #include "spot-on.h"
@@ -1052,4 +1061,31 @@ void spoton::sendSMPLinkToKernel(const QList<QByteArray> &list,
 	       "%1:%2.").
        arg(m_kernelSocket.peerAddress().toString()).
        arg(m_kernelSocket.peerPort()));
+}
+
+void spoton::playSong(const QString &name)
+{
+#if SPOTON_GOLDBUG == 1
+#if QT_VERSION >= 0x050000
+  QMediaPlayer *player = 0;
+  QString str
+    (QDir::cleanPath(QCoreApplication::applicationDirPath() +
+		     QDir::separator() + "Sounds" + QDir::separator() +
+		     name));
+
+  player = findChild<QMediaPlayer *> (name);
+
+  if(!player)
+    player = new QMediaPlayer(this);
+
+  player->setMedia(QUrl::fromLocalFile(str));
+  player->setObjectName("login.wav");
+  player->setVolume(50);
+  player->play();
+#else
+  Q_UNUSED(name);
+#endif
+#else
+  Q_UNUSED(name);
+#endif
 }

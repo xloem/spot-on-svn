@@ -32,6 +32,7 @@
 
 #include <QtDebug>
 
+#include "Common/spot-on-crypt.h"
 #include "spot-on-smp.h"
 
 #define GOTO_DONE_LABEL ({if(ok) *ok = false; list.clear(); goto done_label;})
@@ -699,10 +700,16 @@ void spoton_smp::setGuess(const QString &guess)
       m_guess = 0;
     }
 
-  gcry_mpi_scan(&m_guess, GCRYMPI_FMT_USG,
-		reinterpret_cast<const unsigned char *> (guess.toUtf8().
-							 constData()),
-		guess.toUtf8().length(), 0);
+  QByteArray hash;
+  bool ok = true;
+
+  hash = spoton_crypt::sha512Hash(guess.toUtf8(), &ok);
+
+  if(ok)
+    gcry_mpi_scan
+      (&m_guess, GCRYMPI_FMT_USG,
+       reinterpret_cast<const unsigned char *> (hash.constData()),
+       hash.length(), 0);
 }
 
 void spoton_smp::step5(const QList<QByteArray> &other, bool *ok,

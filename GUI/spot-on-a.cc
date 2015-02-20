@@ -44,15 +44,6 @@ extern "C"
 #include "spot-on-buzzpage.h"
 #include "ui_passwordprompt.h"
 
-#if SPOTON_GOLDBUG == 1
-#if QT_VERSION >= 0x050000
-#include <QCoreApplication>
-#include <QMediaPlayer>
-#include <QtConcurrent>
-#include <QtCore>
-#endif
-#endif
-
 QPointer<spoton> spoton::s_gui = 0;
 
 #if QT_VERSION >= 0x050000
@@ -5416,24 +5407,8 @@ void spoton::slotSetPassphrase(void)
 
 #if SPOTON_GOLDBUG == 1
       slotConnectAllNeighbors();
-#if QT_VERSION >= 0x050000
-      QMediaPlayer *player = 0;
-      QString str
-	(QDir::cleanPath(QCoreApplication::applicationDirPath() +
-			 QDir::separator() + "Sounds" + QDir::separator() +
-			 "login.wav"));
-
-      player = findChild<QMediaPlayer *> ("login.wav");
-
-      if(!player)
-	player = new QMediaPlayer(this);
-
-      player->setMedia(QUrl::fromLocalFile(str));
-      player->setObjectName("login.wav");
-      player->setVolume(50);
-      player->play();
 #endif
-#endif
+      playSong("login.wav");
     }
 }
 
@@ -5609,24 +5584,8 @@ void spoton::slotValidatePassphrase(void)
 
 #if SPOTON_GOLDBUG == 1
   slotConnectAllNeighbors();
-#if QT_VERSION >= 0x050000
-  QMediaPlayer *player = 0;
-  QString str
-    (QDir::cleanPath(QCoreApplication::applicationDirPath() +
-		     QDir::separator() + "Sounds" + QDir::separator() +
-		     "login.wav"));
-
-  player = findChild<QMediaPlayer *> ("login.wav");
-
-  if(!player)
-    player = new QMediaPlayer(this);
-
-  player->setMedia(QUrl::fromLocalFile(str));
-  player->setObjectName("login.wav");
-  player->setVolume(50);
-  player->play();
 #endif
-#endif
+  playSong("login.wav");
   m_ui.passphrase->setFocus();
   updatePublicKeysLabel();
 }

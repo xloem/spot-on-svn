@@ -217,6 +217,7 @@ class spoton: public QMainWindow
   void initializeKernelSocket(void);
   void joinDefaultBuzzChannel(void);
   void magnetize(void);
+  void playSong(const QString &name);
   void populateAETokens(void);
   void populateAccounts(const QString &listenerOid);
   void populateListenerIps(const QString &listenerOid);

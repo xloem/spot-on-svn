@@ -29,14 +29,6 @@
 #include "spot-on-buzzpage.h"
 #include "spot-on-defines.h"
 
-#if SPOTON_GOLDBUG == 1
-#if QT_VERSION >= 0x050000
-#include <QCoreApplication>
-#include <QMediaPlayer>
-#include <QtConcurrent>
-#include <QtCore>
-#endif
-#endif
 #include <QSslKey>
 
 void spoton::slotSendMessage(void)
@@ -170,28 +162,8 @@ void spoton::slotSendMessage(void)
 
  done_label:
 
-#if SPOTON_GOLDBUG == 1
-#if QT_VERSION >= 0x050000
   if(error.isEmpty())
-    {
-      QMediaPlayer *player = 0;
-      QString str
-	(QDir::cleanPath(QCoreApplication::applicationDirPath() +
-			 QDir::separator() + "Sounds" + QDir::separator() +
-			 "send.wav"));
-
-      player = findChild<QMediaPlayer *> ("send.wav");
-
-      if(!player)
-	player = new QMediaPlayer(this);
-
-      player->setMedia(QUrl::fromLocalFile(str));
-      player->setObjectName("send.wav");
-      player->setVolume(50);
-      player->play();
-    }
-#endif
-#endif
+    playSong("send.wav");
 
   if(!error.isEmpty())
     QMessageBox::critical(this, tr("%1: Error").
@@ -329,25 +301,7 @@ void spoton::slotReceivedKernelMessage(void)
 #endif
 		    m_sb.chat->setVisible(true);
 
-#if SPOTON_GOLDBUG == 1
-#if QT_VERSION >= 0x050000
-		  QMediaPlayer *player = 0;
-		  QString str
-		    (QDir::cleanPath(QCoreApplication::applicationDirPath() +
-				     QDir::separator() + "Sounds" +
-				     QDir::separator() + "receive.wav"));
-
-		  player = findChild<QMediaPlayer *> ("receive.wav");
-
-		  if(!player)
-		    player = new QMediaPlayer(this);
-
-		  player->setMedia(QUrl::fromLocalFile(str));
-		  player->setObjectName("receive.wav");
-		  player->setVolume(50);
-		  player->play();
-#endif
-#endif
+		  playSong("receive.wav");
 		}
 	    }
 	  else if(data.startsWith("message_"))
@@ -466,16 +420,18 @@ void spoton::slotReceivedKernelMessage(void)
 
 			  if(passed)
 			    msg.append
-			      (tr("<i>SMP verification with %1...%2 "
-				  "has succeeded.</i>").
+			      (tr("<font color=green>"
+				  "<i>SMP verification with %1...%2 "
+				  "has succeeded.</i></font>").
 			       arg(hash.toBase64().mid(0, 16).
 				   constData()).
 			       arg(hash.toBase64().right(16).
 				   constData()));
 			  else
 			    msg.append
-			      (tr("<i>SMP verification with %1...%2 "
-				  "has failed.</i>").
+			      (tr("<font color=red>"
+				  "<i>SMP verification with %1...%2 "
+				  "has failed.</i></font>").
 			       arg(hash.toBase64().mid(0, 16).
 				   constData()).
 			       arg(hash.toBase64().right(16).
@@ -671,25 +627,7 @@ void spoton::slotReceivedKernelMessage(void)
 #endif
 		    m_sb.chat->setVisible(true);
 
-#if SPOTON_GOLDBUG == 1
-#if QT_VERSION >= 0x050000
-		  QMediaPlayer *player = 0;
-		  QString str
-		    (QDir::cleanPath(QCoreApplication::applicationDirPath() +
-				     QDir::separator() + "Sounds" +
-				     QDir::separator() + "receive.wav"));
-
-		  player = findChild<QMediaPlayer *> ("receive.wav");
-
-		  if(!player)
-		    player = new QMediaPlayer(this);
-
-		  player->setMedia(QUrl::fromLocalFile(str));
-		  player->setObjectName("receive.wav");
-		  player->setVolume(50);
-		  player->play();
-#endif
-#endif
+		  playSong("receive.wav");
 		}
 	    }
 	  else if(data == "newmail")
@@ -698,25 +636,7 @@ void spoton::slotReceivedKernelMessage(void)
 #if SPOTON_GOLDBUG == 1
 	      populateMail();
 #endif
-#if SPOTON_GOLDBUG == 1
-#if QT_VERSION >= 0x050000
-	      QMediaPlayer *player = 0;
-	      QString str
-		(QDir::cleanPath(QCoreApplication::applicationDirPath() +
-				 QDir::separator() + "Sounds" +
-				 QDir::separator() + "echo.wav"));
-
-	      player = findChild<QMediaPlayer *> ("echo.wav");
-
-	      if(!player)
-		player = new QMediaPlayer(this);
-
-	      player->setMedia(QUrl::fromLocalFile(str));
-	      player->setObjectName("echo.wav");
-	      player->setVolume(50);
-	      player->play();
-#endif
-#endif
+	      playSong("echo.wav");
 	    }
 	}
     }
@@ -5135,25 +5055,7 @@ void spoton::slotBuzzChanged(void)
 #endif
     m_sb.buzz->setVisible(true);
 
-#if SPOTON_GOLDBUG == 1
-#if QT_VERSION >= 0x050000
-  QMediaPlayer *player = 0;
-  QString str
-    (QDir::cleanPath(QCoreApplication::applicationDirPath() +
-		     QDir::separator() + "Sounds" + QDir::separator() +
-		     "buzz.wav"));
-
-  player = findChild<QMediaPlayer *> ("buzz.wav");
-
-  if(!player)
-    player = new QMediaPlayer(this);
-
-  player->setMedia(QUrl::fromLocalFile(str));
-  player->setObjectName("buzz.wav");
-  player->setVolume(50);
-  player->play();
-#endif
-#endif
+  playSong("buzz.wav");
 }
 
 void spoton::slotRemoveEmailParticipants(void)
