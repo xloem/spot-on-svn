@@ -336,6 +336,7 @@ void spoton::slotReceivedKernelMessage(void)
 				      ** public key.
 				      */
 		      QDateTime now(QDateTime::currentDateTime());
+		      QString keyType("");
 		      QString msg("");
 
 		      msg.append
@@ -393,7 +394,12 @@ void spoton::slotReceivedKernelMessage(void)
 			    item(items.at(0)->row(), 1); // OID
 
 			  if(item)
-			    oid = item->text();
+			    {
+			      keyType = item->data
+				(Qt::ItemDataRole(Qt::UserRole + 1)).
+				toString();
+			      oid = item->text();
+			    }
 			}
 
 		      if(step == 2)
@@ -442,7 +448,7 @@ void spoton::slotReceivedKernelMessage(void)
 			    (m_ui.messages->verticalScrollBar()->maximum());
 			}
 
-		      sendSMPLinkToKernel(values, oid, step + 1);
+		      sendSMPLinkToKernel(values, keyType, oid, step + 1);
 		      continue;
 		    }
 

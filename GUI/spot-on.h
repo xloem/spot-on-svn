@@ -239,6 +239,7 @@ class spoton: public QMainWindow
   void sendBuzzKeysToKernel(void);
   void sendKeysToKernel(void);
   void sendSMPLinkToKernel(const QList<QByteArray> &list,
+			   const QString &keyType,
 			   const QString &oid,
 			   const int step);
   void sharePublicKeyWithParticipant(const QString &keyType);

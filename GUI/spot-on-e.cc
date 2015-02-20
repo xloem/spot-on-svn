@@ -993,8 +993,6 @@ void spoton::slotVerifySMPSecret(void)
 
   if(hash.isEmpty())
     return;
-  else if(keyType != "chat")
-    return;
   else if(temporary) // Temporary friend?
     return; // Not allowed!
 
@@ -1011,14 +1009,17 @@ void spoton::slotVerifySMPSecret(void)
   list = smp->step1(&ok);
 
   if(ok)
-    sendSMPLinkToKernel(list, oid, 2);
+    sendSMPLinkToKernel(list, keyType, oid, 2);
 }
 
 void spoton::sendSMPLinkToKernel(const QList<QByteArray> &list,
+				 const QString &keyType,
 				 const QString &oid,
 				 const int step)
 {
-  if(list.isEmpty())
+  if(keyType.isEmpty())
+    return;
+  else if(list.isEmpty())
     return;
   else if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
     return;
@@ -1041,14 +1042,18 @@ void spoton::sendSMPLinkToKernel(const QList<QByteArray> &list,
 
   QByteArray message;
 
-  message.append("message_");
+  if(keyType.toLower() == "chat")
+    message.append("message_");
+  else
+    message.append("poptasticmessage_");
+
   message.append(QString("%1_").arg(oid));
   message.append(m_settings.value("gui/nodeName", "unknown").
 		 toByteArray().toBase64());
   message.append("_");
   message.append(magnet.toLatin1().toBase64());
   message.append("_");
-  message.append(QByteArray("1").toBase64()); // Sequence number.
+  message.append(QByteArray("1").toBase64()); // Artificial sequence number.
   message.append("_");
   message.append(QDateTime::currentDateTime().toUTC().
 		 toString("MMddyyyyhhmmss").toLatin1().toBase64());
