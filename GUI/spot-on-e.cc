@@ -933,7 +933,7 @@ void spoton::slotPrepareSMP(void)
      tr("&Secret"),
      QLineEdit::Normal, QString(""), &ok);
 
-  if(guess.isEmpty() || !ok)
+  if(!ok)
     return;
 
   spoton_smp *smp = 0;

@@ -55,6 +55,29 @@
        </spacer>
       </item>
       <item>
+       <widget class="QToolButton" name="smp">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../Icons/icons.qrc">
+          <normaloff>:/generic/smp-locked.png</normaloff>:/generic/smp-locked.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+        <property name="popupMode">
+         <enum>QToolButton::MenuButtonPopup</enum>
+        </property>
+        <property name="autoRaise">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="clearMessages">
         <property name="text">
          <string>Clear</string>
@@ -120,6 +143,7 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>smp</tabstop>
   <tabstop>clearMessages</tabstop>
   <tabstop>messages</tabstop>
   <tabstop>message</tabstop>
