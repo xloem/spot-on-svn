@@ -89,6 +89,15 @@ spoton_chatwindow::spoton_chatwindow(const QIcon &icon,
   else
     ui.name->setText(participant.trimmed());
 
+  QMenu *menu = new QMenu(this);
+
+  menu->addAction(tr("&Set an SMP secret."),
+		  this,
+		  SLOT(slotPrepareSMP(void)));
+  menu->addAction(tr("&Verify the SMP secret."),
+		  this,
+		  SLOT(slotVerifySMPSecret(void)));
+  ui.smp->setMenu(menu);
   slotSetIcons();
 }
 

@@ -325,7 +325,11 @@ void spoton::slotReceivedKernelMessage(void)
 		    list.replace(i, QByteArray::fromBase64(list.at(i)));
 
 		  QList<QByteArray> values;
+		  QPointer<spoton_chatwindow> chat = 0;
 		  int step = 1;
+
+		  if(m_chatWindows.contains(list.value(0).toBase64()))
+		    chat = m_chatWindows.value(list.value(0).toBase64());
 
 		  if(spoton_misc::
 		     isValidSMPMagnet(list.value(2), values, &step))
@@ -336,7 +340,6 @@ void spoton::slotReceivedKernelMessage(void)
 				      ** public key.
 				      */
 		      QDateTime now(QDateTime::currentDateTime());
-		      QPointer<spoton_chatwindow> chat = 0;
 		      QString keyType("");
 		      QString msg("");
 
@@ -357,9 +360,6 @@ void spoton::slotReceivedKernelMessage(void)
 			     constData()).
 			 arg(hash.toBase64().right(16).
 			     constData()));
-
-		      if(m_chatWindows.contains(hash.toBase64()))
-			chat = m_chatWindows.value(hash.toBase64());
 
 		      if(chat)
 			{
@@ -448,6 +448,7 @@ void spoton::slotReceivedKernelMessage(void)
 			  if(chat)
 			    {
 			      chat->append(msg);
+			      chat->setSMPVerified(passed);
 
 			      if(chat->isVisible())
 				chat->activateWindow();
@@ -623,18 +624,12 @@ void spoton::slotReceivedKernelMessage(void)
 		      if(!m_chatWindows.contains(hash.toBase64()))
 			slotParticipantDoubleClicked(items.at(0));
 
-		  if(m_chatWindows.contains(hash.toBase64()))
+		  if(chat)
 		    {
-		      QPointer<spoton_chatwindow> chat =
-			m_chatWindows.value(hash.toBase64());
+		      chat->append(msg);
 
-		      if(chat)
-			{
-			  chat->append(msg);
-
-			  if(chat->isVisible())
-			    chat->activateWindow();
-			}
+		      if(chat->isVisible())
+			chat->activateWindow();
 		    }
 
 		  m_ui.messages->append(msg);
