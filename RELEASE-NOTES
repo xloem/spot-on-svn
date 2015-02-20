@@ -24,6 +24,7 @@
      https://otr.cypherpunks.ca/Protocol-v3-4.0.0.html. Zero-knowledge
      proofs are not included with the distributed values. The values
      are transfered via an existing protocol. A protocol within a protocol?
+     Poptastic-friendly.
 15.  Update a participant's status information whenever geminis are updated.
 16.  Improved magnet validation.
 17.  Allow institution adding via the Enter key.
