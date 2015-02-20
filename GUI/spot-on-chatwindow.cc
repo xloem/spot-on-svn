@@ -341,3 +341,21 @@ bool spoton_chatwindow::event(QEvent *event)
 }
 #endif
 #endif
+
+void spoton_chatwindow::setSMPVerified(const bool state)
+{
+  QDateTime now(QDateTime::currentDateTime());
+
+  if(state)
+    {
+      ui.smp->setIcon(QIcon(":/generic/smp-unlocked.png"));
+      ui.smp->setToolTip(tr("SMP verification succeeded on %1.").
+			 arg(now.toString()));
+    }
+  else
+    {
+      ui.smp->setIcon(QIcon(":/generic/smp-locked.png"));
+      ui.smp->setToolTip(tr("SMP verification failed on %1.").
+			 arg(now.toString()));
+    }
+}
