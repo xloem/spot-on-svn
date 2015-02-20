@@ -37,11 +37,6 @@ extern "C"
 
 extern "C"
 {
-  /*
-  ** Older compilers (GCC 4.2.1) misbehave.
-  */
-
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #include <errno.h>
 #include <gcrypt.h>
 #include <openssl/pem.h>
@@ -51,7 +46,6 @@ extern "C"
 #ifdef SPOTON_LINKED_WITH_LIBPTHREAD
 #include <pthread.h>
 #endif
-#pragma GCC diagnostic warning "-Wdeprecated-declarations"
 }
 
 #include <QByteArray>
