@@ -30,6 +30,8 @@ extern "C"
 #include <curl/curl.h>
 }
 
+#include <QThread>
+
 #if SPOTON_GOLDBUG == 1
 #if QT_VERSION >= 0x050000
 #include <QCoreApplication>
@@ -38,8 +40,6 @@ extern "C"
 #include <QtCore>
 #endif
 #endif
-
-#include <QThread>
 
 #include "spot-on.h"
 #include "spot-on-defines.h"
