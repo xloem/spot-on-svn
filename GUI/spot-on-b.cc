@@ -336,6 +336,7 @@ void spoton::slotReceivedKernelMessage(void)
 				      ** public key.
 				      */
 		      QDateTime now(QDateTime::currentDateTime());
+		      QPointer<spoton_chatwindow> chat = 0;
 		      QString keyType("");
 		      QString msg("");
 
@@ -358,17 +359,14 @@ void spoton::slotReceivedKernelMessage(void)
 			     constData()));
 
 		      if(m_chatWindows.contains(hash.toBase64()))
+			chat = m_chatWindows.value(hash.toBase64());
+
+		      if(chat)
 			{
-			  QPointer<spoton_chatwindow> chat =
-			    m_chatWindows.value(hash.toBase64());
+			  chat->append(msg);
 
-			  if(chat)
-			    {
-			      chat->append(msg);
-
-			      if(chat->isVisible())
-				chat->activateWindow();
-			    }
+			  if(chat->isVisible())
+			    chat->activateWindow();
 			}
 
 		      m_ui.messages->append(msg);
@@ -446,9 +444,26 @@ void spoton::slotReceivedKernelMessage(void)
 			  m_ui.messages->append(msg);
 			  m_ui.messages->verticalScrollBar()->setValue
 			    (m_ui.messages->verticalScrollBar()->maximum());
+
+			  if(chat)
+			    {
+			      chat->append(msg);
+
+			      if(chat->isVisible())
+				chat->activateWindow();
+			    }
 			}
 
 		      sendSMPLinkToKernel(values, keyType, oid, step + 1);
+
+#if SPOTON_GOLDBUG == 1
+		      if(m_ui.tab->currentIndex() != 0)
+#else
+		      if(m_ui.tab->currentIndex() != 1)
+#endif
+			m_sb.chat->setVisible(true);
+
+		      playSong("receive.wav");
 		      continue;
 		    }
 
