@@ -2429,6 +2429,7 @@ bool spoton_misc::isValidBuzzMagnetData(const QByteArray &data)
 bool spoton_misc::isValidBuzzMagnet(const QByteArray &magnet)
 {
   QList<QByteArray> list;
+  QStringList starts;
   bool valid = false;
   int tokens = 0;
 
@@ -2441,11 +2442,19 @@ bool spoton_misc::isValidBuzzMagnet(const QByteArray &magnet)
   else
     goto done_label;
 
+  starts << "ct="
+	 << "hk="
+	 << "ht="
+	 << "rn="
+	 << "xf="
+	 << "xs="
+	 << "xt=";
+
   while(!list.isEmpty())
     {
       QString str(list.takeFirst());
 
-      if(str.startsWith("ct="))
+      if(starts.contains("ct=") && str.startsWith("ct="))
 	{
 	  str.remove(0, 3);
 
@@ -2455,9 +2464,12 @@ bool spoton_misc::isValidBuzzMagnet(const QByteArray &magnet)
 	      goto done_label;
 	    }
 	  else
-	    tokens += 1;
+	    {
+	      starts.removeAll("ct=");
+	      tokens += 1;
+	    }
 	}
-      else if(str.startsWith("rn="))
+      else if(starts.contains("rn=") && str.startsWith("rn="))
 	{
 	  str.remove(0, 3);
 
@@ -2467,9 +2479,12 @@ bool spoton_misc::isValidBuzzMagnet(const QByteArray &magnet)
 	      goto done_label;
 	    }
 	  else
-	    tokens += 1;
+	    {
+	      starts.removeAll("rn=");
+	      tokens += 1;
+	    }
 	}
-      else if(str.startsWith("ht="))
+      else if(starts.contains("ht=") && str.startsWith("ht="))
 	{
 	  str.remove(0, 3);
 
@@ -2479,9 +2494,12 @@ bool spoton_misc::isValidBuzzMagnet(const QByteArray &magnet)
 	      goto done_label;
 	    }
 	  else
-	    tokens += 1;
+	    {
+	      starts.removeAll("ht=");
+	      tokens += 1;
+	    }
 	}
-      else if(str.startsWith("hk="))
+      else if(starts.contains("hk=") && str.startsWith("hk="))
 	{
 	  str.remove(0, 3);
 
@@ -2491,9 +2509,12 @@ bool spoton_misc::isValidBuzzMagnet(const QByteArray &magnet)
 	      goto done_label;
 	    }
 	  else
-	    tokens += 1;
+	    {
+	      starts.removeAll("hk=");
+	      tokens += 1;
+	    }
 	}
-      else if(str.startsWith("xf="))
+      else if(starts.contains("xf=") && str.startsWith("xf="))
 	{
 	  str.remove(0, 3);
 
@@ -2506,9 +2527,12 @@ bool spoton_misc::isValidBuzzMagnet(const QByteArray &magnet)
 	      goto done_label;
 	    }
 	  else
-	    tokens += 1;
+	    {
+	      starts.removeAll("xf=");
+	      tokens += 1;
+	    }
 	}
-      else if(str.startsWith("xs="))
+      else if(starts.contains("xs=") && str.startsWith("xs="))
 	{
 	  str.remove(0, 3);
 
@@ -2518,9 +2542,12 @@ bool spoton_misc::isValidBuzzMagnet(const QByteArray &magnet)
 	      goto done_label;
 	    }
 	  else
-	    tokens += 1;
+	    {
+	      starts.removeAll("xs=");
+	      tokens += 1;
+	    }
 	}
-      else if(str.startsWith("xt="))
+      else if(starts.contains("xt=") && str.startsWith("xt="))
 	{
 	  str.remove(0, 3);
 
@@ -2530,7 +2557,10 @@ bool spoton_misc::isValidBuzzMagnet(const QByteArray &magnet)
 	      goto done_label;
 	    }
 	  else
-	    tokens += 1;
+	    {
+	      starts.removeAll("xt=");
+	      tokens += 1;
+	    }
 	}
     }
 
@@ -2544,6 +2574,7 @@ bool spoton_misc::isValidBuzzMagnet(const QByteArray &magnet)
 bool spoton_misc::isValidStarBeamMagnet(const QByteArray &magnet)
 {
   QList<QByteArray> list;
+  QStringList starts;
   bool valid = false;
   int tokens = 0;
 
@@ -2556,11 +2587,17 @@ bool spoton_misc::isValidStarBeamMagnet(const QByteArray &magnet)
   else
     goto done_label;
 
+  starts << "ct="
+	 << "ek="
+	 << "ht="
+	 << "mk="
+	 << "xt=";
+
   while(!list.isEmpty())
     {
       QString str(list.takeFirst());
 
-      if(str.startsWith("ct="))
+      if(starts.contains("ct=") && str.startsWith("ct="))
 	{
 	  str.remove(0, 3);
 
@@ -2570,9 +2607,12 @@ bool spoton_misc::isValidStarBeamMagnet(const QByteArray &magnet)
 	      goto done_label;
 	    }
 	  else
-	    tokens += 1;
+	    {
+	      starts.removeAll("ct=");
+	      tokens += 1;
+	    }
 	}
-      else if(str.startsWith("ek="))
+      else if(starts.contains("ek=") && str.startsWith("ek="))
 	{
 	  str.remove(0, 3);
 
@@ -2582,9 +2622,12 @@ bool spoton_misc::isValidStarBeamMagnet(const QByteArray &magnet)
 	      goto done_label;
 	    }
 	  else
-	    tokens += 1;
+	    {
+	      starts.removeAll("ek=");
+	      tokens += 1;
+	    }
 	}
-      else if(str.startsWith("ht="))
+      else if(starts.contains("ht=") && str.startsWith("ht="))
 	{
 	  str.remove(0, 3);
 
@@ -2594,9 +2637,12 @@ bool spoton_misc::isValidStarBeamMagnet(const QByteArray &magnet)
 	      goto done_label;
 	    }
 	  else
-	    tokens += 1;
+	    {
+	      starts.removeAll("ht=");
+	      tokens += 1;
+	    }
 	}
-      else if(str.startsWith("mk="))
+      else if(starts.contains("mk=") && str.startsWith("mk="))
 	{
 	  str.remove(0, 3);
 
@@ -2606,9 +2652,12 @@ bool spoton_misc::isValidStarBeamMagnet(const QByteArray &magnet)
 	      goto done_label;
 	    }
 	  else
-	    tokens += 1;
+	    {
+	      starts.removeAll("mk=");
+	      tokens += 1;
+	    }
 	}
-      else if(str.startsWith("xt="))
+      else if(starts.contains("xt=") && str.startsWith("xt="))
 	{
 	  str.remove(0, 3);
 
@@ -2618,7 +2667,10 @@ bool spoton_misc::isValidStarBeamMagnet(const QByteArray &magnet)
 	      goto done_label;
 	    }
 	  else
-	    tokens += 1;
+	    {
+	      starts.removeAll("xt=");
+	      tokens += 1;
+	    }
 	}
     }
 
@@ -2632,6 +2684,7 @@ bool spoton_misc::isValidStarBeamMagnet(const QByteArray &magnet)
 bool spoton_misc::isValidStarBeamMissingLinksMagnet(const QByteArray &magnet)
 {
   QList<QByteArray> list;
+  QStringList starts;
   bool valid = false;
   int tokens = 0;
 
@@ -2644,11 +2697,16 @@ bool spoton_misc::isValidStarBeamMissingLinksMagnet(const QByteArray &magnet)
   else
     goto done_label;
 
+  starts << "fn="
+	 << "ml="
+	 << "ps="
+	 << "xt=";
+
   while(!list.isEmpty())
     {
       QString str(list.takeFirst());
 
-      if(str.startsWith("fn="))
+      if(starts.contains("fn=") && str.startsWith("fn="))
 	{
 	  str.remove(0, 3);
 
@@ -2658,9 +2716,12 @@ bool spoton_misc::isValidStarBeamMissingLinksMagnet(const QByteArray &magnet)
 	      goto done_label;
 	    }
 	  else
-	    tokens += 1;
+	    {
+	      starts.removeAll("fn=");
+	      tokens += 1;
+	    }
 	}
-      else if(str.startsWith("ps="))
+      else if(starts.contains("ps=") && str.startsWith("ps="))
 	{
 	  str.remove(0, 3);
 
@@ -2673,9 +2734,12 @@ bool spoton_misc::isValidStarBeamMissingLinksMagnet(const QByteArray &magnet)
 	      goto done_label;
 	    }
 	  else
-	    tokens += 1;
+	    {
+	      starts.removeAll("ps=");
+	      tokens += 1;
+	    }
 	}
-      else if(str.startsWith("ml="))
+      else if(starts.contains("ml=") && str.startsWith("ml="))
 	{
 	  str.remove(0, 3);
 
@@ -2685,9 +2749,12 @@ bool spoton_misc::isValidStarBeamMissingLinksMagnet(const QByteArray &magnet)
 	      goto done_label;
 	    }
 	  else
-	    tokens += 1;
+	    {
+	      starts.removeAll("ml=");
+	      tokens += 1;
+	    }
 	}
-      else if(str.startsWith("xt="))
+      else if(starts.contains("xt=") && str.startsWith("xt="))
 	{
 	  str.remove(0, 3);
 
@@ -2697,7 +2764,10 @@ bool spoton_misc::isValidStarBeamMissingLinksMagnet(const QByteArray &magnet)
 	      goto done_label;
 	    }
 	  else
-	    tokens += 1;
+	    {
+	      starts.removeAll("xt=");
+	      tokens += 1;
+	    }
 	}
     }
 
@@ -2846,6 +2916,7 @@ QByteArray spoton_misc::findPublicKeyHashGivenHash
 bool spoton_misc::isValidInstitutionMagnet(const QByteArray &magnet)
 {
   QList<QByteArray> list;
+  QStringList starts;
   bool valid = false;
   int tokens = 0;
 
@@ -2858,11 +2929,17 @@ bool spoton_misc::isValidInstitutionMagnet(const QByteArray &magnet)
   else
     goto done_label;
 
+  starts << "ct="
+	 << "ht="
+	 << "in="
+	 << "pa="
+	 << "xt=";
+
   while(!list.isEmpty())
     {
       QString str(list.takeFirst());
 
-      if(str.startsWith("in="))
+      if(starts.contains("in=") && str.startsWith("in="))
 	{
 	  str.remove(0, 3);
 
@@ -2872,9 +2949,12 @@ bool spoton_misc::isValidInstitutionMagnet(const QByteArray &magnet)
 	      goto done_label;
 	    }
 	  else
-	    tokens += 1;
+	    {
+	      starts.removeAll("in=");
+	      tokens += 1;
+	    }
 	}
-      else if(str.startsWith("ct="))
+      else if(starts.contains("ct=") && str.startsWith("ct="))
 	{
 	  str.remove(0, 3);
 
@@ -2884,9 +2964,12 @@ bool spoton_misc::isValidInstitutionMagnet(const QByteArray &magnet)
 	      goto done_label;
 	    }
 	  else
-	    tokens += 1;
+	    {
+	      starts.removeAll("ct=");
+	      tokens += 1;
+	    }
 	}
-      else if(str.startsWith("pa="))
+      else if(starts.contains("pa=") && str.startsWith("pa="))
 	{
 	  str.remove(0, 3);
 
@@ -2896,9 +2979,12 @@ bool spoton_misc::isValidInstitutionMagnet(const QByteArray &magnet)
 	      goto done_label;
 	    }
 	  else
-	    tokens += 1;
+	    {
+	      starts.removeAll("pa=");
+	      tokens += 1;
+	    }
 	}
-      else if(str.startsWith("ht="))
+      else if(starts.contains("ht=") && str.startsWith("ht="))
 	{
 	  str.remove(0, 3);
 
@@ -2908,9 +2994,12 @@ bool spoton_misc::isValidInstitutionMagnet(const QByteArray &magnet)
 	      goto done_label;
 	    }
 	  else
-	    tokens += 1;
+	    {
+	      starts.removeAll("ht=");
+	      tokens += 1;
+	    }
 	}
-      else if(str.startsWith("xt="))
+      else if(starts.contains("xt=") && str.startsWith("xt="))
 	{
 	  str.remove(0, 3);
 
@@ -2920,7 +3009,10 @@ bool spoton_misc::isValidInstitutionMagnet(const QByteArray &magnet)
 	      goto done_label;
 	    }
 	  else
-	    tokens += 1;
+	    {
+	      starts.removeAll("xt=");
+	      tokens += 1;
+	    }
 	}
     }
 
@@ -3449,42 +3541,12 @@ bool spoton_misc::prepareUrlKeysDatabase(void)
   return ok;
 }
 
-int spoton_misc::user_interfaces(void)
-{
-  QString connectionName("");
-  int count = 0;
-
-  {
-    QSqlDatabase db = database(connectionName);
-
-    db.setDatabaseName(homePath() + QDir::separator() + "kernel.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-
-	if(query.exec("SELECT statistic, value FROM kernel_statistics "
-		      "ORDER BY statistic"))
-	  while(query.next())
-	    if(query.value(0).toString().toLower().
-	       contains("user interfaces"))
-	      {
-		count = query.value(1).toInt();
-		break;
-	      }
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase(connectionName);
-  return count;
-}
-
 bool spoton_misc::isValidSMPMagnet(const QByteArray &magnet,
-					QList<QByteArray> &values)
+				   QList<QByteArray> &values,
+				   int *step)
 {
   QList<QByteArray> list;
+  QStringList starts;
   bool valid = false;
   int tokens = 0;
 
@@ -3497,16 +3559,24 @@ bool spoton_misc::isValidSMPMagnet(const QByteArray &magnet,
   else
     goto done_label;
 
+  starts << "step="
+	 << "xt=";
+
   while(!list.isEmpty())
     {
       QString str(list.takeFirst());
 
-      if(str.startsWith("step="))
+      if(starts.contains("step=") && str.startsWith("step="))
 	{
 	  str.remove(0, 5);
 
-	  if(str.toInt() >= 1 && str.toInt() <= 4)
-	    tokens += 1;
+	  if(str.toInt() >= 2 && str.toInt() <= 5)
+	    {
+	      if(step)
+		*step = str.toInt();
+
+	      tokens += 1;
+	    }
 	  else
 	    {
 	      valid = false;
@@ -3528,7 +3598,7 @@ bool spoton_misc::isValidSMPMagnet(const QByteArray &magnet,
 	      tokens += 1;
 	    }
 	}
-      else if(str.startsWith("xt="))
+      else if(starts.contains("xt=") && str.startsWith("xt="))
 	{
 	  str.remove(0, 3);
 
@@ -3538,7 +3608,10 @@ bool spoton_misc::isValidSMPMagnet(const QByteArray &magnet,
 	      goto done_label;
 	    }
 	  else
-	    tokens += 1;
+	    {
+	      starts.removeAll("xt=");
+	      tokens += 1;
+	    }
 	}
     }
 
@@ -3546,5 +3619,14 @@ bool spoton_misc::isValidSMPMagnet(const QByteArray &magnet,
     valid = true;
 
  done_label:
+
+  if(!valid)
+    {
+      if(step)
+	*step = 1;
+
+      values.clear();
+    }
+
   return valid;
 }

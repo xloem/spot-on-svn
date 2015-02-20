@@ -893,11 +893,6 @@ void spoton::slotSaveOpenLinks(bool state)
 
 void spoton::slotPrepareSMP(void)
 {
-  if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
-    return;
-  else if(!m_kernelSocket.isEncrypted())
-    return;
-
   QString hash("");
   QString keyType("");
   QString oid("");
@@ -951,11 +946,68 @@ void spoton::slotPrepareSMP(void)
       m_smps[hash] = smp;
     }
 
+  smp->reset();
   smp->setGuess(guess);
 }
 
+void spoton::slotVerifySMPSecret(void)
+{
+  if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
+    return;
+  else if(!m_kernelSocket.isEncrypted())
+    return;
+
+  QString hash("");
+  QString keyType("");
+  QString oid("");
+  bool temporary = true;
+  int row = -1;
+
+  if((row = m_ui.participants->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = m_ui.participants->item
+	(row, 1); // OID
+
+      if(item)
+	{
+	  keyType = item->data
+	    (Qt::ItemDataRole(Qt::UserRole + 1)).toString();
+	  oid = item->text();
+	  temporary = item->data(Qt::UserRole).toBool();
+	}
+
+      item = m_ui.participants->item(row, 3); // public_key_hash
+
+      if(item)
+	hash = item->text();
+    }
+
+  if(hash.isEmpty())
+    return;
+  else if(keyType != "chat")
+    return;
+  else if(temporary) // Temporary friend?
+    return; // Not allowed!
+
+  spoton_smp *smp = 0;
+
+  if(!m_smps.contains(hash))
+    return;
+  else
+    smp = m_smps.value(hash);
+
+  QList<QByteArray> list;
+  bool ok = true;
+
+  list = smp->step1(&ok);
+
+  if(ok)
+    sendSMPLinkToKernel(list, oid, 2);
+}
+
 void spoton::sendSMPLinkToKernel(const QList<QByteArray> &list,
-				 const QString &oid)
+				 const QString &oid,
+				 const int step)
 {
   if(list.isEmpty())
     return;
@@ -963,16 +1015,20 @@ void spoton::sendSMPLinkToKernel(const QList<QByteArray> &list,
     return;
   else if(!m_kernelSocket.isEncrypted())
     return;
+  else if(oid.isEmpty())
+    return;
+  else if(step <= 0 || step > 5)
+    return;
 
   QString magnet("magnet:?");
 
-  magnet.append(QString("step=%1&").arg(1));
+  magnet.append(QString("step=%1&").arg(step));
 
   for(int i = 0; i < list.size(); i++)
     magnet.append
       (QString("value=%2&").arg(list.at(i).toBase64().constData()));
 
-  magnet.append("urn:smp");
+  magnet.append("xt=urn:smp");
 
   QByteArray message;
 
@@ -983,7 +1039,7 @@ void spoton::sendSMPLinkToKernel(const QList<QByteArray> &list,
   message.append("_");
   message.append(magnet.toLatin1().toBase64());
   message.append("_");
-  message.append(QByteArray("1").toBase64());
+  message.append(QByteArray("1").toBase64()); // Sequence number.
   message.append("_");
   message.append(QDateTime::currentDateTime().toUTC().
 		 toString("MMddyyyyhhmmss").toLatin1().toBase64());

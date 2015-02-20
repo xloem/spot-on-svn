@@ -371,9 +371,10 @@ void spoton::slotReceivedKernelMessage(void)
 		    list.replace(i, QByteArray::fromBase64(list.at(i)));
 
 		  QList<QByteArray> values;
+		  int step = 1;
 
 		  if(spoton_misc::
-		     isValidSMPMagnet(list.value(2), values))
+		     isValidSMPMagnet(list.value(2), values, &step))
 		    {
 		      QByteArray hash
 			(list.at(0)); /*
@@ -393,7 +394,9 @@ void spoton::slotReceivedKernelMessage(void)
 			 arg(now.toString("mm")).
 			 arg(now.toString("ss")));
 		      msg.append
-			(tr("<i>Received an SMP message from %1...%2.</i>").
+			(tr("<i>Received an SMP message "
+			    "(step %1) from %2...%3.</i>").
+			 arg(step).
 			 arg(hash.toBase64().mid(0, 16).
 			     constData()).
 			 arg(hash.toBase64().right(16).
@@ -420,30 +423,35 @@ void spoton::slotReceivedKernelMessage(void)
 		      spoton_smp *smp = m_smps.value(hash.toBase64());
 
 		      if(!smp)
-			{
-			  smp = new spoton_smp();
-			  m_smps[hash.toBase64()] = smp;
-			}
+			continue;
 
 		      QList<QTableWidgetItem *> items
 			(m_ui.participants->
 			 findItems(hash.toBase64(),
 				   Qt::MatchExactly));
 		      QString oid("");
+		      bool ok = true;
 		      bool passed = false;
 
 		      if(!items.isEmpty() && items.at(0))
 			{
 			  QTableWidgetItem *item = m_ui.participants->
-			    item(items.at(0)->row(),
-				 m_ui.participants->
-				 columnCount() - 1); // OID
+			    item(items.at(0)->row(), 1); // OID
 
 			  if(item)
 			    oid = item->text();
 			}
 
-		      if(passed)
+		      if(step == 2)
+			values = smp->step2(values, &ok);
+		      else if(step == 3)
+			values = smp->step3(values, &ok);
+		      else if(step == 4)
+			values = smp->step4(values, &ok, &passed);
+		      else if(step == 5)
+			smp->step5(values, &ok, &passed);
+
+		      if(smp->step() == 4 || smp->step() == 5)
 			{
 			  msg.clear();
 			  msg.append
@@ -455,19 +463,30 @@ void spoton::slotReceivedKernelMessage(void)
 			     arg(now.toString("hh")).
 			     arg(now.toString("mm")).
 			     arg(now.toString("ss")));
-			  msg.append
-			    (tr("<i>SMP guess with %1...%2 "
-				"has been verified.</i>").
-			     arg(hash.toBase64().mid(0, 16).
-				 constData()).
-			     arg(hash.toBase64().right(16).
-				 constData()));
+
+			  if(passed)
+			    msg.append
+			      (tr("<i>SMP verification with %1...%2 "
+				  "has succeeded.</i>").
+			       arg(hash.toBase64().mid(0, 16).
+				   constData()).
+			       arg(hash.toBase64().right(16).
+				   constData()));
+			  else
+			    msg.append
+			      (tr("<i>SMP verification with %1...%2 "
+				  "has failed.</i>").
+			       arg(hash.toBase64().mid(0, 16).
+				   constData()).
+			       arg(hash.toBase64().right(16).
+				   constData()));
+
 			  m_ui.messages->append(msg);
 			  m_ui.messages->verticalScrollBar()->setValue
 			    (m_ui.messages->verticalScrollBar()->maximum());
 			}
 
-		      sendSMPLinkToKernel(values, oid);
+		      sendSMPLinkToKernel(values, oid, step + 1);
 		      continue;
 		    }
 

@@ -201,7 +201,6 @@ int main(int argc, char *argv[])
 
 spoton::spoton(void):QMainWindow()
 {
-  spoton_smp::test();
   qsrand(QTime(0, 0, 0).secsTo(QTime::currentTime()));
   QDir().mkdir(spoton_misc::homePath());
   m_keysShared["buzz_channels_sent_to_kernel"] = "false";
@@ -1156,6 +1155,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotAddInstitutionCheckBoxToggled(bool)));
+  connect(m_ui.addInstitutionLineEdit,
+	  SIGNAL(returnPressed(void)),
+	  this,
+	  SLOT(slotAddInstitution(void)));
   connect(m_optionsUi.displayPopups,
 	  SIGNAL(toggled(bool)),
 	  this,
@@ -5988,9 +5991,12 @@ void spoton::slotShowContextMenu(const QPoint &point)
 			      this, SLOT(slotRenameParticipant(void)));
       action->setProperty("type", "chat");
       menu.addSeparator();
-      menu.addAction(tr("&Verify a secret via SMP."),
+      menu.addAction(tr("&Set an SMP secret."),
 		     this,
 		     SLOT(slotPrepareSMP(void)));
+      menu.addAction(tr("&Verify the SMP secret."),
+		     this,
+		     SLOT(slotVerifySMPSecret(void)));
       menu.exec(m_ui.participants->mapToGlobal(point));
     }
   else if(m_ui.received == sender())

@@ -238,7 +238,8 @@ class spoton: public QMainWindow
   void sendBuzzKeysToKernel(void);
   void sendKeysToKernel(void);
   void sendSMPLinkToKernel(const QList<QByteArray> &list,
-			   const QString &oid);
+			   const QString &oid,
+			   const int step);
   void sharePublicKeyWithParticipant(const QString &keyType);
   void showUrls(const QString &link, const QString &querystr);
   void updateListenersTable(const QSqlDatabase &db);
@@ -518,6 +519,7 @@ class spoton: public QMainWindow
   void slotUrlDistillersRadioButton(bool state);
   void slotValidatePassphrase(void);
   void slotVerify(void);
+  void slotVerifySMPSecret(void);
   void slotViewLog(void);
   void slotViewRosetta(void);
 

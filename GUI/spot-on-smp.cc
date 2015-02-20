@@ -62,7 +62,7 @@ spoton_smp::spoton_smp(void)
 }
 
 spoton_smp::~spoton_smp()
-{  
+{
   gcry_mpi_release(m_generator);
   gcry_mpi_release(m_modulus);
   reset();
@@ -689,20 +689,6 @@ void spoton_smp::reset(void)
 int spoton_smp::step(void) const
 {
   return m_step;
-}
-
-void spoton_smp::nextStep(QList<QByteArray> &values, bool *passed)
-{
-  bool ok = true;
-
-  if(m_step == 1)
-    values = step2(values, &ok);
-  else if(m_step == 2)
-    values = step3(values, &ok);
-  else if(m_step == 3)
-    values = step4(values, &ok, passed);
-  else if(m_step == 4)
-    step5(values, &ok, passed);
 }
 
 void spoton_smp::setGuess(const QString &guess)

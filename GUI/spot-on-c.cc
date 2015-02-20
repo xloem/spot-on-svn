@@ -2536,9 +2536,12 @@ void spoton::prepareContextMenuMirrors(void)
 			       this, SLOT(slotRenameParticipant(void)));
       action->setProperty("type", "chat");
       menu->addSeparator();
-      menu->addAction(tr("&Verify a secret via SMP."),
+      menu->addAction(tr("&Set an SMP secret."),
 		      this,
 		      SLOT(slotPrepareSMP(void)));
+      menu->addAction(tr("&Verify the SMP secret."),
+		      this,
+		      SLOT(slotVerifySMPSecret(void)));
       m_ui.chatActionMenu->setMenu(menu);
     }
 

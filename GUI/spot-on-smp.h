@@ -50,7 +50,6 @@ class spoton_smp
   QList<QByteArray> step4(const QList<QByteArray> &other, bool *ok,
 			  bool *passed);
   int step(void) const;
-  void nextStep(QList<QByteArray> &values, bool *passed);
   void reset(void);
   void setGuess(const QString &guess);
   void step5(const QList<QByteArray> &other, bool *ok, bool *passed);
