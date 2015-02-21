@@ -54,8 +54,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>458</width>
-             <height>640</height>
+             <width>461</width>
+             <height>654</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -757,9 +757,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
-             <width>659</width>
-             <height>914</height>
+             <y>-365</y>
+             <width>679</width>
+             <height>965</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -1236,6 +1236,13 @@
                 </widget>
                </item>
                <item>
+                <widget class="QCheckBox" name="launchKernel">
+                 <property name="text">
+                  <string>&amp;Launch the kernel after user authentication.</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
                 <widget class="QCheckBox" name="scrambler">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -1405,7 +1412,7 @@
      <x>0</x>
      <y>0</y>
      <width>500</width>
-     <height>24</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -1473,6 +1480,7 @@
   <tabstop>publishedKeySize</tabstop>
   <tabstop>openlinks</tabstop>
   <tabstop>forceRegistration</tabstop>
+  <tabstop>launchKernel</tabstop>
   <tabstop>scrambler</tabstop>
   <tabstop>sharePrivateKeys</tabstop>
   <tabstop>superEcho</tabstop>
@@ -1480,6 +1488,47 @@
   <tabstop>acceptUrlKeys</tabstop>
   <tabstop>scrambler</tabstop>
   <tabstop>sharePrivateKeys</tabstop>
+  <tabstop>scrollArea_3</tabstop>
+  <tabstop>icons_2</tabstop>
+  <tabstop>iconsize_2</tabstop>
+  <tabstop>position_2</tabstop>
+  <tabstop>buzzAutoJoin_2</tabstop>
+  <tabstop>displayPopups_2</tabstop>
+  <tabstop>enableChatEmoticons_2</tabstop>
+  <tabstop>chatSendMethod_2</tabstop>
+  <tabstop>chatUpdateInterval_2</tabstop>
+  <tabstop>autoEmailRetrieve_2</tabstop>
+  <tabstop>emailRetrievalInterval_2</tabstop>
+  <tabstop>listenersUpdateInterval_2</tabstop>
+  <tabstop>keepOnlyUserDefinedNeighbors_2</tabstop>
+  <tabstop>neighborsUpdateInterval_2</tabstop>
+  <tabstop>kernelUpdateInterval_2</tabstop>
+  <tabstop>starbeamUpdateInterval_2</tabstop>
+  <tabstop>scrollArea_4</tabstop>
+  <tabstop>acceptBuzzMagnets_2</tabstop>
+  <tabstop>acceptGeminis_2</tabstop>
+  <tabstop>chatAcceptSigned_2</tabstop>
+  <tabstop>acceptChatKeys_2</tabstop>
+  <tabstop>impersonate_2</tabstop>
+  <tabstop>chatSignMessages_2</tabstop>
+  <tabstop>emailAcceptSigned_2</tabstop>
+  <tabstop>acceptEmailKeys_2</tabstop>
+  <tabstop>maximumEmailFileSize_2</tabstop>
+  <tabstop>coAcceptSigned_2</tabstop>
+  <tabstop>emailSignMessages_2</tabstop>
+  <tabstop>limitConnections_2</tabstop>
+  <tabstop>publishPeriodically_2</tabstop>
+  <tabstop>acceptPublishedConnected_2</tabstop>
+  <tabstop>acceptPublishedDisconnected_2</tabstop>
+  <tabstop>ignorePublished_2</tabstop>
+  <tabstop>publishedKeySize_2</tabstop>
+  <tabstop>openlinks_2</tabstop>
+  <tabstop>forceRegistration_2</tabstop>
+  <tabstop>scrambler_2</tabstop>
+  <tabstop>sharePrivateKeys_2</tabstop>
+  <tabstop>superEcho_2</tabstop>
+  <tabstop>autoAddSharedSBMagnets_2</tabstop>
+  <tabstop>acceptUrlKeys_2</tabstop>
  </tabstops>
  <resources>
   <include location="../Icons/icons.qrc"/>

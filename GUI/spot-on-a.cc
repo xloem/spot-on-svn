@@ -466,6 +466,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotProtocolRadioToggled(bool)));
+  connect(m_optionsUi.launchKernel,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotLaunchKernelAfterAuthentication(bool)));
   connect(m_optionsUi.limitConnections,
 	  SIGNAL(valueChanged(int)),
 	  this,
@@ -1744,6 +1748,8 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/enableChatEmoticons", false).toBool());
   m_optionsUi.forceRegistration->setChecked
     (m_settings.value("gui/forceKernelRegistration", true).toBool());
+  m_optionsUi.launchKernel->setChecked
+    (m_settings.value("gui/launchKernelAfterAuth", false).toBool());
   m_ui.hideOfflineParticipants->setChecked
     (m_settings.value("gui/hideOfflineParticipants", false).toBool());
   m_optionsUi.keepOnlyUserDefinedNeighbors->setChecked
@@ -5503,6 +5509,10 @@ void spoton::slotValidatePassphrase(void)
 
 	    m_rosetta.setCryptObjects(m_crypts.value("rosetta", 0),
 				      m_crypts.value("rosetta-signature", 0));
+
+	    if(m_optionsUi.launchKernel->isChecked())
+	      slotActivateKernel();
+
 	    askKernelToReadStarBeamKeys();
 	    populateNovas();
 	    sendBuzzKeysToKernel();

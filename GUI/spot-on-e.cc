@@ -1102,3 +1102,12 @@ void spoton::playSong(const QString &name)
   Q_UNUSED(name);
 #endif
 }
+
+void spoton::slotLaunchKernelAfterAuthentication(bool state)
+{
+  m_settings["gui/launchKernelAfterAuth"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/launchKernelAfterAuth", state);
+}
