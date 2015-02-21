@@ -29,6 +29,7 @@
 16.  Improved magnet validation.
 17.  Allow institution adding via the Enter key.
 18.  Compact song playing.
+19.  Allow automatic kernel activation after user authentication.
 
 0.18 (01/23/2015)
 
