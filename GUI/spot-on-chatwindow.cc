@@ -358,13 +358,16 @@ void spoton_chatwindow::setSMPVerified(const bool state)
   if(state)
     {
       ui.smp->setIcon(QIcon(":/generic/smp-unlocked.png"));
-      ui.smp->setToolTip(tr("SMP verification succeeded on %1.").
-			 arg(now.toString()));
+      ui.smp->setToolTip
+	(tr("The Socialist Millionaire Protocol "
+	    "succeeded on %1.").
+	 arg(now.toString()));
     }
   else
     {
       ui.smp->setIcon(QIcon(":/generic/smp-locked.png"));
-      ui.smp->setToolTip(tr("SMP verification failed on %1.").
-			 arg(now.toString()));
+      ui.smp->setToolTip
+	(tr("The Socialist Millionaire Protocol failed on %1.").
+	 arg(now.toString()));
     }
 }
