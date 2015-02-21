@@ -5791,6 +5791,8 @@ void spoton::slotParticipantDoubleClicked(QTableWidgetItem *item)
 
   publicKeyHash = item->text();
 
+  spoton_smp *smp = m_smps.value(publicKeyHash, 0);
+
   if(m_chatWindows.contains(publicKeyHash))
     {
       QPointer<spoton_chatwindow> chat = m_chatWindows.value
@@ -5798,6 +5800,9 @@ void spoton::slotParticipantDoubleClicked(QTableWidgetItem *item)
 
       if(chat)
 	{
+	  if(smp)
+	    chat->setSMPVerified(smp->passed());
+
 	  chat->showNormal();
 	  chat->raise();
 	  return;
@@ -5817,6 +5822,14 @@ void spoton::slotParticipantDoubleClicked(QTableWidgetItem *item)
 	  SIGNAL(messageSent(void)),
 	  this,
 	  SLOT(slotChatWindowMessageSent(void)));
+  connect(chat,
+	  SIGNAL(prepareSMP(void)),
+	  this,
+	  SLOT(slotPrepareSMP(void)));
+  connect(chat,
+	  SIGNAL(verifySMPSecret(void)),
+	  this,
+	  SLOT(slotVerifySMPSecret(void)));
   connect(this,
 	  SIGNAL(iconsChanged(void)),
 	  chat,
@@ -5831,6 +5844,10 @@ void spoton::slotParticipantDoubleClicked(QTableWidgetItem *item)
 			     const QString &)));
   m_chatWindows[publicKeyHash] = chat;
   chat->center(this);
+
+  if(smp)
+    chat->setSMPVerified(smp->passed());
+
   chat->showNormal();
   chat->raise();
 }

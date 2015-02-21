@@ -48,7 +48,7 @@
         </property>
         <property name="icon">
          <iconset resource="../Icons/icons.qrc">
-          <normaloff>:/generic/smp-locked.png</normaloff>:/generic/smp-locked.png</iconset>
+          <normaloff>:/generic/smp-unlocked.png</normaloff>:/generic/smp-unlocked.png</iconset>
         </property>
         <property name="iconSize">
          <size>

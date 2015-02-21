@@ -48,7 +48,7 @@ spoton_chatwindow::spoton_chatwindow(const QIcon &icon,
 				     QWidget *parent):QMainWindow(parent)
 {
   m_id = id;
-  m_keyType = keyType;
+  m_keyType = keyType.toLower();
 
   if(m_keyType.isEmpty())
     m_keyType = "chat";
@@ -78,7 +78,12 @@ spoton_chatwindow::spoton_chatwindow(const QIcon &icon,
 	  SLOT(slotSendMessage(void)));
 
   if(participant.trimmed().isEmpty())
-    setWindowTitle("unknown");
+    {
+      if(m_keyType == "chat")
+	setWindowTitle("unknown");
+      else
+	setWindowTitle("unknown@unknown.org");
+    }
   else
     setWindowTitle(participant.trimmed());
 
@@ -93,10 +98,10 @@ spoton_chatwindow::spoton_chatwindow(const QIcon &icon,
 
   menu->addAction(tr("&Set an SMP secret."),
 		  this,
-		  SLOT(slotPrepareSMP(void)));
+		  SIGNAL(prepareSMP(void)));
   menu->addAction(tr("&Verify the SMP secret."),
 		  this,
-		  SLOT(slotVerifySMPSecret(void)));
+		  SIGNAL(verifySMPSecret(void)));
   ui.smp->setMenu(menu);
   slotSetIcons();
 }
@@ -298,8 +303,16 @@ void spoton_chatwindow::slotSetStatus(const QIcon &icon,
 	}
       else
 	{
-	  setWindowTitle("unknown");
-	  ui.name->setText("unknown");
+	  if(m_keyType == "chat")
+	    {
+	      setWindowTitle("unknown");
+	      ui.name->setText("unknown");
+	    }
+	  else
+	    {
+	      setWindowTitle("unknown@unknown.org");
+	      ui.name->setText("unknown@unknown.org");
+	    }
 	}
     }
 }
@@ -313,8 +326,16 @@ void spoton_chatwindow::setName(const QString &name)
     }
   else
     {
-      setWindowTitle("unknown");
-      ui.name->setText("unknown");
+      if(m_keyType == "chat")
+	{
+	  setWindowTitle("unknown");
+	  ui.name->setText("unknown");
+	}
+      else
+	{
+	  setWindowTitle("unknown@unknown.org");
+	  ui.name->setText("unknown@unknown.org");
+	}
     }
 }
 
@@ -355,19 +376,19 @@ void spoton_chatwindow::setSMPVerified(const bool state)
 {
   QDateTime now(QDateTime::currentDateTime());
 
-  if(state)
+  if(!state)
     {
       ui.smp->setIcon(QIcon(":/generic/smp-unlocked.png"));
       ui.smp->setToolTip
 	(tr("The Socialist Millionaire Protocol "
-	    "succeeded on %1.").
+	    "failed on %1.").
 	 arg(now.toString()));
     }
   else
     {
       ui.smp->setIcon(QIcon(":/generic/smp-locked.png"));
       ui.smp->setToolTip
-	(tr("The Socialist Millionaire Protocol failed on %1.").
+	(tr("The Socialist Millionaire Protocol succeeded on %1.").
 	 arg(now.toString()));
     }
 }

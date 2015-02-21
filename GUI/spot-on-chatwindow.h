@@ -32,7 +32,6 @@
 #include <QPointer>
 #include <QSslSocket>
 
-#include "spot-on-smp.h"
 #include "ui_chatwindow.h"
 
 class spoton_chatwindow: public QMainWindow
@@ -58,7 +57,6 @@ class spoton_chatwindow: public QMainWindow
   QString m_id;
   QString m_keyType;
   Ui_chatwindow ui;
-  spoton_smp m_smp;
 #ifdef Q_OS_MAC
 #if QT_VERSION >= 0x050000 && QT_VERSION < 0x050300
   bool event(QEvent *event);
@@ -75,6 +73,8 @@ class spoton_chatwindow: public QMainWindow
 
  signals:
   void messageSent(void);
+  void prepareSMP(void);
+  void verifySMPSecret(void);
 };
 
 #endif

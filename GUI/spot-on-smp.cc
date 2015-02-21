@@ -57,6 +57,7 @@ spoton_smp::spoton_smp(void)
   m_b3 = 0;
   m_guess = 0;
   m_pa = 0;
+  m_passed = false;
   m_pb = 0;
   m_qb = 0;
   m_step = 1;
@@ -515,6 +516,8 @@ QList<QByteArray> spoton_smp::step4(const QList<QByteArray> &other,
   size_t size = 0;
   unsigned char *buffer = 0;
 
+  m_passed = false;
+
   if(passed)
     *passed = false;
 
@@ -620,6 +623,8 @@ QList<QByteArray> spoton_smp::step4(const QList<QByteArray> &other,
 
   if(gcry_mpi_cmp(rab, papb) == 0)
     {
+      m_passed = true;
+
       if(passed)
 	*passed = true;
     }
@@ -637,6 +642,11 @@ QList<QByteArray> spoton_smp::step4(const QList<QByteArray> &other,
   gcry_mpi_release(rb);
   gcry_mpi_release(rb1);
   return list;
+}
+
+bool spoton_smp::passed(void) const
+{
+  return m_passed;
 }
 
 gcry_mpi_t spoton_smp::generateRandomExponent(bool *ok)
@@ -666,6 +676,11 @@ gcry_mpi_t spoton_smp::generateRandomExponent(bool *ok)
   return exponent;
 }
 
+int spoton_smp::step(void) const
+{
+  return m_step;
+}
+
 void spoton_smp::reset(void)
 {
   gcry_mpi_release(m_a2);
@@ -682,14 +697,10 @@ void spoton_smp::reset(void)
   m_b3 = 0;
   m_guess = 0;
   m_pa = 0;
+  m_passed = false;
   m_pb = 0;
   m_qb = 0;
   m_step = 1;
-}
-
-int spoton_smp::step(void) const
-{
-  return m_step;
 }
 
 void spoton_smp::setGuess(const QString &guess)
@@ -720,6 +731,8 @@ void spoton_smp::step5(const QList<QByteArray> &other, bool *ok,
   gcry_mpi_t pbinv = 0;
   gcry_mpi_t rab = 0;
   gcry_mpi_t rb = 0;
+
+  m_passed = false;
 
   if(passed)
     *passed = false;
@@ -825,6 +838,8 @@ void spoton_smp::step5(const QList<QByteArray> &other, bool *ok,
 
   if(gcry_mpi_cmp(rab, papb) == 0)
     {
+      m_passed = true;
+
       if(passed)
 	*passed = true;
     }

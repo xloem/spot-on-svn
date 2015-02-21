@@ -929,9 +929,9 @@ void spoton::slotPrepareSMP(void)
   bool ok = true;
 
   guess = QInputDialog::getText
-    (this, tr("%1: SMP Secret").arg(SPOTON_APPLICATION_NAME),
-     tr("&Secret"),
-     QLineEdit::Normal, QString(""), &ok);
+    (QApplication::activeWindow(),
+     tr("%1: SMP Secret").arg(SPOTON_APPLICATION_NAME),
+     tr("&Secret"), QLineEdit::Normal, QString(""), &ok);
 
   if(!ok)
     return;
