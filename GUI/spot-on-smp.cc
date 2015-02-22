@@ -312,6 +312,7 @@ QList<QByteArray> spoton_smp::step2(const QList<QByteArray> &other,
   m_step = 2;
 
  done_label:
+  gcry_free(buffer);
   gcry_mpi_release(g2);
   gcry_mpi_release(g2a);
   gcry_mpi_release(g2b);
@@ -484,6 +485,7 @@ QList<QByteArray> spoton_smp::step3(const QList<QByteArray> &other,
   m_step = 3;
 
  done_label:
+  gcry_free(buffer);
   gcry_mpi_release(g2);
   gcry_mpi_release(g2b);
   gcry_mpi_release(g3);
