@@ -237,7 +237,7 @@ QList<QByteArray> spoton_smp::step2(const QList<QByteArray> &other,
     GOTO_DONE_LABEL;
 
   /*
-  ** Calculate g2b and g3b and store them in the list.
+  ** Calculate g2b and g3b and store the results in the list.
   */
 
   if(!m_generator || !m_modulus)
