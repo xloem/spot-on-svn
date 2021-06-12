@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-05-07T23:21:36.369026Z
+K 7
+svn:log
+V 62
+Removed support for pre-1.5.0 version of libgcrypt. So long.
+
+
+END

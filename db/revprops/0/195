@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2012-12-04T14:25:29.006594Z
+K 7
+svn:log
+V 78
+Retain the registered kernel's pid and compare it with the new kernel's pid.
+
+
+END

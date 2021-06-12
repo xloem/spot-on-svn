@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-10-15T14:51:09.720232Z
+K 7
+svn:log
+V 51
+Use qstrlen() and qstrnlen() instead of strlen().
+
+
+END

@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-02-27T14:36:41.266965Z
+K 7
+svn:log
+V 32
+Use relaxed atomic operations.
+
+
+END

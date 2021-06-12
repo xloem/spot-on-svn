@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-07-05T16:25:05.572570Z
+K 7
+svn:log
+V 40
+Use QSslConfiguration. Added comments.
+
+
+END

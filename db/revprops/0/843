@@ -1,0 +1,17 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-04-15T00:21:52.617722Z
+K 7
+svn:log
+V 75
+Format changes.
+New files.
+Non-sticky neighbors should not require icons.
+
+
+END

@@ -1,0 +1,17 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-12-16T15:01:14.307395Z
+K 7
+svn:log
+V 112
+Don't enqueue StarBeam data if magnets are not defined.
+Renamed NOVA to Nova.
+Some randomized StarBeam writes.
+
+
+END

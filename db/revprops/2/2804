@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-03-16T19:40:11.921314Z
+K 7
+svn:log
+V 80
+spoton_kernel::prepareNeighbors() should only retrieve user-defined
+neighbors.
+
+
+END

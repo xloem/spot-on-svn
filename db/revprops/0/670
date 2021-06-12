@@ -1,0 +1,17 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-03-20T02:03:10.460640Z
+K 7
+svn:log
+V 98
+Correct tab index in controlcenter.ui.
+Renamed slot.
+Updated retrieval of neighbors information.
+
+
+END

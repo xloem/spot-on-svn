@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-11-27T12:56:15.354824Z
+K 7
+svn:log
+V 83
+Poptastic status messages are sent at 2-minute intervals.
+Removed /usr/local/lib.
+
+
+END

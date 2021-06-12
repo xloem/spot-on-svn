@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-03-23T01:29:30.386474Z
+K 7
+svn:log
+V 66
+Disable/enable write socket notifier for Windows during write().
+
+
+END

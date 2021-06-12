@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-03-12T00:42:19.494599Z
+K 7
+svn:log
+V 82
+Automatically accept a friendship request if we previously
+accepted the request.
+
+
+END

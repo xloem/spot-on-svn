@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-02-19T17:49:54.456958Z
+K 7
+svn:log
+V 58
+The protocol in neighbors does not need to be encrypted.
+
+
+END

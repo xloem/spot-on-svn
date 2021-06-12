@@ -1,0 +1,17 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-07-23T00:19:21.831244Z
+K 7
+svn:log
+V 171
+OS X install targets work.
+Improved support of passphrase command-line option.
+Do not initialize location of the kernel executable on OS X. Let the user select the path.
+
+
+END

@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-03-11T15:23:07.775910Z
+K 7
+svn:log
+V 90
+Corrected messaging echoes.
+Use a method to connect various signals to neighbor objects.
+
+
+END

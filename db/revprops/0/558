@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-03-04T12:26:34.850105Z
+K 7
+svn:log
+V 80
+Completed TO-DO items.
+Fixed widget states in accordance to passphrase states.
+
+
+END

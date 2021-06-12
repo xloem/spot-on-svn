@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2012-12-04T12:43:13.072512Z
+K 7
+svn:log
+V 58
+Removed gui from kernel project files.
+Fixed more paths.
+
+
+END

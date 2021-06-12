@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-11-26T14:13:16.934376Z
+K 7
+svn:log
+V 62
+Added UTC timestamps in the digest authentication mechanism.
+
+
+END

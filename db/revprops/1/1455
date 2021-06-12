@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-07-16T09:43:17.266770Z
+K 7
+svn:log
+V 54
+Store the uuid in an encrypted form in neighbors.db.
+
+
+END

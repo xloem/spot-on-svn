@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-06-22T14:36:43.257974Z
+K 7
+svn:log
+V 52
+Renamed database table.
+Use const where necessary.
+
+
+END

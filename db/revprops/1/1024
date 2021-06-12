@@ -1,0 +1,18 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-05-08T17:03:33.977665Z
+K 7
+svn:log
+V 177
+Corrected keep-alive messages.
+Send the uuid after we've established communications.
+Added menus to the copy and share buttons.
+Ability to remove non-unique uuids (neighbors).
+
+
+END

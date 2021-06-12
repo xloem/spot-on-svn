@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-06-08T03:07:08.208282Z
+K 7
+svn:log
+V 56
+Qt::WindowFullscreenButtonHint is available in Qt 5.x.
+
+
+END

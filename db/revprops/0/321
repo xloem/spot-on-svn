@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+mikeweber
+K 8
+svn:date
+V 27
+2013-01-26T11:28:57.528337Z
+K 7
+svn:log
+V 205
+1) disable passphrase label in case of authentication.
+2) version number as a tooltip.
+3) uptime and nicetime are neighbour columns, if sticky is missing, as nicetime includes then the sticky feature (-1).
+END

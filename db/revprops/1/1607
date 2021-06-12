@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-07-30T23:52:24.701702Z
+K 7
+svn:log
+V 73
+Removed fPIE.
+Issue gcry_fast_random_poll() before gcry_create_nonce().
+
+
+END

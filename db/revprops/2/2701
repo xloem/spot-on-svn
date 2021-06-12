@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-02-17T21:15:16.029034Z
+K 7
+svn:log
+V 54
+Disable union if SPOTON_SCTP_ENABLED is not defined.
+
+
+END

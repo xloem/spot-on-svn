@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-02-19T16:13:46.880503Z
+K 7
+svn:log
+V 61
+Select at most one item from the kernel_registration table.
+
+
+END

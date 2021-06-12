@@ -1,0 +1,29 @@
+K 10
+svn:author
+V 9
+mikeweber
+K 8
+svn:date
+V 27
+2013-04-20T11:54:21.143208Z
+K 7
+svn:log
+V 933
+tooltip format. current source:
+
+<html><head><head/><body>
+<b>How to add a friend: </b><p>
+<i>Add Non-Sticky-Modus: <b>Repleo Exchange</b></i><p><ol>
+<li>Obtain the key from your friend. Paste it and press the Add button.</li>
+<li>Copy your Repleo for this friend from the context menu in the Participants table of the Chat tab.</li>
+<li>Send this Repleo to your friend, who paste and adds it.</li>
+As a result: Your friend is not sticky.<p>
+</ol><p>
+<i>Alternatively: Add-Sticky-Modus: <b>Key Exchange</b> via IP Connection</i><p><ol>
+<li>Add a listener. Forward the Port in your Router/Nat.</li>
+<li>Send IP/Port to your friend. Add Neighbor.</li>
+<li>Once connected, both users share the key via the context menu in the Neighbors IP-table.</li>
+<li>Approve of new chat friends via the context menu in the Participants table: "Make Permanent Friends".</li>
+As a result: Your friend is made a sticky Neighbor.<p>
+</ol></body></html>
+END

@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-12-18T20:22:38.304937Z
+K 7
+svn:log
+V 51
+Set m_accountAuthenticated if s_crypt is invalid.
+
+
+END

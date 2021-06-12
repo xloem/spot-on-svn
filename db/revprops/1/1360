@@ -1,0 +1,17 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-07-02T09:28:13.867693Z
+K 7
+svn:log
+V 153
+Allow hiding of offline participants.
+Do not wait for encryption to be available. Reconnected the disconnected() signal.
+Removed obsolete class member.
+
+
+END

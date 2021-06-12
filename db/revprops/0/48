@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2012-10-24T00:58:40.052099Z
+K 7
+svn:log
+V 97
+Use SQLITE_STATIC when necessary.
+Please see http://www.sqlite.org/capi3ref.html#SQLITE_STATIC.
+
+
+END

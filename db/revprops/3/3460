@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-09-25T10:45:24.017205Z
+K 7
+svn:log
+V 32
+libgcrypt 1.6.x compatibility.
+
+
+END

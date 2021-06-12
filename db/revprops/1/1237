@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-06-02T19:37:51.118196Z
+K 7
+svn:log
+V 70
+Set the folder to the inbox when the email status button is pressed.
+
+
+END

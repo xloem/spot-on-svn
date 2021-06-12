@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-03-10T12:23:05.294372Z
+K 7
+svn:log
+V 34
+Replaced Q_WS_MAC with Q_OS_MAC.
+
+
+END

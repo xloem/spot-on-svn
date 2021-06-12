@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-10-15T12:27:12.069511Z
+K 7
+svn:log
+V 50
+New message type for accounts.
+Overload write().
+
+
+END

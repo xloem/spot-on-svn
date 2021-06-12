@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-11-09T00:01:19.860210Z
+K 7
+svn:log
+V 40
+Added support for TLS 1.1 and TLS 1.2.
+
+
+END

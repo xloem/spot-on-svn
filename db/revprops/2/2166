@@ -1,0 +1,17 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-11-03T03:46:40.218758Z
+K 7
+svn:log
+V 143
+Added hash keys and hash types to Buzz channels.
+Corrected magnet URI.
+Provide the kernel the correct Buzz key when a Buzz channel is closed.
+
+
+END

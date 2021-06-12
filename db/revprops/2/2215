@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-11-12T11:03:38.174913Z
+K 7
+svn:log
+V 83
+Inspect TLS1_1_VERSION and TLS1_2_VERSION macros for TLS 1.1 and TLS 1.2 support.
+
+
+END

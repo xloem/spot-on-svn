@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+mikeweber
+K 8
+svn:date
+V 27
+2013-06-02T11:46:21.049286Z
+K 7
+svn:log
+V 136
+renamed icons for status. 
+statuskernel = connected = green LED
+statusneighbor = online = green LED
+statuslistener = online = green LED.
+END

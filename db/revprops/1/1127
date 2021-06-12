@@ -1,0 +1,14 @@
+K 10
+svn:author
+V 9
+mikeweber
+K 8
+svn:date
+V 27
+2013-05-18T15:36:33.587976Z
+K 7
+svn:log
+V 125
+rename neighbors tab to Matrix
+(as discussed) and a different main-term above of adding neighbors and participants is needed.
+END

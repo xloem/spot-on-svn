@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-04-18T11:48:29.709553Z
+K 7
+svn:log
+V 77
+Feeders may not have access to encryption methods. Use a simple passphrase.
+
+
+END

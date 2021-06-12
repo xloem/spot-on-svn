@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-06-29T23:25:41.062018Z
+K 7
+svn:log
+V 79
+Removed use_ssl from neighbors.db.
+Do not advertise SSL capabilities in 0030.
+
+
+END

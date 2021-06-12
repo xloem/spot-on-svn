@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 9
+mikeweber
+K 8
+svn:date
+V 27
+2013-01-30T23:04:04.534510Z
+K 7
+svn:log
+V 68
+block and delete neighbor buttons prepared as context menu per node.
+END

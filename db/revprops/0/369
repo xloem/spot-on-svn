@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-02-02T03:32:25.222794Z
+K 7
+svn:log
+V 49
+The GUI and the Kernel communicate via sockets.
+
+
+END

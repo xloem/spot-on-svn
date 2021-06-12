@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-12-16T15:49:08.433290Z
+K 7
+svn:log
+V 40
+Increased pulse limit to 250000 bytes.
+
+
+END

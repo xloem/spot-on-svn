@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-10-17T01:17:04.966359Z
+K 7
+svn:log
+V 49
+Removed persistent initialization of databases.
+
+
+END

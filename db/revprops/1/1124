@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+mikeweber
+K 8
+svn:date
+V 27
+2013-05-18T13:45:31.457371Z
+K 7
+svn:log
+V 128
+Disabled participants-combo. to
+make sure, only the selected participant gets a Repleo-Mail.
+send or clear button enables again.
+END

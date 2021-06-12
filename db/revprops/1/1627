@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-08-03T00:14:39.322195Z
+K 7
+svn:log
+V 54
+Prevent incorrect status messages from participants.
+
+
+END

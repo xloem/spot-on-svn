@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-04-30T12:45:35.085843Z
+K 7
+svn:log
+V 162
+I am done with important changes to the UI. Some imternal function will fetch the external IP address and update already-existing information. Enough is enough.
+
+
+END

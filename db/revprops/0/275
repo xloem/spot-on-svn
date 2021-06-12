@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-01-16T19:33:14.513803Z
+K 7
+svn:log
+V 57
+Disable all tabs until the user has been authenticated.
+
+
+END

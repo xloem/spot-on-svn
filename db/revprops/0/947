@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-04-28T23:43:59.228836Z
+K 7
+svn:log
+V 65
+Do not create new uuids. Store the user's uuid and transmit it.
+
+
+END

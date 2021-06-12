@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-03-10T22:35:36.524647Z
+K 7
+svn:log
+V 54
+Set the neighbor_oid to -1 after a successful write.
+
+
+END

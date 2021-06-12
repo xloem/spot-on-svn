@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2012-11-26T11:26:14.480300Z
+K 7
+svn:log
+V 39
+Allow C++ programs to link correctly.
+
+
+END

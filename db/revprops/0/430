@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-02-17T04:45:52.332090Z
+K 7
+svn:log
+V 56
+Combined UI files into one.
+Delete-all neighbors work.
+
+
+END

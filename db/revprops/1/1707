@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-08-19T15:10:30.880094Z
+K 7
+svn:log
+V 34
+Replaced readyRead() with timer.
+
+
+END

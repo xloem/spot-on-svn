@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-01-22T12:23:33.467860Z
+K 7
+svn:log
+V 54
+Use htonl().
+Re-encoding of private key corrections.
+
+
+END

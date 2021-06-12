@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-03-10T12:09:04.557300Z
+K 7
+svn:log
+V 24
+Reverted use of clang.
+
+
+END

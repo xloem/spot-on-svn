@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-04-25T19:44:41.601889Z
+K 7
+svn:log
+V 71
+Drop neighbors that are silent regardless of their connection states.
+
+
+END

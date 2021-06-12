@@ -1,0 +1,14 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-03-10T12:34:33.585257Z
+K 7
+svn:log
+V 107
+QNetworkInterface does not need to be included in Windows if the other special network files are included.
+
+END

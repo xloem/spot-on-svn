@@ -1,0 +1,18 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-05-25T15:20:29.568597Z
+K 7
+svn:log
+V 149
+Re-encode neighbors.
+Store proxy passwords and usernames as UTF-8.
+Issue spoton_gcrypt::init() in spoton_gcrypt static methods.
+Initialize strings.
+
+
+END

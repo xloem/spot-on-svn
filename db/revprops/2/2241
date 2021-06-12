@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-11-18T08:54:58.744011Z
+K 7
+svn:log
+V 45
+Renamed starbeam_magnets.db to starbeam.db.
+
+
+END

@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-11-24T18:29:34.606914Z
+K 7
+svn:log
+V 86
+Enable synchronous database writes in important sections (neighbor).
+New statistics.
+
+
+END

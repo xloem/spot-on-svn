@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-10-30T19:17:33.935786Z
+K 7
+svn:log
+V 54
+Do not hide the E-Mail status button unless clicked.
+
+
+END

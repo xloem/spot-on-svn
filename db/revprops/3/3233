@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-07-20T21:59:02.816875Z
+K 7
+svn:log
+V 46
+Limit connections from identical IPs to one.
+
+
+END

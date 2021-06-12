@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-07-07T16:40:48.760376Z
+K 7
+svn:log
+V 82
+Modified setInitializationVector() so that it's generic.
+Corrected log messages.
+
+
+END

@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-11-27T15:09:36.875031Z
+K 7
+svn:log
+V 123
+Do not set an away status unless the current status is online.
+Join a default buzz channel after the kernel is activated.
+
+
+END

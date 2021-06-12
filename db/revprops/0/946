@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-04-28T13:55:23.588102Z
+K 7
+svn:log
+V 162
+Removed very odd and broken logic. Could not modify the status_control of a neighbor while the kernel was inactive. The status_control must be freely available.
+
+
+END

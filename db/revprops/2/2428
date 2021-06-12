@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-12-24T23:52:12.257427Z
+K 7
+svn:log
+V 64
+Increased SSL key sizes.
+Some corrections to previous commits.
+
+
+END

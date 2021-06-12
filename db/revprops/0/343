@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 9
+mikeweber
+K 8
+svn:date
+V 27
+2013-01-29T21:47:26.376089Z
+K 7
+svn:log
+V 77
+add key function, adds buddy to the participantslist without the need for IP.
+END

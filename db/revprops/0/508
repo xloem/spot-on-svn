@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-03-02T18:34:09.563397Z
+K 7
+svn:log
+V 59
+Do not attempt to write() is the socket is not connected.
+
+
+END

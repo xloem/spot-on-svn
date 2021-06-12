@@ -1,0 +1,18 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-01-30T12:08:37.100742Z
+K 7
+svn:log
+V 242
+Disable the data purge timer by a signal.
+Properly protect the messaging cache in the kernel.
+Removed most instances of abort().
+Verify that a non-empty random cipher is returned by spoton_crypt::randomCipherType() if ciphers are available.
+
+
+END

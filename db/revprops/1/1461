@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-07-16T15:45:43.737391Z
+K 7
+svn:log
+V 45
+Now for Buzz status.
+Use an id per channel.
+
+
+END

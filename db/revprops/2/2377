@@ -1,0 +1,17 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-12-18T15:46:52.881726Z
+K 7
+svn:log
+V 135
+Added fwrapv and Wstrict-overflow=4 to project files.
+Corrected integer definition in spoton_misc::database(), dbId must
+be a qint64.
+
+
+END

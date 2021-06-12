@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-02-19T16:17:13.514477Z
+K 7
+svn:log
+V 61
+Do not set a status to 'offline' if it's already 'offline'.
+
+
+END

@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2012-12-04T14:06:37.572355Z
+K 7
+svn:log
+V 87
+We can't use member functions that contain file pointers as the
+files may be deleted.
+
+
+END

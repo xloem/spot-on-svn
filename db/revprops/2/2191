@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-11-08T19:06:26.021542Z
+K 7
+svn:log
+V 66
+Do not display certificate hashes if the certificates are empty.
+
+
+END

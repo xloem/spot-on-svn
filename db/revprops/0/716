@@ -1,0 +1,17 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-03-27T16:13:21.595437Z
+K 7
+svn:log
+V 86
+Corrected encrypted country names.
+Corrected W32 install targets.
+Use new libspoton.
+
+
+END

@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-01-27T22:40:58.453824Z
+K 7
+svn:log
+V 63
+Force the SB writer thread to start when it should be active.
+
+
+END

@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-09-25T20:02:59.360973Z
+K 7
+svn:log
+V 78
+Corrected previous commit. The macro GCRYPT_VERSION_NUMBER may be
+available.
+
+
+END

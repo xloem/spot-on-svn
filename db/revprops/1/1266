@@ -1,0 +1,17 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-06-18T12:21:59.386087Z
+K 7
+svn:log
+V 174
+We don't need to use GCRY_MD_FLAG_SECURE in gcry_md_open().
+Corrected goldbug prompt. Corrected displays too.
+Must destroy spoton_gcrypt objects as soon as they lose scope.
+
+
+END

@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-12-13T18:34:52.345892Z
+K 7
+svn:log
+V 64
+Remove OTM magnets.
+Set the default pulse size to 15000 bytes.
+
+
+END

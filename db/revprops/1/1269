@@ -1,0 +1,17 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-06-18T16:56:44.209445Z
+K 7
+svn:log
+V 111
+Support for publishing listener information (plaintext). Almost complete.
+Updated dates.
+Inspect array sizes.
+
+
+END

@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-04-30T13:26:45.916145Z
+K 7
+svn:log
+V 105
+Increased the timer interval for status broadcasts.
+Previous commit correction: internal, not imternal.
+
+
+END

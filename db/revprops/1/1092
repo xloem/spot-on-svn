@@ -1,0 +1,17 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-05-15T00:32:48.762841Z
+K 7
+svn:log
+V 110
+Adjusted format in spot-on.cc.
+Removed bug label. Set the bug icon on the generate button.
+Modified tooltip.
+
+
+END

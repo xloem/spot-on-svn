@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-07-17T18:44:27.033294Z
+K 7
+svn:log
+V 73
+Propagate send method for 0040.
+Verify message code before deciphering.
+
+
+END

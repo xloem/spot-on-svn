@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-03-10T00:33:03.672074Z
+K 7
+svn:log
+V 70
+Watch the INI file for changes and update spoton_kernel::s_settings.
+
+
+END

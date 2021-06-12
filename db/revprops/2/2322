@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-12-10T17:38:00.821377Z
+K 7
+svn:log
+V 63
+Added a splitter to the Received tab.
+Adjusted margin values.
+
+
+END

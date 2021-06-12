@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-06-19T19:28:33.699645Z
+K 7
+svn:log
+V 98
+The primary key should be (recipient_hash, message_bundle_hash).
+New kernel option in the works.
+
+
+END

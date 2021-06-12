@@ -1,0 +1,17 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-02-07T12:30:44.699856Z
+K 7
+svn:log
+V 115
+Remember the last status bar message during re-encoding.
+New database triggers.
+Some more database optimizations.
+
+
+END

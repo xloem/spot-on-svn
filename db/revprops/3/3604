@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-10-23T14:37:20.505402Z
+K 7
+svn:log
+V 45
+Delete URL directories if SQL queries fail.
+
+
+END

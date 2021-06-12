@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-07-09T10:34:58.670546Z
+K 7
+svn:log
+V 64
+Do not yet store everything in secure memory. Qt isn't secure.
+
+
+END

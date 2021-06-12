@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-07-03T18:39:51.438342Z
+K 7
+svn:log
+V 102
+Attempt to prevent duplicate log entries during a session.
+Use ECDHE-RSA-AES256-SHA. 384 is TLSv1.2.
+
+
+END

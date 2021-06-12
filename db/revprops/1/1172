@@ -1,0 +1,14 @@
+K 10
+svn:author
+V 9
+mikeweber
+K 8
+svn:date
+V 27
+2013-05-22T17:32:23.435047Z
+K 7
+svn:log
+V 97
+Pro files for other POSIX than win. 
+removed logviewer, docviewer, cc h and ui (compare win.pro).
+END

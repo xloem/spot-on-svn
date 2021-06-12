@@ -1,0 +1,454 @@
+id: 6-1218.0-1221.r1221/3
+type: file
+pred: 6-1218.0-1162.r1218/8
+count: 1
+text: 1165 3 2691 2674 81daf8a07ff1ed09b9987bbcb1d06b77 5ce2287a03c24b3fd1bdfb06bb81d527ebea91c2 1217-xt/_7
+cpath: /branches/0.x/Icons/nuove/activate.png
+copyfrom: 1218 /branches/0.x/Icons/activate.png
+
+id: 8-1218.1-1221.r1221/4
+type: file
+pred: 8-1218.0-1162.r1218/9
+count: 1
+text: 1165 4 1783 1766 3af6e0ed3d45eaaa5db75d9588d5d4f4 4491d583f350f75ad016b1f94cb36dcce4006752 1217-xt/_9
+cpath: /branches/0.x/Icons/nuove/add-listener.png
+copyfrom: 1218 /branches/0.x/Icons/add-listener.png
+
+id: a-1218.2-1221.r1221/5
+type: file
+pred: a-1218.0-1162.r1218/10
+count: 1
+text: 1165 5 1466 1449 e1132c3a975ccf8746bbd7becb9a8d3a 2d735ecbafefe6412135121f667382c51674af38 1217-xt/_b
+cpath: /branches/0.x/Icons/nuove/add-url.png
+copyfrom: 1218 /branches/0.x/Icons/add-url.png
+
+id: c-1218.3-1221.r1221/6
+type: file
+pred: c-1218.0-1162.r1218/11
+count: 1
+text: 1165 6 875 858 3cbdb966bd0418ac1b5fb8fec5489bde 6ce6c7f4b53ffe6f6799be08fbb2210e3582f64e 1217-xt/_d
+cpath: /branches/0.x/Icons/nuove/add.png
+copyfrom: 1218 /branches/0.x/Icons/add.png
+
+id: e-1218.4-1221.r1221/7
+type: file
+pred: e-1218.0-1162.r1218/12
+count: 1
+text: 1169 6 1358 2454 41f67541a288261aa157cd6435245afd a7db7fe5c2865a978b5d2e362f7be6695e1a6368 1217-xt/_f
+cpath: /branches/0.x/Icons/nuove/away.png
+copyfrom: 1218 /branches/0.x/Icons/away.png
+
+id: g-1218.5-1221.r1221/8
+type: file
+pred: g-1218.0-1162.r1218/13
+count: 1
+text: 1169 7 1332 2454 9821c9114b6ff5bd634c0d5618a967b8 08ceb91213bccd18379c7bbd4a09f746a8faf93a 1217-xt/_h
+cpath: /branches/0.x/Icons/nuove/busy.png
+copyfrom: 1218 /branches/0.x/Icons/busy.png
+
+id: i-1218.6-1221.r1221/9
+type: file
+pred: i-1218.0-1162.r1218/14
+count: 1
+text: 1165 9 1848 1831 66f46d5b7f5c4e99205a452a5ecb7071 9883e3454f0b47a6adeb66eb8dca148fb99f0aed 1217-xt/_j
+cpath: /branches/0.x/Icons/nuove/chat.png
+copyfrom: 1218 /branches/0.x/Icons/chat.png
+
+id: k-1218.7-1221.r1221/10
+type: file
+pred: k-1218.0-1162.r1218/15
+count: 1
+text: 1165 10 1762 1745 82893fa7ba6345cdc4da07b68fa40aea c6d588c550f1b34ff9840f0c9856509158736aa8 1217-xt/_l
+cpath: /branches/0.x/Icons/nuove/clear.png
+copyfrom: 1218 /branches/0.x/Icons/clear.png
+
+id: m-1218.8-1221.r1221/11
+type: file
+pred: m-1218.0-1162.r1218/16
+count: 1
+text: 1165 11 1414 1397 0e771db85a4e706d201bc4c5827d5611 a15579c3e63b7402f9d87a571bf4bdebe3cfbe33 1217-xt/_n
+cpath: /branches/0.x/Icons/nuove/copy.png
+copyfrom: 1218 /branches/0.x/Icons/copy.png
+
+id: o-1218.9-1221.r1221/12
+type: file
+pred: o-1218.0-1162.r1218/17
+count: 1
+text: 1165 12 1518 1501 feb48fc759ab40fda185709ab691194a fb8cebff5685e5c47d0c783a93fc14c3051248ee 1217-xt/_p
+cpath: /branches/0.x/Icons/nuove/database.png
+copyfrom: 1218 /branches/0.x/Icons/database.png
+
+id: q-1218.a-1221.r1221/13
+type: file
+pred: q-1218.0-1162.r1218/18
+count: 1
+text: 1165 13 1918 1901 7149328d826441ab1281dfd45e31c05c 365bdf5e3ecd03de4511a193b12ec10a173cea73 1217-xt/_r
+cpath: /branches/0.x/Icons/nuove/deactivate.png
+copyfrom: 1218 /branches/0.x/Icons/deactivate.png
+
+id: s-1218.b-1221.r1221/14
+type: file
+pred: s-1218.0-1162.r1218/19
+count: 1
+text: 1165 14 1958 1941 edfe192fb3c5df052c22bb7a38dc20c5 2e366b62f265b48cbc57cc984bb8534f2ce24fc0 1217-xt/_t
+cpath: /branches/0.x/Icons/nuove/documentation.png
+copyfrom: 1218 /branches/0.x/Icons/documentation.png
+
+id: u-1218.c-1221.r1221/15
+type: file
+pred: u-1218.0-1162.r1218/20
+count: 1
+text: 1165 15 1198 1181 91e9a8b45914d23f05e40e4dc1cc8d8e 9612bf91af71d0f5be65af0a52574ddbf81c4885 1217-xt/_v
+cpath: /branches/0.x/Icons/nuove/down.png
+copyfrom: 1218 /branches/0.x/Icons/down.png
+
+id: w-1218.d-1221.r1221/16
+type: file
+pred: w-1218.0-1162.r1218/21
+count: 1
+text: 1165 16 1708 1691 b5ba4bc0905c8638a6096493e626eb0d 6e58f913ea840c0bba728781c328dd068698a125 1217-xt/_x
+cpath: /branches/0.x/Icons/nuove/email.png
+copyfrom: 1218 /branches/0.x/Icons/email.png
+
+id: y-1218.e-1221.r1221/17
+type: file
+pred: y-1218.0-1162.r1218/22
+count: 1
+text: 1165 17 2188 2171 ba92c0aba9cb34edaf43cceb9fd4933f 082e6a9a694255258c3064655334f46f5817aa25 1217-xt/_z
+cpath: /branches/0.x/Icons/nuove/empty-trash.png
+copyfrom: 1218 /branches/0.x/Icons/empty-trash.png
+
+id: 10-1218.f-1221.r1221/18
+type: file
+pred: 10-1218.0-1162.r1218/23
+count: 1
+text: 1165 18 2479 2462 6b6b3bcfb54b884bf49c728feb9f9efb 50da0d26e95b4d295ee098c2eff074a1aaeacb53 1217-xt/_11
+cpath: /branches/0.x/Icons/nuove/full-trash.png
+copyfrom: 1218 /branches/0.x/Icons/full-trash.png
+
+id: 12-1218.g-1221.r1221/19
+type: file
+pred: 12-1218.0-1162.r1218/24
+count: 1
+text: 1165 19 1851 1834 b78661836917a33fb0dea9f11d939aa5 d0fd00dc6418f62ca0c3ae870b0e317f29190259 1217-xt/_13
+cpath: /branches/0.x/Icons/nuove/heart.png
+copyfrom: 1218 /branches/0.x/Icons/heart.png
+
+id: 15-1218.h-1221.r1221/20
+type: file
+pred: 15-1218.0-1162.r1218/26
+count: 1
+text: 1165 21 820 803 ba6a9fc6ba928c8919893f53cc590c4c cc391298e602936e0202ac6214fd4deaac242013 1217-xt/_16
+cpath: /branches/0.x/Icons/nuove/inbox.png
+copyfrom: 1218 /branches/0.x/Icons/inbox.png
+
+id: 17-1218.i-1221.r1221/21
+type: file
+pred: 17-1218.0-1162.r1218/27
+count: 1
+text: 1169 9 1678 1661 ceb5b497b1f8f8041f2d1c7201a8bf9e 3079cd63f2275b81a624026c82b080221c5ab5d7 1217-xt/_18
+cpath: /branches/0.x/Icons/nuove/information.png
+copyfrom: 1218 /branches/0.x/Icons/information.png
+
+id: 19-1218.j-1221.r1221/22
+type: file
+pred: 19-1218.0-1162.r1218/28
+count: 1
+text: 1165 22 1164 1147 bd8656dc4a79309bf4db649417d53c4b 516dc76f770412b5862c77c5bdebc4c0dc1df67b 1217-xt/_1a
+cpath: /branches/0.x/Icons/nuove/lock.png
+copyfrom: 1218 /branches/0.x/Icons/lock.png
+
+id: 1b-1218.k-1221.r1221/23
+type: file
+pred: 1b-1218.0-1162.r1218/29
+count: 1
+text: 1165 23 1404 1387 cfde9f5fb1e42fa1c2645b0eaf41bc87 bc5cd85a3e99552018016c1c4b4495f597d799c7 1217-xt/_1c
+cpath: /branches/0.x/Icons/nuove/modify.png
+copyfrom: 1218 /branches/0.x/Icons/modify.png
+
+id: 1d-1218.l-1221.r1221/24
+type: file
+pred: 1d-1218.0-1162.r1218/30
+count: 1
+text: 1165 24 2075 2058 796e2fed27e2d16396b9f5ac0867e6e8 7bd982ab3d3b9ac05ad09ef985c9e34a04b47da8 1217-xt/_1e
+cpath: /branches/0.x/Icons/nuove/neighbors.png
+copyfrom: 1218 /branches/0.x/Icons/neighbors.png
+
+id: 1f-1218.m-1221.r1221/25
+type: file
+pred: 1f-1218.0-1162.r1218/31
+count: 1
+text: 1165 25 1924 1907 8ccc5aace52822d474dc4980727d68b0 534974756f8b50b946b396cff3489c22c1e87538 1217-xt/_1g
+cpath: /branches/0.x/Icons/nuove/offline.png
+copyfrom: 1218 /branches/0.x/Icons/offline.png
+
+id: 1h-1218.n-1221.r1221/26
+type: file
+pred: 1h-1218.0-1162.r1218/32
+count: 1
+text: 1165 26 2093 2076 8c372d6465a48a7952fefe10ab2854b0 c53f0f76cab4bd2241aa87bdf49a22219a4e363d 1217-xt/_1i
+cpath: /branches/0.x/Icons/nuove/ok.png
+copyfrom: 1218 /branches/0.x/Icons/ok.png
+
+id: 1j-1218.o-1221.r1221/27
+type: file
+pred: 1j-1218.0-1162.r1218/33
+count: 1
+text: 1169 10 1317 2454 456a8495ba13677c5cd437bd1fefebfc 1e65f161eba557398e59bae689759c9f4b94d19f 1217-xt/_1k
+cpath: /branches/0.x/Icons/nuove/online.png
+copyfrom: 1218 /branches/0.x/Icons/online.png
+
+id: 1l-1218.p-1221.r1221/28
+type: file
+pred: 1l-1218.0-1162.r1218/34
+count: 1
+text: 1165 28 1296 1279 a5845927ba44bc4e4326487332e5698f c2dd9a2f913e72fdffda97c7186bfa1c2b1d13df 1217-xt/_1m
+cpath: /branches/0.x/Icons/nuove/outbox.png
+copyfrom: 1218 /branches/0.x/Icons/outbox.png
+
+id: 1n-1218.q-1221.r1221/29
+type: file
+pred: 1n-1218.0-1162.r1218/35
+count: 1
+text: 1165 29 1395 1378 534c992ae841432e67f77d6164474b5b 670abb280a69868da6e099861f9686b21e1ebfd0 1217-xt/_1o
+cpath: /branches/0.x/Icons/nuove/read.png
+copyfrom: 1218 /branches/0.x/Icons/read.png
+
+id: 1p-1218.r-1221.r1221/30
+type: file
+pred: 1p-1218.0-1162.r1218/36
+count: 1
+text: 1165 30 2180 2163 e9b7ffda3dce1a30f5000b64c54e1ad0 94481c6b21b2f39f3d21581b14dbe40a2e15cf04 1217-xt/_1q
+cpath: /branches/0.x/Icons/nuove/refresh.png
+copyfrom: 1218 /branches/0.x/Icons/refresh.png
+
+id: 1r-1218.s-1221.r1221/31
+type: file
+pred: 1r-1218.0-1162.r1218/37
+count: 1
+text: 1165 31 1553 1536 83ee85930736b6a464794a03fdcfea9d c059e3819f42b8a75a147a8ff9ece7c765e6f9d5 1217-xt/_1s
+cpath: /branches/0.x/Icons/nuove/search.png
+copyfrom: 1218 /branches/0.x/Icons/search.png
+
+id: 1t-1218.t-1221.r1221/32
+type: file
+pred: 1t-1218.0-1162.r1218/38
+count: 1
+text: 1165 32 2635 2618 5595f3374e55e9f9fe7780d2a64f4501 088c5fd0c793110aa35010ad4abb57f721db4e3a 1217-xt/_1u
+cpath: /branches/0.x/Icons/nuove/settings.png
+copyfrom: 1218 /branches/0.x/Icons/settings.png
+
+id: 1v-1218.u-1221.r1221/33
+type: file
+pred: 1v-1218.0-1162.r1218/39
+count: 1
+text: 1165 33 1330 1313 4c94d0c6317cfc5910f96493a8381b56 252e0ea83df30c34bf258617cc00b68e16dc1794 1217-xt/_1w
+cpath: /branches/0.x/Icons/nuove/share.png
+copyfrom: 1218 /branches/0.x/Icons/share.png
+
+id: 1x-1218.v-1221.r1221/34
+type: file
+pred: 1x-1218.0-1162.r1218/40
+count: 1
+text: 1165 34 1133 1116 fe22e46ec3f6e5db1fad23c4287422e8 359143fed862c893a860544521d35ffdd1430a0d 1217-xt/_1y
+cpath: /branches/0.x/Icons/nuove/up.png
+copyfrom: 1218 /branches/0.x/Icons/up.png
+
+id: 1z-1218.w-1221.r1221/35
+type: file
+pred: 1z-1218.0-1162.r1218/41
+count: 1
+text: 1165 35 2184 2167 48852db0efeba2a58919afe6eaf8655a f089579834c263e886f8db5f88961b3cd91d90b3 1217-xt/_20
+cpath: /branches/0.x/Icons/nuove/urls.png
+copyfrom: 1218 /branches/0.x/Icons/urls.png
+
+id: 21-1218.x-1221.r1221/36
+type: file
+pred: 21-1218.0-1162.r1218/42
+count: 1
+text: 1165 36 1301 1284 40929e8a059d64bb1fd198a44211b0d7 493d8748ff9527ec462496e92cd1f76531d6025c 1217-xt/_22
+cpath: /branches/0.x/Icons/nuove/write.png
+copyfrom: 1218 /branches/0.x/Icons/write.png
+
+DELTA
+SVN  çÜlÄççK 12
+activate.png
+V 26
+file 6-1218.0-1221.r ˚/3
+K 16
+add-listener6 86 16 46 16 ;url1 a1 21 P5
+K 70 , c, 3, ´6
+K 8
+away- e- 4- 7- <bus- g- 5- 8- KchatZ i-  !•9
+K 9
+clea7Hk. 7[ "10\ %opâ . m.  G\  11Aï2
+databas©3 o3 9a 23 L4
+deﬁ5 q5  ~h ﬂÙ 7
+documentation¸ 8 s8 bm  ·\8
+dow. u.  ∏f  ﬁe9
+emai] w/ d]  ·Î15
+empty-trashì y6  e  Íz14
+full5 8ñ1ÿI18.fl  Ûe9
+hearÙ0  °018.)f ˆTinboxï 0  KH18.h` 2˜ô15
+inform_7  '018.cg 2 l8
+lockf 9¸ jf ¸u0
+modif`a  ∫018.ña ˘º3
+neighborsg  íI18.lg  ˆï11
+offlinïh  Y018.–h  ˚=6
+o«  &I18.n` ˘O0
+on_  Ú 018.¸_ ı_0
+outë  Ω I18.pd  Òl8
+readÛ  å 018.(a  Ü11
+refreàÛ  [ H18.rb 3Ûu0
+searc∫2  + 018.Ue 3Ó≠12
+settingåtÛ  4  Ûm9
+sharâv0  ã0  ÒD6
+upÙë x-  4 -  È]8
+urlå z/  ∏/  ÂV9
+wriS_ 2018.f 0 `6
+END
+ENDREP
+id: 3-1221.0-1162.r1221/38
+type: dir
+count: 0
+text: 1221 37 891 1675 5ea14f0dc3a196d27da83f41dfba2612 - -
+cpath: /branches/0.x/Icons/nuove
+copyroot: 592 /branches/1.x/Icons
+
+id: 6-1221.0-1162.r1221/39
+type: dir
+count: 0
+cpath: /branches/0.x/Icons/nuvola
+copyroot: 592 /branches/1.x/Icons
+
+DELTA 1218 43 746
+SVN é3è@ âi ÄR ÑMâfR5
+nuove
+V 26
+dir 3-1221.0-1162.r Ê/38
+K 6
+nuvola+ 6+ P21/39ENDREP
+id: 0-78.0-1162.r1221/41
+type: dir
+pred: 0-78.0-1162.r1218/44
+count: 76
+text: 1221 40 87 1928 3ad339a8a868f56030e38ab126a9fe5b - -
+cpath: /branches/0.x/Icons
+copyroot: 592 /branches/1.x/Icons
+
+DELTA 1220 19 59
+SVN ÖSÖS
+ Å# Ö Ñ+Å(21/41ENDREP
+id: 2-591.0-1159.r1221/43
+type: dir
+pred: 2-591.0-1159.r1220/20
+count: 585
+text: 1221 42 28 723 39007e458d84714c2de4d56cee83f10c - -
+cpath: /branches/0.x
+copyroot: 1159 /branches/0.x
+
+DELTA 1220 21 50
+SVN Å Å " Ñ z&1/43ENDREP
+id: 0-591.0.r1221/45
+type: dir
+pred: 0-591.0.r1220/22
+count: 609
+text: 1221 44 23 160 0c3f0da8715da69b93c35fb188bd398f - -
+cpath: /branches
+copyroot: 0 /
+
+DELTA 1220 23 23
+SVN Å%Å% v Ñ+z1/45ENDREP
+id: 0.0.r1221/2
+type: dir
+pred: 0.0.r1220/2
+count: 1221
+text: 1221 46 23 165 a7240aa848178591512c336966af24f7 - -
+cpath: /
+copyroot: 0 /
+
+_3.0-1162.t1220-xw add-dir false false false /branches/0.x/Icons/nuove
+
+6-1218._0.t1220-xw add-file false false false /branches/0.x/Icons/nuove/activate.png
+1218 /branches/0.x/Icons/activate.png
+8-1218._1.t1220-xw add-file false false false /branches/0.x/Icons/nuove/add-listener.png
+1218 /branches/0.x/Icons/add-listener.png
+a-1218._2.t1220-xw add-file false false false /branches/0.x/Icons/nuove/add-url.png
+1218 /branches/0.x/Icons/add-url.png
+c-1218._3.t1220-xw add-file false false false /branches/0.x/Icons/nuove/add.png
+1218 /branches/0.x/Icons/add.png
+e-1218._4.t1220-xw add-file false false false /branches/0.x/Icons/nuove/away.png
+1218 /branches/0.x/Icons/away.png
+g-1218._5.t1220-xw add-file false false false /branches/0.x/Icons/nuove/busy.png
+1218 /branches/0.x/Icons/busy.png
+i-1218._6.t1220-xw add-file false false false /branches/0.x/Icons/nuove/chat.png
+1218 /branches/0.x/Icons/chat.png
+k-1218._7.t1220-xw add-file false false false /branches/0.x/Icons/nuove/clear.png
+1218 /branches/0.x/Icons/clear.png
+m-1218._8.t1220-xw add-file false false false /branches/0.x/Icons/nuove/copy.png
+1218 /branches/0.x/Icons/copy.png
+o-1218._9.t1220-xw add-file false false false /branches/0.x/Icons/nuove/database.png
+1218 /branches/0.x/Icons/database.png
+q-1218._a.t1220-xw add-file false false false /branches/0.x/Icons/nuove/deactivate.png
+1218 /branches/0.x/Icons/deactivate.png
+s-1218._b.t1220-xw add-file false false false /branches/0.x/Icons/nuove/documentation.png
+1218 /branches/0.x/Icons/documentation.png
+u-1218._c.t1220-xw add-file false false false /branches/0.x/Icons/nuove/down.png
+1218 /branches/0.x/Icons/down.png
+w-1218._d.t1220-xw add-file false false false /branches/0.x/Icons/nuove/email.png
+1218 /branches/0.x/Icons/email.png
+y-1218._e.t1220-xw add-file false false false /branches/0.x/Icons/nuove/empty-trash.png
+1218 /branches/0.x/Icons/empty-trash.png
+10-1218._f.t1220-xw add-file false false false /branches/0.x/Icons/nuove/full-trash.png
+1218 /branches/0.x/Icons/full-trash.png
+12-1218._g.t1220-xw add-file false false false /branches/0.x/Icons/nuove/heart.png
+1218 /branches/0.x/Icons/heart.png
+15-1218._h.t1220-xw add-file false false false /branches/0.x/Icons/nuove/inbox.png
+1218 /branches/0.x/Icons/inbox.png
+17-1218._i.t1220-xw add-file false false false /branches/0.x/Icons/nuove/information.png
+1218 /branches/0.x/Icons/information.png
+19-1218._j.t1220-xw add-file false false false /branches/0.x/Icons/nuove/lock.png
+1218 /branches/0.x/Icons/lock.png
+1b-1218._k.t1220-xw add-file false false false /branches/0.x/Icons/nuove/modify.png
+1218 /branches/0.x/Icons/modify.png
+1d-1218._l.t1220-xw add-file false false false /branches/0.x/Icons/nuove/neighbors.png
+1218 /branches/0.x/Icons/neighbors.png
+1f-1218._m.t1220-xw add-file false false false /branches/0.x/Icons/nuove/offline.png
+1218 /branches/0.x/Icons/offline.png
+1h-1218._n.t1220-xw add-file false false false /branches/0.x/Icons/nuove/ok.png
+1218 /branches/0.x/Icons/ok.png
+1j-1218._o.t1220-xw add-file false false false /branches/0.x/Icons/nuove/online.png
+1218 /branches/0.x/Icons/online.png
+1l-1218._p.t1220-xw add-file false false false /branches/0.x/Icons/nuove/outbox.png
+1218 /branches/0.x/Icons/outbox.png
+1n-1218._q.t1220-xw add-file false false false /branches/0.x/Icons/nuove/read.png
+1218 /branches/0.x/Icons/read.png
+1p-1218._r.t1220-xw add-file false false false /branches/0.x/Icons/nuove/refresh.png
+1218 /branches/0.x/Icons/refresh.png
+1r-1218._s.t1220-xw add-file false false false /branches/0.x/Icons/nuove/search.png
+1218 /branches/0.x/Icons/search.png
+1t-1218._t.t1220-xw add-file false false false /branches/0.x/Icons/nuove/settings.png
+1218 /branches/0.x/Icons/settings.png
+1v-1218._u.t1220-xw add-file false false false /branches/0.x/Icons/nuove/share.png
+1218 /branches/0.x/Icons/share.png
+1x-1218._v.t1220-xw add-file false false false /branches/0.x/Icons/nuove/up.png
+1218 /branches/0.x/Icons/up.png
+1z-1218._w.t1220-xw add-file false false false /branches/0.x/Icons/nuove/urls.png
+1218 /branches/0.x/Icons/urls.png
+21-1218._x.t1220-xw add-file false false false /branches/0.x/Icons/nuove/write.png
+1218 /branches/0.x/Icons/write.png
+_6.0-1162.t1220-xw add-dir false false false /branches/0.x/Icons/nuvola
+
+
+L2P-INDEX
+≈	Ä@]/ ‘¥ìΩ≤™∫®îúúú§†∞∏ƒ†§ºæ™¶¿¶Æ∫≤ûÆÆ¶≤Æ∂™û¶™ê‹Ê‡Çh^∂P2L-INDEX
+≈	∞{ÄÄ@ù ï: Ã˝œŒù ˘˙˘‘î É‰∏óä ÆŸ˛©é ››⁄Äé é§¨™é ÉÄœ:í Ûì‰Ωê ˘ÈŸÆò ˜⁄òó	ú ˆ§ù•¢ ñÍõ2ê ∂ÒΩ’í „ÑÀ¡û π¨Ωí
+ü  â Œï ˇ∏°Pì ∞ÙŸ † ªÁ†≠ì ¯¶ˆíó ú∆ó‘ù üµÑá
+ô πõãè öÃŸ∑
+ó àçÑä
+ó –Ã√¨ì óˇñ„ô §√ˆùó ë€˝œõ Ë¡·	ï ≈®≠Çè øÈõòì ï≈©∆	ï ˚Ü‰çà
+ ¨Ì‡”Æ –¶¨»s Ü¿€ºp
+ ¯¨∆„¡ ÑÜöÙ4
+ ·ÍÍÚ∏ Œ¶Ëˇ/
+ ﬁÓüáõ ≥ƒûÊ/
+ ì¿ï†äπ ˛ÇÖÚá! ¯óŸ“–Ñ?  15792 78f238f07690f78408e946e2d86411e4 15904 1620cd31a7d72ba410a8c32aae7bae0bM

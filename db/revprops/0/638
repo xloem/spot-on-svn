@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-03-11T14:32:55.924060Z
+K 7
+svn:log
+V 119
+Inspect results of QSqlQuery::exec() before committing database changes.
+Check return codes of spoton_gcrypt methods.
+
+
+END

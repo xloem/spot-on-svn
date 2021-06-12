@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-07-14T04:41:20.778757Z
+K 7
+svn:log
+V 101
+Default to debug builds.
+Inspect shared.db database locks and prevent premature kernel termination.
+
+
+END

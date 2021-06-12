@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-07-20T15:37:05.997679Z
+K 7
+svn:log
+V 105
+Removed duplicate calling of spoton_misc::populateCountryDatabase().
+Corrected application work cursor.
+
+
+END

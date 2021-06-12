@@ -1,0 +1,17 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-01-16T14:26:54.895958Z
+K 7
+svn:log
+V 130
+Ability to hide the Statistics panel in Settings.
+Removed extra Reset Spot-On button.
+Removed old archives from the source tree.
+
+
+END

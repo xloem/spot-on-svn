@@ -1,0 +1,14 @@
+K 10
+svn:author
+V 9
+mikeweber
+K 8
+svn:date
+V 27
+2013-05-20T14:59:49.990282Z
+K 7
+svn:log
+V 60
+as expected:
+show Empty Trash button only if Trash is given.
+END

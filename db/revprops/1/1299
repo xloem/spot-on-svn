@@ -1,0 +1,17 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-06-22T01:20:01.243046Z
+K 7
+svn:log
+V 154
+Simplified congestion hash.
+We need a signature key pair.
+Will improve the scrambler so that it appears less random and more connected to user activity.
+
+
+END

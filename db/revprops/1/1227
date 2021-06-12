@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 9
+mikeweber
+K 8
+svn:date
+V 27
+2013-06-02T09:25:23.036476Z
+K 7
+svn:log
+V 88
+GB IM path for alternative UI file, compiling with the structure, if overwritten in /UI.
+END

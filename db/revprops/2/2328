@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-12-12T15:57:02.445109Z
+K 7
+svn:log
+V 84
+Added a table for displaying a transmitted mosaic's magnets. Copy action provided.
+
+
+END

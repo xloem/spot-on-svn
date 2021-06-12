@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-11-04T18:44:18.601552Z
+K 7
+svn:log
+V 61
+Report database errors when adding listeners and neighbors.
+
+
+END

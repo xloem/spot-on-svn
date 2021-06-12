@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-05-01T00:30:04.158312Z
+K 7
+svn:log
+V 46
+Allow unknown countries to connect, for now.
+
+
+END

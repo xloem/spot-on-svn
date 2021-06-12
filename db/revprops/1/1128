@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+mikeweber
+K 8
+svn:date
+V 27
+2013-05-18T16:02:44.248648Z
+K 7
+svn:log
+V 122
+Disabled  to
+make sure, only the selected participant gets a non modified Repleo-Mail.
+send or clear button enables again.
+END

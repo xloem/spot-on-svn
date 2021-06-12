@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-06-27T11:21:12.555561Z
+K 7
+svn:log
+V 121
+Properly remove resources. Abort() will not cause a disconnected() signal to be emitted if the socket is not connected.
+
+
+END

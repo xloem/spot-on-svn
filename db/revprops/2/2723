@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-02-22T02:28:38.351703Z
+K 7
+svn:log
+V 60
+Did not exit spoton_crypt::saltedValue() on some failures.
+
+
+END

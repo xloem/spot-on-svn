@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 9
+mikeweber
+K 8
+svn:date
+V 27
+2013-04-15T04:55:26.365293Z
+K 7
+svn:log
+V 104
+11 buttons without function temporarily greyed out, re-enabling step by step, to not loose the overview.
+END

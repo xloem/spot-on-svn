@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-09-11T13:04:53.194824Z
+K 7
+svn:log
+V 110
+Inspect data, publicKey, and signature in spoton_crypt::isValidSignature().
+Use QSqlQuery::setForwardOnly().
+
+
+END

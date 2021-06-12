@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2012-12-04T16:48:42.889493Z
+K 7
+svn:log
+V 97
+Allow users to "activate" listeners without a kernel.
+If the kernel dies, repopulate the table.
+
+
+END

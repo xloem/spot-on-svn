@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-10-30T17:11:57.482029Z
+K 7
+svn:log
+V 55
+Only refresh after new e-mail if we can see the mail.
+
+
+END

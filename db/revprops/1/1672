@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-08-14T01:38:03.005014Z
+K 7
+svn:log
+V 134
+Moved processing of Buzz messages into the kernel.
+Limit processing of encrypted data if an interface is not attached to the kernel.
+
+
+END

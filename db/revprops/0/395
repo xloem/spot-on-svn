@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-02-05T03:09:30.351089Z
+K 7
+svn:log
+V 67
+Added database commits and journals.
+Adjusted UI per the Schmidt.
+
+
+END

@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-04-21T03:04:00.828944Z
+K 7
+svn:log
+V 132
+Database commits are not require because we don't have transactions.
+Work on copying the symmetric bundle to the clipboard buffer.
+
+
+END

@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-03-02T18:38:52.341371Z
+K 7
+svn:log
+V 49
+Too much green. Do not write() if disconnected.
+
+
+END

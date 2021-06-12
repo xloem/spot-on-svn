@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-04-09T10:26:00.829101Z
+K 7
+svn:log
+V 60
+Use GCRY_VERY_STRONG_RANDOM instead of GCRY_STRONG_RANDOM.
+
+
+END

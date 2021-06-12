@@ -1,0 +1,14 @@
+K 10
+svn:author
+V 9
+mikeweber
+K 8
+svn:date
+V 27
+2013-05-18T12:56:02.838658Z
+K 7
+svn:log
+V 103
+1. move Email-Retrieve Button next to Folders Button.
+2. Preparation work for Repleo-Mail (incomplete).
+END

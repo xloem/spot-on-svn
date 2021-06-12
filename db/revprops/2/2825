@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-03-23T00:18:09.041414Z
+K 7
+svn:log
+V 51
+Disable socket notifiers before they are removed.
+
+
+END

@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-05-06T18:14:32.594223Z
+K 7
+svn:log
+V 215
+Do this the right way. Enough of Slim's silly stories. IP addresses are blocked as IP addresses. Then I'll add a nice table to manage this information and just this information instead of managing it in neighbors.
+
+
+END

@@ -1,0 +1,19 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-04-13T00:12:19.087394Z
+K 7
+svn:log
+V 235
+Removed tool tip from listeners in controlcenter.ui.
+Added window icon to log viewer.
+Use keyed hashes where appropriate.
+Reverted documentation.
+The constructor spoton::spoton() was not correctly written to inherit from QMainWindow.
+
+
+END

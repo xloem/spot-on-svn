@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-10-30T13:47:22.590610Z
+K 7
+svn:log
+V 85
+Prevent misinterpretation of the ampersand when displaying ETP magnets.
+UI changes.
+
+
+END

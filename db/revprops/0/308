@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-01-22T11:03:15.725085Z
+K 7
+svn:log
+V 62
+We don't need libspoton_populate_private_key() in libspoton.
+
+
+END

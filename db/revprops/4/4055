@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2015-02-04T14:50:31.518900Z
+K 7
+svn:log
+V 67
+Do not set the priority of an inactive thread.
+SCTP improvements.
+
+
+END

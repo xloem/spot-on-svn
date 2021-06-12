@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-03-20T23:30:58.200299Z
+K 7
+svn:log
+V 136
+Improved comparisons in spot-on-starbeam-writer.cc
+We don't need to use qAbs() in qBound() if the lower and upper bounds are positive.
+
+
+END

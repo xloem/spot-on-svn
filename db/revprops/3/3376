@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-09-04T10:17:53.051388Z
+K 7
+svn:log
+V 69
+Corrected a.e. selection in the UI.
+Corrected item flags in the UI.
+
+
+END

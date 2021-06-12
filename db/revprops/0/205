@@ -1,0 +1,17 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2012-12-06T00:59:20.601857Z
+K 7
+svn:log
+V 144
+Enabled setForwardOnly() on QSqlQuery objects.
+The URL distillers have been moved into a tab, one page for downloads and one
+page for uploads.
+
+
+END

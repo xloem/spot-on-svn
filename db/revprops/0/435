@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-02-19T15:48:38.240366Z
+K 7
+svn:log
+V 54
+Replaced m_key with m_crypt.
+More gcrypt work ahead.
+
+
+END

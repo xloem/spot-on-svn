@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-11-03T14:52:48.553358Z
+K 7
+svn:log
+V 57
+Increase default 256-byte sizes to 512.
+More Buzz work.
+
+
+END

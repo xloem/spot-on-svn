@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-03-08T16:45:56.667234Z
+K 7
+svn:log
+V 70
+Use QVariant's toLongLong() instead of toInt() per Qt documentation.
+
+
+END

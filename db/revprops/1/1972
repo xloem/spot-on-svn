@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-10-06T01:03:09.152137Z
+K 7
+svn:log
+V 63
+Send account information only if the connection is encrypted.
+
+
+END

@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-01-13T01:01:22.415292Z
+K 7
+svn:log
+V 78
+Timestamps are required when sending account credentials to prevent
+replays.
+
+
+END

@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-11-12T13:38:33.966625Z
+K 7
+svn:log
+V 56
+Inspect empty hashes.
+Prevent adding of personal keys.
+
+
+END

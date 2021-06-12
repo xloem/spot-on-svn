@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-07-31T00:03:13.903765Z
+K 7
+svn:log
+V 59
+Added gcry_fast_random_poll() before gcry_create_nonce().
+
+
+END

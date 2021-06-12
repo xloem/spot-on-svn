@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-11-02T17:44:29.289528Z
+K 7
+svn:log
+V 30
+Use libgcrypt 1.6.2 on OS X.
+
+
+END

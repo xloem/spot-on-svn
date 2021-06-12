@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-10-22T14:41:31.627443Z
+K 7
+svn:log
+V 50
+Important correction to retrieveSymmetricData().
+
+
+END

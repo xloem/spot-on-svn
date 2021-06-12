@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-05-13T17:49:02.918727Z
+K 7
+svn:log
+V 33
+Limit socket read buffer sizes.
+
+
+END

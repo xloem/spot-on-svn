@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-06-06T15:12:28.908301Z
+K 7
+svn:log
+V 67
+Use Qt's restoreGeometry() and saveGeometry(). Removed isGnome().
+
+
+END

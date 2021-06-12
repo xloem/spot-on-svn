@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-05-05T23:46:55.554860Z
+K 7
+svn:log
+V 91
+Do not create random data when decrypting via gcry_pk_decrypt().
+Corrected if-statements.
+
+
+END

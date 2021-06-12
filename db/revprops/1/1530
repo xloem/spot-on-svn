@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-07-22T11:25:17.742015Z
+K 7
+svn:log
+V 65
+Depict listeners that support SSL.
+Limit use of blockSignals().
+
+
+END

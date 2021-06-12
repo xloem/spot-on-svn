@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-04-13T03:30:55.852670Z
+K 7
+svn:log
+V 105
+Attempt to disconnect neighbors by blocked countries.
+Strong random is too slow for practical purposes.
+
+
+END

@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-11-24T00:16:02.547239Z
+K 7
+svn:log
+V 63
+Protect m_bytesRead and m_bytesWritten from multiple threads.
+
+
+END

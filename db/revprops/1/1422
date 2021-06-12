@@ -1,0 +1,17 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-07-11T13:12:33.852145Z
+K 7
+svn:log
+V 154
+Be careful with m_id because a neighbor may be created by a listener.
+Corrected use of readyToWrite().
+New fields added to the neighbors database table.
+
+
+END

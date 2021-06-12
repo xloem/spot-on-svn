@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-03-23T03:36:15.456081Z
+K 7
+svn:log
+V 89
+Maintain correct widget focus. Loss of widget focus will be caused by database changes.
+
+
+END

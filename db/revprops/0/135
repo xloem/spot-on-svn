@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2012-11-20T23:07:49.847182Z
+K 7
+svn:log
+V 83
+Mnemonics and tab orders. Removed some colons from labels.
+Fixed layout oddities.
+
+
+END

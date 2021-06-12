@@ -1,0 +1,17 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-04-29T11:10:19.121347Z
+K 7
+svn:log
+V 118
+Corrected error messages.
+Improved error detection of gcrypt functions.
+Attempt to maintain consistent data formats.
+
+
+END

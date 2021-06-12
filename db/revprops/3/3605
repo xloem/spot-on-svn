@@ -1,0 +1,17 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-10-24T00:08:32.600034Z
+K 7
+svn:log
+V 81
+Configurable update intervals.
+Progress dialog during key generation.
+URL work.
+
+
+END

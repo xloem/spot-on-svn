@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-03-03T19:16:18.929784Z
+K 7
+svn:log
+V 54
+Added dates to the log.
+Store the node name as UTF8.
+
+
+END

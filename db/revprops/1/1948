@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-10-01T22:15:19.546299Z
+K 7
+svn:log
+V 43
+Do not reset the status if we're offline.
+
+
+END

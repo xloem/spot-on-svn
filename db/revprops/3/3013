@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-05-29T16:18:50.176824Z
+K 7
+svn:log
+V 64
+Do not save the geometry if the window is in full screen mode.
+
+
+END

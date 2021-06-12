@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-11-19T11:10:42.540061Z
+K 7
+svn:log
+V 101
+Remove non-printable characters from listener accounts and passphrases. Proxy passwords left alone.
+
+
+END

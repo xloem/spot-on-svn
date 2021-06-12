@@ -1,0 +1,17 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-12-16T14:00:10.983694Z
+K 7
+svn:log
+V 118
+Completed re-encoding.
+Corrected spoton_crypt::init() (do not delete url keys).
+Display decryption errors in the ui.
+
+
+END

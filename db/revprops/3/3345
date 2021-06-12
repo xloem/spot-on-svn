@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-08-20T20:00:37.732142Z
+K 7
+svn:log
+V 55
+Removed the application name from the window's title.
+
+
+END

@@ -1,0 +1,18 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-07-26T20:53:29.990325Z
+K 7
+svn:log
+V 114
+3rd attempt.
+Documentation.
+Disable password echo on OS X and Qt 5.1.
+Disable geminis on temporary participants.
+
+
+END

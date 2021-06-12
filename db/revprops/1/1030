@@ -1,0 +1,17 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-05-09T17:35:24.026323Z
+K 7
+svn:log
+V 113
+Throw letters to the email.db database.
+Undid some thing or another.
+Removed message_hash as it's not required.
+
+
+END

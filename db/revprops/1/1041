@@ -1,0 +1,18 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-05-10T01:25:46.118848Z
+K 7
+svn:log
+V 128
+Added folders to mail: inbox, sent, trash.
+Adjusted email.db.
+Able to save messages to the sent folder.
+Added refresh buttons.
+
+
+END

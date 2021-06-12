@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-07-01T16:50:10.053095Z
+K 7
+svn:log
+V 74
+Display icon for secure connections.
+Added is_encrypted to neighbors.db.
+
+
+END

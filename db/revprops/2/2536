@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-01-15T18:24:30.656554Z
+K 7
+svn:log
+V 90
+Added a timer to purge old data from m_data in spoton_neighbor.
+Re-enabled the URLs tab.
+
+
+END

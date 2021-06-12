@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-12-31T10:37:23.084930Z
+K 7
+svn:log
+V 60
+Added SPOTON_USE_HIDDEN_KERNEL_WINDOW for Android support.
+
+
+END

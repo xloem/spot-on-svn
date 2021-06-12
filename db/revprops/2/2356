@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-12-16T01:15:53.238933Z
+K 7
+svn:log
+V 64
+Improved account authentication from the client's perspective.
+
+
+END

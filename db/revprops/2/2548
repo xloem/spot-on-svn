@@ -1,0 +1,17 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-01-18T20:17:02.322539Z
+K 7
+svn:log
+V 201
+Added support for "url" key type in spoton_neighbor::savePublicKey().
+Do not purge the settings container in the kernel whenever the
+user's configuration file changes. Instead, update changed values.
+
+
+END

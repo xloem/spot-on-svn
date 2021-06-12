@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-12-05T00:23:41.390473Z
+K 7
+svn:log
+V 65
+The kernel's UI server should adhere to the SSL Control String.
+
+
+END

@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-07-09T09:04:08.150344Z
+K 7
+svn:log
+V 55
+Override system proxy password and user if necessary.
+
+
+END

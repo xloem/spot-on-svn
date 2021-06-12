@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-10-14T11:28:01.482872Z
+K 7
+svn:log
+V 70
+Ability to clear the clipboard buffer.
+Adaptive Echo magnet support.
+
+
+END

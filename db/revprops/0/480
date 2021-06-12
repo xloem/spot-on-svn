@@ -1,0 +1,17 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-02-26T10:44:38.867463Z
+K 7
+svn:log
+V 91
+Named widgets.
+Allow users to clear messages.
+Allow users to empty the public_keys table.
+
+
+END

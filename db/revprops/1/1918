@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-09-22T15:04:19.823806Z
+K 7
+svn:log
+V 82
+Set the last_status_update field when inserting a new friends_public_keys
+entry.
+
+
+END

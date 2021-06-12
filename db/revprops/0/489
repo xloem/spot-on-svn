@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-02-27T02:20:45.231327Z
+K 7
+svn:log
+V 71
+Manual sharing of private public key.
+Spaces in genkey (libspoton.c).
+
+
+END

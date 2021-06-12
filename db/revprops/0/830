@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-04-13T22:39:42.610374Z
+K 7
+svn:log
+V 81
+The project file is intended to be used for W32 systems. Why specify W32 in it?
+
+
+END

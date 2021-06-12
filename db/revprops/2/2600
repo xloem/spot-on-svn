@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-01-29T23:23:48.859694Z
+K 7
+svn:log
+V 76
+Added copy and paste to Rosetta.
+Removed obsolete methods from the kernel.
+
+
+END

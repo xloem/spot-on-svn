@@ -1,0 +1,17 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-07-03T00:19:26.623574Z
+K 7
+svn:log
+V 139
+Per-listener SSL data.
+Corrected table name (symmetric_keys doesn't exist).
+Corrected flawed re-encoding. Some more remains in that area.
+
+
+END

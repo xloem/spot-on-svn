@@ -1,0 +1,17 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-05-07T11:25:03.314263Z
+K 7
+svn:log
+V 148
+Re-added message digests. Not to be confused with key signatures.
+Replaced quint64 with qint64.
+Completed removal of non-unique blocked neighbors.
+
+
+END

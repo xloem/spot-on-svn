@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-05-10T12:25:48.850342Z
+K 7
+svn:log
+V 97
+Corrected previous commit. Must move items from the inbox and sent folders to the trash folder.
+
+
+END

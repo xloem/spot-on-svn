@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-01-31T15:23:46.531620Z
+K 7
+svn:log
+V 71
+Added neighbor class.
+Allow developers to semi-bypass authentication.
+
+
+END

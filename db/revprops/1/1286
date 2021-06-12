@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-06-20T09:04:22.915483Z
+K 7
+svn:log
+V 75
+Clear caches.
+A socket state may change immediately after a state() call.
+
+
+END

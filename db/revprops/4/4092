@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2015-02-16T14:26:08.133776Z
+K 7
+svn:log
+V 40
+Moved the chat send method to options.
+
+
+END

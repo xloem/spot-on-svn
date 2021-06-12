@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-04-03T17:30:00.747469Z
+K 7
+svn:log
+V 99
+Removed redundant icons from the P-table.
+Updated context menu to reflect Slim's choice of words.
+
+
+END

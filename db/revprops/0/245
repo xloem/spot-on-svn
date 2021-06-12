@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-01-07T18:29:04.313334Z
+K 7
+svn:log
+V 34
+Detect initialization of gcrypt.
+
+
+END

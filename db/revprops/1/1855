@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-09-08T23:55:15.071627Z
+K 7
+svn:log
+V 63
+Do not allow users to add their own keys (chat, email, etc.).
+
+
+END

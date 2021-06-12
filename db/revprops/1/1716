@@ -1,0 +1,18 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-08-20T10:09:37.989808Z
+K 7
+svn:log
+V 104
+Corrections to documentation.
+Buzz tooltips.
+Allow reset from menu.
+Use repaint() instead of update().
+
+
+END

@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-07-05T23:26:23.148576Z
+K 7
+svn:log
+V 104
+Place the kernel to listen on 127.0.0.1.
+Prepare some SSL communications between kernel and interface.
+
+
+END

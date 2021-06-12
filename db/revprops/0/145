@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2012-11-24T23:38:48.145479Z
+K 7
+svn:log
+V 57
+Added forceRegistration to libspoton_register_kernel().
+
+
+END

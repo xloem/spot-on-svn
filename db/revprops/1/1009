@@ -1,0 +1,22 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-05-06T15:39:48.782310Z
+K 7
+svn:log
+V 393
+Added the status_control field to the Neighbors table.
+Stronger blocking and unblocking of neighbors mechanisms.
+Block unknown countries.
+Do not perform country queries of private network addresses.
+Logging of blocked countries and IP addresses.
+Limit creation of non-required listeners and neighbors.
+Do not assume local addresses are IPv4.
+Local IP information may be null in neighbors.db.
+
+
+END

@@ -1,0 +1,771 @@
+id: 4-260.2-2413.r2614/3
+type: file
+pred: 4-260.2-2413.r2612/62
+count: 167
+text: 2607 3 2797 160971 64ecb99a1761f465c1774d292e050030 5e683f4af1dbd8bf2abcb4dda0335263bf1b6c47 2613-20l/_4
+cpath: /branches/0.09/Translations/spot-on_af.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_af.ts
+
+id: 6-260.3-2413.r2614/4
+type: file
+pred: 6-260.3-2413.r2612/63
+count: 166
+text: 2607 4 3005 159730 48a89d88709db62a2dea1bba80175f85 db05b6abea62f0ebc14381afb269d119053d925b 2613-20l/_5
+cpath: /branches/0.09/Translations/spot-on_al.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_al.ts
+
+id: a-260.4-2413.r2614/5
+type: file
+pred: a-260.4-2413.r2612/64
+count: 166
+text: 2607 5 3056 159747 b125994e05b012041e8223d43b425fad 329dad10efdbfd80a0899100c0a3ac11ace70f1a 2613-20l/_6
+cpath: /branches/0.09/Translations/spot-on_am.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_am.ts
+
+id: 8-323.5-2413.r2614/6
+type: file
+pred: 8-323.5-2413.r2612/65
+count: 166
+text: 2607 6 3011 161942 463aedac4eac25302d4bd24bc075bacf 33ffad917ca5a7cf65c8c85445ac442c19cecc7d 2613-20l/_7
+props: 78 26 46 34 25e6c2f7558b7484000d4d090dea5b92 - 322-8y/_3g
+cpath: /branches/0.09/Translations/spot-on_ar.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_ar.ts
+
+id: c-260.6-2413.r2614/7
+type: file
+pred: c-260.6-2413.r2612/66
+count: 166
+text: 2607 7 3056 159747 845454155eb60a7d7422062aa2b9b382 d779dfc311ab4fb4dd733a1a8589b3b948e55dca 2613-20l/_8
+cpath: /branches/0.09/Translations/spot-on_as.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_as.ts
+
+id: g-260.7-2413.r2614/8
+type: file
+pred: g-260.7-2413.r2612/67
+count: 166
+text: 2607 8 3056 159747 1fbc38a7d9c7698359330b2507f3eac0 409b858a65ac90177dc180377a6a1c735d434c97 2613-20l/_9
+cpath: /branches/0.09/Translations/spot-on_az.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_az.ts
+
+id: g-323.8-2413.r2614/9
+type: file
+pred: g-323.8-2413.r2612/68
+count: 165
+text: 2607 9 2943 159730 74b61d312a004b51fc091aabc117a0b7 c3f6dd9b6cb2b1e2baf7b29036b62fbada319626 2613-20l/_a
+props: 78 26 46 34 25e6c2f7558b7484000d4d090dea5b92 - 322-8y/_3i
+cpath: /branches/0.09/Translations/spot-on_bd.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_bd.ts
+
+id: k-260.9-2413.r2614/10
+type: file
+pred: k-260.9-2413.r2612/69
+count: 166
+text: 2607 10 3056 159747 e09e2934c2b71d7657bf63e13eb0f548 7e73ad1621c753d098f0d7d178102dbf4921f473 2613-20l/_b
+cpath: /branches/0.09/Translations/spot-on_be.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_be.ts
+
+id: m-260.a-2413.r2614/11
+type: file
+pred: m-260.a-2413.r2612/70
+count: 166
+text: 2607 11 3056 159747 7b6fa5eb3e22d832f7720f12478b2a45 65558ef3af65e686633a37ebcf3ffe5c8742f3d1 2613-20l/_c
+cpath: /branches/0.09/Translations/spot-on_bg.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_bg.ts
+
+id: o-260.b-2413.r2614/12
+type: file
+pred: o-260.b-2413.r2612/71
+count: 166
+text: 2607 12 3056 159747 3fc4b783ef7156b9f8f0f19a2d29b1b7 fe8171ab4ec4488f9ba8a345c519969852acfe8b 2613-20l/_d
+cpath: /branches/0.09/Translations/spot-on_ca.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_ca.ts
+
+id: p-323.c-2413.r2614/13
+type: file
+pred: p-323.c-2413.r2612/72
+count: 165
+text: 2607 9 2943 159730 74b61d312a004b51fc091aabc117a0b7 c3f6dd9b6cb2b1e2baf7b29036b62fbada319626 2613-20l/_e
+props: 78 26 46 34 25e6c2f7558b7484000d4d090dea5b92 - 322-8y/_3k
+cpath: /branches/0.09/Translations/spot-on_cr.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_cr.ts
+
+id: s-260.d-2413.r2614/14
+type: file
+pred: s-260.d-2413.r2612/73
+count: 166
+text: 2607 4 3005 159730 48a89d88709db62a2dea1bba80175f85 db05b6abea62f0ebc14381afb269d119053d925b 2613-20l/_f
+cpath: /branches/0.09/Translations/spot-on_cz.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_cz.ts
+
+id: u-260.e-2413.r2614/15
+type: file
+pred: u-260.e-2413.r2612/74
+count: 169
+text: 2607 13 2870 186354 54557a00aad4344aba156deece41b8cb 5e9e38f878ccc595e5ee06148521c190d44b0ed8 2613-20l/_g
+cpath: /branches/0.09/Translations/spot-on_de.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_de.ts
+
+id: w-260.f-2413.r2614/16
+type: file
+pred: w-260.f-2413.r2612/75
+count: 166
+text: 2607 4 3005 159730 48a89d88709db62a2dea1bba80175f85 db05b6abea62f0ebc14381afb269d119053d925b 2613-20l/_h
+cpath: /branches/0.09/Translations/spot-on_dk.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_dk.ts
+
+id: y-260.g-2413.r2614/17
+type: file
+pred: y-260.g-2413.r2612/76
+count: 166
+text: 2607 14 3056 159747 c07786fed4e3cff3717226b45e998770 5ddfa483ac889d66ccc67059482588097f569ebf 2613-20l/_i
+cpath: /branches/0.09/Translations/spot-on_ee.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_ee.ts
+
+id: 10-260.h-2413.r2614/18
+type: file
+pred: 10-260.h-2413.r2612/77
+count: 166
+text: 2607 4 3005 159730 48a89d88709db62a2dea1bba80175f85 db05b6abea62f0ebc14381afb269d119053d925b 2613-20l/_j
+cpath: /branches/0.09/Translations/spot-on_eo.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_eo.ts
+
+id: 12-260.i-2413.r2614/19
+type: file
+pred: 12-260.i-2413.r2612/78
+count: 167
+text: 2607 15 2803 161508 a9d0664510744a94c0ce58466ce9a771 bd8666892c200bc93b30811e72f04b22f29c138b 2613-20l/_k
+cpath: /branches/0.09/Translations/spot-on_es.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_es.ts
+
+id: 14-260.j-2413.r2614/20
+type: file
+pred: 14-260.j-2413.r2612/79
+count: 166
+text: 2607 16 3056 159747 73625dc7f7b68de05bdb5340e8b5868b d01a721340a6b30cb7d20cffaa6053f4b5b02df4 2613-20l/_l
+cpath: /branches/0.09/Translations/spot-on_et.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_et.ts
+
+id: 16-260.k-2413.r2614/21
+type: file
+pred: 16-260.k-2413.r2612/80
+count: 166
+text: 2607 17 3056 159747 a806b91493b7fbcfcdd4e2410059c7a0 19691f4070a5f35378dca93b97b3bc6b2635de08 2613-20l/_m
+cpath: /branches/0.09/Translations/spot-on_eu.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_eu.ts
+
+id: 18-260.l-2413.r2614/22
+type: file
+pred: 18-260.l-2413.r2612/81
+count: 166
+text: 2607 18 3056 159747 4ee4f715c72e9131cf4de1a2e09a206d d907da3c7928d4350178161908301dab1edd5ace 2613-20l/_n
+cpath: /branches/0.09/Translations/spot-on_fi.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_fi.ts
+
+id: 1a-260.m-2413.r2614/23
+type: file
+pred: 1a-260.m-2413.r2612/82
+count: 167
+text: 2607 19 3054 160912 8bb3f2caadad3ca26fbe8aa3ba3732cf bf21dc38b0dc3ea5c9fb823f5420803e5341f2da 2613-20l/_o
+cpath: /branches/0.09/Translations/spot-on_fr.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_fr.ts
+
+id: 1e-260.n-2413.r2614/24
+type: file
+pred: 1e-260.n-2413.r2612/83
+count: 166
+text: 2607 20 3056 159747 2f3c17da68c6955822e8e51a7f771c64 857de538469aa64efa155568e2021d7115ff2c47 2613-20l/_p
+cpath: /branches/0.09/Translations/spot-on_gl.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_gl.ts
+
+id: 1g-260.o-2413.r2614/25
+type: file
+pred: 1g-260.o-2413.r2612/84
+count: 166
+text: 2607 4 3005 159730 48a89d88709db62a2dea1bba80175f85 db05b6abea62f0ebc14381afb269d119053d925b 2613-20l/_q
+cpath: /branches/0.09/Translations/spot-on_gr.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_gr.ts
+
+id: 1i-260.p-2413.r2614/26
+type: file
+pred: 1i-260.p-2413.r2612/85
+count: 166
+text: 2607 4 3005 159730 48a89d88709db62a2dea1bba80175f85 db05b6abea62f0ebc14381afb269d119053d925b 2613-20l/_r
+cpath: /branches/0.09/Translations/spot-on_hb.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_hb.ts
+
+id: 1k-260.q-2413.r2614/27
+type: file
+pred: 1k-260.q-2413.r2612/86
+count: 166
+text: 2607 21 3056 159747 5e8d549e1e0779a0ba539bb9de02b6c7 457f4ba7b774192177ab42849987a98037862679 2613-20l/_s
+cpath: /branches/0.09/Translations/spot-on_hi.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_hi.ts
+
+id: 1m-260.r-2413.r2614/28
+type: file
+pred: 1m-260.r-2413.r2612/87
+count: 166
+text: 2607 22 3056 159747 b28d429753e760cee9a16a13ded09799 c87a7f9eaf81de782b0a9df8c27b1f30f9a79e6b 2613-20l/_t
+cpath: /branches/0.09/Translations/spot-on_hr.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_hr.ts
+
+id: 1o-260.s-2413.r2614/29
+type: file
+pred: 1o-260.s-2413.r2612/88
+count: 166
+text: 2607 23 3056 159747 3acc4c9f38f3ae16e86fdf872ea2d33a fd37b418fddddf9a3f26af37c92771c018cc4e37 2613-20l/_u
+cpath: /branches/0.09/Translations/spot-on_hu.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_hu.ts
+
+id: 1q-260.t-2413.r2614/30
+type: file
+pred: 1q-260.t-2413.r2612/89
+count: 166
+text: 2607 24 3056 159747 623c3d6c8d991e8a4ba7a51525c2ecb1 98f774789fa7f1a25a1d582d505e013b5550e640 2613-20l/_v
+cpath: /branches/0.09/Translations/spot-on_id.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_id.ts
+
+id: 1s-260.u-2413.r2614/31
+type: file
+pred: 1s-260.u-2413.r2612/90
+count: 166
+text: 2607 4 3005 159730 48a89d88709db62a2dea1bba80175f85 db05b6abea62f0ebc14381afb269d119053d925b 2613-20l/_w
+cpath: /branches/0.09/Translations/spot-on_ie.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_ie.ts
+
+id: 1u-260.v-2413.r2614/32
+type: file
+pred: 1u-260.v-2413.r2612/91
+count: 166
+text: 2607 4 3005 159730 48a89d88709db62a2dea1bba80175f85 db05b6abea62f0ebc14381afb269d119053d925b 2613-20l/_x
+cpath: /branches/0.09/Translations/spot-on_il.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_il.ts
+
+id: 1w-260.w-2413.r2614/33
+type: file
+pred: 1w-260.w-2413.r2612/92
+count: 166
+text: 2607 25 3056 159747 c1d8c14b6a98d8487d897a1b961365e3 7526cd23e218f28474f76febd7b43f4479e47cd3 2613-20l/_y
+cpath: /branches/0.09/Translations/spot-on_it.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_it.ts
+
+id: 1g-323.x-2413.r2614/34
+type: file
+pred: 1g-323.x-2413.r2612/93
+count: 165
+text: 2607 26 3085 159747 91c61468dac1c2edf4c637521623bde1 ade7af3769b2fd3a1a33e913ca2f1d1d4d49dd6f 2613-20l/_z
+props: 78 26 46 34 25e6c2f7558b7484000d4d090dea5b92 - 322-8y/_3m
+cpath: /branches/0.09/Translations/spot-on_ja.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_ja.ts
+
+id: 20-260.y-2413.r2614/35
+type: file
+pred: 20-260.y-2413.r2612/94
+count: 166
+text: 2607 27 3056 159747 f1a917640aedd027c12da0eb28f7a5a4 9dedbcd07582c5c90801689635a3bad5d1fb8467 2613-20l/_10
+cpath: /branches/0.09/Translations/spot-on_kk.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_kk.ts
+
+id: 22-260.z-2413.r2614/36
+type: file
+pred: 22-260.z-2413.r2612/95
+count: 166
+text: 2607 28 3056 159747 db154dee108592b32b417b3f3d26e45b f3cedcf950cd76b66d484fe994578b499e457d42 2613-20l/_11
+cpath: /branches/0.09/Translations/spot-on_kn.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_kn.ts
+
+id: 24-260.10-2413.r2614/37
+type: file
+pred: 24-260.10-2413.r2612/96
+count: 166
+text: 2607 29 3056 159747 07f8d9ef5106a52573d58e7a68fa305b b7b1f46a13045ab4136d9358b0f6d242e5a8016e 2613-20l/_12
+cpath: /branches/0.09/Translations/spot-on_ko.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_ko.ts
+
+id: 26-260.11-2413.r2614/38
+type: file
+pred: 26-260.11-2413.r2612/97
+count: 166
+text: 2607 30 3056 159747 746c33db5791d2b4a06ce2ab7c068a70 47a5a387130fee994ee2897ee56b56f22e739e84 2613-20l/_13
+cpath: /branches/0.09/Translations/spot-on_ku.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_ku.ts
+
+id: 28-260.12-2413.r2614/39
+type: file
+pred: 28-260.12-2413.r2612/98
+count: 166
+text: 2607 31 3056 159747 6051740cc2e40087ab9d209c60d473d0 c91c347ddcf0ad043e4eeb9bb67101db02213d4a 2613-20l/_14
+cpath: /branches/0.09/Translations/spot-on_ky.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_ky.ts
+
+id: 2a-260.13-2413.r2614/40
+type: file
+pred: 2a-260.13-2413.r2612/99
+count: 166
+text: 2607 4 3005 159730 48a89d88709db62a2dea1bba80175f85 db05b6abea62f0ebc14381afb269d119053d925b 2613-20l/_15
+cpath: /branches/0.09/Translations/spot-on_lk.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_lk.ts
+
+id: 2c-260.14-2413.r2614/41
+type: file
+pred: 2c-260.14-2413.r2612/100
+count: 166
+text: 2607 32 3056 159747 5d849f474b72e0e0ff3dd405fe2337ae 1a2ff1d18e010e2ee2c5dd15d048464255000f8a 2613-20l/_16
+cpath: /branches/0.09/Translations/spot-on_lt.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_lt.ts
+
+id: 2e-260.15-2413.r2614/42
+type: file
+pred: 2e-260.15-2413.r2612/101
+count: 166
+text: 2607 33 3056 159747 c40359b6597bdbaba93c12b7f325e087 a303bd9e7ac700b351787e150969186856515168 2613-20l/_17
+cpath: /branches/0.09/Translations/spot-on_lv.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_lv.ts
+
+id: 2g-260.16-2413.r2614/43
+type: file
+pred: 2g-260.16-2413.r2612/102
+count: 166
+text: 2607 34 3056 159747 a89acd46877eecb6e3ef99a09ade20aa 8d6e3b70af6bc8e512ce3f3e18978c8035a56424 2613-20l/_18
+cpath: /branches/0.09/Translations/spot-on_mk.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_mk.ts
+
+id: 2i-260.17-2413.r2614/44
+type: file
+pred: 2i-260.17-2413.r2612/103
+count: 166
+text: 2607 35 3056 159747 d4733f3407a5e85478006c42463c1943 26ecc77fb835427785fe6a45e80fc75a48242954 2613-20l/_19
+cpath: /branches/0.09/Translations/spot-on_ml.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_ml.ts
+
+id: 2k-260.18-2413.r2614/45
+type: file
+pred: 2k-260.18-2413.r2612/104
+count: 166
+text: 2607 36 3056 159747 53c12078b4b5c0d42efede432bf5e76f db6fbb2dbc9dba96d43dd9bc8d18f1f887d3f38e 2613-20l/_1a
+cpath: /branches/0.09/Translations/spot-on_mn.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_mn.ts
+
+id: 2m-260.19-2413.r2614/46
+type: file
+pred: 2m-260.19-2413.r2612/105
+count: 166
+text: 2607 37 3056 159747 559674495aa2f1d77cf2310326ef6ee8 97ac62c6dd98ac5515cc1725017f694e6dab326b 2613-20l/_1b
+cpath: /branches/0.09/Translations/spot-on_mr.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_mr.ts
+
+id: 2o-260.1a-2413.r2614/47
+type: file
+pred: 2o-260.1a-2413.r2612/106
+count: 166
+text: 2607 38 3056 159747 9983f28fd1890aba88f022808fe9e8ce 36b95fb759b2e2d7d773c23af1236d22a2aad15a 2613-20l/_1c
+cpath: /branches/0.09/Translations/spot-on_ms.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_ms.ts
+
+id: 2q-260.1b-2413.r2614/48
+type: file
+pred: 2q-260.1b-2413.r2612/107
+count: 166
+text: 2607 39 3056 159747 2a2e872acc186e31f36d4695eb57ca8a 9c2ae88ec2c35a609225a6c0e15f88278a8c49c9 2613-20l/_1d
+cpath: /branches/0.09/Translations/spot-on_mt.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_mt.ts
+
+id: 20-323.1c-2413.r2614/49
+type: file
+pred: 20-323.1c-2413.r2612/108
+count: 165
+text: 2607 40 3085 159747 bbc548ddbdbc1be9b6d9f920cc25ad70 08cd53ff42bd3c36425f99a6e0c739dcb9baf8d6 2613-20l/_1e
+props: 78 26 46 34 25e6c2f7558b7484000d4d090dea5b92 - 322-8y/_3o
+cpath: /branches/0.09/Translations/spot-on_my.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_my.ts
+
+id: 2u-260.1d-2413.r2614/50
+type: file
+pred: 2u-260.1d-2413.r2612/109
+count: 166
+text: 2607 41 3056 159747 e1f3b68e8e0b460ad9e08cb588a7f69d e4823e7f91dda5cf5778d7171f55a5c470bd1e67 2613-20l/_1f
+cpath: /branches/0.09/Translations/spot-on_nl.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_nl.ts
+
+id: 2w-260.1e-2413.r2614/51
+type: file
+pred: 2w-260.1e-2413.r2612/110
+count: 166
+text: 2607 42 3056 159747 708874c4fa32a255d20e346c05a5e742 b392edbdf0fdcc967cce19896b147f7fc8e2f7ca 2613-20l/_1g
+cpath: /branches/0.09/Translations/spot-on_no.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_no.ts
+
+id: 2y-260.1f-2413.r2614/52
+type: file
+pred: 2y-260.1f-2413.r2612/111
+count: 166
+text: 2607 4 3005 159730 48a89d88709db62a2dea1bba80175f85 db05b6abea62f0ebc14381afb269d119053d925b 2613-20l/_1h
+cpath: /branches/0.09/Translations/spot-on_np.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_np.ts
+
+id: 30-260.1g-2413.r2614/53
+type: file
+pred: 30-260.1g-2413.r2612/112
+count: 166
+text: 2607 43 3056 159747 c888fdbfa702217abd19a4b8b585e310 7a574468ffe68dfa8cecba0112ae485006833f74 2613-20l/_1i
+cpath: /branches/0.09/Translations/spot-on_pa.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_pa.ts
+
+id: 32-260.1h-2413.r2614/54
+type: file
+pred: 32-260.1h-2413.r2612/113
+count: 166
+text: 2607 44 3056 159747 173bd5f53cc46044e06f5aa02d61cec0 f0117f9dca9a9997e77bc5535cb1fe1c88da03b6 2613-20l/_1j
+cpath: /branches/0.09/Translations/spot-on_pl.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_pl.ts
+
+id: 34-260.1i-2413.r2614/55
+type: file
+pred: 34-260.1i-2413.r2612/114
+count: 166
+text: 2607 45 3056 159747 665ce97be397e5981e3c7ecc9e56c344 16c95d4b6d2f58458f646fb52bcdece894be09b8 2613-20l/_1k
+cpath: /branches/0.09/Translations/spot-on_ps.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_ps.ts
+
+id: 38-260.1j-2413.r2614/56
+type: file
+pred: 38-260.1j-2413.r2612/115
+count: 166
+text: 2607 46 3056 159747 e5b9f58c37670f330b28325e14a3ff47 85fdbf5dd529ef7849d0a7b6c4f1fa802ce0af8d 2613-20l/_1l
+cpath: /branches/0.09/Translations/spot-on_pt.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_pt.ts
+
+id: 3a-260.1k-2413.r2614/57
+type: file
+pred: 3a-260.1k-2413.r2612/116
+count: 166
+text: 2607 47 3056 159747 3eceb9db4575aa054a995c9809171bb2 2d062642fcdc71e46eaa89b7c5851108125a4e2c 2613-20l/_1m
+cpath: /branches/0.09/Translations/spot-on_ro.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_ro.ts
+
+id: 3c-260.1l-2413.r2614/58
+type: file
+pred: 3c-260.1l-2413.r2612/117
+count: 167
+text: 2607 48 2956 161155 9335bfcb6640977d29e5d256d1321758 bb52deaef97c9ee3e0dd4828005052097e4a186b 2613-20l/_1n
+cpath: /branches/0.09/Translations/spot-on_ru.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_ru.ts
+
+id: 3e-260.1m-2413.r2614/59
+type: file
+pred: 3e-260.1m-2413.r2612/118
+count: 166
+text: 2607 49 3056 159747 d78fd90252e1dd579bd60832d5d1a24a 49df3f788c7c1e80a57291297a0c0af2ed7c42cd 2613-20l/_1o
+cpath: /branches/0.09/Translations/spot-on_rw.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_rw.ts
+
+id: 3i-260.1n-2413.r2614/60
+type: file
+pred: 3i-260.1n-2413.r2612/119
+count: 166
+text: 2607 50 3056 159747 9180117c19d258c09a6de43f8d1708c8 6fd69d37f847bd6977324718e176262ec3920009 2613-20l/_1p
+cpath: /branches/0.09/Translations/spot-on_sk.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_sk.ts
+
+id: 3k-260.1o-2413.r2614/61
+type: file
+pred: 3k-260.1o-2413.r2612/120
+count: 166
+text: 2607 51 3056 159747 cbdca3ce38ff32bd805dd5c49f0e35d8 8e4baef3a108a9b7e6946d7db04481a676db8f63 2613-20l/_1q
+cpath: /branches/0.09/Translations/spot-on_sl.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_sl.ts
+
+id: 3m-260.1p-2413.r2614/62
+type: file
+pred: 3m-260.1p-2413.r2612/121
+count: 166
+text: 2607 52 3056 159747 1e4ee9e454879a74c611b326bcd8c5d6 bbb69a8e4040c2824cf79f5944285110b481ed13 2613-20l/_1r
+cpath: /branches/0.09/Translations/spot-on_sq.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_sq.ts
+
+id: 3o-260.1q-2413.r2614/63
+type: file
+pred: 3o-260.1q-2413.r2612/122
+count: 166
+text: 2607 53 3056 159747 9957021453b1599a29f94b9b75e7b2c7 d6f3dca2d14fad7d173fd7226f77ec7473180773 2613-20l/_1s
+cpath: /branches/0.09/Translations/spot-on_sr.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_sr.ts
+
+id: 2k-323.1r-2413.r2614/64
+type: file
+pred: 2k-323.1r-2413.r2612/123
+count: 165
+text: 2607 54 3085 159747 2d9e1811e4c0570443c32290bf57634c 56438706ce115afcece6885f7fee5e1c1e10ca7d 2613-20l/_1t
+props: 78 26 46 34 25e6c2f7558b7484000d4d090dea5b92 - 322-8y/_3q
+cpath: /branches/0.09/Translations/spot-on_sv.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_sv.ts
+
+id: 3q-260.1s-2413.r2614/65
+type: file
+pred: 3q-260.1s-2413.r2612/124
+count: 166
+text: 2607 55 3056 159747 693fc0ac6fded8e831cbf02239484098 2d8ae4df221e0151f97975d186e823f80a6eef7e 2613-20l/_1u
+cpath: /branches/0.09/Translations/spot-on_sw.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_sw.ts
+
+id: 3s-260.1t-2413.r2614/66
+type: file
+pred: 3s-260.1t-2413.r2612/125
+count: 166
+text: 2607 56 3056 159747 c2ab8d8c9a2847ba984681d1163ed86d 59fab0acb8ad660fe5baefb790852da94ecb8bc7 2613-20l/_1v
+cpath: /branches/0.09/Translations/spot-on_th.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_th.ts
+
+id: 3u-260.1u-2413.r2614/67
+type: file
+pred: 3u-260.1u-2413.r2612/126
+count: 166
+text: 2607 57 3056 159747 dd9a3762b4524c34317706a337673460 f96e950f64875aa0507e97852ddbd53b85b5f32a 2613-20l/_1w
+cpath: /branches/0.09/Translations/spot-on_tr.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_tr.ts
+
+id: 3w-260.1v-2413.r2614/68
+type: file
+pred: 3w-260.1v-2413.r2612/127
+count: 166
+text: 2607 4 3005 159730 48a89d88709db62a2dea1bba80175f85 db05b6abea62f0ebc14381afb269d119053d925b 2613-20l/_1x
+cpath: /branches/0.09/Translations/spot-on_vn.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_vn.ts
+
+id: 2u-323.1w-2413.r2614/69
+type: file
+pred: 2u-323.1w-2413.r2612/128
+count: 165
+text: 2607 58 3085 159747 3c207443b16cc0b8541e9ec8bafc2ef7 30d2e4f30ed7f40af467cbcae5ab7094bf52a945 2613-20l/_1y
+props: 78 26 46 34 25e6c2f7558b7484000d4d090dea5b92 - 322-8y/_3s
+cpath: /branches/0.09/Translations/spot-on_zh.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_zh.ts
+
+id: 36-323.1x-2413.r2614/70
+type: file
+pred: 36-323.1x-2413.r2612/129
+count: 165
+text: 2607 59 3085 159747 a7fb4247beb36502c6ed3d37565eb7f3 132507cff8c4457dd4123680ca47582dd9c3841a 2613-20l/_1z
+props: 78 26 46 34 25e6c2f7558b7484000d4d090dea5b92 - 322-8y/_3w
+cpath: /branches/0.09/Translations/spot-on_zh_HK.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_zh_HK.ts
+
+id: 3c-323.1y-2413.r2614/71
+type: file
+pred: 3c-323.1y-2413.r2612/130
+count: 165
+text: 2607 60 3085 159747 d15a2e456cc12454543cb7efad0d7bce bf2e0953c8f2ba841abd8b2c6bd894670c353101 2613-20l/_20
+props: 78 26 46 34 25e6c2f7558b7484000d4d090dea5b92 - 322-8y/_3y
+cpath: /branches/0.09/Translations/spot-on_zh_TW.ts
+copyroot: 2413 /branches/0.09/Translations/spot-on_zh_TW.ts
+
+DELTA 2612 131 1622
+SVN ∂c∂=Åç`Å & I ÄÑ[ \Ö+Äd \ÜkÄd ]à+Äk ]âsÄe ^ã5Äl ^åÄÅH dè%Äf ^êo  í3  ìw  ï; &ñÄf Å:òCÄf _öcÄn _ú0ÄÇ- Eü>ÄÑq E§{Ää, FØzÄÑx Lµ?û9∂*ß?Ú$5
+file 4-260.2-2413.r2614/3
+K 13
+spot-on_al.qm
+V 202 p7-266.0- M6/19-  ts- 5- 6_ 3_ 42 m_ c_ -21- 	_ a_ 4_ 52 r_ 6ë t5-323.12 m539/663 	e 83 53  #2 se #fƒ 2_ s_  Ò 80.6_ 72 z_ k_ Pz_ g#7_ 8_ *bd_ d ù0.r323/70- 	æ g- 8_ L94/16 gc t¬ Ô #bg¬ ≥m¬ ac [114/1XcÍÖmö « c‰d p- cd K34/1]#de» 7N!13… O^601/74 2k uœ ek K54/1Tek 1k 8k x3•ee ye ge K74/1˚eπ–  ç†6.0-2405.r +/8;e¿4 2l il K94/2#eu<— i— #euf Jkf +fib lb ¸ +fib  a90.lb K24/2kg» 	Õ4≤g» e.nf K44/2f+hbÃ  “ˇ4î +hbÃ  \90.pf -64kh4Ã 2–e4î 5Ã örf K84/2iaf  jf ˙ibf q2tf [304/3jiò2Ã©4î òóvf -24i+jaò	.9d+jaò/xf K44/3j*knf 2j25˛*knf 2ízf -64dkí8c!2r0P6-209k285/10gkô5 ô1 CK84/3r+lk‘ xn l5#lk‘ g Î q™4c+ltc zc ù+ltc  1I0.14c f*lvc 3l∆ Ù vc ˛1M4‰ ¨1ÎmÁ3M6Ø mÁc 14≤m~(3bG6m~c  ü90.1Kmy3G6·myc  I0.19™Am‹v)3h∆ Ù ÷c ov1w4•mp)3jc ’mpŸ)1b∆ •#myp2§!1x™◊1°+myq0/ 1⁄$49Â ı(1dÇ 5U#noÇ H&∏6∞ +noÅ wH	5¶+npc  ò c U+npc  I0.1f∆ ¶p∏3ò c Ê
+p∏)"30∆ 	Q	ápö	~7Ù pöII0.1h∆ ¶p‘4~7Ù ‘3Ì1´	5¶p‘4`›
+p‘éI0.1j∆ örR4`7ë rR3
+	
+?#ruµ¡4`Ÿ
+1t	r€3	
+5Ò#rwj 4g*77?*rwº¯I0.1m0Òs:4ˇº. p˚ 3Û	s
+6Âsº(4p 8. 
+c Ûo∆ ã+sq)sc +sq) Ù 90.1”
+ãsV)4vc sV3Ûq∆ 3G"2kJ	Ó
+6†s õ™8◊ssÅ *thG)51‰ ë +thG u90.1NtG5tGu,u∆ vc)55∆ 1vcΩ90.1Æäz):!2r¡:3d z*!2u/ )1w« l6Szh_HKêg !338 g £
+2 
+>62 1#70x"3c yà P14/71ENDREP
+id: 7-62.1-2413.r2614/73
+type: dir
+pred: 7-62.1-2413.r2612/132
+count: 179
+text: 2614 72 1902 6973 7d593c97e1044b8e6b45cd5aff639f56 - -
+cpath: /branches/0.09/Translations
+copyroot: 592 /branches/1.x/Translations
+
+DELTA 2613 6 25
+SVN å8å7
+ Ç ö äÇ+4
+dir 7-62.1-2413.r2614/73ENDREP
+id: 2-591.0-2413.r2614/75
+type: dir
+pred: 2-591.0-2413.r2613/7
+count: 1898
+text: 2614 74 49 1591 4a5856bd95cfac1b769dac8beeea031d - -
+cpath: /branches/0.09
+copyroot: 2413 /branches/0.09
+
+DELTA 2613 8 45
+SVN Å,Å-5 õ ]O5
+dir 2-591.0-2413.r2614/75ENDREP
+id: 0-591.0.r2614/77
+type: dir
+pred: 0-591.0.r2613/9
+count: 1959
+text: 2614 76 46 173 4e7c9353646e731fed3d79a4448be866 - -
+cpath: /branches
+copyroot: 0 /
+
+DELTA 2613 10 41
+SVN ÅSÅT< ó ÅR20
+dir 0-591.0.r2614/77ENDREP
+id: 0.0.r2614/2
+type: dir
+pred: 0.0.r2613/2
+count: 2614
+text: 2614 78 43 212 fb307c6b0508dd0734fc78f1384eda87 - -
+cpath: /
+copyroot: 0 /
+
+4-260.2-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_af.ts
+
+6-260.3-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_al.ts
+
+a-260.4-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_am.ts
+
+8-323.5-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_ar.ts
+
+c-260.6-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_as.ts
+
+g-260.7-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_az.ts
+
+g-323.8-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_bd.ts
+
+k-260.9-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_be.ts
+
+m-260.a-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_bg.ts
+
+o-260.b-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_ca.ts
+
+p-323.c-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_cr.ts
+
+s-260.d-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_cz.ts
+
+u-260.e-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_de.ts
+
+w-260.f-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_dk.ts
+
+y-260.g-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_ee.ts
+
+10-260.h-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_eo.ts
+
+12-260.i-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_es.ts
+
+14-260.j-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_et.ts
+
+16-260.k-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_eu.ts
+
+18-260.l-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_fi.ts
+
+1a-260.m-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_fr.ts
+
+1e-260.n-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_gl.ts
+
+1g-260.o-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_gr.ts
+
+1i-260.p-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_hb.ts
+
+1k-260.q-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_hi.ts
+
+1m-260.r-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_hr.ts
+
+1o-260.s-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_hu.ts
+
+1q-260.t-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_id.ts
+
+1s-260.u-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_ie.ts
+
+1u-260.v-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_il.ts
+
+1w-260.w-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_it.ts
+
+1g-323.x-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_ja.ts
+
+20-260.y-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_kk.ts
+
+22-260.z-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_kn.ts
+
+24-260.10-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_ko.ts
+
+26-260.11-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_ku.ts
+
+28-260.12-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_ky.ts
+
+2a-260.13-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_lk.ts
+
+2c-260.14-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_lt.ts
+
+2e-260.15-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_lv.ts
+
+2g-260.16-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_mk.ts
+
+2i-260.17-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_ml.ts
+
+2k-260.18-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_mn.ts
+
+2m-260.19-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_mr.ts
+
+2o-260.1a-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_ms.ts
+
+2q-260.1b-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_mt.ts
+
+20-323.1c-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_my.ts
+
+2u-260.1d-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_nl.ts
+
+2w-260.1e-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_no.ts
+
+2y-260.1f-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_np.ts
+
+30-260.1g-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_pa.ts
+
+32-260.1h-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_pl.ts
+
+34-260.1i-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_ps.ts
+
+38-260.1j-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_pt.ts
+
+3a-260.1k-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_ro.ts
+
+3c-260.1l-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_ru.ts
+
+3e-260.1m-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_rw.ts
+
+3i-260.1n-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_sk.ts
+
+3k-260.1o-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_sl.ts
+
+3m-260.1p-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_sq.ts
+
+3o-260.1q-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_sr.ts
+
+2k-323.1r-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_sv.ts
+
+3q-260.1s-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_sw.ts
+
+3s-260.1t-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_th.ts
+
+3u-260.1u-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_tr.ts
+
+3w-260.1v-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_vn.ts
+
+2u-323.1w-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_zh.ts
+
+36-323.1x-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_zh_HK.ts
+
+3c-323.1y-2413.t2613-20l modify-file true false false /branches/0.09/Translations/spot-on_zh_TW.ts
+
+
+L2P-INDEX
+∂Ä@üO Ü˜ìÔÙ   Ã  ÃŒŒŒŒÃŒÃŒ–““““““––““““––“‘‘‘ÿÿÿ÷⁄⁄⁄⁄⁄⁄⁄⁄‹⁄⁄ÿ⁄⁄⁄⁄⁄⁄⁄⁄⁄⁄⁄‹⁄⁄⁄ÿ‹ËËí®êˆä∂P2L-INDEX
+∂ΩÔÄÄ@ø •: Øÿœ • ôàˇç	• çê–ÍÊ áÉŒÅ• ¸°≤˜• ¿ü¶ÂÊ ∏ò¿Ëß ©Ù¬”ß Ì≈µ¶ß Åª˜ÛÁ ü±™Ò¶ ≈∆Âäß ∑—è·¶ ‘Ö»‰
+ß óÏ¥Ü® ∂Ñå© çö∑È© ™Ÿ¥î© ∂°∑Û© ‘êœî	© õç»Ç© Â≠éã® Ùñ…˚
+® ’“ Ä© êëõö© Ù ˙˙© ÙÕÍõ
+© ¥Â†ö® ™‹Üâ® §∂øë© °¨È…Í –º˘Æ™ Ç¨ºº™ õ¡û•¨ ç‚ã¬¨ ó§¬≠
+¨ ®Ã‘M´ Úçç”≠ ¯‘“§≠ òµÁµ	≠ ÉÔ‘ﬂ≠ å—·Â≠ ∂óÀ⁄≠ ÓÔãï≠ Êı’ú≠ ö¯Ú˝Ó à⁄∫„≠ ÁÿºÎ≠ ¢Ä£©¨ ‘ƒçŒ≠ €øÙ€≠ ¥óﬂó≠ ÌéÇ‹	≠ ÛﬁªÈ≠ ‚Õì◊≠ ªÏÅ“	≠ —ﬂ≈Î≠ ¡Éó≈≠  °Æÿ≠ ∆ªòó≠ ±—›°Ó ™‚ä_≠ •‹™Ó≠ í’∏˙	≠ ôøã€¨ ôâπ‰Ó §˛≠¶Ù ƒΩô≥Ù Ú´Ö+â
+ ÑÎÑÎ‘ ç–∑ÿH
+ ⁄Ìˆ´ª ∞·•≈E
+ ê√€Àõ ÀÂ≤àC
+ »π˛ÿäπ	 «ÙÿÛ˚3 ˙ˇÅö√ê>  30653 f6d198682575983f99794aa47a37c5b2 30832 c17b22fc9904c56df9594ba13c6629c0M

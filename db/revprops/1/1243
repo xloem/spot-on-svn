@@ -1,0 +1,17 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-06-04T16:06:23.223132Z
+K 7
+svn:log
+V 127
+Lots of changes with respect to mail retrieval. Signatures are broken there.
+Corrected error messages.
+Updated documentation.
+
+
+END

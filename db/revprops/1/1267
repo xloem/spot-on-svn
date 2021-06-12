@@ -1,0 +1,18 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-06-18T14:23:50.232281Z
+K 7
+svn:log
+V 158
+Allow spaces when providing an IPv6 address.
+Consider ::1/128 as a link-local address.
+Start publicizing listeners.
+Cleanup deleted listeners and neighbors.
+
+
+END

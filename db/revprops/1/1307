@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-06-23T14:21:30.429397Z
+K 7
+svn:log
+V 34
+Limit use of single-shot timers.
+
+
+END

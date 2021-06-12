@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-12-17T13:56:12.478847Z
+K 7
+svn:log
+V 54
+Provide means of computing the SHA-1 hash for files.
+
+
+END

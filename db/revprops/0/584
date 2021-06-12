@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-03-09T00:19:53.613040Z
+K 7
+svn:log
+V 126
+Corrected spoton_gcrypt::publicKey().
+Ask the user if they wish to activate the kernel after setting the initial passphrase.
+
+
+END

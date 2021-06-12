@@ -1,0 +1,28 @@
+K 10
+svn:author
+V 9
+mikeweber
+K 8
+svn:date
+V 27
+2013-04-20T17:42:50.221502Z
+K 7
+svn:log
+V 852
+after testing: this tooltip is needed !! -> Shorter as requested.
+
+source:
+
+<html><head><head/><body>
+<i>Add friend with <b>Repleo Exchange</b></i><ol>
+<li>Obtain the key from your friend. Paste it and press the Add button.</li>
+<li>Go to Chat Tab: Participants Table: Copy your Repleo for this friend from the context menu.</li>
+<li>Send this Repleo to your friend, who paste and adds it.</li>
+</ol><p>
+<i>Alternatively: with <b>Key Exchange</b> via IP Connection</i><ol>
+<li>Add a listener. Forward the Port in your Router/Nat.</li>
+<li>Send IP/Port to your friend. Add Neighbor: Insert IP.</li>
+<li>Once connected, both users share the key via the context menu in the Neighbors IP-table. (or: Share Key Button).</li>
+<li>Go to Chat Tab: Participants Table: Approve of new chat friends via the context menu: "Add as Friends".</li>
+</ol></body></html>
+END

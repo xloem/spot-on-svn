@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-02-19T17:33:23.808200Z
+K 7
+svn:log
+V 75
+Decrypt and encrypt certain fields in the listeners and neighbors tables.
+
+
+END

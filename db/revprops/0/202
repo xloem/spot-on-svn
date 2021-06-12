@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2012-12-04T23:09:17.156642Z
+K 7
+svn:log
+V 48
+Reverted to 190. Removed the help textbrowser.
+
+
+END

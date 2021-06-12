@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-07-04T03:18:26.724868Z
+K 7
+svn:log
+V 76
+Send the UUID after connecting or after establishing an encrypted channel.
+
+
+END

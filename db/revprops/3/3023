@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-06-02T21:48:37.221468Z
+K 7
+svn:log
+V 73
+spoton_kernel::interfaces() should return a count of encrypted sockets.
+
+
+END

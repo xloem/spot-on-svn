@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-11-21T20:42:20.380752Z
+K 7
+svn:log
+V 90
+Compress attachments and SB pulses.
+Corrected saving of attachments guarded by GoldBugs.
+
+
+END

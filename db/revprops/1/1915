@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-09-22T03:00:45.664458Z
+K 7
+svn:log
+V 75
+Added libspoton_init_a(). Renamed libspoton_init() to libspoton_init_b().
+
+
+END

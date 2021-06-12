@@ -1,0 +1,17 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-10-12T03:06:12.063195Z
+K 7
+svn:log
+V 102
+Corrected error setting in spoton_crypt::generatePrivatePublicKeys() with
+respect to NTRU.
+URL work.
+
+
+END

@@ -1,0 +1,17 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-07-03T01:23:40.085610Z
+K 7
+svn:log
+V 132
+SSL data in the database is now mandatory.
+The message_digest field in the folders table is also mandatory.
+Updated documentation.
+
+
+END

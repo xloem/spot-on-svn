@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-12-27T18:26:46.848180Z
+K 7
+svn:log
+V 38
+Corrected Qt 5.x compilation errors.
+
+
+END

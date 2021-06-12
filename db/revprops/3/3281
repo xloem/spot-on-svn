@@ -1,0 +1,17 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-07-27T15:58:05.169243Z
+K 7
+svn:log
+V 143
+Ability to automatically accept StarBeam magnets.
+Modify list widgets selection behaviors on Windows only.
+Replaced tab texts with tool tips.
+
+
+END

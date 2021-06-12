@@ -1,0 +1,16 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-12-06T23:18:48.831380Z
+K 7
+svn:log
+V 87
+Display the kernel session cipher in the UI's kernel status tooltip.
+Lots of SB work.
+
+
+END

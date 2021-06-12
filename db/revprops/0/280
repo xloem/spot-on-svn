@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-01-18T03:42:10.185515Z
+K 7
+svn:log
+V 41
+Added libspoton_reencode_private_key().
+
+
+END

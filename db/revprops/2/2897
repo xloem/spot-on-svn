@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2014-04-12T19:41:18.463212Z
+K 7
+svn:log
+V 78
+Do not loop through the participants if the chat windows container is empty.
+
+
+END

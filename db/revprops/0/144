@@ -1,0 +1,15 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2012-11-24T00:20:56.646708Z
+K 7
+svn:log
+V 41
+Added libspoton_is_kernel_registered().
+
+
+END

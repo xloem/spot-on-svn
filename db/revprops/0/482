@@ -1,0 +1,17 @@
+K 10
+svn:author
+V 9
+textfield
+K 8
+svn:date
+V 27
+2013-02-26T11:58:52.285100Z
+K 7
+svn:log
+V 140
+Removed public_key and added is_my_key to public_keys.
+Use optimal asymmetric encryption padding.
+Corrected trimming of incoming messages.
+
+
+END
